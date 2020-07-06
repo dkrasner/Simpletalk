@@ -1,0 +1,28 @@
+{
+  "name": "simpletalk",
+  "version": "0.0.1",
+  "description": "An ohm-js based implementation of HyperTalk.",
+  "main": "index.js",
+  "scripts": {
+    "test": "npm test"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/UnitedLexCorp/SimpleTalk.git"
+  },
+  "keywords": [
+    "Ohm",
+    "HyperCard",
+    "HyperTalk",
+    "PEG"
+  ],
+  "author": "UnitedLex Idea Factory Lab Team",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/UnitedLexCorp/SimpleTalk/issues"
+  },
+  "homepage": "https://github.com/UnitedLexCorp/SimpleTalk#readme",
+  "dependencies": {
+    "ohm-js": "^0.14.0"
+  }
+}
