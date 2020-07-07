@@ -20,6 +20,14 @@ class Card extends Part {
         }
         super(owner);
 
+        // By default, a new Card's background
+        // is the first Background in it's owner Stack.
+        this.stack = this.owner;
+        this.currentBackground = this.stack.partsCollection.getPartByTypeIndex(
+            'background',
+            1
+        );
+
         // Add Card-specific part
         // properties
         this.partProperties.newBasicProp(
@@ -53,9 +61,16 @@ class Card extends Part {
     get type(){
         return 'card';
     }
+
+    // Override for delegation. Command messages
+    // that are passed or otherwise not handled
+    // by this card are delegated to the background
+    delegateCmd(commandName, arguments=[]){
+        this.currentBackground.receiveCmd(commandName, arguments);
+    }
 };
 
 export {
     Card,
     Card as default
-}
+};

@@ -79,6 +79,14 @@ class Button extends Part {
     get type(){
         return 'button';
     }
+
+    // Delegation override.
+    // Buttons delegate passed or
+    // untrapped command messages
+    // to their owner card
+    delegateCmd(commandName, arguments=[]){
+        this.owner.receiveCmd(commandName, arguments);
+    }
 };
 
 export {

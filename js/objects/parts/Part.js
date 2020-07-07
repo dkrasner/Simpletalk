@@ -18,11 +18,15 @@ class Part {
         this.partsCollection = new PartCollection(this);
         this.partProperties = new PartProperties();
         this._owner = anOwnerPart;
+        this._commandHandlers = {};
+        this._functionHandlers = {};
 
         // Bind methods
         this.setupProperties = this.setupProperties.bind(this);
         this.getStack = this.getStack.bind(this);
         this.numberInOwner = this.numberInOwner.bind(this);
+        this.setCmdHandler = this.setCmdHandler.bind(this);
+        this.setFuncHandler = this.setFuncHandler.bind(this);
 
         // Finally, we finish initialization
         this.setupProperties();
@@ -148,6 +152,46 @@ class Part {
                 true, // Is readOnly,
                 [] // No aliases
         );
+    }
+
+    /** Command Handling and Delegation **/
+    setCmdHandler(commandName, handler){
+        this._commandHandlers[commandName] = handler.bind(this);
+    }
+
+    setFuncHandler(funcName, handler){
+        this._functionHandlers[funcName] = handler.bind(this);
+    }
+
+    sendCmd(targetPart, commandName, arguments=[]){
+        targetPart.receiveCmd(commandName, arguments);
+    }
+
+    receiveCmd(commandName, arguments=[]){
+        let handler = this._commandHandlers[commandName];
+
+        if(handler){
+            // If this Part has a handler for
+            // the given command, we run it.
+            handler();
+        } else {
+            // Otherwise, we have no handler for
+            // it, so we delegate along the
+            // message delegation chain. It is up
+            // to Parts to properly implement delegation
+            // for themselves!
+            this.delegateCmd(commandName, arguments);
+        }
+    }
+
+    delegateCmd(commandName, arguments=[]){
+        return this.shouldBeImplemented('delegateCmd');
+    }
+
+    /** Logging and Reporting **/
+    shouldBeImplemented(functionName){
+        let msg = `${this.constructor.name} should implement ${functionName}`;
+        throw new Error(msg);
     }
 };
 

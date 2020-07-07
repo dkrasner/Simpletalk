@@ -7,6 +7,7 @@
  */
 import Part from './Part';
 import Card from './Card';
+import Background from './Background';
 import {
     BasicProperty
 } from '../properties/PartProperties';
@@ -35,6 +36,14 @@ class Stack extends Part {
                 name
             );
         }
+
+        // We construct with an initial
+        // Background part, since there needs
+        // to be at least one
+        let initBackground = new Background(this);
+        this.partsCollection.addPart(
+            initBackground
+        );
 
         // We create an initial Card, then
         // set that to the current card.
