@@ -9,7 +9,7 @@
  * of any kind within the parent (ie, card part 4)
  */
 
-class PartCollection(){
+class PartCollection {
     contructor(anOwnerPart){
         this.allParts = [];
         this.partsByType = {};
@@ -24,6 +24,7 @@ class PartCollection(){
         this.getPartByName = this.getPartByName.bind(this);
         this.getPartByPartIndex = this.getPartByPartIndex.bind(this);
         this.getPartByTypeIndex = this.getPartByTypeIndex.bind(this);
+        this.getTypeIndexForPart = this.getTypeIndexForPart.bind(this);
     }
 
     addPart(aPart){
@@ -98,6 +99,14 @@ class PartCollection(){
             return typeList[anIndex];
         }
         return undefined;
+    }
+
+    getTypeIndexForPart(aPart){
+        let typeList = this.partsByType[aPart.type];
+        if(typeList){
+            return typeList.indexOf(aPart);
+        }
+        return -1;
     }
 
     getPartByPartIndex(anIndex){

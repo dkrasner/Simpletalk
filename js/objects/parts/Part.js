@@ -5,19 +5,24 @@
  * SimpleTalk parts.
  */
 
-import './PartCollection';
-import '../utils/idMaker';
-import '../properties/PropertyCollection';
+import PartCollection from './PartCollection';
+import idMaker from '../utils/idMaker';
+import {
+    PartProperties,
+    BasicProperty,
+    DynamicProperty
+} from '../properties/PartProperties';
 
-class Part(){
+class Part {
     contructor(anOwnerPart){
         this.partsCollection = new PartCollection(this);
-        this.partProperties = new PropertyCollection(this);
+        this.partProperties = new PartProperties();
         this._owner = anOwnerPart;
 
         // Bind methods
         this.setupProperties = this.setupProperties.bind(this);
         this.getStack = this.getStack.bind(this);
+        this.numberInOwner = this.numberInOwner.bind(this);
 
         // Finally, we finish initialization
         this.setupProperties();
@@ -28,13 +33,30 @@ class Part(){
     // If this part is itself a Stack, just
     // return itself.
     getStack(){
-        if(this.isStack){
+        if(this.type == 'stack'){
             return this;
         }
         if(this._owner == null){
             return null;
         }
         return this._owner.getStack();
+    }
+
+    // Returns the index (ie, "number") of this part
+    // in its owner's collection of parts, and only
+    // the index in a collection of parts of the same
+    // type as me.
+    // In any collection, a part has two indicies:
+    // the index in a list of parts of the same type
+    // (ie, 'button 3 of card')
+    // and the index in a list of parts of all types
+    // (ie 'part 4 of card')
+    // This retrieves only the former.
+    numberInOwner(){
+        if(!this.owner){
+            return -1; // Per JS indexOf operations
+        }
+        return this.owner.partsCollection.getTypeIndexForPart(this);
     }
 
     // Configures the specific properties that the
@@ -47,37 +69,89 @@ class Part(){
     setupProperties(){
         // Here, we set up properties common
         // to ALL Parts in the system.
-        let myProperties = [
-            // Use the external module
-            // to generate a unique id
-            ['id', idMaker.next()],
-
-            // Returns or sets the bottom of the part
-            ['bottom', 0],
-
-            // Returns or sets the 'contents' of this
-            // part. Mostly for fields and similar
-            ['contents', null],
-
-            // Returns or sets whether or not this part
-            // is enabled.
-            ['enabled', true],
-
-            // Returns or sets the height of the part
-            // in pixels
-            ['height', 0],
-
-            // Returns or sets the center point
-            // of the part. Alias 'loc'
-            [
-                ['location', 'loc'],
+        let basicProps = [
+            new BasicProperty(
+                'bottom',
                 0
-            ],
+            ),
+            new BasicProperty(
+                'bottomRight',
+                0
+            ),
+            new BasicProperty(
+                'contents',
+                null,
+            ),
+            new BasicProperty(
+                'enabled',
+                true
+            ),
+            new BasicProperty(
+                'height',
+                0
+            ),
+            new BasicProperty(
+                'id',
+                idMaker.next()
+            ),
+            new BasicProperty(
+                'left',
+                0
+            ),
+            new BasicProperty(
+                'location',
+                0,
+                false,
+                ['loc']
+            ),
+            new BasicProperty(
+                'name',
+                ''
+            ),
+            new BasicProperty(
+                'rectangle',
+                "0, 0, 0, 0",
+                true,
+                ['rect']
+            ),
+            new BasicProperty(
+                'right',
+                0
+            ),
+            new BasicProperty(
+                'script',
+                null // For now
+            ),
+            new BasicProperty(
+                'top',
+                0
+            ),
+            new BasicProperty(
+                'topLeft',
+                0
+            ),
+            new BasicProperty(
+                'width',
+                0
+            )
+        ];
+        basicProps.forEach(prop => {
+            this.partProperties.addProperty(prop);
+        });
 
-            // Returns or sets the script-addressable
-            // name for the part.
-            ['name', ''],
+        this.partProperties.newDynamicProp(
+            'number',
+                function(propOwner, propObject){
+                    return propOwner.numberInOwner();
+                },
+                null, // No setter; readOnly
+                true, // Is readOnly,
+                [] // No aliases
+        );
+    }
+};
 
-
-        ]
-}
+export {
+    Part,
+    Part as default
+};
