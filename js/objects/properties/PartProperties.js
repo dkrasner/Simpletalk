@@ -35,6 +35,10 @@ class BasicProperty {
     // alone (nothing is computed)
     setValue(owner, val){
         this._value = val;
+        owner.propertyChanged(
+            this.name,
+            val
+        );
     }
 
     // Returns true if this property
@@ -92,6 +96,10 @@ class DynamicProperty extends BasicProperty {
     // incoming value
     setValue(owner, val){
         this.valueSetter(owner, this, val);
+        owner.propertyChanged(
+            this.name,
+            val
+        );
     }
 };
 

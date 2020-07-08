@@ -20,6 +20,7 @@ class Part {
         this._owner = anOwnerPart;
         this._commandHandlers = {};
         this._functionHandlers = {};
+        this._propertySubscribers = new Set();
 
         // Bind methods
         this.setupProperties = this.setupProperties.bind(this);
@@ -32,6 +33,8 @@ class Part {
         this.receiveMessage = this.receiveMessage.bind(this);
         this.delegateMessage = this.delegateMessage.bind(this);
         this.sendMessage = this.sendMessage.bind(this);
+        this.addPropertySubscriber = this.addPropertySubscriber.bind(this);
+        this.removePropertySubscriber = this.removePropertySubscriber.bind(this);
 
         // Finally, we finish initialization
         this.setupProperties();
@@ -225,6 +228,31 @@ class Part {
 
     setFuncHandler(funcName, handler){
         this._functionHandlers[funcName] = handler;
+    }
+
+    /** Property Subscribers
+        ------------------------
+        Objects added as property subscribers
+        will be 'notified' whenever one of this
+        Part's properties changes
+    **/
+    addPropertySubscriber(anObject){
+        this._propertySubscribers.add(anObject);
+    }
+
+    removePropertySubscriber(anObject){
+        this._propertySubscribers.delete(anObject);
+    }
+
+    propertyChanged(propertyName, newValue){
+        let message = {
+            type: 'propertyChanged',
+            propertyName: propertyName,
+            value: newValue
+        };
+        this._propertySubscribers.forEach(subscriber => {
+            this.sendMessage(message, subscriber);
+        });
     }
 };
 
