@@ -84,8 +84,11 @@ class Button extends Part {
     // Buttons delegate passed or
     // untrapped command messages
     // to their owner card
-    delegateCmd(commandName, arguments=[]){
-        this.owner.receiveCmd(commandName, arguments);
+    delegateMessage(aMessage){
+        this.sendMessage(
+            aMessage,
+            this.owner
+        );
     }
 };
 

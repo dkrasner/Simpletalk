@@ -65,8 +65,11 @@ class Card extends Part {
     // Override for delegation. Command messages
     // that are passed or otherwise not handled
     // by this card are delegated to the background
-    delegateCmd(commandName, arguments=[]){
-        this.currentBackground.receiveCmd(commandName, arguments);
+    delegateMessage(aMessage){
+        this.sendMessage(
+            aMessage,
+            this.currentBackground
+        );
     }
 };
 

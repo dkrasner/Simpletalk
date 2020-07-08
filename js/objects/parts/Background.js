@@ -24,8 +24,11 @@ class Background extends Card {
     // Delegation override.
     // I pass any untrapped command
     // messages to my parent Stack
-    delegateCmd(commandName, arguments=[]){
-        this.owner.receiveCmd(commandName, arguments);
+    delegateMessage(aMessage){
+        this.sendMessage(
+            aMessage,
+            this.owner
+        );
     }
 };
 

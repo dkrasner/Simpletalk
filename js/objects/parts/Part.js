@@ -27,6 +27,11 @@ class Part {
         this.numberInOwner = this.numberInOwner.bind(this);
         this.setCmdHandler = this.setCmdHandler.bind(this);
         this.setFuncHandler = this.setFuncHandler.bind(this);
+        this.receiveCmd = this.receiveCmd.bind(this);
+        this.receiveFunc = this.receiveFunc.bind(this);
+        this.receiveMessage = this.receiveMessage.bind(this);
+        this.delegateMessage = this.delegateMessage.bind(this);
+        this.sendMessage = this.sendMessage.bind(this);
 
         // Finally, we finish initialization
         this.setupProperties();
@@ -154,44 +159,72 @@ class Part {
         );
     }
 
-    /** Command Handling and Delegation **/
-    setCmdHandler(commandName, handler){
-        this._commandHandlers[commandName] = handler.bind(this);
+    /** Logging and Reporting **/
+    shouldBeImplemented(functionName){
+        let msg = `${this.constructor.name} should implement ${functionName}`;
+        throw new Error(msg);
     }
 
-    setFuncHandler(funcName, handler){
-        this._functionHandlers[funcName] = handler.bind(this);
+    /** Message Handling and Delegation **/
+    sendMessage(aMessage, target){
+        if(target){
+            target.receiveMessage(aMessage);
+        } else {
+            this.receiveMessage(aMessage);
+        }
     }
 
-    sendCmd(targetPart, commandName, arguments=[]){
-        targetPart.receiveCmd(commandName, arguments);
+    receiveMessage(aMessage){
+        // By default, Parts will only handle
+        // messages of type 'command' and 'function'
+        switch(aMessage.type){
+        case 'command':
+            this.receiveCmd(aMessage);
+            break;
+        case 'function':
+            this.receiveFunc(aMessage);
+            break;
+        }
     }
 
-    receiveCmd(commandName, arguments=[]){
-        let handler = this._commandHandlers[commandName];
+    receiveCmd(aMessage){
+        let handler = this._commandHandlers[aMessage.commandName];
 
         if(handler){
             // If this Part has a handler for
             // the given command, we run it.
-            handler();
+            // We also late-bind the current part
+            // instance as the 'this' context for
+            // the handler
+            let boundHandler = handler.bind(this);
+            boundHandler();
         } else {
             // Otherwise, we have no handler for
             // it, so we delegate along the
             // message delegation chain. It is up
             // to Parts to properly implement delegation
             // for themselves!
-            this.delegateCmd(commandName, arguments);
+            this.delegateMessage(aMessage);
         }
     }
 
-    delegateCmd(commandName, arguments=[]){
-        return this.shouldBeImplemented('delegateCmd');
+    receiveFunc(aMessage){
+        let handler = this._functionHandlers[aMessage.functionName];
+
+        if(handler){
+            let boundHandler = handler.bind(this);
+            boundHandler();
+        } else {
+            this.delegateMessage(aMessage);
+        }
     }
 
-    /** Logging and Reporting **/
-    shouldBeImplemented(functionName){
-        let msg = `${this.constructor.name} should implement ${functionName}`;
-        throw new Error(msg);
+    setCmdHandler(commandName, handler){
+        this._commandHandlers[commandName] = handler;
+    }
+
+    setFuncHandler(funcName, handler){
+        this._functionHandlers[funcName] = handler;
     }
 };
 

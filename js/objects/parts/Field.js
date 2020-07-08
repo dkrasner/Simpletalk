@@ -61,6 +61,16 @@ class Field extends Part {
             false
         );
     }
+
+    // Override delegation. Fields should
+    // delegate message handling to their
+    // owner cards.
+    delegateMessage(aMessage){
+        this.sendMessage(
+            aMessage,
+            this.owner
+        );
+    }
 };
 
 export {
