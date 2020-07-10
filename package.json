@@ -4,7 +4,7 @@
   "description": "An ohm-js based implementation of HyperTalk.",
   "main": "index.js",
   "scripts": {
-    "test": "npm test"
+    "test": "mocha"
   },
   "repository": {
     "type": "git",
@@ -24,5 +24,9 @@
   "homepage": "https://github.com/UnitedLexCorp/SimpleTalk#readme",
   "dependencies": {
     "ohm-js": "^0.14.0"
+  },
+  "devDependencies": {
+    "chai": "^4.2.0",
+    "mocha": "^8.0.1"
   }
 }
