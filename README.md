@@ -7,3 +7,5 @@ Create a node environment like so `nodeenv --node=14.5.0 --prebuilt  .nenv` (rep
 
 
 ## Tests
+
+We use [mocha](https://mochajs.org/) for testing and [chai](https://www.npmjs.com/package/chai) for assertions. To run all tests simply do `npm test` in the root directory.
