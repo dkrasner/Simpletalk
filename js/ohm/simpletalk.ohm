@@ -1,16 +1,16 @@
-Arithmetic {
-  Exp
-    = AddExp
+SimpleTalk {
+  Script
+    = handler
+    | function
+    | comment
+    | end
 
-  AddExp
-    = AddExp "+" PriExp  -- plus
-    | AddExp "-" PriExp  -- minus
-    | PriExp
+  handler
+    = letter+
 
-  PriExp
-    = "(" Exp ")"  -- paren
-    | number
+  function
+    = letter+
 
-  number
-    = digit+
+  comment
+    = "--"letter+
 }
