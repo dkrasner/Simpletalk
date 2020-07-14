@@ -15,17 +15,25 @@ describe("SimpleTalk Grammar", function () {
         it ("Matching basic keywords", function () {
             let match = g.match('beep', 'keyword');
             assert.isTrue(match.succeeded());
-            match = g.match('mouse', 'keyword');
+        });
+        it ("Matching basic keywords", function () {
+            let match = g.match('mouse', 'keyword');
             assert.isTrue(match.succeeded());
-            match = g.match('sum', 'keyword');
+        });
+        it ("Matching basic keywords", function () {
+            let match = g.match('right', 'keyword');
             assert.isTrue(match.succeeded());
         });
         it ("Not Matching basic keywords", function () {
             let match = g.match(' beep', 'keyword');
             assert.isTrue(match.failed());
-            match = g.match('beep ', 'keyword');
+        });
+        it ("Not Matching basic keywords", function () {
+            let match = g.match('beep ', 'keyword');
             assert.isTrue(match.failed());
-            match = g.match('beep123', 'keyword');
+        });
+        it ("Not Matching basic keywords", function () {
+            let match = g.match('beep123', 'keyword');
             assert.isTrue(match.failed());
         });
     describe("Testing comments", function () {
