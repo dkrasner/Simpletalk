@@ -23,6 +23,9 @@
   },
   "homepage": "https://github.com/UnitedLexCorp/SimpleTalk#readme",
   "dependencies": {
+    "chai": "^4.2.0",
+    "esm": "^3.2.25",
+    "mocha": "^8.0.1",
     "ohm-js": "^0.14.0"
   }
 }

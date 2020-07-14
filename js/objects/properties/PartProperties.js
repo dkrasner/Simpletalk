@@ -14,7 +14,7 @@ class BasicProperty {
         this.name = name;
         this._value = defaultValue;
         this.readOnly = readOnly;
-        this.aliases = [];
+        this.aliases = aliases;
 
         // Bound methods
         this.getValue = this.getValue.bind(this);
@@ -34,11 +34,13 @@ class BasicProperty {
     // based on the incoming desired value
     // alone (nothing is computed)
     setValue(owner, val){
-        this._value = val;
-        owner.propertyChanged(
-            this.name,
-            val
-        );
+        if(!this.readOnly){
+            this._value = val;
+            owner.propertyChanged(
+                this.name,
+                val
+            );
+        }
     }
 
     // Returns true if this property
@@ -78,7 +80,7 @@ class BasicProperty {
 };
 
 class DynamicProperty extends BasicProperty {
-    contructor(name, setter, getter, readOnly=false, aliases=[]){
+    constructor(name, setter, getter, readOnly=false, aliases=[]){
         super(name, null, readOnly, aliases);
         this.valueSetter = setter;
         this.valueGetter = getter;
@@ -95,11 +97,13 @@ class DynamicProperty extends BasicProperty {
     // if available, to dynamically set the
     // incoming value
     setValue(owner, val){
-        this.valueSetter(owner, this, val);
-        owner.propertyChanged(
-            this.name,
-            val
-        );
+        if(!this.readOnly){
+            this.valueSetter(owner, this, val);
+            owner.propertyChanged(
+                this.name,
+                val
+            );
+        }
     }
 };
 
