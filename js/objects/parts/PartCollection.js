@@ -10,7 +10,7 @@
  */
 
 class PartCollection {
-    contructor(anOwnerPart){
+    constructor(anOwnerPart){
         this.allParts = [];
         this.partsByType = {};
         this.partsById = {};
@@ -59,14 +59,14 @@ class PartCollection {
         let typeList = this.partsByType[aPart.type];
         if(typeList){
             let typePartIndex = typeList.indexOf(aPart);
-            if(typePartIndex){
+            if(typePartIndex >= 0){
                 typeList.splice(typePartIndex, 1);
             }
         }
 
         // Remove from allParts, if present
         let allPartsIndex = this.allParts.indexOf(aPart);
-        if(allPartsIndex){
+        if(allPartsIndex >= 0){
             this.allParts.splice(allPartsIndex, 1);
         }
 
@@ -96,7 +96,7 @@ class PartCollection {
     getPartByTypeIndex(aType, anIndex){
         let typeList = this.partsByType[aType];
         if(typeList){
-            return typeList[anIndex];
+            return typeList[anIndex - 1];
         }
         return undefined;
     }
@@ -104,13 +104,20 @@ class PartCollection {
     getTypeIndexForPart(aPart){
         let typeList = this.partsByType[aPart.type];
         if(typeList){
-            return typeList.indexOf(aPart);
+
+            // Note that the expected values are
+            // 1-indexed (not 0-indexed) as this is
+            // what HyperTalk expects
+            return typeList.indexOf(aPart) + 1;
         }
         return -1;
     }
 
     getPartByPartIndex(anIndex){
-        return this.allParts[anIndex];
+        // Note: this method expects
+        // 1-indexed values, ie 1 is the first
+        // in the subcollection, etc
+        return this.allParts[anIndex - 1];
     }
 };
 
