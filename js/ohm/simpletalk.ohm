@@ -1,15 +1,61 @@
 SimpleTalk {
-  Script
-    = handler
-    | function
-    | comment
-    | end
+	Script
+		= handler
+		| function
+		| comment
+		| end
 
-  handler
-    = letter+
+	handler (an "on" event type handler)
+		= "on" symbol space+ statementList? "end" symbol  -- noArgHandler
+		| "on" symbol parameterList space+ statementList? "end" symbol -- argHandler
+
+	symbol (a symbol, id or keyword)
+		= id 	-- id_symbol
+		| keyword 	-- keyword_symbol
+
+	id (an id symbol)
+		= digit+
+
+	keyword (a keyword symbol)
+		= "add" | "to" | "answer" | "optionkey" | "ctrlkey"
+    | "with" | "arrowkey" | "ask" | "file" | "beep" | "choose" | "tool" | "click" | "at" | "close"
+    | "commandkeydown" | "controlkey" | "convert" | "from" | "create" | "menu" | "debug" | "checkpoint" | "delete"
+    | "dial" | "disable" | "divide" | "by" | "domenu" | "drag" | "edit" | "script" | "enable"
+    | "enterinfield" | "enterkey" | "export" | "paint" | "find" | "international" | "marked"
+    | "get" | "go" | "visual" | "hide" | "titlebar" | "menubar" | "import" | "keydown" | "lock" | "screen"
+    | "mark" | "all" | "where" | "finding" | "multiply" | "next" | "open" | "pass" | "play" | "pop" | "push" | "put"
+    | "read" | "for" | "until" | "reset" | "save" | "this" | "stack" | "as" | "select" | "text"
+    | "set" | "send" | "show" | "sort" | "speak" | "male" | "female" | "neuter" | "robotic" | "voice"
+    | "subtract" | "tabkey" | "type" | "commandkey" | "cmdkey" | "unlock" | "unmark" | "wait" | "while" | "write"
+    | "window" | "without" | "dialog" | "dateitems" | "date" | "time" | "english" | "long" | "abbreviated"
+    | "abbrev" | "abbr" | "short" | "ascending" | "descending" | "numeric" | "datetime" | "forever" | "times"
+    | "down" | "menuitem" | "part" | "id" | "pattern" | "watcher" | "variable" | "start" | "using" | "password"
+    | "selection" | "tempo" | "field" | "button" | "line" | "reg" | "regular"
+    | "poly" | "polygon" | "round" | "rect" | "rectangle" | "spray" | "can" | "up" | "left" | "right" | "effect"
+    | "number" | "clickh" | "clickchunk" | "clickloc" | "clickline" | "clicktext" | "clickv" | "diskspace"
+    | "foundchunk" | "foundfield" | "foundline" | "foundtext" | "menus" | "mouse" | "mouseclick" | "mouseloc"
+    | "optionkey" | "result" | "screenrect" | "selectedchunk" | "selectedfield" | "selectedline" | "selectedloc"
+    | "selectedtext" | "shiftkey" | "sound" | "speech" | "stacks" | "systemversion" | "ticks" | "paramcount" | "params"
+    | "voices" | "windows" | "average" | "min" | "max" | "sum" | "random" | "sqrt" | "trunc" | "sin" | "cos" | "tan"
+    | "atan" | "exp" | "exp1" | "exp2" | "ln" | "ln1" | "log2" | "abs" | "chartonum" | "numtochar" | "value" | "length"
+    | "param" | "annuity" | "compound" | "offset" | "first" | "second" | "third" | "fourth" | "fifth" | "sixth"
+    | "seventh" | "eighth" | "ninth" | "tenth" | "messages" | "menumessage" | "menumsg"
+    | "mid" | "middle" | "last" | "any" | "parts" | "menuitems" | "integer" | "point" | "logical" | "boolean" | "bool"
+    | "word" | "chars" | "whole" | "string" | "bottom" | "top" | "center" | "scroll" | "plain" | "picture" | "pict"
+    | "seconds" | "secs" | "sec" | "fast" | "slow" | "slowly" | "very" | "black" | "card" | "gray" | "grey" | "inverse"
+    | "white" | "dissolve" | "barn" | "door" | "checkerboard" | "iris" | "shrink" | "stretch" | "venetian" | "blinds"
+    | "wipe" | "zoom" | "in" | "out" | "tick" | "prev" | "previous" | "msg" | "box" | "cards" | "cds" | "cd"
+    | "background" | "backgrounds" | "bkgnd" | "bkgnds" | "bg" | "bgs" | "buttons" | "btn" | "btns" | "fields" | "fld"
+    | "flds" | "character" | "characters" | "char" | "words" | "lines" | "item" | "items" | "of" 
+
+	statementList
+		= letter+
+
+	parameterList
+		= letter+
 
   function
-    = letter+
+    = "FUNCTION" 
 
   comment
     = "--"letter+

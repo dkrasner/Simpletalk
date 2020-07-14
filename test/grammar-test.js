@@ -8,13 +8,24 @@ var assert = chai.assert;
 
 
 describe("SimpleTalk Grammar", function () {
-    describe("First Test", function () {
-        it ("should return true", function () {
-            let match = g.match('abc');
+    describe("Script Handler Tests", function () {
+        // TODO
+        });
+    describe("Keyword Tests", function () {
+        it ("Matching basic keywords", function () {
+            let match = g.match('beep', 'keyword');
+            assert.isTrue(match.succeeded());
+            match = g.match('mouse', 'keyword');
+            assert.isTrue(match.succeeded());
+            match = g.match('sum', 'keyword');
             assert.isTrue(match.succeeded());
         });
-        it ("should return false", function () {
-            let match = g.match('ab c');
+        it ("Not Matching basic keywords", function () {
+            let match = g.match(' beep', 'keyword');
+            assert.isTrue(match.failed());
+            match = g.match('beep ', 'keyword');
+            assert.isTrue(match.failed());
+            match = g.match('beep123', 'keyword');
             assert.isTrue(match.failed());
         });
     describe("Testing comments", function () {
@@ -26,7 +37,7 @@ describe("SimpleTalk Grammar", function () {
             let match = g.match('--thisisabadcomment', 'comment');
             assert.isTrue(match.succeeded());
         });
-        it.skip("nad comment", function () {
+        it.skip("bad comment", function () {
             let match = g.match('--ab c');
             assert.isTrue(match.failed());
         });
