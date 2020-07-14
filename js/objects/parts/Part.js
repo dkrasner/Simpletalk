@@ -12,6 +12,11 @@ import {
     BasicProperty,
     DynamicProperty
 } from '../properties/PartProperties';
+import Card from './Card';
+import Field from './Field';
+import Stack from './Stack';
+import Background from './Background';
+import Button from './Button';
 
 class Part {
     contructor(anOwnerPart){
@@ -35,6 +40,8 @@ class Part {
         this.sendMessage = this.sendMessage.bind(this);
         this.addPropertySubscriber = this.addPropertySubscriber.bind(this);
         this.removePropertySubscriber = this.removePropertySubscriber.bind(this);
+        this.serialize = this.serialize.bind(this);
+        this.setFromDeserialized = this.setFromDeserialized.bind(this);
 
         // Finally, we finish initialization
         this.setupProperties();
@@ -254,6 +261,86 @@ class Part {
             this.sendMessage(message, subscriber);
         });
     }
+
+    /**
+     * Serialize this Part's state as JSON.
+     * By default, we do not serialize specific
+     * PartCollection information (recursively),
+     * and only include basics including the current
+     * state of all properties.
+     */
+    serialize(){
+        let result = {
+            type: this.type,
+            id: this.id,
+            properties: {},
+            numParts: this.partProperties.allParts.length,
+            ownerId: this._owner.id
+        };
+        this.partProperties._properties.forEach(prop => {
+            let name = prop.name;
+            let value = prop.getValue(this);
+            result.properties[name] = value;
+        });
+        return JSON.stringify(result, null, 4);
+    }
+
+    /**
+     * Set the properties and other
+     * attributes of this Part model
+     * from a deserialized JSON object.
+     */
+    setFromDeserialized(anObject){
+        // First, set all writeable properties
+        // to the incoming values
+        let incomingProps = anObject.properties;
+        Object.keys(incomingProps).forEach(propName => {
+            let property = this.partProperties.getPropertyNamed(this, propName);
+            if(!property){
+                throw new Error(`Invalid deserialized property: ${propName}`);
+            }
+            if(!property.readOnly){
+                // Last arg is false, which tells the property
+                // not to notify its owner's subscribers of
+                // property changes. We don't need that when
+                // deserializing
+                property.setValue(this, incomingProps[propName], false);
+            }
+        });
+
+        // Next, set the id based on the
+        // incoming value
+        this.id = anObject.id;
+    }
+};
+
+
+/**
+ * Constructs the appropriate Part based
+ * on the incoming serialization string, which
+ * should be JSON valid
+ */
+Part.fromSerialization = function(aString){
+    let json = JSON.parse(aString);
+    let newPart = null;
+    switch(json.type){
+    case 'stack':
+        newPart = new Stack();
+    case 'card':
+        newPart = new Card();
+    case 'background':
+        newPart = new Background();
+    case 'button':
+        newPart = new Button();
+    case 'field':
+        newPart = new Field();
+    }
+
+    if(!newPart){
+        throw new Error(`Could not deserialize: type ${json.type} is not a valid part!`);
+    }
+
+    newPart.setFromDeserialized(json);
 };
 
 export {

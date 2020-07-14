@@ -33,13 +33,15 @@ class BasicProperty {
     // For the basic properties, we set
     // based on the incoming desired value
     // alone (nothing is computed)
-    setValue(owner, val){
+    setValue(owner, val, notify=true){
         if(!this.readOnly){
             this._value = val;
-            owner.propertyChanged(
-                this.name,
-                val
-            );
+            if(notify){
+                owner.propertyChanged(
+                    this.name,
+                    val
+                );
+            }
         }
     }
 
@@ -96,13 +98,15 @@ class DynamicProperty extends BasicProperty {
     // In this override, we use the setter
     // if available, to dynamically set the
     // incoming value
-    setValue(owner, val){
+    setValue(owner, val, notify=true){
         if(!this.readOnly){
             this.valueSetter(owner, this, val);
-            owner.propertyChanged(
-                this.name,
-                val
-            );
+            if(notify){
+                owner.propertyChanged(
+                    this.name,
+                    val
+                );
+            }
         }
     }
 };
