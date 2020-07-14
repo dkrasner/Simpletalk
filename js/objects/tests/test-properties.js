@@ -239,11 +239,11 @@ describe('PartProperties tests', () => {
 
                 // Setter
                 function(owner, val){
-                    owner.dynamicProperty = val;
+                    owner.dynamicValue = val;
                 },
                 // Getter
                 function(owner){
-                    return owner.dynamicProperty;
+                    return owner.dynamicValue;
                 },
                 false,
                 ['myDynamicProperty', 'myDynaProp', 'dynamic']
@@ -306,11 +306,11 @@ describe('PartProperties tests', () => {
 
                 // Setter
                 function(owner, val){
-                    owner.dynamicProperty = val;
+                    owner.dynamicValue = val;
                 },
                 // Getter
                 function(owner){
-                    return owner.dynamicProperty;
+                    return owner.dynamicValue;
                 },
                 false,
                 ['myDynamicProperty', 'myDynaProp', 'dynamic']
@@ -344,6 +344,134 @@ describe('PartProperties tests', () => {
         it('#findPropertynamed returns null for a name that doesnt match', () => {
             let found = partProperties.findPropertyNamed('should-not-exist');
             assert.isNull(found);
+        });
+    });
+
+    describe('#getPropertyNamed (getting prop values by name)', () => {
+        before(() => {
+            partProperties = new PartProperties();
+            basicProp = new BasicProperty(
+                'basicProp',
+                2,
+                false,
+                ['basic', 'myBasicProp']
+            );
+
+            dynaProp = new DynamicProperty(
+                'dynaProp',
+
+                // Setter
+                function(owner, context, val){
+                    owner.dynamicValue = val;
+                },
+                // Getter
+                function(owner, context){
+                    return owner.dynamicValue;
+                },
+                false,
+                ['myDynamicProperty', 'myDynaProp', 'dynamic']
+            );
+
+            // Add both
+            partProperties.addProperty(basicProp);
+            partProperties.addProperty(dynaProp);
+        });
+
+        it('Can get the value by the prop name (basic prop)', () => {
+            let myOwner = Object.create(MockOwner);
+            basicProp._value = 6;
+            let expected = 6;
+            let actual = partProperties.getPropertyNamed(myOwner, 'basicProp');
+            assert.equal(expected, actual);
+        });
+
+        it('Can get the value by the prop name (dynamic prop)', () => {
+            let myOwner = Object.create(MockOwner);
+            myOwner.dynamicValue = 6;
+            let expected = 6;
+            let actual = partProperties.getPropertyNamed(myOwner, 'dynaProp');
+            assert.equal(expected, actual);
+        });
+
+        it('Can get the value by an alias name (basic prop)', () => {
+            let myOwner = Object.create(MockOwner);
+            basicProp._value = -1;
+            let expected = -1;
+            let actual = partProperties.getPropertyNamed(myOwner, 'myBasicProp');
+            assert.equal(expected, actual);
+        });
+
+        it('Can get the value by an alias name (dynamic prop)', () => {
+            let myOwner = Object.create(MockOwner);
+            myOwner.dynamicValue = -1;
+            let expected = -1;
+            let actual = partProperties.getPropertyNamed(myOwner, 'myDynaProp');
+            assert.equal(expected, actual);
+        });
+    });
+
+    describe('#setPropertyNamed (setting a prop by a name / alias)', () => {
+        before(() => {
+            partProperties = new PartProperties();
+            basicProp = new BasicProperty(
+                'basicProp',
+                2,
+                false,
+                ['basic', 'myBasicProp']
+            );
+
+            dynaProp = new DynamicProperty(
+                'dynaProp',
+
+                // Setter
+                function(owner, context, val){
+                    owner.dynamicValue = val;
+                },
+                // Getter
+                function(owner, context){
+                    return owner.dynamicValue;
+                },
+                false,
+                ['myDynamicProperty', 'myDynaProp', 'dynamic']
+            );
+
+            // Add both
+            partProperties.addProperty(basicProp);
+            partProperties.addProperty(dynaProp);
+        });
+
+        it('Sets the property by name (basic prop)', () => {
+            let expected = 22;
+            let myOwner = Object.create(MockOwner);
+            partProperties.setPropertyNamed(myOwner, 'basicProp', 22);
+            let actual = basicProp._value;
+
+            assert.equal(expected, actual);
+        });
+
+        it('Sets the property by name (dynamic prop)', () => {
+            let expected = "hello there";
+            let myOwner = Object.create(MockOwner);
+            partProperties.setPropertyNamed(myOwner, 'dynaProp', "hello there");
+            let actual = myOwner.dynamicValue;
+            console.log(myOwner.dynamicValue);
+            assert.equal(expected, actual);
+        });
+
+        it('Sets the property by alias (basic prop)', () => {
+            let expected = "alias value";
+            let myOwner = Object.create(MockOwner);
+            partProperties.setPropertyNamed(myOwner, 'myBasicProp', expected);
+            let actual = basicProp._value;
+            assert.equal(expected, actual);
+        });
+
+        it('Sets the property by alias (dynamic prop)', () => {
+            let expected = "another alias value";
+            let myOwner = Object.create(MockOwner);
+            partProperties.setPropertyNamed(myOwner, 'myDynaProp', expected);
+            let actual = myOwner.dynamicValue;
+            assert.equal(expected, actual);
         });
     });
 });
