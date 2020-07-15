@@ -5,21 +5,17 @@
  * SimpleTalk parts.
  */
 
-import PartCollection from './PartCollection';
-import idMaker from '../utils/idMaker';
+import PartCollection from './PartCollection.js';
+import idMaker from '../utils/idMaker.js';
 import {
     PartProperties,
     BasicProperty,
     DynamicProperty
-} from '../properties/PartProperties';
-import Card from './Card';
-import Field from './Field';
-import Stack from './Stack';
-import Background from './Background';
-import Button from './Button';
+} from '../properties/PartProperties.js';
+
 
 class Part {
-    contructor(anOwnerPart){
+    constructor(anOwnerPart){
         this.partsCollection = new PartCollection(this);
         this.partProperties = new PartProperties();
         this._owner = anOwnerPart;
@@ -111,7 +107,7 @@ class Part {
             ),
             new BasicProperty(
                 'id',
-                idMaker.next()
+                idMaker.new()
             ),
             new BasicProperty(
                 'left',
@@ -160,10 +156,10 @@ class Part {
 
         this.partProperties.newDynamicProp(
             'number',
-                function(propOwner, propObject){
+            null, // No setter; readOnly
+            function(propOwner, propObject){
                     return propOwner.numberInOwner();
                 },
-                null, // No setter; readOnly
                 true, // Is readOnly,
                 [] // No aliases
         );
@@ -176,6 +172,10 @@ class Part {
     }
 
     /** Message Handling and Delegation **/
+    delegateMessage(aMessage){
+        return this.shouldBeImplemented('delegateMessage');
+    }
+
     sendMessage(aMessage, target){
         if(target){
             target.receiveMessage(aMessage);
@@ -274,7 +274,7 @@ class Part {
             type: this.type,
             id: this.id,
             properties: {},
-            numParts: this.partProperties.allParts.length,
+            numParts: this.partsCollection.allParts.length,
             ownerId: this._owner.id
         };
         this.partProperties._properties.forEach(prop => {
@@ -312,35 +312,6 @@ class Part {
         // incoming value
         this.id = anObject.id;
     }
-};
-
-
-/**
- * Constructs the appropriate Part based
- * on the incoming serialization string, which
- * should be JSON valid
- */
-Part.fromSerialization = function(aString){
-    let json = JSON.parse(aString);
-    let newPart = null;
-    switch(json.type){
-    case 'stack':
-        newPart = new Stack();
-    case 'card':
-        newPart = new Card();
-    case 'background':
-        newPart = new Background();
-    case 'button':
-        newPart = new Button();
-    case 'field':
-        newPart = new Field();
-    }
-
-    if(!newPart){
-        throw new Error(`Could not deserialize: type ${json.type} is not a valid part!`);
-    }
-
-    newPart.setFromDeserialized(json);
 };
 
 export {
