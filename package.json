@@ -4,7 +4,7 @@
   "description": "An ohm-js based implementation of HyperTalk.",
   "main": "index.js",
   "scripts": {
-    "test": "npm test"
+    "test": "mocha ./js/objects/tests/ --require esm"
   },
   "repository": {
     "type": "git",
