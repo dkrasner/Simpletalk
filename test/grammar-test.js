@@ -36,14 +36,20 @@ describe("SimpleTalk Grammar", function () {
         });
         it ("Matching basic keywords (char*)", function () {
             let match = g.match('characters', 'keyword');
+            if (!match.succeeded()){console.log("characters")};
             assert.isTrue(match.succeeded());
             match = g.match('character', 'keyword');
+            if (!match.succeeded()){console.log(k)};
             assert.isTrue(match.succeeded());
             match = g.match('char', 'keyword');
+            if (!match.succeeded()){console.log(k)};
             assert.isTrue(match.succeeded());
             match = g.match('chars', 'keyword');
+            if (!match.succeeded()){console.log(k)};
             assert.isTrue(match.succeeded());
+            if (!match.succeeded()){console.log(k)};
             match = g.match('chartonum', 'keyword');
+            if (!match.succeeded()){console.log(k)};
             assert.isTrue(match.succeeded());
         });
         it ("Matching basic keywords (modifier keys)", function () {
@@ -75,10 +81,24 @@ describe("SimpleTalk Grammar", function () {
             assert.isTrue(match.succeeded());
         });
         it ("Matching basic keywords (actions)", function () {
-            let keywords = ['add', 'answer', 'ask', 'beep', 'choose', 'click', 'close',
-                'convert', 'create', 'debug', 'delete', 'dial', 'disable', 'divide',
-                'drag', 'edit', 'enable', 'export', 'find', "get", "go", "hide", "import", "lock",
-                "mark" , "open", "paint", "pass", "play", "pop", "push", "put"
+            let keywords = [
+                "add", "answer", "ask", "beep", "choose", "click", "close", "convert",
+                "create", "debug", "delete", "dial", "disable", "divide", "drag", "edit",
+                "enable", "export", "find", "get", "go", "hide" , "import", "lock",
+                "mark" , "multiply", "open", "paint", "pass", "play", "pop", "push", "put",
+                "read", "reset", "save", "scroll", "speak", "stack", "set", "send", "show", "sort",
+                "shrink", "stretch", "subtract", "unlock", "unmark", "wait", "wipe", "write", "zoom"
+            ];
+            let match = g.match('add', 'keyword');
+            assert.isTrue(match.succeeded());
+            keywords.forEach((k) => {
+                match = g.match(k, 'keyword');
+                assert.isTrue(match.succeeded());
+            });
+        });
+        it ("Matching basic keywords (click actions)", function () {
+            let keywords = [
+                "click", "clickh", "clickchunk", "clickloc", "clickline", "clicktext", "clickv"
             ];
             let match = g.match('add', 'keyword');
             assert.isTrue(match.succeeded());
@@ -92,7 +112,7 @@ describe("SimpleTalk Grammar", function () {
             assert.isTrue(match.failed());
         });
         it ("Not Matching basic keywords", function () {
-            let match = g.match(' beep', 'keyword');
+            let match = g.match('clicklocchunk', 'keyword');
             assert.isTrue(match.failed());
         });
         it ("Not Matching basic keywords", function () {

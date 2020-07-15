@@ -17,28 +17,29 @@ SimpleTalk {
 		= digit+
 
 	keyword (a keyword symbol)
-		= "menu" menuType* -- menuTypeSymbol 
-		| "char" characterType* -- characterTypeKeyword
+		= "menu" menuType? -- menuTypeSymbol 
+		| "char" characterType? -- characterTypeKeyword
 		| modifierKey "key" -- modifierkeyTypeKeyword 
 		| item
 		| commonKey + "key" -- commonkeyTypeKeyword
-		| actions
+		| "click" + clickActions? -- commonclickTypeKeyword
+		| commonActions
 		| "to"  
     | "with" | "file"  | "tool" | "at"
-    | "commandkeydown" | "from" | "checkpoint" | "delete"
-    | "dial" | "disable" | "divide" | "by" | "domenu" | "drag" | "edit" | "script" | "enable"
-    | "enterinfield" | "export" | "paint" | "find" | "international" | "marked"
-    | "get" | "go" | "visual" | "hide" | "titlebar" | "import" | "keydown" | "lock" | "screen"
-    | "mark" | "all" | "where" | "finding" | "multiply" | "next" | "open" | "pass" | "play" | "pop" | "push" | "put"
-    | "read" | "for" | "until" | "reset" | "save" | "this" | "stack" | "as" | "select" | "text"
-    | "set" | "send" | "show" | "sort" | "speak" | "male" | "female" | "neuter" | "robotic" | "voice"
-    | "subtract" | "type" | "unlock" | "unmark" | "wait" | "while" | "write"
+    | "commandkeydown" | "from" | "checkpoint"
+    | "by" | "domenu" | "script"
+    | "enterinfield" | "international" | "marked"
+    | "visual" | "titlebar" | "keydown" | "screen"
+    | "all" | "where" | "finding" | "next"
+    | "for" | "until" | "this" | "as" | "text"
+    | "male" | "female" | "neuter" | "robotic" | "voice"
+    | "type" | "while"
     | "window" | "without" | "dialog" | "dateitems" | "date" | "time" | "english" | "long" | "abbreviated"
     | "abbrev" | "abbr" | "short" | "ascending" | "descending" | "numeric" | "datetime" | "forever" | "times"
     | "down" |  "part" | "id" | "pattern" | "watcher" | "variable" | "start" | "using" | "password"
     | "selection" | "tempo" | "field" | "button" | "line" | "reg" | "regular"
     | "poly" | "polygon" | "round" | "rect" | "rectangle" | "spray" | "can" | "up" | "left" | "right" | "effect"
-    | "number" | "clickh" | "clickchunk" | "clickloc" | "clickline" | "clicktext" | "clickv" | "diskspace"
+    | "number" | "diskspace"
     | "foundchunk" | "foundfield" | "foundline" | "foundtext" |  "mouse" | "mouseclick" | "mouseloc"
     | "result" | "screenrect" | "selectedchunk" | "selectedfield" | "selectedline" | "selectedloc"
     | "selectedtext" |  "sound" | "speech" | "stacks" | "systemversion" | "ticks" | "paramcount" | "params"
@@ -47,10 +48,10 @@ SimpleTalk {
     | "param" | "annuity" | "compound" | "offset" | "first" | "second" | "third" | "fourth" | "fifth" | "sixth"
     | "seventh" | "eighth" | "ninth" | "tenth" | "messages" 
     | "mid" | "middle" | "last" | "any" | "parts" | "integer" | "point" | "logical" | "boolean" | "bool"
-    | "word" |  "whole" | "string" | "bottom" | "top" | "center" | "scroll" | "plain" | "picture" | "pict"
+    | "word" |  "whole" | "string" | "bottom" | "top" | "center" | "plain" | "picture" | "pict"
     | "seconds" | "secs" | "sec" | "fast" | "slow" | "slowly" | "very" | "black" | "card" | "gray" | "grey" | "inverse"
-    | "white" | "dissolve" | "barn" | "door" | "checkerboard" | "iris" | "shrink" | "stretch" | "venetian" | "blinds"
-    | "wipe" | "zoom" | "in" | "out" | "tick" | "prev" | "previous" | "msg" | "box" | "cards" | "cds" | "cd"
+    | "white" | "dissolve" | "barn" | "door" | "checkerboard" | "iris" | "venetian" | "blinds"
+    | "in" | "out" | "tick" | "prev" | "previous" | "msg" | "box" | "cards" | "cds" | "cd"
     | "background" | "backgrounds" | "bkgnd" | "bkgnds" | "bg" | "bgs" | "buttons" | "btn" | "btns" | "fields" | "fld"
     | "flds" | "words" | "lines" | "of" 
 
@@ -58,10 +59,10 @@ SimpleTalk {
 		= "bar" | item |"s" |"message" | "msg" | "items"
 
 	item (item or items symbol)
-		= "item" "s"*
+		= "item" "s"?
 
 	characterType (a character* keyword symbol)
-		= "s" | "acter" | "acters" | "tonum" 
+		= "s" | "acters" | "acter" | "tonum" 
 
 	modifierKey (a modifier key)
 		= "command" | "cmd" | "option" | "control" | "ctrl" | "shift"
@@ -69,9 +70,17 @@ SimpleTalk {
 	commonKey (common keys)
 		= "tab" | "arrow" | "enter"
 
-	actions (typical actions such as add, ask etc)
-		= "add" | "answer" | "ask"| "beep" | "choose" | "click" | "close" | "convert"
-		| "create" | "debug"   
+	clickActions (click* actions)
+		= "h" | "chunk" | "loc" | "line" | "text" | "v" 
+
+	commonActions (typical actions such as add, ask etc)
+		= "add" | "answer" | "ask"| "beep" | "choose" | "close" | "convert"
+		| "create" | "debug" | "delete"| "dial" | "disable" | "divide" | "drag" | "edit"
+		| "enable" | "export" | "find" | "get" | "go" | "hide"  | "import" | "lock"
+		| "mark"  | "multiply" | "open" | "paint" | "pass" | "play" | "pop" | "push" | "put"
+		| "read" | "reset" | "save"  | "scroll" | "speak" | "stack"| "set" | "send" | "show"
+		| "sort" | "shrink" | "stretch" | "subtract" | "unlock" | "unmark" | "wait"
+		| "wipe" | "write" | "zoom"
 
 	statementList
 		= letter+
