@@ -66,6 +66,27 @@ describe("SimpleTalk Grammar", function () {
             match = g.match('items', 'keyword');
             assert.isTrue(match.succeeded());
         });
+        it ("Matching basic keywords (*key)", function () {
+            let match = g.match('tabkey', 'keyword');
+            assert.isTrue(match.succeeded());
+            match = g.match('enterkey', 'keyword');
+            assert.isTrue(match.succeeded());
+            match = g.match('arrowkey', 'keyword');
+            assert.isTrue(match.succeeded());
+        });
+        it ("Matching basic keywords (actions)", function () {
+            let keywords = ['add', 'answer', 'ask', 'beep', 'choose', 'click', 'close',
+                'convert', 'create', 'debug', 'delete', 'dial', 'disable', 'divide',
+                'drag', 'edit', 'enable', 'export', 'find', "get", "go", "hide", "import", "lock",
+                "mark" , "open", "paint", "pass", "play", "pop", "push", "put"
+            ];
+            let match = g.match('add', 'keyword');
+            assert.isTrue(match.succeeded());
+            keywords.forEach((k) => {
+                match = g.match(k, 'keyword');
+                assert.isTrue(match.succeeded());
+            });
+        });
         it ("Not Matching basic keywords", function () {
             let match = g.match('menuBAD', 'keyword');
             assert.isTrue(match.failed());

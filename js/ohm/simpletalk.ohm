@@ -21,16 +21,18 @@ SimpleTalk {
 		| "char" characterType* -- characterTypeKeyword
 		| modifierKey "key" -- modifierkeyTypeKeyword 
 		| item
-		| "add" | "to" | "answer"  
-    | "with" | "arrowkey" | "ask" | "file" | "beep" | "choose" | "tool" | "click" | "at" | "close"
-    | "commandkeydown" | "controlkey" | "convert" | "from" | "create" | "debug" | "checkpoint" | "delete"
+		| commonKey + "key" -- commonkeyTypeKeyword
+		| actions
+		| "to"  
+    | "with" | "file"  | "tool" | "at"
+    | "commandkeydown" | "from" | "checkpoint" | "delete"
     | "dial" | "disable" | "divide" | "by" | "domenu" | "drag" | "edit" | "script" | "enable"
-    | "enterinfield" | "enterkey" | "export" | "paint" | "find" | "international" | "marked"
+    | "enterinfield" | "export" | "paint" | "find" | "international" | "marked"
     | "get" | "go" | "visual" | "hide" | "titlebar" | "import" | "keydown" | "lock" | "screen"
     | "mark" | "all" | "where" | "finding" | "multiply" | "next" | "open" | "pass" | "play" | "pop" | "push" | "put"
     | "read" | "for" | "until" | "reset" | "save" | "this" | "stack" | "as" | "select" | "text"
     | "set" | "send" | "show" | "sort" | "speak" | "male" | "female" | "neuter" | "robotic" | "voice"
-    | "subtract" | "tabkey" | "type" | "unlock" | "unmark" | "wait" | "while" | "write"
+    | "subtract" | "type" | "unlock" | "unmark" | "wait" | "while" | "write"
     | "window" | "without" | "dialog" | "dateitems" | "date" | "time" | "english" | "long" | "abbreviated"
     | "abbrev" | "abbr" | "short" | "ascending" | "descending" | "numeric" | "datetime" | "forever" | "times"
     | "down" |  "part" | "id" | "pattern" | "watcher" | "variable" | "start" | "using" | "password"
@@ -63,6 +65,13 @@ SimpleTalk {
 
 	modifierKey (a modifier key)
 		= "command" | "cmd" | "option" | "control" | "ctrl" | "shift"
+
+	commonKey (common keys)
+		= "tab" | "arrow" | "enter"
+
+	actions (typical actions such as add, ask etc)
+		= "add" | "answer" | "ask"| "beep" | "choose" | "click" | "close" | "convert"
+		| "create" | "debug"   
 
 	statementList
 		= letter+
