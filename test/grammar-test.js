@@ -78,7 +78,7 @@ describe("SimpleTalk Grammar", function () {
             let keywords = [
                 "add", "answer", "ask", "beep", "choose", "click", "close", "convert",
                 "create", "debug", "delete", "dial", "disable", "divide", "drag", "edit",
-                "enable", "export", "find", "get", "go", "hide" , "import", "lock",
+                "enable", "enterinfield" , "export", "find", "get", "go", "hide" , "import", "lock",
                 "mark" , "multiply", "open", "paint", "pass", "play", "pop", "push", "put",
                 "read", "reset", "save", "scroll", "speak", "stack", "set", "send", "show", "sort",
                 "shrink", "stretch", "subtract", "unlock", "unmark", "wait", "wipe", "write", "zoom"
@@ -127,6 +127,17 @@ describe("SimpleTalk Grammar", function () {
             let match = null;
             keywords.forEach((k) => {
                 match = g.match(k, 'keyword');
+                if (!match.succeeded()){console.log(k)};
+                assert.isTrue(match.succeeded());
+            });
+        });
+        it ("Matching basic keywords (gender)", function () {
+            let keywords = [
+                "male", "female", "neuter"
+            ];
+            let match = null;
+            keywords.forEach((k) => {
+                match = g.match(k, 'keyword');
                 assert.isTrue(match.succeeded());
             });
         });
@@ -144,6 +155,39 @@ describe("SimpleTalk Grammar", function () {
         it ("Matching basic keywords (mouse*)", function () {
             let keywords = [
                 "mouse", "mouseclick", "mouseloc"
+            ];
+            let match = null;
+            keywords.forEach((k) => {
+                match = g.match(k, 'keyword');
+                if (!match.succeeded()){console.log(k)};
+                assert.isTrue(match.succeeded());
+            });
+        });
+        it ("Matching basic keywords (prepositions and related)", function () {
+            let keywords = [
+                "to", "with", "without", "at", "from", "by", "for", "as", "of"
+            ];
+            let match = null;
+            keywords.forEach((k) => {
+                match = g.match(k, 'keyword');
+                if (!match.succeeded()){console.log(k)};
+                assert.isTrue(match.succeeded());
+            });
+        });
+        it ("Matching basic keywords (quantifiers)", function () {
+            let keywords = [
+                "any", "all"
+            ];
+            let match = null;
+            keywords.forEach((k) => {
+                match = g.match(k, 'keyword');
+                if (!match.succeeded()){console.log(k)};
+                assert.isTrue(match.succeeded());
+            });
+        });
+        it ("Matching basic keywords (types)", function () {
+            let keywords = [
+                "logical", "number", "integer", "dateitems", "date", "time",  "seconds", "secs", "sec", "bool", "boolean"
             ];
             let match = null;
             keywords.forEach((k) => {

@@ -26,37 +26,41 @@ SimpleTalk {
 		| "click" + clickActions? -- commonclickTypeKeyword
 		| commonActions
 		| mathFun
-		| "first" | "second" | "third" | "fourth" | "fifth" | "sixth" | "seventh" | "eighth" | "ninth" | "tenth" 
 		| "found" ("chunk" | "field" | "line" | "text")  --foundObjectKeyword
     |  "mouse" ( "click" | "loc")?  --mouseActionKeyword
-		| "to"  
-    | "with" | "file"  | "tool" | "at"
-    | "commandkeydown" | "from" | "checkpoint"
-    | "by" | "domenu" | "script"
-    | "enterinfield" | "international" | "marked"
-    | "visual" | "titlebar" | "keydown" | "screen"
-    | "all" | "where" | "finding" | "next"
-    | "for" | "until" | "this" | "as" | "text"
-    | "male" | "female" | "neuter" | "robotic" | "voice"
+		| "male" | "female" | "neuter" 
+		| "number" | "integer" | "logical" | "dateitems" | "date" | "time" | "bool" "ean"? --boolTypeKeyword
+		|  "sec" ("onds" | "ond" | "s")? --secondTypeKeyword 
+		// note "second" overloads both time and ordinal
+		| "first" | "third" | "fourth" | "fifth" | "sixth" | "seventh" | "eighth" | "ninth" | "tenth" 
+		| "to" |  "at" | "from" | "by" | "for" | "as" | "of" | "in" | "out" | "with" "out"? --withPrepKeyword
+		| "all" | "any" 
+		| "file"  | "tool"  | "domenu" | "script" | "titlebar" | "screen" | "this" | "text" | "voice" | "window" | "dialog" | "part" | "id" 
+    | "commandkeydown" | "checkpoint"
+    | "international" | "marked"
+    | "visual" | "keydown"
+    | "where" | "finding" | "next"
+    | "until"
+    | "robotic"
     | "type" | "while"
-    | "window" | "without" | "dialog" | "dateitems" | "date" | "time" | "english" | "long" | "abbreviated"
+    | "english" | "long" | "abbreviated"
     | "abbrev" | "abbr" | "short" | "ascending" | "descending" | "numeric" | "datetime" | "forever" | "times"
-    | "down" |  "part" | "id" | "pattern" | "watcher" | "variable" | "start" | "using" | "password"
+    | "down" | "pattern" | "watcher" | "variable" | "start" | "using" | "password"
     | "selection" | "tempo" | "field" | "button" | "line" | "reg" | "regular"
     | "poly" | "polygon" | "round" | "rect" | "rectangle" | "spray" | "can" | "up" | "left" | "right" | "effect"
-    | "number" | "diskspace"
+    | "diskspace"
     | "result" | "screenrect"
     |  "sound" | "speech" | "stacks" | "systemversion" | "ticks" | "paramcount" | "params"
     | "voices" | "windows"
     | "param" | "annuity" | "compound" | "offset"
     | "messages" 
-    | "mid" | "middle" | "last" | "any" | "parts" | "integer" | "point" | "logical" | "boolean" | "bool"
+    | "mid" | "middle" | "last" | "parts"  | "point"
     | "word" |  "whole" | "string" | "bottom" | "top" | "center" | "plain" | "picture" | "pict"
-    | "seconds" | "secs" | "sec" | "fast" | "slow" | "slowly" | "very" | "black" | "card" | "gray" | "grey" | "inverse"
+    | "fast" | "slow" | "slowly" | "very" | "black" | "card" | "gray" | "grey" | "inverse"
     | "white" | "dissolve" | "barn" | "door" | "checkerboard" | "iris" | "venetian" | "blinds"
-    | "in" | "out" | "tick" | "prev" | "previous" | "msg" | "box" | "cards" | "cds" | "cd"
+    | "tick" | "prev" | "previous" | "msg" | "box" | "cards" | "cds" | "cd"
     | "background" | "backgrounds" | "bkgnd" | "bkgnds" | "bg" | "bgs" | "buttons" | "btn" | "btns" | "fields" | "fld"
-    | "flds" | "words" | "lines" | "of" | "numtochar" | "value" | "length"
+    | "flds" | "words" | "lines" | "numtochar" | "value" | "length"
 
 	menuType (a menu* keyword symbol)
 		= "bar" | "item" "s"? --itemTypeKeyword
@@ -87,7 +91,7 @@ SimpleTalk {
 	commonActions (typical actions such as add, ask etc)
 		= "add" | "answer" | "ask"| "beep" | "choose" | "close" | "convert"
 		| "create" | "debug" | "delete"| "dial" | "disable" | "divide" | "drag" | "edit"
-		| "enable" | "export" | "find" | "get" | "go" | "hide"  | "import" | "lock"
+		| "enable" | "enterinfield" | "export" | "find" | "get" | "go" | "hide"  | "import" | "lock"
 		| "mark"  | "multiply" | "open" | "paint" | "pass" | "play" | "pop" | "push" | "put"
 		| "read" | "reset" | "save"  | "scroll" | "speak" | "stack"| "set" | "send" | "show"
 		| "sort" | "shrink" | "stretch" | "subtract" | "unlock" | "unmark" | "wait"
