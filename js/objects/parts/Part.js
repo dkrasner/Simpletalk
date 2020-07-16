@@ -57,6 +57,12 @@ class Part {
         return this._owner.getStack();
     }
 
+    // Convenience getter to get the id
+    // from the partProperties
+    get id(){
+        return this.partProperties.getPropertyNamed(this, 'id');
+    }
+
     // Returns the index (ie, "number") of this part
     // in its owner's collection of parts, and only
     // the index in a collection of parts of the same

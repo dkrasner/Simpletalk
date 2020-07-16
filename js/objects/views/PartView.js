@@ -25,6 +25,7 @@ class PartView extends HTMLElement {
         this.getModelFromSerialized = this.getModelFromSerialized.bind(this);
         this.registerInParentView = this.registerInParentView.bind(this);
         this.initSerializedElement = this.initSerializedElement.bind(this);
+        this.findOrCreateScriptArea = this.findOrCreateScriptArea.bind(this);
         this.updateSerializationScript = this.updateSerializationScript.bind(this);
         this.receiveMessage = this.receiveMessage.bind(this);
     }
@@ -34,13 +35,6 @@ class PartView extends HTMLElement {
      */
     connectedCallback(){
         if(this.isConnected){
-            console.log(`PartView[${this.id}] connected`);
-            this.querySelectorAll('part-view').forEach(found => {
-                console.log('DING!');
-            });
-            if(this.parentElement.tagName == 'PART-VIEW'){
-                console.log('Connected to a parent PartView');
-            }
             this.getModelFromSerialized();
             this.registerInParentView();
             this.initSerializedElement();
@@ -58,6 +52,10 @@ class PartView extends HTMLElement {
         // property changes as needed
         newModel.addPropertySubscriber(this);
 
+        // Set my data-part-id attribute to
+        // be the same as the incoming model
+        this.setAttribute('data-part-id', newModel.id);
+
         // Set the content of the script
         // serialization element to be the
         // serialized state of the new model
@@ -69,6 +67,9 @@ class PartView extends HTMLElement {
         // from the model's propertySubscribers
         aModel.removePropertySubscriber(this);
         this.model = null;
+
+        // Unset the data-part-id
+        this.setAttribute('data-part-id', "");
 
         // Clear the script element containing
         // the serialized state of the model
@@ -120,8 +121,9 @@ class PartView extends HTMLElement {
      * method on themselves
      */
     getModelFromSerialized(){
-        let jsonScriptElement = this.querySelector('script[type="application/json"]');
-        if(jsonScriptElement){
+        let scriptArea = this.findOrCreateScriptArea();
+        let jsonScriptElement = scriptArea.querySelector(`[data-part-id="${this.id}"]`);
+        if(jsonScriptElement && this.id){
             let newModel = WorldStack.fromSerialization(jsonScriptElement.innerHTML);
             this.model = newModel;
         }
@@ -137,19 +139,48 @@ class PartView extends HTMLElement {
      * a JS property
      */
     initSerializedElement(){
-        let found = this.querySelector('script[data-role="part-serialization"]');
+        // If there is no model set yet,
+        // then we pass
+        if(!this.model || this.model == undefined){
+            return;
+        }
+
+        // First, we need to get a script area container to
+        // query.
+        let scriptArea = this.findOrCreateScriptArea();
+        let found = scriptArea.querySelector(`[data-part-id="${this.model.id}"]`);
         if(found){
             this.serializationScriptEl = found;
         } else {
             this.serializationScriptEl = document.createElement('script');
             this.serializationScriptEl.setAttribute('data-role', 'part-serialization');
+            this.serializationScriptEl.setAttribute('data-part-id', this.model.id);
             this.serializationScriptEl.setAttribute('type', 'application/json');
         }
         this.updateSerializationScript();
 
         // If the element is not one of this element's
         // children yet, append it.
-        this.append(this.serializationScriptEl);
+        scriptArea.append(this.serializationScriptEl);
+    }
+
+    /**
+     * Returns the instance of the Element that holds the
+     * various script serializations for all parts in the system.
+     * If no container is found, it creates one and appends it to
+     * the end of the body
+     */
+    findOrCreateScriptArea(){
+        let scriptArea = document.getElementById('serialization-container');
+        if(scriptArea){
+            return scriptArea;
+        }
+        // If we get here, there is no matching script area container
+        // so we need to create and append it.
+        scriptArea = document.createElement('div');
+        scriptArea.id = 'serialization-container';
+        document.body.append(scriptArea);
+        return scriptArea;
     }
 
     /**
