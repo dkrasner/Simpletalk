@@ -6,11 +6,11 @@
  * I am a clickable point of interaction on a Card,
  * whose functionality can be customized by the author.
  */
-import Part from './Part';
+import Part from './Part.js';
 import {
     BasicProperty,
     DynamicProperty
-} from '../properties/PartProperties';
+} from '../properties/PartProperties.js';
 
 class Button extends Part {
     constructor(owner, name){
@@ -28,6 +28,8 @@ class Button extends Part {
                 name
             );
         }
+
+        this.isButton = true;
 
         // Add Button-specific part properties
         this.partProperties.newDynamicProp(

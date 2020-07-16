@@ -5,12 +5,12 @@
  * I represent a collection of Card parts,
  * along with some extra configurability.
  */
-import Part from './Part';
-import Card from './Card';
-import Background from './Background';
+import Part from './Part.js';
+import Card from './Card.js';
+import Background from './Background.js';
 import {
     BasicProperty
-} from '../properties/PartProperties';
+} from '../properties/PartProperties.js';
 
 class Stack extends Part {
     constructor(owner, name){

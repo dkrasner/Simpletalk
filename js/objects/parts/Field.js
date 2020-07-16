@@ -5,11 +5,11 @@
  * I am a container that holds text. I also allow
  * a user to edit my text.
  */
-import Part from './Part';
+import Part from './Part.js';
 import {
     BasicProperty,
     DynamicProperty
-} from '../properties/PartProperties';
+} from '../properties/PartProperties.js';
 
 class Field extends Part {
     constructor(owner, name){
@@ -21,6 +21,8 @@ class Field extends Part {
                 name
             );
         }
+
+        this.isField = true;
 
         // Set the Field-specific
         // Part Properties

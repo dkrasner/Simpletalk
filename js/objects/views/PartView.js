@@ -14,6 +14,24 @@
 import Part from '../parts/Part.js';
 import WorldStack from '../parts/WorldStack.js';
 
+/**
+ * A Note on Serialization/Deserialization
+ * On loading into page, the steps for a Part view are:
+ * 1. Check to see if I have a data-part-id set. If so, go to 2.
+      If not, go to 3.
+ * 2. Check to see if there is a serialization state stored in
+ *    the script tag area. If so, load a model from its content
+ *    and set it to my current model. If not, go to 3.
+ * 3. If here, there was no id or no serialized model. Create
+ *    instead a new Part of the correct type and set it to
+ *    be my model. Also add it to the partCollection of my
+ *    parent view's parent model, if there is one
+ * 4. If creating a new model at read time, create the
+ *    script tag and fill it with the default serialization
+ *    for the new model. Also set the data-part-id for this
+ *    view.
+**/
+
 class PartView extends HTMLElement {
     constructor(){
         super();
@@ -23,11 +41,13 @@ class PartView extends HTMLElement {
         this.setModel = this.setModel.bind(this);
         this.unsetModel = this.unsetModel.bind(this);
         this.getModelFromSerialized = this.getModelFromSerialized.bind(this);
+        this.createNewModel = this.createNewModel.bind(this);
         this.registerInParentView = this.registerInParentView.bind(this);
         this.initSerializedElement = this.initSerializedElement.bind(this);
         this.findOrCreateScriptArea = this.findOrCreateScriptArea.bind(this);
         this.updateSerializationScript = this.updateSerializationScript.bind(this);
         this.receiveMessage = this.receiveMessage.bind(this);
+        this.afterConnected = this.afterConnected.bind(this);
     }
 
     /**
@@ -35,10 +55,26 @@ class PartView extends HTMLElement {
      */
     connectedCallback(){
         if(this.isConnected){
+            console.log('Generic Part connected');
             this.getModelFromSerialized();
-            this.registerInParentView();
-            this.initSerializedElement();
+
+            // If no model loaded, we create a new
+            // one of the Part type that corresponds
+            // to this view.
+            let model = this.createNewModel();
+            this.setModel(model);
+
+            // Call the afterConnected internal
+            // lifecycle method.
+            this.afterConnected();
         }
+    }
+
+    createNewModel(){
+        // All subclasses should override
+        // in order to create the correct model
+        // objects.
+        return new Part();
     }
 
     setModel(newModel){
@@ -60,6 +96,11 @@ class PartView extends HTMLElement {
         // serialization element to be the
         // serialized state of the new model
         this.initSerializedElement();
+
+        // Ensure that the incoming model's
+        // owner is set to the model of the parent
+        // view, if present.
+        this.registerInParentView();
     }
 
     unsetModel(aModel){
@@ -121,11 +162,14 @@ class PartView extends HTMLElement {
      * method on themselves
      */
     getModelFromSerialized(){
+        if(!this.id || this.id == undefined){
+            return;
+        }
         let scriptArea = this.findOrCreateScriptArea();
         let jsonScriptElement = scriptArea.querySelector(`[data-part-id="${this.id}"]`);
-        if(jsonScriptElement && this.id){
+        if(jsonScriptElement){
             let newModel = WorldStack.fromSerialization(jsonScriptElement.innerHTML);
-            this.model = newModel;
+            this.setModel(newModel);
         }
     }
 

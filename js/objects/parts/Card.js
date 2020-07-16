@@ -8,10 +8,10 @@
  * I can contain any kind of Part, including
  * buttons and fields.
  */
-import Part from './Part';
+import {Part} from './Part.js';
 import {
     BasicProperty
-} from '../properties/PartProperties';
+} from '../properties/PartProperties.js';
 
 class Card extends Part {
     constructor(owner, name){
@@ -27,6 +27,8 @@ class Card extends Part {
             'background',
             1
         );
+
+        this.isCard = true;
 
         // Add Card-specific part
         // properties

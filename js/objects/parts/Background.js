@@ -14,11 +14,13 @@
  * delegate to the (current) Background they have.
  * I then delegate to the Stack that is my owner.
  */
-import Card from './Card';
+import Card from './Card.js';
 
 class Background extends Card {
     constructor(owner, name){
         super(owner, name);
+
+        this.isBackground = true;
     }
 
     // Delegation override.

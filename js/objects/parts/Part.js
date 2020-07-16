@@ -23,6 +23,8 @@ class Part {
         this._functionHandlers = {};
         this._propertySubscribers = new Set();
 
+        this.isPart = true;
+
         // Bind methods
         this.setupProperties = this.setupProperties.bind(this);
         this.getStack = this.getStack.bind(this);
@@ -276,12 +278,16 @@ class Part {
      * state of all properties.
      */
     serialize(){
+        let ownerId = null;
+        if(this._owner){
+            ownerId = this._owner.id;
+        }
         let result = {
             type: this.type,
             id: this.id,
             properties: {},
             numParts: this.partsCollection.allParts.length,
-            ownerId: this._owner.id
+            ownerId: ownerId
         };
         this.partProperties._properties.forEach(prop => {
             let name = prop.name;
