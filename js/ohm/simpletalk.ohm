@@ -19,11 +19,16 @@ SimpleTalk {
 	keyword (a keyword symbol)
 		= "menu" menuType? -- menuTypeSymbol 
 		| "char" characterType? -- characterTypeKeyword
-		| modifierKey "key" -- modifierkeyTypeKeyword 
-		| item
+		| "selected" selectedType? -- selectedTypeKeyword
+		| modifierKeyName "key" -- modifierkeyTypeKeyword 
+		| "item" "s"? -- itemTypeKeyword
 		| commonKey + "key" -- commonkeyTypeKeyword
 		| "click" + clickActions? -- commonclickTypeKeyword
 		| commonActions
+		| mathFun
+		| "first" | "second" | "third" | "fourth" | "fifth" | "sixth" | "seventh" | "eighth" | "ninth" | "tenth" 
+		| "found" ("chunk" | "field" | "line" | "text")  --foundObjectKeyword
+    |  "mouse" ( "click" | "loc")?  --mouseActionKeyword
 		| "to"  
     | "with" | "file"  | "tool" | "at"
     | "commandkeydown" | "from" | "checkpoint"
@@ -40,31 +45,37 @@ SimpleTalk {
     | "selection" | "tempo" | "field" | "button" | "line" | "reg" | "regular"
     | "poly" | "polygon" | "round" | "rect" | "rectangle" | "spray" | "can" | "up" | "left" | "right" | "effect"
     | "number" | "diskspace"
-    | "foundchunk" | "foundfield" | "foundline" | "foundtext" |  "mouse" | "mouseclick" | "mouseloc"
-    | "result" | "screenrect" | "selectedchunk" | "selectedfield" | "selectedline" | "selectedloc"
-    | "selectedtext" |  "sound" | "speech" | "stacks" | "systemversion" | "ticks" | "paramcount" | "params"
-    | "voices" | "windows" | "average" | "min" | "max" | "sum" | "random" | "sqrt" | "trunc" | "sin" | "cos" | "tan"
-    | "atan" | "exp" | "exp1" | "exp2" | "ln" | "ln1" | "log2" | "abs" |  "numtochar" | "value" | "length"
-    | "param" | "annuity" | "compound" | "offset" | "first" | "second" | "third" | "fourth" | "fifth" | "sixth"
-    | "seventh" | "eighth" | "ninth" | "tenth" | "messages" 
+    | "result" | "screenrect"
+    |  "sound" | "speech" | "stacks" | "systemversion" | "ticks" | "paramcount" | "params"
+    | "voices" | "windows"
+    | "param" | "annuity" | "compound" | "offset"
+    | "messages" 
     | "mid" | "middle" | "last" | "any" | "parts" | "integer" | "point" | "logical" | "boolean" | "bool"
     | "word" |  "whole" | "string" | "bottom" | "top" | "center" | "plain" | "picture" | "pict"
     | "seconds" | "secs" | "sec" | "fast" | "slow" | "slowly" | "very" | "black" | "card" | "gray" | "grey" | "inverse"
     | "white" | "dissolve" | "barn" | "door" | "checkerboard" | "iris" | "venetian" | "blinds"
     | "in" | "out" | "tick" | "prev" | "previous" | "msg" | "box" | "cards" | "cds" | "cd"
     | "background" | "backgrounds" | "bkgnd" | "bkgnds" | "bg" | "bgs" | "buttons" | "btn" | "btns" | "fields" | "fld"
-    | "flds" | "words" | "lines" | "of" 
+    | "flds" | "words" | "lines" | "of" | "numtochar" | "value" | "length"
 
 	menuType (a menu* keyword symbol)
-		= "bar" | item |"s" |"message" | "msg" | "items"
-
-	item (item or items symbol)
-		= "item" "s"?
+		= "bar" | "item" "s"? --itemTypeKeyword
+		|"s" |"message" | "msg"
 
 	characterType (a character* keyword symbol)
 		= "s" | "acters" | "acter" | "tonum" 
 
-	modifierKey (a modifier key)
+	selectedType (selected* keyword symbol)
+		= "chunk" | "field" | "line" | "loc" | "text"
+
+	mathFun (math function)
+		= "average" | "min" | "max" | "sum" | "random" | "sqrt" | "trunc" | "sin"
+		| "cos" | "tan" | "atan"
+		| "exp" ("1" | "2")? --exponentialFunctions
+		| "ln" "1"? --naturalLogFunctions
+		| "log2" | "abs"
+
+	modifierKeyName (a modifier key name)
 		= "command" | "cmd" | "option" | "control" | "ctrl" | "shift"
 
 	commonKey (common keys)

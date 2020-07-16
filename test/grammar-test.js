@@ -36,20 +36,14 @@ describe("SimpleTalk Grammar", function () {
         });
         it ("Matching basic keywords (char*)", function () {
             let match = g.match('characters', 'keyword');
-            if (!match.succeeded()){console.log("characters")};
             assert.isTrue(match.succeeded());
             match = g.match('character', 'keyword');
-            if (!match.succeeded()){console.log(k)};
             assert.isTrue(match.succeeded());
             match = g.match('char', 'keyword');
-            if (!match.succeeded()){console.log(k)};
             assert.isTrue(match.succeeded());
             match = g.match('chars', 'keyword');
-            if (!match.succeeded()){console.log(k)};
             assert.isTrue(match.succeeded());
-            if (!match.succeeded()){console.log(k)};
             match = g.match('chartonum', 'keyword');
-            if (!match.succeeded()){console.log(k)};
             assert.isTrue(match.succeeded());
         });
         it ("Matching basic keywords (modifier keys)", function () {
@@ -89,8 +83,7 @@ describe("SimpleTalk Grammar", function () {
                 "read", "reset", "save", "scroll", "speak", "stack", "set", "send", "show", "sort",
                 "shrink", "stretch", "subtract", "unlock", "unmark", "wait", "wipe", "write", "zoom"
             ];
-            let match = g.match('add', 'keyword');
-            assert.isTrue(match.succeeded());
+            let match = null;
             keywords.forEach((k) => {
                 match = g.match(k, 'keyword');
                 assert.isTrue(match.succeeded());
@@ -100,15 +93,75 @@ describe("SimpleTalk Grammar", function () {
             let keywords = [
                 "click", "clickh", "clickchunk", "clickloc", "clickline", "clicktext", "clickv"
             ];
-            let match = g.match('add', 'keyword');
-            assert.isTrue(match.succeeded());
+            let match = null;
             keywords.forEach((k) => {
                 match = g.match(k, 'keyword');
                 assert.isTrue(match.succeeded());
             });
         });
+        it ("Matching basic keywords (selected*)", function () {
+            let keywords = [
+                "selectedchunk", "selectedfield", "selectedline", "selectedloc", "selectedtext"
+            ];
+            let match = null;
+            keywords.forEach((k) => {
+                match = g.match(k, 'keyword');
+                assert.isTrue(match.succeeded());
+            });
+        });
+        it ("Matching basic keywords (math functions)", function () {
+            let keywords = [
+                "average", "min", "max", "sum", "random", "sqrt", "trunc", "sin",
+                "cos", "tan", "atan", "exp", "exp1", "exp2", "ln", "ln1", "log2", "abs",
+            ];
+            let match = null;
+            keywords.forEach((k) => {
+                match = g.match(k, 'keyword');
+                assert.isTrue(match.succeeded());
+            });
+        });
+        it ("Matching basic keywords (n'th)", function () {
+            let keywords = [
+                "first", "second", "third", "fourth", "fifth", "sixth", "seventh", "eighth", "ninth", "tenth"
+            ];
+            let match = null;
+            keywords.forEach((k) => {
+                match = g.match(k, 'keyword');
+                assert.isTrue(match.succeeded());
+            });
+        });
+        it ("Matching basic keywords (found*)", function () {
+            let keywords = [
+                "foundchunk", "foundfield", "foundline", "foundtext"
+            ];
+            let match = null;
+            keywords.forEach((k) => {
+                match = g.match(k, 'keyword');
+                if (!match.succeeded()){console.log(k)};
+                assert.isTrue(match.succeeded());
+            });
+        });
+        it ("Matching basic keywords (mouse*)", function () {
+            let keywords = [
+                "mouse", "mouseclick", "mouseloc"
+            ];
+            let match = null;
+            keywords.forEach((k) => {
+                match = g.match(k, 'keyword');
+                if (!match.succeeded()){console.log(k)};
+                assert.isTrue(match.succeeded());
+            });
+        });
+        it ("Not Matching basic keywords", function () {
+            let match = g.match('found', 'keyword');
+            assert.isTrue(match.failed());
+        });
         it ("Not Matching basic keywords", function () {
             let match = g.match('menuBAD', 'keyword');
+            assert.isTrue(match.failed());
+        });
+        it ("Not Matching basic keywords", function () {
+            let match = g.match('exp3', 'keyword');
             assert.isTrue(match.failed());
         });
         it ("Not Matching basic keywords", function () {
