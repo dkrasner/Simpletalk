@@ -22,8 +22,8 @@ SimpleTalk {
 
 	keyword (a keyword symbol)
 		= "menu" menuType? -- menuTypeSymbol 
-        | "round" | "rectangle" | "rect" | "screenrect" | "point" | singPlu<"line"> | "poly" "gon"? --polygonType 
-        | "bottom" | "top" | "center" | "middle" | "mid" | "whole" | "start"  
+		| "round" | "rectangle" | "rect" | "screenrect" | "point" | singPlu<"line"> | "poly" "gon"? --polygonType 
+		| "bottom" | "top" | "center" | "middle" | "mid" | "whole" | "start"  
 		| "file"  | "tool"  | "domenu" | "script" | "titlebar" | "screen" | "this" | "text" | singPlu<"voice">
         | "sound" | "speech"  | "systemversion" | "diskspace" | "commandkeydown" | "checkpoint" | "effect"
         | "picture" | "pict" | "barn" | "door" | "checkerboard" | "iris" | "venetian" | "blinds" | singPlu<"tick">
