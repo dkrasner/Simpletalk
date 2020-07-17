@@ -16,7 +16,11 @@ import {
 
 class Part {
     constructor(anOwnerPart){
-        this.partsCollection = new PartCollection(this);
+
+        // An array of child parts
+        this.subparts = [];
+
+
         this.partProperties = new PartProperties();
         this._owner = anOwnerPart;
         this._commandHandlers = {};
@@ -28,6 +32,9 @@ class Part {
         // Bind methods
         this.setupProperties = this.setupProperties.bind(this);
         this.getStack = this.getStack.bind(this);
+
+        this.addPart = this.addPart.bind(this);
+        this.removePart = this.removePart.bind(this);
         this.numberInOwner = this.numberInOwner.bind(this);
         this.setCmdHandler = this.setCmdHandler.bind(this);
         this.setFuncHandler = this.setFuncHandler.bind(this);
@@ -45,41 +52,10 @@ class Part {
         this.setupProperties();
     }
 
-    // Return the Stack in which this part is
-    // embedded. Involves a recursive lookup.
-    // If this part is itself a Stack, just
-    // return itself.
-    getStack(){
-        if(this.type == 'stack'){
-            return this;
-        }
-        if(this._owner == null){
-            return null;
-        }
-        return this._owner.getStack();
-    }
-
     // Convenience getter to get the id
     // from the partProperties
     get id(){
         return this.partProperties.getPropertyNamed(this, 'id');
-    }
-
-    // Returns the index (ie, "number") of this part
-    // in its owner's collection of parts, and only
-    // the index in a collection of parts of the same
-    // type as me.
-    // In any collection, a part has two indicies:
-    // the index in a list of parts of the same type
-    // (ie, 'button 3 of card')
-    // and the index in a list of parts of all types
-    // (ie 'part 4 of card')
-    // This retrieves only the former.
-    numberInOwner(){
-        if(!this.owner){
-            return -1; // Per JS indexOf operations
-        }
-        return this.owner.partsCollection.getTypeIndexForPart(this);
     }
 
     // Configures the specific properties that the
@@ -171,6 +147,36 @@ class Part {
                 true, // Is readOnly,
                 [] // No aliases
         );
+    }
+
+    /** Subpart Access **/
+
+    /**
+     * Adds a part to this part's subparts
+     * collection, if not already present.
+     * It will also set the owner of the
+     * added part to be this part.
+     */
+    addPart(aPart){
+        let found = this.subparts.indexOf(aPart);
+        if(!found){
+            this.subparts.push(aPart);
+            aPart._owner = this;
+        }
+    }
+
+    /**
+     * Removes the given part from this
+     * part's list of subparts (if present).
+     * It will also unset the owner of the
+     * given part.
+     */
+    removePart(aPart){
+        let partIndex = this.subparts.indexOf(aPart);
+        if(partIndex >= 0){
+            this.subparts.splice(partIndex, 1);
+            aPart._owner = null;
+        }
     }
 
     /** Logging and Reporting **/
@@ -286,7 +292,7 @@ class Part {
             type: this.type,
             id: this.id,
             properties: {},
-            numParts: this.partsCollection.allParts.length,
+            numParts: this.subparts.length,
             ownerId: ownerId
         };
         this.partProperties._properties.forEach(prop => {
