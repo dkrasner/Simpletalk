@@ -98,10 +98,10 @@ SimpleTalk {
 
 	parameterList
 		= letter+
-
-  function
-    = "FUNCTION" 
-
-  comment
-    = "--"letter+
+		
+	function
+		= "FUNCTION" 
+	
+	comment
+		= "--"letter+
 }
