@@ -70,6 +70,11 @@ class PartView extends HTMLElement {
         }
     }
 
+    afterConnected(){
+        // Do nothing here.
+        // subclasses override
+    }
+
     createNewModel(){
         // All subclasses should override
         // in order to create the correct model
