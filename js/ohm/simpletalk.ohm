@@ -5,6 +5,10 @@ SimpleTalk {
 		| comment
 		| end
 
+	// Helper utilities
+	// Accounts for singular and plural word (i.e. with and without 's')
+	singPlu<x> = x "s"?
+
 	handler (an "on" event type handler)
 		= "on" symbol space+ statementList? "end" symbol  -- noArgHandler
 		| "on" symbol parameterList space+ statementList? "end" symbol -- argHandler
@@ -18,59 +22,51 @@ SimpleTalk {
 
 	keyword (a keyword symbol)
 		= "menu" menuType? -- menuTypeSymbol 
-		| "char" characterType? -- characterTypeKeyword
-		| "selected" selectedType? -- selectedTypeKeyword
+    | "round" | "rectangle" | "rect" | "screenrect" | "point" | singPlu<"line"> | "poly" "gon"? --polygonType 
+    | "bottom" | "top" | "center" | "middle" | "mid" | "whole" | "start"  
+		| "file"  | "tool"  | "domenu" | "script" | "titlebar" | "screen" | "this" | "text" | singPlu<"voice">
+    | "sound" | "speech"  | "systemversion" | "diskspace" | "commandkeydown" | "checkpoint" | "effect"
+    | "picture" | "pict" | "barn" | "door" | "checkerboard" | "iris" | "venetian" | "blinds" | singPlu<"tick">
+		| "messages" | "msg" | "box" | "result" | "value" | "length" | "keydown" | "type"
+    | "pattern" | "watcher" | "variable" |  "password" | "selection" | "tempo"
+		| singPlu<"window"> | "dialog" | singPlu<"part"> | "id" | singPlu<"word"> 
+    | "annuity" | "compound" | "numtochar" | "chartonum"
+		| singPlu<"character"> | singPlu<"char"> 
+		| "selected" ("chunk" | "field" | "line" | "loc" | "text")? -- selectedTypeKeyword
 		| modifierKeyName "key" -- modifierkeyTypeKeyword 
-		| "item" "s"? -- itemTypeKeyword
+		| singPlu<"item">
 		| commonKey + "key" -- commonkeyTypeKeyword
 		| "click" + clickActions? -- commonclickTypeKeyword
+		| "short" | "long" | "ascending" | "descending" | "abbreviated" | "marked" | "abbrev" | "abbr" | "regular" | "reg"
+		| "slowly" | "slow" | "fast" | "very" | "plain" | "inverse"
+    | "international" | "visual" | "robotic" | "english" | "finding"
 		| commonActions
 		| mathFun
 		| "found" ("chunk" | "field" | "line" | "text")  --foundObjectKeyword
-    |  "mouse" ( "click" | "loc")?  --mouseActionKeyword
+    | "mouse" ( "click" | "loc")?  --mouseActionKeyword
 		| "male" | "female" | "neuter" 
-		| "number" | "integer" | "logical" | "dateitems" | "date" | "time" | "bool" "ean"? --boolTypeKeyword
-		|  "sec" ("onds" | "ond" | "s")? --secondTypeKeyword 
+		| "string" | "number" | "integer" | "numeric" | "logical" | "dateitems" | singPlu<"time"> | "bool" "ean"? --boolTypeKeyword
+		| "date" "time"? --datatimeKeywords
+		|  singPlu<secondType> 
 		// note "second" overloads both time and ordinal
-		| "first" | "third" | "fourth" | "fifth" | "sixth" | "seventh" | "eighth" | "ninth" | "tenth" 
-		| "to" |  "at" | "from" | "by" | "for" | "as" | "of" | "in" | "out" | "with" "out"? --withPrepKeyword
+		| "first" | "third" | "fourth" | "fifth" | "sixth" | "seventh" | "eighth" | "ninth" | "tenth" | "last"
+		| "down" | "up" | "left" | "right" | "next" | "offset" | "prev" "ious"? --previousType
+    | "until" | "where" | "while" | "can" | "forever"   
+		| "to" |  "at" | "from" | "by" | "for" | "as" | "of" | "in" | "out" | "using" | "with" "out"? --withPrepKeyword
 		| "all" | "any" 
-		| "file"  | "tool"  | "domenu" | "script" | "titlebar" | "screen" | "this" | "text" | "voice" | "window" | "dialog" | "part" | "id" 
-    | "commandkeydown" | "checkpoint"
-    | "international" | "marked"
-    | "visual" | "keydown"
-    | "where" | "finding" | "next"
-    | "until"
-    | "robotic"
-    | "type" | "while"
-    | "english" | "long" | "abbreviated"
-    | "abbrev" | "abbr" | "short" | "ascending" | "descending" | "numeric" | "datetime" | "forever" | "times"
-    | "down" | "pattern" | "watcher" | "variable" | "start" | "using" | "password"
-    | "selection" | "tempo" | "field" | "button" | "line" | "reg" | "regular"
-    | "poly" | "polygon" | "round" | "rect" | "rectangle" | "spray" | "can" | "up" | "left" | "right" | "effect"
-    | "diskspace"
-    | "result" | "screenrect"
-    |  "sound" | "speech" | "stacks" | "systemversion" | "ticks" | "paramcount" | "params"
-    | "voices" | "windows"
-    | "param" | "annuity" | "compound" | "offset"
-    | "messages" 
-    | "mid" | "middle" | "last" | "parts"  | "point"
-    | "word" |  "whole" | "string" | "bottom" | "top" | "center" | "plain" | "picture" | "pict"
-    | "fast" | "slow" | "slowly" | "very" | "black" | "card" | "gray" | "grey" | "inverse"
-    | "white" | "dissolve" | "barn" | "door" | "checkerboard" | "iris" | "venetian" | "blinds"
-    | "tick" | "prev" | "previous" | "msg" | "box" | "cards" | "cds" | "cd"
-    | "background" | "backgrounds" | "bkgnd" | "bkgnds" | "bg" | "bgs" | "buttons" | "btn" | "btns" | "fields" | "fld"
-    | "flds" | "words" | "lines" | "numtochar" | "value" | "length"
+		| singPlu<"button"> | singPlu<"btn">
+		| singPlu<"background"> | singPlu<"bkgnd"> | singPlu<"bg"> 
+		| singPlu<"card"> | singPlu<"cd">
+		| singPlu<"field"> | singPlu<"fld">
+		| "paramcount" | singPlu<"param">
+		| "black" | "gray" | "grey" | "white" 
+
+	secondType (second as ordinal or time)
+		= "sec" ("ond")?
 
 	menuType (a menu* keyword symbol)
-		= "bar" | "item" "s"? --itemTypeKeyword
+		= "bar" | singPlu<"item"> 
 		|"s" |"message" | "msg"
-
-	characterType (a character* keyword symbol)
-		= "s" | "acters" | "acter" | "tonum" 
-
-	selectedType (selected* keyword symbol)
-		= "chunk" | "field" | "line" | "loc" | "text"
 
 	mathFun (math function)
 		= "average" | "min" | "max" | "sum" | "random" | "sqrt" | "trunc" | "sin"
@@ -90,10 +86,10 @@ SimpleTalk {
 
 	commonActions (typical actions such as add, ask etc)
 		= "add" | "answer" | "ask"| "beep" | "choose" | "close" | "convert"
-		| "create" | "debug" | "delete"| "dial" | "disable" | "divide" | "drag" | "edit"
+		| "create" | "debug" | "delete"| "dial" | "disable" |  "dissolve" | "divide" | "drag" | "edit"
 		| "enable" | "enterinfield" | "export" | "find" | "get" | "go" | "hide"  | "import" | "lock"
 		| "mark"  | "multiply" | "open" | "paint" | "pass" | "play" | "pop" | "push" | "put"
-		| "read" | "reset" | "save"  | "scroll" | "speak" | "stack"| "set" | "send" | "show"
+		| "read" | "reset" | "save"  | "scroll" | "speak" | "spray" | singPlu<"stack"> | "set" | "send" | "show"
 		| "sort" | "shrink" | "stretch" | "subtract" | "unlock" | "unmark" | "wait"
 		| "wipe" | "write" | "zoom"
 
