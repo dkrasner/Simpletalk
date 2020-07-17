@@ -22,15 +22,15 @@ SimpleTalk {
 
 	keyword (a keyword symbol)
 		= "menu" menuType? -- menuTypeSymbol 
-    | "round" | "rectangle" | "rect" | "screenrect" | "point" | singPlu<"line"> | "poly" "gon"? --polygonType 
-    | "bottom" | "top" | "center" | "middle" | "mid" | "whole" | "start"  
+        | "round" | "rectangle" | "rect" | "screenrect" | "point" | singPlu<"line"> | "poly" "gon"? --polygonType 
+        | "bottom" | "top" | "center" | "middle" | "mid" | "whole" | "start"  
 		| "file"  | "tool"  | "domenu" | "script" | "titlebar" | "screen" | "this" | "text" | singPlu<"voice">
-    | "sound" | "speech"  | "systemversion" | "diskspace" | "commandkeydown" | "checkpoint" | "effect"
-    | "picture" | "pict" | "barn" | "door" | "checkerboard" | "iris" | "venetian" | "blinds" | singPlu<"tick">
+        | "sound" | "speech"  | "systemversion" | "diskspace" | "commandkeydown" | "checkpoint" | "effect"
+        | "picture" | "pict" | "barn" | "door" | "checkerboard" | "iris" | "venetian" | "blinds" | singPlu<"tick">
 		| "messages" | "msg" | "box" | "result" | "value" | "length" | "keydown" | "type"
-    | "pattern" | "watcher" | "variable" |  "password" | "selection" | "tempo"
+        | "pattern" | "watcher" | "variable" |  "password" | "selection" | "tempo"
 		| singPlu<"window"> | "dialog" | singPlu<"part"> | "id" | singPlu<"word"> 
-    | "annuity" | "compound" | "numtochar" | "chartonum"
+        | "annuity" | "compound" | "numtochar" | "chartonum"
 		| singPlu<"character"> | singPlu<"char"> 
 		| "selected" ("chunk" | "field" | "line" | "loc" | "text")? -- selectedTypeKeyword
 		| modifierKeyName "key" -- modifierkeyTypeKeyword 
@@ -39,11 +39,11 @@ SimpleTalk {
 		| "click" + clickActions? -- commonclickTypeKeyword
 		| "short" | "long" | "ascending" | "descending" | "abbreviated" | "marked" | "abbrev" | "abbr" | "regular" | "reg"
 		| "slowly" | "slow" | "fast" | "very" | "plain" | "inverse"
-    | "international" | "visual" | "robotic" | "english" | "finding"
+        | "international" | "visual" | "robotic" | "english" | "finding"
 		| commonActions
 		| mathFun
 		| "found" ("chunk" | "field" | "line" | "text")  --foundObjectKeyword
-    | "mouse" ( "click" | "loc")?  --mouseActionKeyword
+        | "mouse" ( "click" | "loc")?  --mouseActionKeyword
 		| "male" | "female" | "neuter" 
 		| "string" | "number" | "integer" | "numeric" | "logical" | "dateitems" | singPlu<"time"> | "bool" "ean"? --boolTypeKeyword
 		| "date" "time"? --datatimeKeywords
@@ -51,7 +51,7 @@ SimpleTalk {
 		// note "second" overloads both time and ordinal
 		| "first" | "third" | "fourth" | "fifth" | "sixth" | "seventh" | "eighth" | "ninth" | "tenth" | "last"
 		| "down" | "up" | "left" | "right" | "next" | "offset" | "prev" "ious"? --previousType
-    | "until" | "where" | "while" | "can" | "forever"   
+        | "until" | "where" | "while" | "can" | "forever"   
 		| "to" |  "at" | "from" | "by" | "for" | "as" | "of" | "in" | "out" | "using" | "with" "out"? --withPrepKeyword
 		| "all" | "any" 
 		| singPlu<"button"> | singPlu<"btn">
