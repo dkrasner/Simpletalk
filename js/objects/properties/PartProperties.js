@@ -205,7 +205,7 @@ class PartProperties {
     // Convenience method for creating a new basic
     // property.
     newBasicProp(...args){
-        let newPeop = new BasicProperty(...args);
+        let newProp = new BasicProperty(...args);
         this.addProperty(newProp);
     }
 

@@ -52,6 +52,17 @@
             </template>
             <template id="halo-template">
                 <style>
+                 @keyFrames onAppear {
+                     0% {
+                         opacity: 0.01;
+                         transform: scale(0.5);
+                     }
+
+                     100% {
+                         opacity: 1.0;
+                         transform: scale(1.0);
+                     }
+                 }
                  :host {
                      display: block;
                      position: absolute;
@@ -60,8 +71,7 @@
                      width: calc(100% + 60px);
                      height: calc(100% + 60px);
                      border: 1px solid red;
-                     transform: scale(0.5);
-                     opacity: 0.01;
+                     animation: onAppear 0.1s;
                  }
 
                  .st-halo-resizer {

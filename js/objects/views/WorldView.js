@@ -8,16 +8,11 @@
  * I am the root-level element for the SimpleTalk system in a web
  * page. There should only be one of me on any given HTML page.
  */
-import WorldStack from '../parts/WorldStack.js';
 import PartView from './PartView.js';
 
 class WorldView extends PartView {
     constructor(){
         super();
-    }
-
-    createNewModel(){
-        return new WorldStack();
     }
 };
 

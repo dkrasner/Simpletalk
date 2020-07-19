@@ -20,6 +20,9 @@ class Halo extends HTMLElement {
         this.resizeMouseMove = this.resizeMouseMove.bind(this);
         this.resizeMouseUp = this.resizeMouseUp.bind(this);
         this.onClick = this.onClick.bind(this);
+        this.onMouseDown = this.onMouseDown.bind(this);
+        this.onMouseUp = this.onMouseUp.bind(this);
+        this.onMouseMove = this.onMouseMove.bind(this);
     }
 
     connectedCallback(){
@@ -30,7 +33,6 @@ class Halo extends HTMLElement {
             this.targetElement = this.getRootNode().host;
             this.targetElement.style.position = "relative";
             this.targetElement.classList.add('editing');
-            console.log(this.targetRect);
 
             // Set the resizer click and drag
             // events
@@ -42,10 +44,16 @@ class Halo extends HTMLElement {
             // all click events on the wrapped element as long
             // as the halo is present
             this.addEventListener('click', this.onClick);
+
+            // Add mouseDown listener which will use
+            // basic mouse listeners to implement dragging
+            // the target element.
+            this.addEventListener('mousedown', this.onMouseDown);
         }
     }
 
     disconnectedCallback(){
+        this.removeEventListener('mousedown', this.onMouseDown);
         this.resizer.removeEventListener('mousedown', this.resizeMouseDown);
         this.removeEventListener('click', this.onClick);
         this.targetElement.style.position = "";
@@ -54,12 +62,12 @@ class Halo extends HTMLElement {
 
     onClick(event){
         event.stopPropagation();
-        console.log('arg!');
     }
 
     resizeMouseDown(event){
         document.addEventListener('mousemove', this.resizeMouseMove);
         document.addEventListener('mouseup', this.resizeMouseUp);
+        event.stopPropagation();
     }
 
     resizeMouseUp(event){
@@ -75,5 +83,25 @@ class Halo extends HTMLElement {
 
         this.targetElement.style.width = `${newWidth}px`;
         this.targetElement.style.height = `${newHeight}px`;
+    }
+
+    onMouseDown(event){
+        document.addEventListener('mousemove', this.onMouseMove);
+        document.addEventListener('mouseup', this.onMouseUp);
+    }
+
+    onMouseUp(event){
+        document.removeEventListener('mousemove', this.onMouseMove);
+        document.removeEventListener('mouseup', this.onMouseUp);
+    }
+
+    onMouseMove(event){
+        let oldTop = parseInt(this.targetElement.style.top);
+        let oldLeft = parseInt(this.targetElement.style.left);
+        let newTop = event.movementY + oldTop;
+        let newLeft = event.movementX + oldLeft;
+
+        this.targetElement.style.top = `${newTop}px`;
+        this.targetElement.style.left = `${newLeft}px`;
     }
 }

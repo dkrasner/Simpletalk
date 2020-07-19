@@ -51,4 +51,9 @@ class ButtonView extends HTMLElement {
             this._shadowRoot.appendChild(newHalo);
         }
     }
-}
+};
+
+export {
+    ButtonView,
+    ButtonView as default
+};

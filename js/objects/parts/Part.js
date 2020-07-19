@@ -31,11 +31,9 @@ class Part {
 
         // Bind methods
         this.setupProperties = this.setupProperties.bind(this);
-        this.getStack = this.getStack.bind(this);
 
         this.addPart = this.addPart.bind(this);
         this.removePart = this.removePart.bind(this);
-        this.numberInOwner = this.numberInOwner.bind(this);
         this.setCmdHandler = this.setCmdHandler.bind(this);
         this.setFuncHandler = this.setFuncHandler.bind(this);
         this.receiveCmd = this.receiveCmd.bind(this);
@@ -142,10 +140,10 @@ class Part {
             'number',
             null, // No setter; readOnly
             function(propOwner, propObject){
-                    return propOwner.numberInOwner();
-                },
-                true, // Is readOnly,
-                [] // No aliases
+                return propOwner.subparts.indexOf(this);
+            },
+            true, // Is readOnly,
+            [] // No aliases
         );
     }
 
@@ -292,7 +290,9 @@ class Part {
             type: this.type,
             id: this.id,
             properties: {},
-            numParts: this.subparts.length,
+            subparts: this.subparts.map(subpart => {
+                return subpart.id;
+            }),
             ownerId: ownerId
         };
         this.partProperties._properties.forEach(prop => {
