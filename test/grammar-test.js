@@ -11,6 +11,38 @@ describe("SimpleTalk Grammar", function () {
     describe("Script Handler", function () {
         // TODO
         });
+    describe("Statement List", function () {
+        it ("Single statement statement list", function () {
+            let s = `global param1,param2\n`;
+            let match = g.match(s, "statementList");
+            assert.isTrue(match.succeeded());
+        });
+        it ("Bad single statement statement list (no newline)", function () {
+            let s = `global param1,param2`;
+            let match = g.match(s, "statementList");
+            assert.isTrue(match.failed());
+        });
+        it ("Multi statement statement list", function () {
+            let s = ` global param1,param2\n
+            global param1,param2\n`
+            ;
+            let match = g.match(s, "statementList");
+            assert.isTrue(match.succeeded());
+        });
+        it ("Bad multi statement statement list (no newline)", function () {
+            let s = ` global param1,param2\t
+            global param1,param2\n`
+            ;
+            let match = g.match(s, "statementList");
+            assert.isTrue(match.failed());
+        });
+    });
+    describe("Statement", function () {
+        it ("Global Statement", function () {
+            let match = g.match("global param1,param2", "statement");
+            assert.isTrue(match.succeeded());
+        });
+    });
     describe("Symbol", function () {
         it ("Authored symbol", function () {
             let match = g.match("myNewSymbol", "symbol_authored");
@@ -49,6 +81,38 @@ describe("SimpleTalk Grammar", function () {
             assert.isTrue(match.failed());
         });
     });
+    describe("Parameter List", function () {
+        it ("Simple param list", function () {
+            let match = g.match("param1,param2", "parameterList");
+            assert.isTrue(match.succeeded());
+        });
+        it ("Param list with symbols", function () {
+            let match = g.match("top,bottom,newparam123", "parameterList");
+            assert.isTrue(match.succeeded());
+        });
+        it ("Bad param list (with spaces)", function () {
+            let match = g.match("param1, param2", "parameterList");
+            assert.isTrue(match.failed());
+        });
+        it ("Bad param list (bad symbol)", function () {
+            let match = g.match("1symbolbad, param2", "parameterList");
+            assert.isTrue(match.failed());
+        });
+    });
+    describe("Global Statement", function () {
+        it ("Basic global statement", function () {
+            let match = g.match("global param1,param2", "globalStatement");
+            assert.isTrue(match.succeeded());
+        });
+        it ("Bad global statement (no space)", function () {
+            let match = g.match("globalparam1, param2", "globalStatement");
+            assert.isTrue(match.failed());
+        });
+        it ("Bad global statement (starts with space)", function () {
+            let match = g.match(" global param1, param2", "globalStatement");
+            assert.isTrue(match.failed());
+        });
+    });
     describe("Keyword", function () {
         it ("Matching basic keywords", function () {
             let keywords = [
@@ -57,7 +121,6 @@ describe("SimpleTalk Grammar", function () {
             let match = null;
             keywords.forEach((k) => {
                 match = g.match(k, 'keyword');
-                if (!match.succeeded()){console.log(k)};
                 assert.isTrue(match.succeeded());
             });
         });
@@ -185,7 +248,6 @@ describe("SimpleTalk Grammar", function () {
             let match = null;
             keywords.forEach((k) => {
                 match = g.match(k, 'keyword');
-                if (!match.succeeded()){console.log(k)};
                 assert.isTrue(match.succeeded());
             });
         });
@@ -196,7 +258,6 @@ describe("SimpleTalk Grammar", function () {
             let match = null;
             keywords.forEach((k) => {
                 match = g.match(k, 'keyword');
-                if (!match.succeeded()){console.log(k)};
                 assert.isTrue(match.succeeded());
             });
         });
@@ -207,7 +268,6 @@ describe("SimpleTalk Grammar", function () {
             let match = null;
             keywords.forEach((k) => {
                 match = g.match(k, 'keyword');
-                if (!match.succeeded()){console.log(k)};
                 assert.isTrue(match.succeeded());
             });
         });
@@ -218,7 +278,6 @@ describe("SimpleTalk Grammar", function () {
             let match = null;
             keywords.forEach((k) => {
                 match = g.match(k, 'keyword');
-                if (!match.succeeded()){console.log(k)};
                 assert.isTrue(match.succeeded());
             });
         });
@@ -231,7 +290,6 @@ describe("SimpleTalk Grammar", function () {
             let match = null;
             keywords.forEach((k) => {
                 match = g.match(k, 'keyword');
-                if (!match.succeeded()){console.log(k)};
                 assert.isTrue(match.succeeded());
             });
         });
@@ -242,7 +300,6 @@ describe("SimpleTalk Grammar", function () {
             let match = null;
             keywords.forEach((k) => {
                 match = g.match(k, 'keyword');
-                if (!match.succeeded()){console.log(k)};
                 assert.isTrue(match.succeeded());
             });
         });
@@ -253,7 +310,6 @@ describe("SimpleTalk Grammar", function () {
             let match = null;
             keywords.forEach((k) => {
                 match = g.match(k, 'keyword');
-                if (!match.succeeded()){console.log(k)};
                 assert.isTrue(match.succeeded());
             });
         });
@@ -265,7 +321,6 @@ describe("SimpleTalk Grammar", function () {
             let match = null;
             keywords.forEach((k) => {
                 match = g.match(k, 'keyword');
-                if (!match.succeeded()){console.log(k)};
                 assert.isTrue(match.succeeded());
             });
         });
@@ -276,7 +331,6 @@ describe("SimpleTalk Grammar", function () {
             let match = null;
             keywords.forEach((k) => {
                 match = g.match(k, 'keyword');
-                if (!match.succeeded()){console.log(k)};
                 assert.isTrue(match.succeeded());
             });
         });
@@ -287,7 +341,6 @@ describe("SimpleTalk Grammar", function () {
             let match = null;
             keywords.forEach((k) => {
                 match = g.match(k, 'keyword');
-                if (!match.succeeded()){console.log(k)};
                 assert.isTrue(match.succeeded());
             });
         });
@@ -298,7 +351,6 @@ describe("SimpleTalk Grammar", function () {
             let match = null;
             keywords.forEach((k) => {
                 match = g.match(k, 'keyword');
-                if (!match.succeeded()){console.log(k)};
                 assert.isTrue(match.succeeded());
             });
         });
@@ -309,7 +361,6 @@ describe("SimpleTalk Grammar", function () {
             let match = null;
             keywords.forEach((k) => {
                 match = g.match(k, 'keyword');
-                if (!match.succeeded()){console.log(k)};
                 assert.isTrue(match.succeeded());
             });
         });
@@ -320,7 +371,6 @@ describe("SimpleTalk Grammar", function () {
             let match = null;
             keywords.forEach((k) => {
                 match = g.match(k, 'keyword');
-                if (!match.succeeded()){console.log(k)};
                 assert.isTrue(match.succeeded());
             });
         });
@@ -331,7 +381,6 @@ describe("SimpleTalk Grammar", function () {
             let match = null;
             keywords.forEach((k) => {
                 match = g.match(k, 'keyword');
-                if (!match.succeeded()){console.log(k)};
                 assert.isTrue(match.succeeded());
             });
         });
@@ -342,7 +391,6 @@ describe("SimpleTalk Grammar", function () {
             let match = null;
             keywords.forEach((k) => {
                 match = g.match(k, 'keyword');
-                if (!match.succeeded()){console.log(k)};
                 assert.isTrue(match.succeeded());
             });
         });
@@ -353,7 +401,6 @@ describe("SimpleTalk Grammar", function () {
             let match = null;
             keywords.forEach((k) => {
                 match = g.match(k, 'keyword');
-                if (!match.succeeded()){console.log(k)};
                 assert.isTrue(match.succeeded());
             });
         });
@@ -366,7 +413,6 @@ describe("SimpleTalk Grammar", function () {
             let match = null;
             keywords.forEach((k) => {
                 match = g.match(k, 'keyword');
-                if (!match.succeeded()){console.log(k)};
                 assert.isTrue(match.succeeded());
             });
         });
@@ -380,7 +426,6 @@ describe("SimpleTalk Grammar", function () {
             let match = null;
             keywords.forEach((k) => {
                 match = g.match(k, 'keyword');
-                if (!match.succeeded()){console.log(k)};
                 assert.isTrue(match.succeeded());
             });
         });

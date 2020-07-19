@@ -26,8 +26,25 @@ SimpleTalk {
 	argHandler (handler parameter and statement lists)
 		= " " parameterList space+ statementList?
 
-	statementList
-		= letter+
+	// Note: no spaces between parameters
+	parameterList (parameter list)
+		= nonemptyListOf<symbol, ",">
+		
+	statementList (a statement list)
+		= space* statement " "* "\n"+ statementList?
+	
+	statement (a statement)
+		= globalStatement
+		//| commandStatement
+		//| functionCall
+		//| messageStatement
+		//| expression
+		//| ifStatement
+		//| repeatStatement
+		//| returnStatement
+		
+	globalStatement (a "global" statement)
+		= "global " parameterList
 
 	symbol (a symbol, id or keyword)
 		= letter (letter | digit)*  -- authored
@@ -112,12 +129,10 @@ SimpleTalk {
 		| "sort" | "shrink" | "stretch" | "subtract" | "unlock" | "unmark" | "wait"
 		| "wipe" | "write" | "zoom"
 
-	parameterList
-		= letter+
-		
+	// TODO
 	function
 		= "FUNCTION" 
-	
+	// TODO
 	comment
 		= "--"letter+
 }
