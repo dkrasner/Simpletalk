@@ -8,10 +8,48 @@ var assert = chai.assert;
 
 
 describe("SimpleTalk Grammar", function () {
-    describe("Script Handler Tests", function () {
+    describe("Script Handler", function () {
         // TODO
         });
-    describe("Keyword Tests", function () {
+    describe("Symbol", function () {
+        it ("Authored symbol", function () {
+            let match = g.match("myNewSymbol", "symbol_authored");
+            assert.isTrue(match.succeeded());
+        });
+        it ("Authored symbol", function () {
+            let match = g.match("myNewSymbol123", "symbol_authored");
+            assert.isTrue(match.succeeded());
+        });
+        it ("Badly Authored symbol", function () {
+            let match = g.match(" myNewSymbol123", "symbol_authored");
+            assert.isTrue(match.failed());
+        });
+        it ("Badly Authored symbol", function () {
+            let match = g.match("1myNewSymbol123", "symbol_authored");
+            assert.isTrue(match.failed());
+        });
+        it ("Not keyword symbol", function () {
+            let match = g.match("myNewSymbol123", "symbol_keyword");
+            assert.isTrue(match.failed());
+        });
+        it ("Keyword symbol", function () {
+            let match = g.match("point", "symbol_keyword");
+            assert.isTrue(match.succeeded());
+        });
+        it ("Authored or Keyword symbol", function () {
+            let match = g.match("point", "symbol");
+            assert.isTrue(match.succeeded());
+        });
+        it ("Authored or Keyword symbol", function () {
+            let match = g.match("aPrettyGoodSymbol123", "symbol");
+            assert.isTrue(match.succeeded());
+        });
+        it ("Neither Authored nor Keyword symbol", function () {
+            let match = g.match("1notaGoodSymbol123", "symbol");
+            assert.isTrue(match.failed());
+        });
+    });
+    describe("Keyword", function () {
         it ("Matching basic keywords", function () {
             let keywords = [
                 "annuity", "compound", "numtochar", "chartonum"

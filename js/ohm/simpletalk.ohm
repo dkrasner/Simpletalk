@@ -9,13 +9,29 @@ SimpleTalk {
 	// Accounts for singular and plural word (i.e. with and without 's')
 	singPlu<x> = x "s"?
 
+	// Handler syntax insists that the "on <sym>" matches "end <sym>"
+	// ie we cannnot have a handler which begins with "on mouseUp" but
+	// terminates with "end "deleteCard"
+	// Note the space after "on" and "end", i.e. "onmouseUp" is not allowed
+	// but "on mouseUp" is
+	handlerSyntax<sym, inner> = "on " sym inner "end " sym
+
 	handler (an "on" event type handler)
-		= "on" symbol space+ statementList? "end" symbol  -- noArgHandler
-		| "on" symbol parameterList space+ statementList? "end" symbol -- argHandler
+		= handlerSyntax<symbol, noArgHandler>
+		| handlerSyntax<symbol, argHandler>
+
+	noArgHandler (handler statement list)
+		= space+ statementList?
+
+	argHandler (handler parameter and statement lists)
+		= " " parameterList space+ statementList?
+
+	statementList
+		= letter+
 
 	symbol (a symbol, id or keyword)
-		= id  -- id_symbol
-		| keyword  -- keyword_symbol
+		= letter (letter | digit)*  -- authored
+		| keyword  -- keyword
 
 	id (an id symbol)
 		= digit+
@@ -25,8 +41,8 @@ SimpleTalk {
 		| "round" | "rectangle" | "rect" | "screenrect" | "point" | singPlu<"line"> | "poly" "gon"? --polygonType 
 		| "bottom" | "top" | "center" | "middle" | "mid" | "whole" | "start"  
 		| "file"  | "tool"  | "domenu" | "script" | "titlebar" | "screen" | "this" | "text" | singPlu<"voice">
-		| "sound" | "speech"  | "systemversion" | "diskspace" | "commandkeydown" | "checkpoint" | "effect"effect
-		| "picture" | "pict" | "barn" | "door" | "checkerboard" | "iris" | "venetian" | "blinds" | singPlu<"tick">
+		| "sound" | "speech"  | "systemversion" | "diskspace" | "commandkeydown" | "checkpoint" | "effect"
+		| picture | "barn" | "door" | "checkerboard" | "iris" | "venetian" | "blinds" | singPlu<"tick">
 		| "messages" | "msg" | "box" | "result" | "value" | "length" | "keydown" | "type"
 		| "pattern" | "watcher" | "variable" |  "password" | "selection" | "tempo"
 		| singPlu<"window"> | "dialog" | singPlu<"part"> | "id" | singPlu<"word"> 
@@ -60,6 +76,9 @@ SimpleTalk {
 		| singPlu<"field"> | singPlu<"fld">
 		| "paramcount" | singPlu<"param">
 		| "black" | "gray" | "grey" | "white" 
+	
+	picture (a picture keyword)
+		= "pict" ("ure")?
 
 	secondType (second as ordinal or time)
 		= "sec" ("ond")?
@@ -92,9 +111,6 @@ SimpleTalk {
 		| "read" | "reset" | "save"  | "scroll" | "speak" | "spray" | singPlu<"stack"> | "set" | "send" | "show"
 		| "sort" | "shrink" | "stretch" | "subtract" | "unlock" | "unmark" | "wait"
 		| "wipe" | "write" | "zoom"
-
-	statementList
-		= letter+
 
 	parameterList
 		= letter+
