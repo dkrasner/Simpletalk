@@ -21,13 +21,13 @@ class Button extends Part {
 
         // If we are initializing with a name,
         // set the name part property
-        if(name){
-            this.partProperties.setPropertyNamed(
-                this,
-                'name',
-                name
-            );
-        }
+        let myName = name || 'Untitled Button';
+        this.partProperties.setPropertyNamed(
+            this,
+            'name',
+            myName
+        );
+
 
         this.isButton = true;
 
@@ -91,6 +91,12 @@ class Button extends Part {
             aMessage,
             this.owner
         );
+    }
+
+    //TODO: implement this property
+    // getter for real
+    getSelectedText(propName, propVal){
+        return null;
     }
 };
 

@@ -41,23 +41,7 @@ class Stack extends Part {
         // Background part, since there needs
         // to be at least one
         let initBackground = new Background(this);
-        this.partsCollection.addPart(
-            initBackground
-        );
-
-        // We create an initial Card, then
-        // set that to the current card.
-        this.currentCard = this.newCard();
-        this.currentCardIndex = this.currentCard.numberInOwner();
-
-        // Bound methods
-        this.newCard = this.newCard.bind(this);
-    }
-
-
-    newCard(cardName){
-        let card = new Card(this, cardName);
-        this.partsCollection.addPart(card);
+        this.addPart(initBackground);
     }
 
     get type(){

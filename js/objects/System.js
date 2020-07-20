@@ -16,7 +16,9 @@ import WorldView from './views/WorldView.js';
 import StackView from './views/StackView.js';
 import ButtonView from './views/ButtonView.js';
 import PartView from './views/PartView.js';
+import CardView from './views/CardView.js';
 
+import Halo from './views/Halo.js';
 
 const System = {
     isLoaded: false,
@@ -97,6 +99,10 @@ const System = {
                 aMessage.viewType,
                 aMessage.model
             );
+        case 'propertyChanged':
+            return this.updateSerialization(
+                aMessage.partId
+            );
         default:
             return this.doesNotUnderstand(aMessage);
         }
@@ -131,11 +137,20 @@ const System = {
             }
 
             this.partsById[model.id] = model;
+            model.addPropertySubscriber(this);
+            this.updateSerialization(model.id);
+
+            // See if there is already a view for the model.
+            // If not, create and attach it.
+            let viewForModel = document.getElementById(model.id);
+            if(!viewForModel){
+                this.newView(model.type, model.id);
+            }
         }
     },
 
     newView: function(partName, modelId){
-        let model = this.partsById(modelId);
+        let model = this.partsById[modelId];
         if(!model || model == undefined){
             throw new Error('System does not know part ${partName}[${modelId}]');
         }
@@ -235,9 +250,11 @@ System.registerPart('world', WorldStack);
 System.registerView('button', ButtonView);
 System.registerView('stack', StackView);
 System.registerView('world', WorldView);
+System.registerView('card', CardView);
 
 
 document.addEventListener('DOMContentLoaded', () => {
+    window.System = System;
     // Add the possible views as webcomponents
     // in the custom element registry
     Object.keys(System.availableViews).forEach(partName => {
@@ -245,6 +262,12 @@ document.addEventListener('DOMContentLoaded', () => {
         let elementName = System.tagNameForViewNamed(partName);
         window.customElements.define(elementName, viewClass);
     });
+
+    // Add any other non-part view CustomElements,
+    // like the halo
+    window.customElements.define('st-halo', Halo);
+
+    // Perform the initial setup of
+    // the system
     System.initialLoad();
-    window.System = System;
 });

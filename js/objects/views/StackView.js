@@ -14,10 +14,43 @@ import Stack from '../parts/Stack.js';
 class StackView extends PartView {
     constructor(){
         super();
+
+        // Setup templating and shadow dom
+        const template = document.getElementById('stack-view-template');
+        this._shadowRoot = this.attachShadow({mode: 'open'});
+        this._shadowRoot.appendChild(
+            template.content.cloneNode(true)
+        );
     }
 
-    createNewModel(){
-        return new Stack();
+    connectedCallback(){
+        if(this.isConnected){
+            // If the model has no subparts at this
+            // point, we should create a default background
+            // and single card.
+            if(this.model){
+                let cards = this.model.subparts.filter(part => {
+                    return part.type == 'card';
+                });
+                let backgrounds = this.model.subparts.filter(part => {
+                    return part.type =='backgrounds';
+                });
+                if(!backgrounds.length){
+                    this.sendMessage({
+                        type: 'newModel',
+                        modelType: 'background',
+                        owner: this.model
+                    }, window.System);
+                }
+                if(!cards.length){
+                    this.sendMessage({
+                        type: 'newModel',
+                        modelType: 'card',
+                        owner: this.model
+                    }, window.System);
+                }
+            }
+        }
     }
 };
 

@@ -3,8 +3,9 @@
  * ---------------------------------------------------
  * I am a webcomponent representing a Button.
  */
+import PartView from './PartView.js';
 
-class ButtonView extends HTMLElement {
+class ButtonView extends PartView {
     constructor(){
         super();
 
@@ -14,6 +15,7 @@ class ButtonView extends HTMLElement {
 
         // Bound methods
         this.onClick = this.onClick.bind(this);
+        this.setPropsFromModel = this.setPropsFromModel.bind(this);
     }
 
     connectedCallback(){
@@ -30,6 +32,13 @@ class ButtonView extends HTMLElement {
             this.style.height = `${rect.height}px`;
             this.style.top = `${rect.top}px`;
             this.style.left = `${rect.left}px`;
+
+            // If there is a bound model, set all
+            // the relevant view properties from
+            // model properties
+            if(this.model){
+                this.setPropsFromModel();
+            }
         }
     }
 
@@ -50,6 +59,13 @@ class ButtonView extends HTMLElement {
             let newHalo = document.createElement('st-halo');
             this._shadowRoot.appendChild(newHalo);
         }
+    }
+
+    setPropsFromModel(){
+        this.innerText = this.model.partProperties.getPropertyNamed(
+            this.model,
+            'name'
+        );
     }
 };
 

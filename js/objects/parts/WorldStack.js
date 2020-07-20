@@ -22,20 +22,27 @@ class WorldStack extends Part {
     constructor(){
         super(null);
 
-        // loadedStacks is a simple array
-        // of Stack parts that this WorldStack
-        // knows about.
-        this.loadedStacks = [];
-
         // The currentStack is the
         // stack that should be currently displayed.
         this.currentStack = null;
 
         this.isWorld = true;
+
+        // Add additional properties
+        this.partProperties.newBasicProp(
+            'currentStack',
+            -1
+        );
     }
 
     get type(){
         return 'world';
+    }
+
+    get loadedStacks(){
+        return this.subparts.filter(subpart => {
+            return subpart.type == 'stack';
+        });
     }
 
     // Override normal Part serialization.

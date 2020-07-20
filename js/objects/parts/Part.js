@@ -157,7 +157,7 @@ class Part {
      */
     addPart(aPart){
         let found = this.subparts.indexOf(aPart);
-        if(!found){
+        if(found < 0){
             this.subparts.push(aPart);
             aPart._owner = this;
         }
@@ -267,7 +267,8 @@ class Part {
         let message = {
             type: 'propertyChanged',
             propertyName: propertyName,
-            value: newValue
+            value: newValue,
+            partId: this.id
         };
         this._propertySubscribers.forEach(subscriber => {
             this.sendMessage(message, subscriber);

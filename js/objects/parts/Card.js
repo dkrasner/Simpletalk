@@ -22,11 +22,10 @@ class Card extends Part {
 
         // By default, a new Card's background
         // is the first Background in it's owner Stack.
-        this.stack = this.owner;
-        this.currentBackground = this.stack.partsCollection.getPartByTypeIndex(
-            'background',
-            1
-        );
+        this.stack = this._owner;
+        this.currentBackground = this.stack.subparts.find(part => {
+            return part.type == 'background';
+        });
 
         this.isCard = true;
 

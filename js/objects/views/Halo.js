@@ -105,3 +105,8 @@ class Halo extends HTMLElement {
         this.targetElement.style.left = `${newLeft}px`;
     }
 }
+
+export {
+    Halo,
+    Halo as default
+}
