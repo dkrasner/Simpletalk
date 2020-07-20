@@ -23,6 +23,8 @@ import Halo from './views/Halo.js';
 const System = {
     isLoaded: false,
     partsById: {},
+    _commandHandlers: {},
+    _functionHandlers: {},
 
     // A dictionary mapping part types like
     // 'button' to their classes (Button)
@@ -103,6 +105,8 @@ const System = {
             return this.updateSerialization(
                 aMessage.partId
             );
+        case 'command':
+            return this.receiveCommand(aMessage);
         default:
             return this.doesNotUnderstand(aMessage);
         }
@@ -111,6 +115,16 @@ const System = {
     doesNotUnderstand: function(aMessage){
         throw new Error(`System does not understand message ${aMessage.type}`);
         console.error(aMessage);
+    },
+
+    receiveCommand: function(aMessage){
+        let handler = this._commandHandlers[aMessage.commandName];
+        if(handler){
+            let boundHandler = handler.bind(this);
+            return boundHandler(...aMessage.args);
+        } else {
+            return this.doesNotUnderstand(aMessage);
+        }
     },
 
     newModel(kind, owner){
@@ -236,6 +250,11 @@ const System = {
         }
     }
 
+};
+
+/** Add Default System Command Handlers **/
+System._commandHandlers['answer'] = function(text){
+    alert(text);
 };
 
 /** Register the initial set of parts in the system **/
