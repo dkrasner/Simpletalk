@@ -257,6 +257,31 @@ System._commandHandlers['answer'] = function(text){
     alert(text);
 };
 
+System._commandHandlers['mouseUp'] = function(){
+    // By default, this does nothing, which
+    // prevents a DNU error from being thrown.
+    // Like HyperCard, we want to swallow any
+    // mouse events that are not trapped by other
+    // parts.
+    return;
+};
+
+System._commandHandlers['saveHTML'] = function(){
+    let anchor = document.createElement('a');
+    anchor.style.display = "none";
+    document.body.append(anchor);
+
+    let stamp = Date.now().toString();
+    let serializedPage = new XMLSerializer().serializeToString(document);
+    let typeInfo = "data:text/plain;charset=utf-8";
+    let url = `${typeInfo},${encodeURIComponent(serializedPage)}`;
+    anchor.href = url;
+    anchor.download = `SimpleTalkSnapshot_${stamp}.html`;
+    anchor.click();
+    window.URL.revokeObjectURL(url);
+    anchor.parentElement.removeChild(anchor);
+};
+
 /** Register the initial set of parts in the system **/
 System.registerPart('card', Card);
 System.registerPart('stack', Stack);

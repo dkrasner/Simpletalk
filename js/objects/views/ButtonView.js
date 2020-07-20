@@ -14,6 +14,7 @@ class ButtonView extends PartView {
         this._shadowRoot.appendChild(this.template.content.cloneNode(true));
 
         // Bound methods
+        this.onMouseUp = this.onMouseUp.bind(this);
         this.onClick = this.onClick.bind(this);
         this.setPropsFromModel = this.setPropsFromModel.bind(this);
     }
@@ -22,6 +23,7 @@ class ButtonView extends PartView {
         if(this.isConnected){
 
             // Setup mouse event handling
+            this.addEventListener('mouseup', this.onMouseUp);
             this.addEventListener('click', this.onClick);
             this.addEventListener('contextmenu', this.onContextMenu);
 
@@ -44,10 +46,23 @@ class ButtonView extends PartView {
 
     disconnectedCallback(){
         this.removeEventListener('click', this.onClick);
+        this.removeEventListener('contextmenu', this.onContextMenu);
+        this.removeEventListener('mouseup', this.onMouseUp);
     }
 
     onClick(event){
         console.log(event.button);
+    }
+
+    onMouseUp(event){
+
+        // Send the mouseUp command
+        // message to Button Part.
+        this.model.sendMessage({
+            type: 'command',
+            commandName: 'mouseUp',
+            args: []
+        }, this.model);
     }
 
     onContextMenu(event){
