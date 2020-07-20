@@ -47,6 +47,13 @@ class Stack extends Part {
     get type(){
         return 'stack';
     }
+
+    delegateMessage(aMessage){
+        this.sendMessage(
+            aMessage,
+            this._owner
+        );
+    }
 };
 
 export {

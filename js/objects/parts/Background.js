@@ -29,7 +29,7 @@ class Background extends Card {
     delegateMessage(aMessage){
         this.sendMessage(
             aMessage,
-            this.owner
+            this._owner
         );
     }
 };

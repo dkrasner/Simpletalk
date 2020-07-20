@@ -80,13 +80,11 @@ class WorldStack extends Part {
     }
 
     // Override for delegation.
-    // Because this is the root in the chain,
-    // any messages sent for delegation will
-    // be treated as messages that the system
-    // does not understand. For now, we throw an
-    // error
+    // We send any messages that should be delegated
+    // to the global System object, which has any
+    // 'handlers of last resort'
     delegateMessage(aMessage){
-        throw new Error(`Our World does not understand this message: ${aMessage}`);
+        this.sendMessage(aMessage, window.System);
     }
 };
 
