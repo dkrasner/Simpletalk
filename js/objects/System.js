@@ -226,7 +226,7 @@ const System = {
         if(!model){
             throw new Error(`System could not serialize unknown model [${modelId}]`);
         }
-        let serializationEl = document.querySelector('script[data-part-id="${modelId}"]');
+        let serializationEl = document.querySelector(`script[data-part-id="${modelId}"]`);
         if(!serializationEl){
             serializationEl = document.createElement('script');
             serializationEl.setAttribute('data-part-id', modelId);

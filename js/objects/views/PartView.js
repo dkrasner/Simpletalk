@@ -43,6 +43,13 @@ class PartView extends HTMLElement {
         target.receiveMessage(aMessage);
     }
 
+    receiveMessage(aMessage){
+        // Do nothing here.
+        // subclasses should implement
+        // their own handling of received
+        // messages
+    }
+
 
 };
 
