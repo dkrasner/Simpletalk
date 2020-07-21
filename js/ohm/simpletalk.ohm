@@ -50,8 +50,8 @@ SimpleTalk {
 		= letter (letter | digit)*  -- authored
 		| keyword  -- keyword
 
-	id (an id symbol)
-		= digit+
+	id (an id)
+		= letter (letter | digit)*
 
 	keyword (a keyword symbol)
 		= "menu" menuType? -- menuTypeSymbol 

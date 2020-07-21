@@ -81,6 +81,28 @@ describe("SimpleTalk Grammar", function () {
             assert.isTrue(match.failed());
         });
     });
+    describe("Id", function () {
+        it ("Basic Id", function () {
+            let match = g.match("myNewId", "id");
+            assert.isTrue(match.succeeded());
+        });
+        it ("Id with letters and digits", function () {
+            let match = g.match("newIdl123", "id");
+            assert.isTrue(match.succeeded());
+        });
+        it ("Bad id (with space)", function () {
+            let match = g.match(" badId", "id");
+            assert.isTrue(match.failed());
+        });
+        it ("Bad id (with space)", function () {
+            let match = g.match(" badId", "id");
+            assert.isTrue(match.failed());
+        });
+        it ("Bad id (digit start)", function () {
+            let match = g.match("1badId", "id");
+            assert.isTrue(match.failed());
+        });
+    });
     describe("Parameter List", function () {
         it ("Simple param list", function () {
             let match = g.match("param1,param2", "parameterList");
