@@ -13,33 +13,60 @@ describe("SimpleTalk Grammar", function () {
         });
     describe("Statement List", function () {
         it ("Single statement statement list", function () {
-            let s = `global param1,param2\n`;
+            let s = `global param1, param2\n`;
             let match = g.match(s, "statementList");
             assert.isTrue(match.succeeded());
         });
         it ("Bad single statement statement list (no newline)", function () {
-            let s = `global param1,param2`;
+            let s = `global param1, param2`;
             let match = g.match(s, "statementList");
             assert.isTrue(match.failed());
         });
         it ("Multi statement statement list", function () {
-            let s = ` global param1,param2\n
-            global param1,param2\n`
+            let s = ` global param1, param2\n
+            global param1, param2\n`
             ;
             let match = g.match(s, "statementList");
             assert.isTrue(match.succeeded());
         });
         it ("Bad multi statement statement list (no newline)", function () {
-            let s = ` global param1,param2\t
-            global param1,param2\n`
+            let s = ` global param1, param2\t
+            global param1, param2\n`
             ;
             let match = g.match(s, "statementList");
             assert.isTrue(match.failed());
         });
     });
+    describe("Functions", function () {
+        it ("Built in math functions", function () {
+            let keyword = [
+                "average", "min", "max", "sum", "random", "sqrt", "trunc", "sin",
+                "cos", "tan", "atan", "exp", "ln", "abs",
+            ];
+            let match = null;
+            keyword.forEach((k) => {
+                match = g.match(k, 'builtInMathFunction');
+                assert.isTrue(match.succeeded());
+            });
+        });
+        it ("Modifier key functions", function () {
+            let match = g.match('characters', 'keywordWC');
+            assert.isTrue(match.succeeded());
+            match = g.match('commandkey', 'keywordWC');
+            assert.isTrue(match.succeeded());
+            match = g.match('cmdkey', 'keywordWC');
+            assert.isTrue(match.succeeded());
+            match = g.match('optionkey', 'keywordWC');
+            assert.isTrue(match.succeeded());
+            match = g.match('controlkey', 'keywordWC');
+            assert.isTrue(match.succeeded());
+            match = g.match('shiftkey', 'keywordWC');
+            assert.isTrue(match.succeeded());
+        });
+    });
     describe("Statement", function () {
         it ("Global Statement", function () {
-            let match = g.match("global param1,param2", "statement");
+            let match = g.match("global param1, param2", "statement");
             assert.isTrue(match.succeeded());
         });
     });
@@ -60,12 +87,12 @@ describe("SimpleTalk Grammar", function () {
             let match = g.match("1myNewSymbol123", "symbol_authored");
             assert.isTrue(match.failed());
         });
-        it ("Not keyword symbol", function () {
-            let match = g.match("myNewSymbol123", "symbol_keyword");
+        it ("Not keywordWC symbol", function () {
+            let match = g.match("myNewSymbol123", "symbol_keywordWC");
             assert.isTrue(match.failed());
         });
         it ("Keyword symbol", function () {
-            let match = g.match("point", "symbol_keyword");
+            let match = g.match("point", "symbol_keywordWC");
             assert.isTrue(match.succeeded());
         });
         it ("Authored or Keyword symbol", function () {
@@ -105,25 +132,25 @@ describe("SimpleTalk Grammar", function () {
     });
     describe("Parameter List", function () {
         it ("Simple param list", function () {
-            let match = g.match("param1,param2", "parameterList");
+            let match = g.match("param1, param2", "parameterList");
             assert.isTrue(match.succeeded());
         });
         it ("Param list with symbols", function () {
-            let match = g.match("top,bottom,newparam123", "parameterList");
+            let match = g.match("top, bottom, newparam123", "parameterList");
             assert.isTrue(match.succeeded());
         });
         it ("Bad param list (with spaces)", function () {
-            let match = g.match("param1, param2", "parameterList");
+            let match = g.match("param1,param2", "parameterList");
             assert.isTrue(match.failed());
         });
         it ("Bad param list (bad symbol)", function () {
-            let match = g.match("1symbolbad, param2", "parameterList");
+            let match = g.match("1symbolbad,param2", "parameterList");
             assert.isTrue(match.failed());
         });
     });
     describe("Global Statement", function () {
         it ("Basic global statement", function () {
-            let match = g.match("global param1,param2", "globalStatement");
+            let match = g.match("global param1, param2", "globalStatement");
             assert.isTrue(match.succeeded());
         });
         it ("Bad global statement (no space)", function () {
@@ -137,342 +164,328 @@ describe("SimpleTalk Grammar", function () {
     });
     describe("Keyword", function () {
         it ("Matching basic keywords", function () {
-            let keywords = [
+            let keywordWCs = [
+                "do", "next", "else", "on", "end", "pass", "exit", "repeat",
+                "function", "return", "global", "send", "if", "then"
+            ];
+            let match = null;
+            keywordWCs.forEach((k) => {
+                match = g.match(k, 'keyword');
+                assert.isTrue(match.succeeded());
+            });
+        });
+        it ("Matching basic keywordWCs", function () {
+            let keywordWCs = [
                 "annuity", "compound", "numtochar", "chartonum"
             ];
             let match = null;
-            keywords.forEach((k) => {
-                match = g.match(k, 'keyword');
+            keywordWCs.forEach((k) => {
+                match = g.match(k, 'keywordWC');
                 assert.isTrue(match.succeeded());
             });
         });
-        it ("Matching basic keywords (menu*)", function () {
-            let match = g.match('menus', 'keyword');
+        it ("Matching basic keywordWCs (menu*)", function () {
+            let match = g.match('menus', 'keywordWC');
             assert.isTrue(match.succeeded());
-            match = g.match('menu', 'keyword');
+            match = g.match('menu', 'keywordWC');
             assert.isTrue(match.succeeded());
-            match = g.match('menubar', 'keyword');
+            match = g.match('menubar', 'keywordWC');
             assert.isTrue(match.succeeded());
-            match = g.match('menuitem', 'keyword');
+            match = g.match('menuitem', 'keywordWC');
             assert.isTrue(match.succeeded());
-            match = g.match('menuitems', 'keyword');
-            assert.isTrue(match.succeeded());
-        });
-        it ("Matching basic keywords (char*)", function () {
-            let match = g.match('characters', 'keyword');
-            assert.isTrue(match.succeeded());
-            match = g.match('character', 'keyword');
-            assert.isTrue(match.succeeded());
-            match = g.match('char', 'keyword');
-            assert.isTrue(match.succeeded());
-            match = g.match('chars', 'keyword');
+            match = g.match('menuitems', 'keywordWC');
             assert.isTrue(match.succeeded());
         });
-        it ("Matching basic keywords (modifier keys)", function () {
-            let match = g.match('characters', 'keyword');
+        it ("Matching basic keywordWCs (char*)", function () {
+            let match = g.match('characters', 'keywordWC');
             assert.isTrue(match.succeeded());
-            match = g.match('commandkey', 'keyword');
+            match = g.match('character', 'keywordWC');
             assert.isTrue(match.succeeded());
-            match = g.match('cmdkey', 'keyword');
+            match = g.match('char', 'keywordWC');
             assert.isTrue(match.succeeded());
-            match = g.match('optionkey', 'keyword');
-            assert.isTrue(match.succeeded());
-            match = g.match('controlkey', 'keyword');
-            assert.isTrue(match.succeeded());
-            match = g.match('shiftkey', 'keyword');
+            match = g.match('chars', 'keywordWC');
             assert.isTrue(match.succeeded());
         });
-        it ("Matching basic keywords (item*)", function () {
-            let match = g.match('item', 'keyword');
+        it ("Matching basic keywordWCs (item*)", function () {
+            let match = g.match('item', 'keywordWC');
             assert.isTrue(match.succeeded());
-            match = g.match('items', 'keyword');
-            assert.isTrue(match.succeeded());
-        });
-        it ("Matching basic keywords (*key)", function () {
-            let match = g.match('tabkey', 'keyword');
-            assert.isTrue(match.succeeded());
-            match = g.match('enterkey', 'keyword');
-            assert.isTrue(match.succeeded());
-            match = g.match('arrowkey', 'keyword');
+            match = g.match('items', 'keywordWC');
             assert.isTrue(match.succeeded());
         });
-        it ("Matching basic keywords (actions)", function () {
-            let keywords = [
+        it ("Matching basic keywordWCs (*key)", function () {
+            let match = g.match('tabkey', 'keywordWC');
+            assert.isTrue(match.succeeded());
+            match = g.match('enterkey', 'keywordWC');
+            assert.isTrue(match.succeeded());
+            match = g.match('arrowkey', 'keywordWC');
+            assert.isTrue(match.succeeded());
+        });
+        it ("Matching basic keywordWCs (actions)", function () {
+            let keywordWCs = [
                 "add", "answer", "ask", "beep", "choose", "click", "close", "convert",
                 "create", "debug", "delete", "dial", "disable", "dissolve", "divide", "drag", "edit",
                 "enable", "enterinfield" , "export", "find", "get", "go", "hide" , "import", "lock",
-                "mark" , "multiply", "open", "paint", "pass", "play", "pop", "push", "put",
-                "read", "reset", "save", "scroll", "speak", "spray", "stack", "stacks", "set", "send", "show", "sort",
+                "mark" , "multiply", "open", "paint",  "play", "pop", "push", "put",
+                "read", "reset", "save", "scroll", "speak", "spray", "stack", "stacks", "set",  "show", "sort",
                 "shrink", "stretch", "subtract", "unlock", "unmark", "wait", "wipe", "write", "zoom"
             ];
             let match = null;
-            keywords.forEach((k) => {
-                match = g.match(k, 'keyword');
+            keywordWCs.forEach((k) => {
+                match = g.match(k, 'keywordWC');
                 assert.isTrue(match.succeeded());
             });
         });
-        it ("Matching basic keywords (click actions)", function () {
-            let keywords = [
+        it ("Matching basic keywordWCs (click actions)", function () {
+            let keywordWCs = [
                 "click", "clickh", "clickchunk", "clickloc", "clickline", "clicktext", "clickv"
             ];
             let match = null;
-            keywords.forEach((k) => {
-                match = g.match(k, 'keyword');
+            keywordWCs.forEach((k) => {
+                match = g.match(k, 'keywordWC');
                 assert.isTrue(match.succeeded());
             });
         });
-        it ("Matching basic keywords (selected*)", function () {
-            let keywords = [
+        it ("Matching basic keywordWCs (selected*)", function () {
+            let keywordWCs = [
                 "selectedchunk", "selectedfield", "selectedline", "selectedloc", "selectedtext"
             ];
             let match = null;
-            keywords.forEach((k) => {
-                match = g.match(k, 'keyword');
+            keywordWCs.forEach((k) => {
+                match = g.match(k, 'keywordWC');
                 assert.isTrue(match.succeeded());
             });
         });
-        it ("Matching basic keywords (math functions)", function () {
-            let keywords = [
-                "average", "min", "max", "sum", "random", "sqrt", "trunc", "sin",
-                "cos", "tan", "atan", "exp", "exp1", "exp2", "ln", "ln1", "log2", "abs",
-            ];
-            let match = null;
-            keywords.forEach((k) => {
-                match = g.match(k, 'keyword');
-                assert.isTrue(match.succeeded());
-            });
-        });
-        it ("Matching basic keywords (n'th)", function () {
-            let keywords = [
+        it ("Matching basic keywordWCs (n'th)", function () {
+            let keywordWCs = [
                 "first", "second", "third", "fourth", "fifth", "sixth", "seventh", "eighth", "ninth",
                 "tenth", "last"
             ];
             let match = null;
-            keywords.forEach((k) => {
-                match = g.match(k, 'keyword');
+            keywordWCs.forEach((k) => {
+                match = g.match(k, 'keywordWC');
                 assert.isTrue(match.succeeded());
             });
         });
-        it ("Matching basic keywords (gender)", function () {
-            let keywords = [
+        it ("Matching basic keywordWCs (gender)", function () {
+            let keywordWCs = [
                 "male", "female", "neuter"
             ];
             let match = null;
-            keywords.forEach((k) => {
-                match = g.match(k, 'keyword');
+            keywordWCs.forEach((k) => {
+                match = g.match(k, 'keywordWC');
                 assert.isTrue(match.succeeded());
             });
         });
-        it ("Matching basic keywords (found*)", function () {
-            let keywords = [
+        it ("Matching basic keywordWCs (found*)", function () {
+            let keywordWCs = [
                 "foundchunk", "foundfield", "foundline", "foundtext"
             ];
             let match = null;
-            keywords.forEach((k) => {
-                match = g.match(k, 'keyword');
+            keywordWCs.forEach((k) => {
+                match = g.match(k, 'keywordWC');
                 assert.isTrue(match.succeeded());
             });
         });
-        it ("Matching basic keywords (mouse*)", function () {
-            let keywords = [
+        it ("Matching basic keywordWCs (mouse*)", function () {
+            let keywordWCs = [
                 "mouse", "mouseclick", "mouseloc"
             ];
             let match = null;
-            keywords.forEach((k) => {
-                match = g.match(k, 'keyword');
+            keywordWCs.forEach((k) => {
+                match = g.match(k, 'keywordWC');
                 assert.isTrue(match.succeeded());
             });
         });
-        it ("Matching basic keywords (prepositions and related)", function () {
-            let keywords = [
+        it ("Matching basic keywordWCs (prepositions and related)", function () {
+            let keywordWCs = [
                 "to", "using", "with", "without", "at", "from", "by", "for", "as", "of"
             ];
             let match = null;
-            keywords.forEach((k) => {
-                match = g.match(k, 'keyword');
+            keywordWCs.forEach((k) => {
+                match = g.match(k, 'keywordWC');
                 assert.isTrue(match.succeeded());
             });
         });
-        it ("Matching basic keywords (quantifiers)", function () {
-            let keywords = [
+        it ("Matching basic keywordWCs (quantifiers)", function () {
+            let keywordWCs = [
                 "any", "all"
             ];
             let match = null;
-            keywords.forEach((k) => {
-                match = g.match(k, 'keyword');
+            keywordWCs.forEach((k) => {
+                match = g.match(k, 'keywordWC');
                 assert.isTrue(match.succeeded());
             });
         });
-        it ("Matching basic keywords (types)", function () {
-            let keywords = [
+        it ("Matching basic keywordWCs (types)", function () {
+            let keywordWCs = [
                 "logical", "string", "number", "numeric", "datetime",
                 "integer", "dateitems", "date", "time",  "times",
                 "seconds", "secs", "sec", "bool", "boolean"
             ];
             let match = null;
-            keywords.forEach((k) => {
-                match = g.match(k, 'keyword');
+            keywordWCs.forEach((k) => {
+                match = g.match(k, 'keywordWC');
                 assert.isTrue(match.succeeded());
             });
         });
-        it ("Matching basic keywords (buttons)", function () {
-            let keywords = [
+        it ("Matching basic keywordWCs (buttons)", function () {
+            let keywordWCs = [
                 "button", "buttons", "btn", "btns"
             ];
             let match = null;
-            keywords.forEach((k) => {
-                match = g.match(k, 'keyword');
+            keywordWCs.forEach((k) => {
+                match = g.match(k, 'keywordWC');
                 assert.isTrue(match.succeeded());
             });
         });
-        it ("Matching basic keywords (shapes)", function () {
-            let keywords = [
+        it ("Matching basic keywordWCs (shapes)", function () {
+            let keywordWCs = [
                 "poly", "polygon", "round", "rect", "rectangle", "screenrect", "point", "line", "lines"
             ];
             let match = null;
-            keywords.forEach((k) => {
-                match = g.match(k, 'keyword');
+            keywordWCs.forEach((k) => {
+                match = g.match(k, 'keywordWC');
                 assert.isTrue(match.succeeded());
             });
         });
-        it ("Matching basic keywords (objects)", function () {
-            let keywords = [
+        it ("Matching basic keywordWCs (objects)", function () {
+            let keywordWCs = [
                 "file" , "tool" , "domenu", "script", "titlebar", "screen", "this", "text",
                 "voice", "voices", "window", "windows", "dialog", "part", "parts", "id", "word", "words"
             ];
             let match = null;
-            keywords.forEach((k) => {
-                match = g.match(k, 'keyword');
+            keywordWCs.forEach((k) => {
+                match = g.match(k, 'keywordWC');
                 assert.isTrue(match.succeeded());
             });
         });
-        it ("Matching basic keywords (conditionals)", function () {
-            let keywords = [
+        it ("Matching basic keywordWCs (conditionals)", function () {
+            let keywordWCs = [
                 "until", "where", "while", "can", "forever"
             ];
             let match = null;
-            keywords.forEach((k) => {
-                match = g.match(k, 'keyword');
+            keywordWCs.forEach((k) => {
+                match = g.match(k, 'keywordWC');
                 assert.isTrue(match.succeeded());
             });
         });
-        it ("Matching basic keywords (directionals)", function () {
-            let keywords = [
+        it ("Matching basic keywordWCs (directionals)", function () {
+            let keywordWCs = [
                 "down" , "up", "left", "right", "next", "offset", "prev", "previous"
             ];
             let match = null;
-            keywords.forEach((k) => {
-                match = g.match(k, 'keyword');
+            keywordWCs.forEach((k) => {
+                match = g.match(k, 'keywordWC');
                 assert.isTrue(match.succeeded());
             });
         });
-        it ("Matching basic keywords (directionals)", function () {
-            let keywords = [
+        it ("Matching basic keywordWCs (directionals)", function () {
+            let keywordWCs = [
                 "bottom", "top", "center", "middle", "mid", "whole", "start"
             ];
             let match = null;
-            keywords.forEach((k) => {
-                match = g.match(k, 'keyword');
+            keywordWCs.forEach((k) => {
+                match = g.match(k, 'keywordWC');
                 assert.isTrue(match.succeeded());
             });
         });
-        it ("matching basic keywords (background refs)", function () {
-            let keywords = [
+        it ("matching basic keywordWCs (background refs)", function () {
+            let keywordWCs = [
                 "background", "backgrounds", "bkgnd", "bkgnds", "bg", "bgs"
             ];
             let match = null;
-            keywords.forEach((k) => {
-                match = g.match(k, 'keyword');
+            keywordWCs.forEach((k) => {
+                match = g.match(k, 'keywordWC');
                 assert.isTrue(match.succeeded());
             });
         });
-        it ("matching basic keywords (card refs)", function () {
-            let keywords = [
+        it ("matching basic keywordWCs (card refs)", function () {
+            let keywordWCs = [
                 "card", "cards", "cd", "cds"
             ];
             let match = null;
-            keywords.forEach((k) => {
-                match = g.match(k, 'keyword');
+            keywordWCs.forEach((k) => {
+                match = g.match(k, 'keywordWC');
                 assert.isTrue(match.succeeded());
             });
         });
-        it ("matching basic keywords (field refs)", function () {
-            let keywords = [
+        it ("matching basic keywordWCs (field refs)", function () {
+            let keywordWCs = [
                 "field", "fields", "fld", "flds"
             ];
             let match = null;
-            keywords.forEach((k) => {
-                match = g.match(k, 'keyword');
+            keywordWCs.forEach((k) => {
+                match = g.match(k, 'keywordWC');
                 assert.isTrue(match.succeeded());
             });
         });
-        it ("matching basic keywords (param refs)", function () {
-            let keywords = [
+        it ("matching basic keywordWCs (param refs)", function () {
+            let keywordWCs = [
                 "param", "params", "paramcount"
             ];
             let match = null;
-            keywords.forEach((k) => {
-                match = g.match(k, 'keyword');
+            keywordWCs.forEach((k) => {
+                match = g.match(k, 'keywordWC');
                 assert.isTrue(match.succeeded());
             });
         });
-        it ("matching basic keywords (colors)", function () {
-            let keywords = [
+        it ("matching basic keywordWCs (colors)", function () {
+            let keywordWCs = [
                 "black", "gray", "grey", "white"
             ];
             let match = null;
-            keywords.forEach((k) => {
-                match = g.match(k, 'keyword');
+            keywordWCs.forEach((k) => {
+                match = g.match(k, 'keywordWC');
                 assert.isTrue(match.succeeded());
             });
         });
-        it ("matching basic keywords (adjectives/adverbs)", function () {
-            let keywords = [
+        it ("matching basic keywordWCs (adjectives/adverbs)", function () {
+            let keywordWCs = [
                 "short", "long", "ascending", "descending", "marked", "abbreviated", "abbrev", "abbr",
                 "regular", "reg", "slowly", "slow", "fast", "very", "plain", "inverse",
                 "international", "visual", "robotic", "english", "finding"
             ];
             let match = null;
-            keywords.forEach((k) => {
-                match = g.match(k, 'keyword');
+            keywordWCs.forEach((k) => {
+                match = g.match(k, 'keywordWC');
                 assert.isTrue(match.succeeded());
             });
         });
-        it ("matching basic keywords (other objects)", function () {
-            let keywords = [
+        it ("matching basic keywordWCs (other objects)", function () {
+            let keywordWCs = [
                 "sound", "speech", "systemversion", "diskspace", "commandkeydown", "checkpoint", "effect",
                 "picture", "pict", "barn", "door", "checkerboard", "iris", "venetian", "blinds", "tick", "ticks",
                 "messages", "msg", "box", "result", "value", "length", "keydown", "type", "pattern", "watcher",
                 "variable",  "password", "selection", "tempo"
             ];
             let match = null;
-            keywords.forEach((k) => {
-                match = g.match(k, 'keyword');
+            keywordWCs.forEach((k) => {
+                match = g.match(k, 'keywordWC');
                 assert.isTrue(match.succeeded());
             });
         });
-        it ("Not Matching basic keywords", function () {
-            let match = g.match('found', 'keyword');
+        it ("Not Matching basic keywordWCs", function () {
+            let match = g.match('found', 'keywordWC');
             assert.isTrue(match.failed());
         });
-        it ("Not Matching basic keywords", function () {
-            let match = g.match('menuBAD', 'keyword');
+        it ("Not Matching basic keywordWCs", function () {
+            let match = g.match('menuBAD', 'keywordWC');
             assert.isTrue(match.failed());
         });
-        it ("Not Matching basic keywords", function () {
-            let match = g.match('exp3', 'keyword');
+        it ("Not Matching basic keywordWCs", function () {
+            let match = g.match('exp3', 'keywordWC');
             assert.isTrue(match.failed());
         });
-        it ("Not Matching basic keywords", function () {
-            let match = g.match('clicklocchunk', 'keyword');
+        it ("Not Matching basic keywordWCs", function () {
+            let match = g.match('clicklocchunk', 'keywordWC');
             assert.isTrue(match.failed());
         });
-        it ("Not Matching basic keywords", function () {
-            let match = g.match('beep ', 'keyword');
+        it ("Not Matching basic keywordWCs", function () {
+            let match = g.match('beep ', 'keywordWC');
             assert.isTrue(match.failed());
         });
-        it ("Not Matching basic keywords", function () {
-            let match = g.match('beep123', 'keyword');
+        it ("Not Matching basic keywordWCs", function () {
+            let match = g.match('beep123', 'keywordWC');
             assert.isTrue(match.failed());
         });
     describe("Testing comments", function () {

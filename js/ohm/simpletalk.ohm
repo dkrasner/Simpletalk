@@ -28,8 +28,22 @@ SimpleTalk {
 
 	// Note: no spaces between parameters
 	parameterList (parameter list)
-		= nonemptyListOf<symbol, ",">
+		= nonemptyListOf<symbol, ", ">
 		
+	// For the moment we allow only the "function()" syntax to describe a function
+	// (as opposed to "the function" or "function of" more general syntax found on HT) 
+	function
+		= builtInFunction "(" parameterList? ")" 
+
+	builtInFunction (natively supported functions in SimpleTalk)
+		= builtInMathFunction | "charToNum" 
+		| modifierKeyName "key" -- modifierKeyBuiltInFunction 
+
+	builtInMathFunction (math function)
+		= "average" | "min" | "max" | "sum" | "random" | "sqrt" | "trunc" | "sin"
+		| "cos" | "tan" | "atan" | "exp" | "ln" | "abs"
+
+
 	statementList (a statement list)
 		= space* statement " "* "\n"+ statementList?
 	
@@ -48,12 +62,16 @@ SimpleTalk {
 
 	symbol (a symbol, id or keyword)
 		= letter (letter | digit)*  -- authored
-		| keyword  -- keyword
+		| keywordWC  -- keywordWC
 
 	id (an id)
 		= letter (letter | digit)*
 
-	keyword (a keyword symbol)
+	keyword (a keyword)
+		= "do" | "next" | "else" | "on" | "end" | "pass" | "exit" | "repeat" | "function" | "return" | "global" | "send" | "if" | "then"
+
+	// Temporary implementation of WC's keywords
+	keywordWC (a keyword symbol)
 		= "menu" menuType? -- menuTypeSymbol 
 		| "round" | "rectangle" | "rect" | "screenrect" | "point" | singPlu<"line"> | "poly" "gon"? --polygonType 
 		| "bottom" | "top" | "center" | "middle" | "mid" | "whole" | "start"  
@@ -66,7 +84,6 @@ SimpleTalk {
 		| "annuity" | "compound" | "numtochar" | "chartonum"
 		| singPlu<"character"> | singPlu<"char"> 
 		| "selected" ("chunk" | "field" | "line" | "loc" | "text")? -- selectedTypeKeyword
-		| modifierKeyName "key" -- modifierkeyTypeKeyword 
 		| singPlu<"item">
 		| commonKey + "key" -- commonkeyTypeKeyword
 		| "click" + clickActions? -- commonclickTypeKeyword
@@ -74,7 +91,6 @@ SimpleTalk {
 		| "slowly" | "slow" | "fast" | "very" | "plain" | "inverse"
 		| "international" | "visual" | "robotic" | "english" | "finding"
 		| commonActions
-		| mathFun
 		| "found" ("chunk" | "field" | "line" | "text")  --foundObjectKeyword
 		| "mouse" ( "click" | "loc")?  --mouseActionKeyword
 		| "male" | "female" | "neuter" 
@@ -104,15 +120,8 @@ SimpleTalk {
 		= "bar" | singPlu<"item"> 
 		|"s" |"message" | "msg"
 
-	mathFun (math function)
-		= "average" | "min" | "max" | "sum" | "random" | "sqrt" | "trunc" | "sin"
-		| "cos" | "tan" | "atan"
-		| "exp" ("1" | "2")? --exponentialFunctions
-		| "ln" "1"? --naturalLogFunctions
-		| "log2" | "abs"
-
 	modifierKeyName (a modifier key name)
-		= "command" | "cmd" | "option" | "control" | "ctrl" | "shift"
+		= "command" | "option" | "control" | "shift"
 
 	commonKey (common keys)
 		= "tab" | "arrow" | "enter"
@@ -124,14 +133,11 @@ SimpleTalk {
 		= "add" | "answer" | "ask"| "beep" | "choose" | "close" | "convert"
 		| "create" | "debug" | "delete"| "dial" | "disable" |  "dissolve" | "divide" | "drag" | "edit"
 		| "enable" | "enterinfield" | "export" | "find" | "get" | "go" | "hide"  | "import" | "lock"
-		| "mark"  | "multiply" | "open" | "paint" | "pass" | "play" | "pop" | "push" | "put"
-		| "read" | "reset" | "save"  | "scroll" | "speak" | "spray" | singPlu<"stack"> | "set" | "send" | "show"
+		| "mark"  | "multiply" | "open" | "paint" | "play" | "pop" | "push" | "put"
+		| "read" | "reset" | "save"  | "scroll" | "speak" | "spray" | singPlu<"stack"> | "set"  | "show"
 		| "sort" | "shrink" | "stretch" | "subtract" | "unlock" | "unmark" | "wait"
 		| "wipe" | "write" | "zoom"
 
-	// TODO
-	function
-		= "FUNCTION" 
 	// TODO
 	comment
 		= "--"letter+
