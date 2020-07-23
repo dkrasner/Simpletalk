@@ -38,6 +38,78 @@ describe("SimpleTalk Grammar", function () {
         });
     });
     describe("Functions", function () {
+        it ("Function name", function () {
+            let strings = [
+                "f", "F", "f1", "F1", "afunction", "aFunction", "aFunction123"
+            ];
+            let match = null;
+            strings.forEach((s) => {
+                match = g.match(s, 'functionName');
+                if (!match.succeeded()){console.log(k)};
+                assert.isTrue(match.succeeded());
+            });
+        });
+        it ("Bad function name", function () {
+            let strings = [
+                "1", "1f", "1F", " function"
+            ];
+            let match = null;
+            strings.forEach((s) => {
+                match = g.match(s, 'functionName');
+                assert.isTrue(match.failed());
+            });
+        });
+        it ("Function handler (no args, no statements)", function () {
+            let s = `function myNewFunc()\nend myNewFunc`
+            let match = g.match(s, 'functionHandler');
+            if (!match.succeeded()){console.log(s)};
+            assert.isTrue(match.succeeded());
+        });
+        it ("Function handler (args, no statements)", function () {
+            let s = `function myNewFunc(arg1, arg2)\nend myNewFunc`
+            let match = g.match(s, 'functionHandler');
+            if (!match.succeeded()){console.log(s)};
+            assert.isTrue(match.succeeded());
+        });
+        it ("Function handler (args, single statement)", function () {
+            let s = `function myNewFunc(arg1, arg2)
+            global var1, var\nend myNewFunc`
+            let match = g.match(s, 'functionHandler');
+            if (!match.succeeded()){console.log(s)};
+            assert.isTrue(match.succeeded())
+        });
+        it ("Function handler (args, statements)", function () {
+            let s = `function myNewFunc(arg1, arg2)
+            global var1, var
+            global var1, var\nend myNewFunc`
+            let match = g.match(s, 'functionHandler');
+            if (!match.succeeded()){console.log(s)};
+            assert.isTrue(match.succeeded())
+        });
+        it ("Bad Function handler (missing 'function' keyword)", function () {
+            let s = `funct myNewFunc(arg1, arg2)
+            global var1, var
+            global var1, var\nend myNewFunc`
+            let match = g.match(s, 'functionHandler');
+            if (!match.succeeded()){console.log(s)};
+            assert.isTrue(match.failed())
+        });
+        it ("Bad Function handler (missing 'end' keyword)", function () {
+            let s = `function myNewFunc(arg1, arg2)
+            global var1, var
+            global var1, var\nmyNewFunc`
+            let match = g.match(s, 'functionHandler');
+            if (!match.succeeded()){console.log(s)};
+            assert.isTrue(match.failed())
+        });
+        it ("Bad Function handler (missing '()')", function () {
+            let s = `function myNewFunc arg1, arg2
+            global var1, var
+            global var1, var\nend myNewFunc`
+            let match = g.match(s, 'functionHandler');
+            if (!match.succeeded()){console.log(s)};
+            assert.isTrue(match.failed())
+        });
         it ("Built in function syntax", function () {
             let strings = [
                 "average()", "tan()", "mouseClick()", "sin(30)"

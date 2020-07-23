@@ -1,7 +1,7 @@
 SimpleTalk {
 	Script
 		= handler
-		| function
+		| functionHandler
 		| comment
 		| end
 
@@ -26,8 +26,23 @@ SimpleTalk {
 	argHandler (handler parameter and statement lists)
 		= " " parameterList space+ statementList?
 
+	// Function definition follows the HT convention
+	// function functionName [parameterList]
+	//     statementList
+	// end functionName
+	functionHandlerSyntax<name, parameters, statements> 
+		= "function" space name "(" parameterList? ")" "\n" statements? "end" space name
+
+	functionHandler = functionHandlerSyntax<functionName, parameterList, statementList>
+
+	// TODO do we want to restrict function names (start with lowercase etc)?
+	// prevent keyword overloading?
+	functionName (function name)
+		= letter (letter | digit)*
+
 	// Note: no spaces between parameters
 	parameterList (parameter list)
+		// TODO do we need to prevent keyword overload?
 		= nonemptyListOf<(letter | digit)+, ", ">
 		
 	// For the moment we allow only the "function()" syntax to describe a function
@@ -35,7 +50,8 @@ SimpleTalk {
 	// TODO should we insist that authered functions start with a lower case letter?
 	function
 		= builtInFunction "(" parameterList? ")" --builtInFunction
-		| letter (letter | digit)* "(" parameterList? ")" --authoredFunction
+		// TODO do we need to prevent keyword overload?
+		| functionName "(" parameterList? ")" --authoredFunction
 
 	builtInFunction (natively supported functions in SimpleTalk)
 		= builtInMathFunction | "charToNum" | "date" | "length" | "menus"
@@ -49,11 +65,18 @@ SimpleTalk {
 		| "cos" | "tan" | "atan" | "exp" | "ln" | "abs"
 
 
-	statementList (a statement list)
-		= space* statement " "* "\n"+ statementList?
-	
+	statementList (a statement list, comments included)
+		= statementLine+
+
+	statementLine (a statement line)
+		= space* statement "\n" 
+
+	// Note we explicitely exclude keywords, i.e. control
 	statement (a statement)
-		= globalStatement
+		= ~"end" (globalStatement)
+	
+	// statement (a statement)
+		// = globalStatement
 		//| commandStatement
 		//| functionCall
 		//| messageStatement
@@ -72,6 +95,7 @@ SimpleTalk {
 	id (an id)
 		= letter (letter | digit)*
 
+	// We need to prevent keyword overload since these are core control flow indicators
 	keyword (a keyword)
 		= "do" | "next" | "else" | "on" | "end" | "pass" | "exit" | "repeat" | "function" | "return" | "global" | "send" | "if" | "then"
 
