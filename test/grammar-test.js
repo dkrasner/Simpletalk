@@ -38,30 +38,66 @@ describe("SimpleTalk Grammar", function () {
         });
     });
     describe("Functions", function () {
+        it ("Built in function syntax", function () {
+            let strings = [
+                "average()", "tan()", "mouseClick()", "sin(30)"
+            ];
+            let match = null;
+            strings.forEach((s) => {
+                match = g.match(s, 'function');
+                if (!match.succeeded()){console.log(s)};
+                assert.isTrue(match.succeeded());
+                match = g.match(s, 'function_builtInFunction');
+                if (!match.succeeded()){console.log(s)};
+                assert.isTrue(match.succeeded());
+            });
+        });
+        it ("Authored in function syntax", function () {
+            let strings = [
+                "myNewFun()", "myNewFun(arg1)", "myNewFun(arg1, arg2)", "myNewFun(50)"
+            ];
+            let match = null;
+            strings.forEach((s) => {
+                match = g.match(s, 'function');
+                if (!match.succeeded()){console.log(s)};
+                assert.isTrue(match.succeeded());
+                match = g.match(s, 'function_authoredFunction');
+                if (!match.succeeded()){console.log(s)};
+                assert.isTrue(match.succeeded());
+            });
+        });
         it ("Built in math functions", function () {
-            let keyword = [
+            let strings = [
                 "average", "min", "max", "sum", "random", "sqrt", "trunc", "sin",
                 "cos", "tan", "atan", "exp", "ln", "abs",
             ];
             let match = null;
-            keyword.forEach((k) => {
-                match = g.match(k, 'builtInMathFunction');
+            strings.forEach((s) => {
+                match = g.match(s, 'builtInFunction');
                 assert.isTrue(match.succeeded());
             });
         });
         it ("Modifier key functions", function () {
-            let match = g.match('characters', 'keywordWC');
-            assert.isTrue(match.succeeded());
-            match = g.match('commandkey', 'keywordWC');
-            assert.isTrue(match.succeeded());
-            match = g.match('cmdkey', 'keywordWC');
-            assert.isTrue(match.succeeded());
-            match = g.match('optionkey', 'keywordWC');
-            assert.isTrue(match.succeeded());
-            match = g.match('controlkey', 'keywordWC');
-            assert.isTrue(match.succeeded());
-            match = g.match('shiftkey', 'keywordWC');
-            assert.isTrue(match.succeeded());
+            let strings = [
+                "commandkey", "optionkey", "controlkey", "shiftkey"
+            ];
+            let match = null;
+            strings.forEach((s) => {
+                match = g.match(s, 'builtInFunction');
+                if (!match.succeeded()){console.log(k)};
+                assert.isTrue(match.succeeded());
+            });
+        });
+        it ("Basic built in functions", function () {
+            let strings = [
+                "charToNum", "date", "length", "menus", "mouse", "mouseClick"
+            ];
+            let match = null;
+            strings.forEach((s) => {
+                match = g.match(s, 'builtInFunction');
+                if (!match.succeeded()){console.log(k)};
+                assert.isTrue(match.succeeded());
+            });
         });
     });
     describe("Statement", function () {
@@ -131,20 +167,28 @@ describe("SimpleTalk Grammar", function () {
         });
     });
     describe("Parameter List", function () {
+        it ("Single param list", function () {
+            let match = g.match("param1", "parameterList");
+            assert.isTrue(match.succeeded());
+        });
         it ("Simple param list", function () {
             let match = g.match("param1, param2", "parameterList");
             assert.isTrue(match.succeeded());
         });
-        it ("Param list with symbols", function () {
-            let match = g.match("top, bottom, newparam123", "parameterList");
+        it ("Param list with digits", function () {
+            let match = g.match("12, 22, newparam123", "parameterList");
             assert.isTrue(match.succeeded());
         });
-        it ("Bad param list (with spaces)", function () {
+        it ("Bad param list (without spaces)", function () {
             let match = g.match("param1,param2", "parameterList");
             assert.isTrue(match.failed());
         });
-        it ("Bad param list (bad symbol)", function () {
-            let match = g.match("1symbolbad,param2", "parameterList");
+        it ("Bad param list (space)", function () {
+            let match = g.match("pa ram1, param2", "parameterList");
+            assert.isTrue(match.failed());
+        });
+        it ("Bad param list (start space)", function () {
+            let match = g.match(" param1, param2", "parameterList");
             assert.isTrue(match.failed());
         });
     });

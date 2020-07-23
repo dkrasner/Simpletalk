@@ -28,17 +28,22 @@ SimpleTalk {
 
 	// Note: no spaces between parameters
 	parameterList (parameter list)
-		= nonemptyListOf<symbol, ", ">
+		= nonemptyListOf<(letter | digit)+, ", ">
 		
 	// For the moment we allow only the "function()" syntax to describe a function
 	// (as opposed to "the function" or "function of" more general syntax found on HT) 
+	// TODO should we insist that authered functions start with a lower case letter?
 	function
-		= builtInFunction "(" parameterList? ")" 
+		= builtInFunction "(" parameterList? ")" --builtInFunction
+		| letter (letter | digit)* "(" parameterList? ")" --authoredFunction
 
 	builtInFunction (natively supported functions in SimpleTalk)
-		= builtInMathFunction | "charToNum" 
+		= builtInMathFunction | "charToNum" | "date" | "length" | "menus"
+		| "mouseClick" | "mouse"
 		| modifierKeyName "key" -- modifierKeyBuiltInFunction 
 
+	// TODO should we insist on certain functions having no argument or single args
+	// at the grammar level?
 	builtInMathFunction (math function)
 		= "average" | "min" | "max" | "sum" | "random" | "sqrt" | "trunc" | "sin"
 		| "cos" | "tan" | "atan" | "exp" | "ln" | "abs"
