@@ -86,12 +86,20 @@ describe("SimpleTalk Grammar", function () {
             if (!match.succeeded()){console.log(s)};
             assert.isTrue(match.succeeded())
         });
+        it ("Function handler (args, statements with control flow)", function () {
+            let s = `function myNewFunc(arg1, arg2)
+            global var1, var
+            global var1, var
+            pass myNewFunc\nend myNewFunc`
+            let match = g.match(s, 'functionHandler');
+            if (!match.succeeded()){console.log(s)};
+            assert.isTrue(match.succeeded())
+        });
         it ("Bad Function handler (missing 'function' keyword)", function () {
             let s = `funct myNewFunc(arg1, arg2)
             global var1, var
             global var1, var\nend myNewFunc`
             let match = g.match(s, 'functionHandler');
-            if (!match.succeeded()){console.log(s)};
             assert.isTrue(match.failed())
         });
         it ("Bad Function handler (missing 'end' keyword)", function () {
@@ -99,7 +107,6 @@ describe("SimpleTalk Grammar", function () {
             global var1, var
             global var1, var\nmyNewFunc`
             let match = g.match(s, 'functionHandler');
-            if (!match.succeeded()){console.log(s)};
             assert.isTrue(match.failed())
         });
         it ("Bad Function handler (missing '()')", function () {
@@ -107,7 +114,6 @@ describe("SimpleTalk Grammar", function () {
             global var1, var
             global var1, var\nend myNewFunc`
             let match = g.match(s, 'functionHandler');
-            if (!match.succeeded()){console.log(s)};
             assert.isTrue(match.failed())
         });
         it ("Built in function syntax", function () {
