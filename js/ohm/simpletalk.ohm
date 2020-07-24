@@ -33,20 +33,20 @@ SimpleTalk {
 	// end functionName
 	// """
 	functionHandlerSyntax<name, parameters, statements> 
-		= "function" space name "(" parameterList? ")" "\n" statements? "end" space name
+		= "function" " " name "(" parameterList? ")" "\n" statements? "end" " " name
 
 	functionHandler = functionHandlerSyntax<functionName, parameterList, statementList>
 
 	// TODO do we want to restrict function names (start with lowercase etc)?
-	// prevent keyword overloading?
+	// Note: we prevent keyword overloading
 	functionName (function name)
-		= letter (letter | digit)*
+		= ~keyword (letter (letter | digit)*)
 
 	// TODO do we want to restrict message names (start with lowercase etc)?
-	// prevent keyword overloading?
 	// should these be different from functionName?
-	messageName (function name)
-		= letter+
+	// Note: we prevent keyword overloading
+	messageName (message name)
+		= ~keyword letter+
 
 	// Note: no spaces between parameters
 	parameterList (parameter list)
@@ -86,9 +86,9 @@ SimpleTalk {
 		= ~"end" (globalStatement | controlStructure)
 	
 	controlStructure (a statement control structure)
-		= "exit" (messageName | functionName | "to SimpleCard") --exit
-		| "pass" (messageName | functionName) --pass
-		| "return" functionName --return //TODO we need to return expressions as well!
+		= "exit" " " ("to SimpleCard" | messageName | functionName) --exit
+		| "pass" " " (messageName | functionName) --pass
+		| "return" " " functionName --return //TODO we need to return expressions as well!
 		
 	globalStatement (a "global" statement)
 		= "global " parameterList

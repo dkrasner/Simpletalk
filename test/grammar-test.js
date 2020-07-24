@@ -51,7 +51,7 @@ describe("SimpleTalk Grammar", function () {
         });
         it ("Bad function name", function () {
             let strings = [
-                "1", "1f", "1F", " function"
+                "1", "1f", "1F", " function", "then", "on", "end"
             ];
             let match = null;
             strings.forEach((s) => {
@@ -86,12 +86,27 @@ describe("SimpleTalk Grammar", function () {
             if (!match.succeeded()){console.log(s)};
             assert.isTrue(match.succeeded())
         });
-        it ("Function handler (args, statements with control flow)", function () {
+        it ("Function handler (args, statements with 'pass' control flow)", function () {
             let s = `function myNewFunc(arg1, arg2)
             global var1, var
             global var1, var
             pass myNewFunc\nend myNewFunc`
             let match = g.match(s, 'functionHandler');
+            if (!match.succeeded()){console.log(s)};
+            assert.isTrue(match.succeeded())
+        });
+        it ("Function handler (args, statements with 'exit' control flow)", function () {
+            let s = `function myNewFunc(arg1, arg2)
+            global var1, var
+            exit myNewFunc\nend myNewFunc`
+            let match = g.match(s, 'functionHandler');
+            if (!match.succeeded()){console.log(s)};
+            assert.isTrue(match.succeeded())
+            s = `function myNewFunc(arg1, arg2)
+            global var1, var
+            global var1, var
+            exit to SimpleCard\nend myNewFunc`
+            match = g.match(s, 'functionHandler');
             if (!match.succeeded()){console.log(s)};
             assert.isTrue(match.succeeded())
         });
