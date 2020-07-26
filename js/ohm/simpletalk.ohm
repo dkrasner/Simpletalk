@@ -93,11 +93,25 @@ SimpleTalk {
 	globalStatement (a "global" statement)
 		= "global " parameterList
 
+	expression (an expression)
+		= factor | "(" " "? expression " "? ")" --parenthetical
+	
+	factor (a factor type expression)
+		= digit+ "." digit+ --float
+		| digit+ --integer
+		| "not" " " expression --logicalNegation
+		| letter alnum* --literal
+		| "-" expression --negation
+
 	// We need to prevent keyword overload since these are core control flow indicators
 	keyword (a keyword)
 		= "do" | "next" | "else" | "on" | "end" | "pass" | "exit" | "repeat" | "function" | "return" | "global" | "send" | "if" | "then"
 
+
+
+
 	// CLEAN UP OR REMOVE ALL BELOW
+	// -------------------------------------------------------------------------
 	symbol (a symbol, id or keyword)
 		= letter (letter | digit)*  -- authored
 		| keywordWC  -- keywordWC

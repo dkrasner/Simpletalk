@@ -11,32 +11,6 @@ describe("SimpleTalk Grammar", function () {
     describe("Script Handler", function () {
         // TODO
         });
-    describe("Statement List", function () {
-        it ("Single statement statement list", function () {
-            let s = `global param1, param2\n`;
-            let match = g.match(s, "statementList");
-            assert.isTrue(match.succeeded());
-        });
-        it ("Bad single statement statement list (no newline)", function () {
-            let s = `global param1, param2`;
-            let match = g.match(s, "statementList");
-            assert.isTrue(match.failed());
-        });
-        it ("Multi statement statement list", function () {
-            let s = ` global param1, param2\n
-            global param1, param2\n`
-            ;
-            let match = g.match(s, "statementList");
-            assert.isTrue(match.succeeded());
-        });
-        it ("Bad multi statement statement list (no newline)", function () {
-            let s = ` global param1, param2\t
-            global param1, param2\n`
-            ;
-            let match = g.match(s, "statementList");
-            assert.isTrue(match.failed());
-        });
-    });
     describe("Functions", function () {
         it ("Function name", function () {
             let strings = [
@@ -45,7 +19,6 @@ describe("SimpleTalk Grammar", function () {
             let match = null;
             strings.forEach((s) => {
                 match = g.match(s, 'functionName');
-                if (!match.succeeded()){console.log(k)};
                 assert.isTrue(match.succeeded());
             });
         });
@@ -62,20 +35,17 @@ describe("SimpleTalk Grammar", function () {
         it ("Function handler (no args, no statements)", function () {
             let s = `function myNewFunc()\nend myNewFunc`
             let match = g.match(s, 'functionHandler');
-            if (!match.succeeded()){console.log(s)};
             assert.isTrue(match.succeeded());
         });
         it ("Function handler (args, no statements)", function () {
             let s = `function myNewFunc(arg1, arg2)\nend myNewFunc`
             let match = g.match(s, 'functionHandler');
-            if (!match.succeeded()){console.log(s)};
             assert.isTrue(match.succeeded());
         });
         it ("Function handler (args, single statement)", function () {
             let s = `function myNewFunc(arg1, arg2)
             global var1, var\nend myNewFunc`
             let match = g.match(s, 'functionHandler');
-            if (!match.succeeded()){console.log(s)};
             assert.isTrue(match.succeeded())
         });
         it ("Function handler (args, statements)", function () {
@@ -83,7 +53,6 @@ describe("SimpleTalk Grammar", function () {
             global var1, var
             global var1, var\nend myNewFunc`
             let match = g.match(s, 'functionHandler');
-            if (!match.succeeded()){console.log(s)};
             assert.isTrue(match.succeeded())
         });
         it ("Function handler (args, statements with 'pass' control flow)", function () {
@@ -92,7 +61,6 @@ describe("SimpleTalk Grammar", function () {
             global var1, var
             pass myNewFunc\nend myNewFunc`
             let match = g.match(s, 'functionHandler');
-            if (!match.succeeded()){console.log(s)};
             assert.isTrue(match.succeeded())
         });
         it ("Function handler (args, statements with 'exit' control flow)", function () {
@@ -100,14 +68,12 @@ describe("SimpleTalk Grammar", function () {
             global var1, var
             exit myNewFunc\nend myNewFunc`
             let match = g.match(s, 'functionHandler');
-            if (!match.succeeded()){console.log(s)};
             assert.isTrue(match.succeeded())
             s = `function myNewFunc(arg1, arg2)
             global var1, var
             global var1, var
             exit to SimpleCard\nend myNewFunc`
             match = g.match(s, 'functionHandler');
-            if (!match.succeeded()){console.log(s)};
             assert.isTrue(match.succeeded())
         });
         it ("Bad Function handler (missing 'function' keyword)", function () {
@@ -199,42 +165,215 @@ describe("SimpleTalk Grammar", function () {
             assert.isTrue(match.succeeded());
         });
     });
-    describe("Symbol", function () {
-        it ("Authored symbol", function () {
-            let match = g.match("myNewSymbol", "symbol_authored");
+    describe("Statement List", function () {
+        it ("Single statement statement list", function () {
+            let s = `global param1, param2\n`;
+            let match = g.match(s, "statementList");
             assert.isTrue(match.succeeded());
         });
-        it ("Authored symbol", function () {
-            let match = g.match("myNewSymbol123", "symbol_authored");
-            assert.isTrue(match.succeeded());
-        });
-        it ("Badly Authored symbol", function () {
-            let match = g.match(" myNewSymbol123", "symbol_authored");
+        it ("Bad single statement statement list (no newline)", function () {
+            let s = `global param1, param2`;
+            let match = g.match(s, "statementList");
             assert.isTrue(match.failed());
         });
-        it ("Badly Authored symbol", function () {
-            let match = g.match("1myNewSymbol123", "symbol_authored");
-            assert.isTrue(match.failed());
-        });
-        it ("Not keywordWC symbol", function () {
-            let match = g.match("myNewSymbol123", "symbol_keywordWC");
-            assert.isTrue(match.failed());
-        });
-        it ("Keyword symbol", function () {
-            let match = g.match("point", "symbol_keywordWC");
+        it ("Multi statement statement list", function () {
+            let s = ` global param1, param2\n
+            global param1, param2\n`
+            ;
+            let match = g.match(s, "statementList");
             assert.isTrue(match.succeeded());
         });
-        it ("Authored or Keyword symbol", function () {
-            let match = g.match("point", "symbol");
-            assert.isTrue(match.succeeded());
-        });
-        it ("Authored or Keyword symbol", function () {
-            let match = g.match("aPrettyGoodSymbol123", "symbol");
-            assert.isTrue(match.succeeded());
-        });
-        it ("Neither Authored nor Keyword symbol", function () {
-            let match = g.match("1notaGoodSymbol123", "symbol");
+        it ("Bad multi statement statement list (no newline)", function () {
+            let s = ` global param1, param2\t
+            global param1, param2\n`
+            ;
+            let match = g.match(s, "statementList");
             assert.isTrue(match.failed());
+        });
+    });
+    describe("Expressions", function () {
+        describe("Factor", function () {
+            it ("Integer", function () {
+                let strings = [
+                    "1", "12"
+                ];
+                let match = null;
+                strings.forEach((s) => {
+                    match = g.match(s, 'expression');
+                    assert.isTrue(match.succeeded());
+                    match = g.match(s, 'factor');
+                    assert.isTrue(match.succeeded());
+                    match = g.match(s, 'factor_integer');
+                    assert.isTrue(match.succeeded());
+                });
+            });
+            it ("Not Integer", function () {
+                let strings = [
+                    "1.0", "12.222", "abc123"
+                ];
+                let match = null;
+                strings.forEach((s) => {
+                    match = g.match(s, 'factor_integer');
+                    assert.isTrue(match.failed());
+                });
+            });
+            it ("Float", function () {
+                let strings = [
+                    "1.0", "12.23"
+                ];
+                let match = null;
+                strings.forEach((s) => {
+                    match = g.match(s, 'expression');
+                    if (!match.succeeded()){console.log(s)};
+                    assert.isTrue(match.succeeded());
+                    match = g.match(s, 'factor');
+                    if (!match.succeeded()){console.log(s)};
+                    assert.isTrue(match.succeeded());
+                    match = g.match(s, 'factor_float');
+                    if (!match.succeeded()){console.log(s)};
+                    assert.isTrue(match.succeeded());
+                });
+            });
+            it ("Not Integer", function () {
+                let strings = [
+                    "10", "abc123"
+                ];
+                let match = null;
+                strings.forEach((s) => {
+                    match = g.match(s, 'factor_float');
+                    assert.isTrue(match.failed());
+                });
+            });
+            it ("Literal", function () {
+                let strings = [
+                    "abc", "abc10", "ABC1"
+                ];
+                let match = null;
+                strings.forEach((s) => {
+                    match = g.match(s, 'expression');
+                    if (!match.succeeded()){console.log(s)};
+                    assert.isTrue(match.succeeded());
+                    match = g.match(s, 'factor');
+                    if (!match.succeeded()){console.log(s)};
+                    assert.isTrue(match.succeeded());
+                    match = g.match(s, 'factor_literal');
+                    if (!match.succeeded()){console.log(s)};
+                    assert.isTrue(match.succeeded());
+                });
+            });
+            it ("Not Literal", function () {
+                let strings = [
+                    "10abc", "10", "1ABC1", "1.1"
+                ];
+                let match = null;
+                strings.forEach((s) => {
+                    match = g.match(s, 'factor_literal');
+                    assert.isTrue(match.failed());
+                });
+            });
+            it ("Negated", function () {
+                let strings = [
+                    "-abc", "-10.10", "-1"
+                ];
+                let match = null;
+                strings.forEach((s) => {
+                    match = g.match(s, 'expression');
+                    if (!match.succeeded()){console.log(s)};
+                    assert.isTrue(match.succeeded());
+                    match = g.match(s, 'factor');
+                    if (!match.succeeded()){console.log(s)};
+                    assert.isTrue(match.succeeded());
+                    match = g.match(s, 'factor_negation');
+                    if (!match.succeeded()){console.log(s)};
+                    assert.isTrue(match.succeeded());
+                });
+            });
+            it ("Not negation", function () {
+                let strings = [
+                    "abc", "10", "ABC1", "1.1"
+                ];
+                let match = null;
+                strings.forEach((s) => {
+                    match = g.match(s, 'factor_negation');
+                    assert.isTrue(match.failed());
+                });
+            });
+            it ("Negation", function () {
+                let strings = [
+                    "-abc", "-10.10", "-1"
+                ];
+                let match = null;
+                strings.forEach((s) => {
+                    match = g.match(s, 'expression');
+                    if (!match.succeeded()){console.log(s)};
+                    assert.isTrue(match.succeeded());
+                    match = g.match(s, 'factor');
+                    if (!match.succeeded()){console.log(s)};
+                    assert.isTrue(match.succeeded());
+                    match = g.match(s, 'factor_negation');
+                    if (!match.succeeded()){console.log(s)};
+                    assert.isTrue(match.succeeded());
+                });
+            });
+            it ("Not negation", function () {
+                let strings = [
+                    "abc", "10", "ABC1", "1.1"
+                ];
+                let match = null;
+                strings.forEach((s) => {
+                    match = g.match(s, 'factor_negation');
+                    assert.isTrue(match.failed());
+                });
+            });
+            it ("Logical Negation", function () {
+                let strings = [
+                    "not abc", "not 1", "not 10.10", "not (abc10)"
+                ];
+                let match = null;
+                strings.forEach((s) => {
+                    match = g.match(s, 'expression');
+                    if (!match.succeeded()){console.log(s)};
+                    assert.isTrue(match.succeeded());
+                    match = g.match(s, 'factor');
+                    if (!match.succeeded()){console.log(s)};
+                    assert.isTrue(match.succeeded());
+                    match = g.match(s, 'factor_logicalNegation');
+                    if (!match.succeeded()){console.log(s)};
+                    assert.isTrue(match.succeeded());
+                });
+            });
+            it ("Not logical negation", function () {
+                let strings = [
+                    "abc", "10", "ABC1", "1.1"
+                ];
+                let match = null;
+                strings.forEach((s) => {
+                    match = g.match(s, 'factor_logicalNegation');
+                    assert.isTrue(match.failed());
+                });
+            });
+        });
+        it ("Parenthetical", function () {
+            let strings = [
+                "(1)", "(12.2)", "(abc10)", "( abc )"
+            ];
+            let match = null;
+            strings.forEach((s) => {
+                match = g.match(s, 'expression');
+                assert.isTrue(match.succeeded());
+                match = g.match(s, 'expression_parenthetical');
+                assert.isTrue(match.succeeded());
+            });
+        });
+        it ("Not Parenthetical", function () {
+            let strings = [
+                "1", "12.2", "abc10"
+            ];
+            let match = null;
+            strings.forEach((s) => {
+                match = g.match(s, 'expression_parenthetical');
+                assert.isTrue(match.failed());
+            });
         });
     });
     describe("Id", function () {
@@ -299,7 +438,45 @@ describe("SimpleTalk Grammar", function () {
             assert.isTrue(match.failed());
         });
     });
-    describe("Keyword", function () {
+    describe.skip("Symbol", function () {
+        it ("Authored symbol", function () {
+            let match = g.match("myNewSymbol", "symbol_authored");
+            assert.isTrue(match.succeeded());
+        });
+        it ("Authored symbol", function () {
+            let match = g.match("myNewSymbol123", "symbol_authored");
+            assert.isTrue(match.succeeded());
+        });
+        it ("Badly Authored symbol", function () {
+            let match = g.match(" myNewSymbol123", "symbol_authored");
+            assert.isTrue(match.failed());
+        });
+        it ("Badly Authored symbol", function () {
+            let match = g.match("1myNewSymbol123", "symbol_authored");
+            assert.isTrue(match.failed());
+        });
+        it ("Not keywordWC symbol", function () {
+            let match = g.match("myNewSymbol123", "symbol_keywordWC");
+            assert.isTrue(match.failed());
+        });
+        it ("Keyword symbol", function () {
+            let match = g.match("point", "symbol_keywordWC");
+            assert.isTrue(match.succeeded());
+        });
+        it ("Authored or Keyword symbol", function () {
+            let match = g.match("point", "symbol");
+            assert.isTrue(match.succeeded());
+        });
+        it ("Authored or Keyword symbol", function () {
+            let match = g.match("aPrettyGoodSymbol123", "symbol");
+            assert.isTrue(match.succeeded());
+        });
+        it ("Neither Authored nor Keyword symbol", function () {
+            let match = g.match("1notaGoodSymbol123", "symbol");
+            assert.isTrue(match.failed());
+        });
+    });
+    describe.skip("Keyword", function () {
         it ("Matching basic keywords", function () {
             let keywordWCs = [
                 "do", "next", "else", "on", "end", "pass", "exit", "repeat",
@@ -625,7 +802,7 @@ describe("SimpleTalk Grammar", function () {
             let match = g.match('beep123', 'keywordWC');
             assert.isTrue(match.failed());
         });
-    describe("Testing comments", function () {
+    describe.skip("Testing comments", function () {
         it ("basic comment general match", function () {
             let match = g.match('--thisisabadcomment');
             assert.isTrue(match.succeeded());
@@ -634,7 +811,7 @@ describe("SimpleTalk Grammar", function () {
             let match = g.match('--thisisabadcomment', 'comment');
             assert.isTrue(match.succeeded());
         });
-        it.skip("bad comment", function () {
+        it ("bad comment", function () {
             let match = g.match('--ab c');
             assert.isTrue(match.failed());
         });
