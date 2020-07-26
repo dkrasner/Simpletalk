@@ -107,7 +107,7 @@ describe("SimpleTalk Grammar", function () {
             let match = g.match(s, 'messageHandler');
             assert.isTrue(match.failed())
         });
-        it.skip("Bad Message handler ('()')", function () {
+        it ("Bad Message handler ('()')", function () {
             let s = `message myNewMessage(arg1, arg2)
             global var1, var
             global var1, var\nend myNewMessage`
