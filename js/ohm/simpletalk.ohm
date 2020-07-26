@@ -1,6 +1,6 @@
 SimpleTalk {
 	Script
-		= handler
+		= messageHandler
 		| functionHandler
 		| comment
 		| end
@@ -9,22 +9,30 @@ SimpleTalk {
 	// Accounts for singular and plural word (i.e. with and without 's')
 	singPlu<x> = x "s"?
 
-	// Handler syntax insists that the "on <sym>" matches "end <sym>"
-	// ie we cannnot have a handler which begins with "on mouseUp" but
-	// terminates with "end "deleteCard"
-	// Note the space after "on" and "end", i.e. "onmouseUp" is not allowed
-	// but "on mouseUp" is
-	handlerSyntax<sym, inner> = "on " sym inner "end " sym
+	// Function definition follows the HT convention
+	// """
+	// message messageName [parameterList]
+	//     statementList
+	// end messageName
+	// """
+	// Note: to distinguish from functions message handler parameters are not
+	// parenthetical; moreover, message names are more restrictive
+	messageHandlerSyntax<name, parameters, statements>
+		= "message" " " name " "? parameterList? " "? "\n" statements? "end" " " name
 
-	handler (an "on" event type handler)
-		= handlerSyntax<messageName, noArgHandler>
-		| handlerSyntax<messageName, argHandler>
+	messageHandler = messageHandlerSyntax<messageName, parameterList, statementList>
 
-	noArgHandler (handler statement list)
-		= space+ statementList?
+	// TODO should we insist that authered messages start with a lower case letter?
+	message
+		= systemMessage " "? parameterList? " "? --system
+		// TODO do we need to prevent keyword/built in message overload?
+		| messageName " "? parameterList? " "? --authoredMessage
 
-	argHandler (handler parameter and statement lists)
-		= " " parameterList space+ statementList?
+	// TODO do we want to restrict message names (start with lowercase etc)?
+	// should these be different from functionName?
+	// Note: we prevent keyword overloading
+	messageName (message name)
+		= ~keyword letter+
 
 	// Function definition follows the HT convention
 	// """
@@ -41,12 +49,6 @@ SimpleTalk {
 	// Note: we prevent keyword overloading
 	functionName (function name)
 		= ~keyword (letter (letter | digit)*)
-
-	// TODO do we want to restrict message names (start with lowercase etc)?
-	// should these be different from functionName?
-	// Note: we prevent keyword overloading
-	messageName (message name)
-		= ~keyword letter+
 
 	// Note: no spaces between parameters
 	parameterList (parameter list)
@@ -71,6 +73,23 @@ SimpleTalk {
 	builtInMathFunction (math function)
 		= "average" | "min" | "max" | "sum" | "random" | "sqrt" | "trunc" | "sin"
 		| "cos" | "tan" | "atan" | "exp" | "ln" | "abs"
+
+	systemMessage (system message)
+		= "systemEvent" | "arrowKey"
+		| "close" systemObject? --closeObject
+		| "commandKeyDown"| "controlKey"
+		| "delete" systemObject --deleteObject
+		| "doMenu" | "enterInField" | "enterKey" | "exitField" | "functionKey"
+		| "help" | "hide menubar" | "idle" | "keyDown"
+		| "mouse" ("DoubleClick" | "DownInPicture" | "Down" | "Enter" | "Leave" | "StillDown" | "UpInPicture" | "Up" | "Within") --mouseEvent
+		| "moveWindow"
+		| "new" systemObject --newObject
+		| "open" systemObject --openObject
+		| "quit" | "resumeStack" | "resume" | "returnInField" | "returnKey" | "show menubar"
+		| "sizeWindow" | "startUp" | "suspendStack" | "suspend" | "tabKey"
+
+	systemObject (system object such as card, stack etc)
+		= "Background" | "Button" | "Card" | "Field" | "Stack"
 
 	modifierKeyName (a modifier key name)
 		= "command" | "option" | "control" | "shift"

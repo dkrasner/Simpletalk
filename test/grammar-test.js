@@ -8,9 +8,238 @@ var assert = chai.assert;
 
 
 describe("SimpleTalk Grammar", function () {
+    // TODO add more tests for handlers, comments, end etc
     describe("Script Handler", function () {
-        // TODO
+        it ("Message handler (args, single statement)", function () {
+            let s = `message myNewMessage arg1, arg2
+            global var1, var\nend myNewMessage`
+            let match = g.match(s);
+            assert.isTrue(match.succeeded())
+            match = g.match(s, 'messageHandler');
+            assert.isTrue(match.succeeded())
         });
+        it ("Function handler (args, statements)", function () {
+            let s = `function myNewFunc(arg1, arg2)
+            global var1, var
+            global var1, var\nend myNewFunc`
+            let match = g.match(s);
+            assert.isTrue(match.succeeded())
+            match = g.match(s, 'functionHandler');
+            assert.isTrue(match.succeeded())
+        });
+    });
+    describe("Messages", function () {
+        it ("Message name", function () {
+            let strings = [
+                "f", "F", "amessage", "aMessage", "aMessage"
+            ];
+            let match = null;
+            strings.forEach((s) => {
+                match = g.match(s, 'messageName');
+                assert.isTrue(match.succeeded());
+            });
+        });
+        it ("Bad message name", function () {
+            let strings = [
+                "1", "1m", "1M", "m1", "M1", " message", "then", "on", "end"
+            ];
+            let match = null;
+            strings.forEach((s) => {
+                match = g.match(s, 'messageName');
+                assert.isTrue(match.failed());
+            });
+        });
+        it ("Message handler (no args, no statements)", function () {
+            let s = `message myMessage\nend myMessage`
+            let match = g.match(s, 'messageHandler');
+            assert.isTrue(match.succeeded());
+        });
+        it ("Message handler (args, no statements)", function () {
+            let s = `message myNewMessage arg1, arg2\nend myNewMessage`
+            let match = g.match(s, 'messageHandler');
+            assert.isTrue(match.succeeded());
+        });
+        it ("Message handler (args, single statement)", function () {
+            let s = `message myNewMessage arg1, arg2
+            global var1, var\nend myNewMessage`
+            let match = g.match(s, 'messageHandler');
+            assert.isTrue(match.succeeded())
+        });
+        it ("Message handler (args, statements)", function () {
+            let s = `message myNewMessage arg1, arg2
+            global var1, var
+            global var1, var\nend myNewMessage`
+            let match = g.match(s, 'messageHandler');
+            assert.isTrue(match.succeeded())
+        });
+        it ("Message handler (args, statements with 'pass' control flow)", function () {
+            let s = `message myNewMessage arg1, arg2
+            global var1, var
+            global var1, var
+            pass myNewMessage\nend myNewMessage`
+            let match = g.match(s, 'messageHandler');
+            assert.isTrue(match.succeeded())
+        });
+        it ("Message handler (args, statements with 'exit' control flow)", function () {
+            let s = `message myNewMessage arg1, arg2
+            global var1, var
+            exit myNewMessage\nend myNewMessage`
+            let match = g.match(s, 'messageHandler');
+            assert.isTrue(match.succeeded())
+            s = `message myNewMessage arg1, arg2
+            global var1, var
+            global var1, var
+            exit to SimpleCard\nend myNewMessage`
+            match = g.match(s, 'messageHandler');
+            assert.isTrue(match.succeeded())
+        });
+        it ("Bad Message handler (missing 'on' keyword)", function () {
+            let s = `notkeyword myNewMessage arg1, arg2
+            global var1, var
+            global var1, var\nend myNewMessage`
+            let match = g.match(s, 'messageHandler');
+            assert.isTrue(match.failed())
+        });
+        it ("Bad Message handler (missing 'end' keyword)", function () {
+            let s = `message myNewMessage arg1, arg2
+            global var1, var
+            global var1, var\nmyNewMessage`
+            let match = g.match(s, 'messageHandler');
+            assert.isTrue(match.failed())
+        });
+        it.skip("Bad Message handler ('()')", function () {
+            let s = `message myNewMessage(arg1, arg2)
+            global var1, var
+            global var1, var\nend myNewMessage`
+            let match = g.match(s, 'messageHandler');
+            assert.isTrue(match.failed())
+        });
+        it ("Built in message syntax", function () {
+            let strings = [
+                "close", "closeStack", "commandKeyDown", "quit"
+            ];
+            let match = null;
+            strings.forEach((s) => {
+                match = g.match(s, 'message');
+                assert.isTrue(match.succeeded());
+                match = g.match(s, 'message_system');
+                assert.isTrue(match.succeeded());
+            });
+        });
+        it ("Authored in message syntax", function () {
+            let strings = [
+                "myNewMessage", "myNewMessage arg1", "myNewMessage arg1, arg2", "myNewMessage 50"
+            ];
+            let match = null;
+            strings.forEach((s) => {
+                match = g.match(s, 'message');
+                assert.isTrue(match.succeeded());
+                match = g.match(s, 'message_authoredMessage');
+                assert.isTrue(match.succeeded());
+            });
+        });
+        describe("Built in system messages", function () {
+            it ("Close Object", function () {
+                let strings = [
+                    "closeBackground", "closeButton", "closeCard", "closeField", "closeStack"
+                ];
+                let match = null;
+                strings.forEach((s) => {
+                    match = g.match(s, 'message');
+                    assert.isTrue(match.succeeded());
+                    match = g.match(s, 'systemMessage');
+                    assert.isTrue(match.succeeded());
+                    match = g.match(s, 'systemMessage_closeObject');
+                    assert.isTrue(match.succeeded());
+                });
+            });
+            it ("Open Object", function () {
+                let strings = [
+                    "openBackground", "openButton", "openCard", "openField", "openStack"
+                ];
+                let match = null;
+                strings.forEach((s) => {
+                    match = g.match(s, 'message');
+                    assert.isTrue(match.succeeded());
+                    match = g.match(s, 'systemMessage');
+                    assert.isTrue(match.succeeded());
+                    match = g.match(s, 'systemMessage_openObject');
+                    assert.isTrue(match.succeeded());
+                });
+            });
+            it ("Delete Object", function () {
+                let strings = [
+                    "deleteBackground", "deleteButton", "deleteCard", "deleteField", "deleteStack"
+                ];
+                let match = null;
+                strings.forEach((s) => {
+                    match = g.match(s, 'message');
+                    assert.isTrue(match.succeeded());
+                    match = g.match(s, 'systemMessage');
+                    assert.isTrue(match.succeeded());
+                    match = g.match(s, 'systemMessage_deleteObject');
+                    assert.isTrue(match.succeeded());
+                });
+            });
+            it ("New Object", function () {
+                let strings = [
+                    "newBackground", "newButton", "newCard", "newField", "newStack"
+                ];
+                let match = null;
+                strings.forEach((s) => {
+                    match = g.match(s, 'message');
+                    assert.isTrue(match.succeeded());
+                    match = g.match(s, 'systemMessage');
+                    assert.isTrue(match.succeeded());
+                    match = g.match(s, 'systemMessage_newObject');
+                    assert.isTrue(match.succeeded());
+                });
+            });
+            it ("Mouse Events", function () {
+                let strings = [
+                    "mouseDoubleClick", "mouseDown", "mouseDownInPicture", "mouseEnter",
+                    "mouseLeave", "mouseStillDown", "mouseUpInPicture", "mouseUp", "mouseWithin"
+                ];
+                let match = null;
+                strings.forEach((s) => {
+                    match = g.match(s, 'message');
+                    assert.isTrue(match.succeeded());
+                    match = g.match(s, 'systemMessage');
+                    assert.isTrue(match.succeeded());
+                    match = g.match(s, 'systemMessage_mouseEvent');
+                    assert.isTrue(match.succeeded());
+                });
+            });
+            it ("Key Events", function () {
+                let strings = [
+                    "arrowKey", "commandKeyDown", "controlKey", "enterKey",
+                    "functionKey", "keyDown", "returnKey", "tabKey"
+                ];
+                let match = null;
+                strings.forEach((s) => {
+                    match = g.match(s, 'message');
+                    assert.isTrue(match.succeeded());
+                    match = g.match(s, 'systemMessage');
+                    assert.isTrue(match.succeeded());
+                });
+            });
+            it ("Other system messages", function () {
+                let strings = [
+                    "systemEvent", "doMenu", "enterInField" , "exitField", "help",
+                    "hide menubar", "idle", "moveWindow", "quit", "resumeStack",
+                    "resume", "returnInField", "show menubar", "sizeWindow", "startUp",
+                    "suspendStack", "suspend"
+                ];
+                let match = null;
+                strings.forEach((s) => {
+                    match = g.match(s, 'message');
+                    assert.isTrue(match.succeeded());
+                    match = g.match(s, 'systemMessage');
+                    assert.isTrue(match.succeeded());
+                });
+            });
+        });
+    });
     describe("Functions", function () {
         it ("Function name", function () {
             let strings = [
@@ -104,10 +333,8 @@ describe("SimpleTalk Grammar", function () {
             let match = null;
             strings.forEach((s) => {
                 match = g.match(s, 'function');
-                if (!match.succeeded()){console.log(s)};
                 assert.isTrue(match.succeeded());
                 match = g.match(s, 'function_builtInFunction');
-                if (!match.succeeded()){console.log(s)};
                 assert.isTrue(match.succeeded());
             });
         });
@@ -118,10 +345,8 @@ describe("SimpleTalk Grammar", function () {
             let match = null;
             strings.forEach((s) => {
                 match = g.match(s, 'function');
-                if (!match.succeeded()){console.log(s)};
                 assert.isTrue(match.succeeded());
                 match = g.match(s, 'function_authoredFunction');
-                if (!match.succeeded()){console.log(s)};
                 assert.isTrue(match.succeeded());
             });
         });
@@ -143,7 +368,6 @@ describe("SimpleTalk Grammar", function () {
             let match = null;
             strings.forEach((s) => {
                 match = g.match(s, 'builtInFunction');
-                if (!match.succeeded()){console.log(k)};
                 assert.isTrue(match.succeeded());
             });
         });
@@ -154,7 +378,6 @@ describe("SimpleTalk Grammar", function () {
             let match = null;
             strings.forEach((s) => {
                 match = g.match(s, 'builtInFunction');
-                if (!match.succeeded()){console.log(k)};
                 assert.isTrue(match.succeeded());
             });
         });
@@ -224,13 +447,10 @@ describe("SimpleTalk Grammar", function () {
                 let match = null;
                 strings.forEach((s) => {
                     match = g.match(s, 'expression');
-                    if (!match.succeeded()){console.log(s)};
                     assert.isTrue(match.succeeded());
                     match = g.match(s, 'factor');
-                    if (!match.succeeded()){console.log(s)};
                     assert.isTrue(match.succeeded());
                     match = g.match(s, 'factor_float');
-                    if (!match.succeeded()){console.log(s)};
                     assert.isTrue(match.succeeded());
                 });
             });
@@ -251,13 +471,10 @@ describe("SimpleTalk Grammar", function () {
                 let match = null;
                 strings.forEach((s) => {
                     match = g.match(s, 'expression');
-                    if (!match.succeeded()){console.log(s)};
                     assert.isTrue(match.succeeded());
                     match = g.match(s, 'factor');
-                    if (!match.succeeded()){console.log(s)};
                     assert.isTrue(match.succeeded());
                     match = g.match(s, 'factor_literal');
-                    if (!match.succeeded()){console.log(s)};
                     assert.isTrue(match.succeeded());
                 });
             });
@@ -278,13 +495,10 @@ describe("SimpleTalk Grammar", function () {
                 let match = null;
                 strings.forEach((s) => {
                     match = g.match(s, 'expression');
-                    if (!match.succeeded()){console.log(s)};
                     assert.isTrue(match.succeeded());
                     match = g.match(s, 'factor');
-                    if (!match.succeeded()){console.log(s)};
                     assert.isTrue(match.succeeded());
                     match = g.match(s, 'factor_negation');
-                    if (!match.succeeded()){console.log(s)};
                     assert.isTrue(match.succeeded());
                 });
             });
@@ -305,13 +519,8 @@ describe("SimpleTalk Grammar", function () {
                 let match = null;
                 strings.forEach((s) => {
                     match = g.match(s, 'expression');
-                    if (!match.succeeded()){console.log(s)};
-                    assert.isTrue(match.succeeded());
-                    match = g.match(s, 'factor');
-                    if (!match.succeeded()){console.log(s)};
                     assert.isTrue(match.succeeded());
                     match = g.match(s, 'factor_negation');
-                    if (!match.succeeded()){console.log(s)};
                     assert.isTrue(match.succeeded());
                 });
             });
@@ -332,13 +541,10 @@ describe("SimpleTalk Grammar", function () {
                 let match = null;
                 strings.forEach((s) => {
                     match = g.match(s, 'expression');
-                    if (!match.succeeded()){console.log(s)};
                     assert.isTrue(match.succeeded());
                     match = g.match(s, 'factor');
-                    if (!match.succeeded()){console.log(s)};
                     assert.isTrue(match.succeeded());
                     match = g.match(s, 'factor_logicalNegation');
-                    if (!match.succeeded()){console.log(s)};
                     assert.isTrue(match.succeeded());
                 });
             });
