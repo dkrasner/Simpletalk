@@ -7,11 +7,63 @@
  * Though I appear to 'wrap around' my target part,
  * I am one of its children in DOM terms.
  */
+
+const templateString = `
+                <style>
+                 @keyFrames onAppear {
+                     0% {
+                         opacity: 0.01;
+                         transform: scale(0.5);
+                     }
+
+                     100% {
+                         opacity: 1.0;
+                         transform: scale(1.0);
+                     }
+                 }
+                 :host {
+                     display: block;
+                     position: absolute;
+                     top: -30px;
+                     left: -30px;
+                     width: calc(100% + 60px);
+                     height: calc(100% + 60px);
+                     border: 1px solid red;
+                     animation: onAppear 0.1s;
+                 }
+
+                 .st-halo-resizer {
+                     display: block;
+                     position: absolute;
+                     left: 100%;
+                     top: 100%;
+                     width: 25px;
+                     height: 25px;
+                     border-radius: 100%;
+                     background-color: red;
+                 }
+
+                 .st-halo-rotater {
+                     display: block;
+                     position: absolute;
+                     left: -25px;
+                     top: 100%;
+                     width: 25px;
+                     height: 25px;
+                     border-radius: 100%;
+                     background-color: blue;
+                 }
+                </style>
+                <div class="st-halo-resizer"></div>
+                <div class="st-halo-rotater"></div>
+`;
+
 class Halo extends HTMLElement {
     constructor(){
         super();
 
-        this.template = document.getElementById('halo-template');
+        this.template = document.createElement('template');
+        this.template.innerHTML = templateString;
         this._shadowRoot = this.attachShadow({mode: 'open'});
         this._shadowRoot.appendChild(this.template.content.cloneNode(true));
 

@@ -4,8 +4,6 @@
  * I represent the prototype object for all
  * SimpleTalk parts.
  */
-
-import PartCollection from './PartCollection.js';
 import idMaker from '../utils/idMaker.js';
 import {
     PartProperties,
@@ -189,11 +187,10 @@ class Part {
     }
 
     sendMessage(aMessage, target){
-        if(target){
-            target.receiveMessage(aMessage);
-        } else {
-            this.receiveMessage(aMessage);
+        if(!target || target == undefined){
+            throw new Error('Messages must be sent with target receivers specified!');
         }
+        target.receiveMessage(aMessage);
     }
 
     receiveMessage(aMessage){

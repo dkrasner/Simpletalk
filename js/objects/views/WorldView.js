@@ -10,6 +10,39 @@
  */
 import PartView from './PartView.js';
 
+const templateString = `
+                <style>
+                 * {
+                     box-sizing: border-box;
+                 }
+                 :host {
+                     display: block;
+                     position: relative;
+                     width: 100%;
+                     height: 100%;
+                     background-color: pink;
+                 }
+
+                 #available-stacks {
+                     display: block;
+                     width: 100%;
+                     height: 100%;
+                     position: relative;
+                 }
+
+                 #available-stacks > st-stack {
+                     display: none;
+                 }
+
+                 #available-stacks > st-stack.current-stack {
+                     display: inherit;
+                 }
+                </style>
+                <div id="available-stacks">
+                    <slot></slot>
+                </div>
+`;
+
 class WorldView extends PartView {
     constructor(){
         super();
@@ -17,7 +50,8 @@ class WorldView extends PartView {
         // Set up templating and shadow dom
         // TODO: Put the template definition in this
         // module as formatted text
-        const template = document.getElementById('world-view-template');
+        const template = document.createElement('template');
+        template.innerHTML = templateString;
         this._shadowRoot = this.attachShadow({mode: 'open'});
         this._shadowRoot.appendChild(
             template.content.cloneNode(true)
@@ -97,12 +131,8 @@ class WorldView extends PartView {
     // is -1, this means we set no current stack,
     // and instead display the view of all available stacks
     updateCurrentStack(stackId){
-        console.log('CALLED!');
         let currentStackView = this.querySelector('.current-stack');
         let nextStackView = document.getElementById(stackId);
-        console.log(stackId);
-        console.log(currentStackView);
-        console.log(nextStackView);
         if(currentStackView){
             currentStackView.classList.remove('current-stack');
         }

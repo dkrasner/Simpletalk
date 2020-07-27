@@ -11,12 +11,29 @@
 import PartView from './PartView.js';
 import Stack from '../parts/Stack.js';
 
+const templateString = `
+                <style>
+                 * {
+                     box-sizing: border-box;
+                 }
+                 :host {
+                     display: block;
+                     width: 100%;
+                     height: 100%;
+                     position: relative;
+                     background-color: white;
+                 }
+                </style>
+                <slot></slot>
+`;
+
 class StackView extends PartView {
     constructor(){
         super();
 
         // Setup templating and shadow dom
-        const template = document.getElementById('stack-view-template');
+        const template = document.createElement('template');
+        template.innerHTML = templateString;
         this._shadowRoot = this.attachShadow({mode: 'open'});
         this._shadowRoot.appendChild(
             template.content.cloneNode(true)

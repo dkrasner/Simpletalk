@@ -89,7 +89,7 @@ class Button extends Part {
     delegateMessage(aMessage){
         this.sendMessage(
             aMessage,
-            this.owner
+            this._owner
         );
     }
 

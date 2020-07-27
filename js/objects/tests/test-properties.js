@@ -454,7 +454,6 @@ describe('PartProperties tests', () => {
             let myOwner = Object.create(MockOwner);
             partProperties.setPropertyNamed(myOwner, 'dynaProp', "hello there");
             let actual = myOwner.dynamicValue;
-            console.log(myOwner.dynamicValue);
             assert.equal(expected, actual);
         });
 

@@ -4,7 +4,7 @@
   "description": "An ohm-js based implementation of HyperTalk.",
   "main": "index.js",
   "scripts": {
-    "test": "mocha ./js/objects/tests/ --require esm"
+      "test": "mocha ./js/objects/tests --require esm --require ./js/objects/tests/preload.js"
   },
   "repository": {
     "type": "git",
@@ -25,6 +25,9 @@
   "dependencies": {
     "chai": "^4.2.0",
     "esm": "^3.2.25",
+    "happy-dom": "^0.14.1",
+    "jsdom": "^16.3.0",
+    "jsdom-global": "^3.0.2",
     "mocha": "^8.0.1",
     "ohm-js": "^0.14.0"
   }

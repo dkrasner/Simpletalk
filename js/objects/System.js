@@ -113,6 +113,16 @@ const System = {
     },
 
     doesNotUnderstand: function(aMessage){
+        // If the message has the shouldIgnore property
+        // set to true, it means we should just swallow
+        // this message if we don't understand it. This is
+        // useful for messages like mouse events on buttons
+        // which are not captured by default and would otherwise
+        // end up arriving to this System object via the
+        // message delegation chain.
+        if(aMessage.shouldIgnore){
+            return;
+        }
         throw new Error(`System does not understand message ${aMessage.type}`);
         console.error(aMessage);
     },
@@ -128,7 +138,8 @@ const System = {
     },
 
     newModel(kind, owner){
-        if(this.partsById[owner.id]){
+        let ownerPart = this.partsById[owner.id];
+        if(ownerPart){
             let model;
             switch(kind){
             case 'card':
@@ -150,7 +161,9 @@ const System = {
                 throw new Error(`Cannot create unknown part type: ${kind}`);
             }
 
-            this.partsById[model.id] = model;
+            if(ownerPart){
+                this.partsById[model.id] = model;
+            }
             model.addPropertySubscriber(this);
             this.updateSerialization(model.id);
 
@@ -160,6 +173,8 @@ const System = {
             if(!viewForModel){
                 this.newView(model.type, model.id);
             }
+
+            return model;
         }
     },
 
@@ -174,6 +189,9 @@ const System = {
         // appending the new element.
         let parentId = model._owner.id;
         let parentElement = document.getElementById(parentId);
+        if(!parentElement){
+            throw new Error(`Could not find parent element for ${partName}[${modelId}] (model owner id: ${model._owner.id})`);
+        }
 
         // Create the new view instance,
         // append to parent, and set the model
@@ -182,6 +200,7 @@ const System = {
         );
         newView.setModel(model);
         parentElement.appendChild(newView);
+        return newView;
     },
 
     registerPart: function(name, cls){
@@ -257,15 +276,6 @@ System._commandHandlers['answer'] = function(text){
     alert(text);
 };
 
-System._commandHandlers['mouseUp'] = function(){
-    // By default, this does nothing, which
-    // prevents a DNU error from being thrown.
-    // Like HyperCard, we want to swallow any
-    // mouse events that are not trapped by other
-    // parts.
-    return;
-};
-
 System._commandHandlers['saveHTML'] = function(){
     let anchor = document.createElement('a');
     anchor.style.display = "none";
@@ -297,15 +307,27 @@ System.registerView('world', WorldView);
 System.registerView('card', CardView);
 
 
-document.addEventListener('DOMContentLoaded', () => {
-    window.System = System;
-    // Add the possible views as webcomponents
-    // in the custom element registry
+// Convenience method for adding all of the
+// available custom elements to the window object's
+// customElements registry
+System.registerCustomElements = function(){
     Object.keys(System.availableViews).forEach(partName => {
         let viewClass = System.availableViews[partName];
         let elementName = System.tagNameForViewNamed(partName);
         window.customElements.define(elementName, viewClass);
     });
+};
+
+// Add the System object to window so
+// that it is global on the page. We do this
+// for both debugging and testing.
+window.System = System;
+
+document.addEventListener('DOMContentLoaded', () => {
+    window.System = System;
+    // Add the possible views as webcomponents
+    // in the custom element registry
+    System.registerCustomElements();
 
     // Add any other non-part view CustomElements,
     // like the halo
@@ -315,3 +337,8 @@ document.addEventListener('DOMContentLoaded', () => {
     // the system
     System.initialLoad();
 });
+
+export {
+    System,
+    System as default
+};
