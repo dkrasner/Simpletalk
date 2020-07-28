@@ -11,7 +11,7 @@ describe("SimpleTalk Grammar", function () {
     // TODO add more tests for handlers, comments, end etc
     describe("Script Handler", function () {
         it ("Message handler (args, single statement)", function () {
-            let s = `message myNewMessage arg1, arg2
+            let s = `on myNewMessage arg1, arg2
             global var1, var\nend myNewMessage`
             let match = g.match(s);
             assert.isTrue(match.succeeded())
@@ -50,30 +50,30 @@ describe("SimpleTalk Grammar", function () {
             });
         });
         it ("Message handler (no args, no statements)", function () {
-            let s = `message myMessage\nend myMessage`
+            let s = `on myMessage\nend myMessage`
             let match = g.match(s, 'messageHandler');
             assert.isTrue(match.succeeded());
         });
         it ("Message handler (args, no statements)", function () {
-            let s = `message myNewMessage arg1, arg2\nend myNewMessage`
+            let s = `on myNewMessage arg1, arg2\nend myNewMessage`
             let match = g.match(s, 'messageHandler');
             assert.isTrue(match.succeeded());
         });
         it ("Message handler (args, single statement)", function () {
-            let s = `message myNewMessage arg1, arg2
+            let s = `on myNewMessage arg1, arg2
             global var1, var\nend myNewMessage`
             let match = g.match(s, 'messageHandler');
             assert.isTrue(match.succeeded())
         });
         it ("Message handler (args, statements)", function () {
-            let s = `message myNewMessage arg1, arg2
+            let s = `on myNewMessage arg1, arg2
             global var1, var
             global var1, var\nend myNewMessage`
             let match = g.match(s, 'messageHandler');
             assert.isTrue(match.succeeded())
         });
         it ("Message handler (args, statements with 'pass' control flow)", function () {
-            let s = `message myNewMessage arg1, arg2
+            let s = `on myNewMessage arg1, arg2
             global var1, var
             global var1, var
             pass myNewMessage\nend myNewMessage`
@@ -81,12 +81,12 @@ describe("SimpleTalk Grammar", function () {
             assert.isTrue(match.succeeded())
         });
         it ("Message handler (args, statements with 'exit' control flow)", function () {
-            let s = `message myNewMessage arg1, arg2
+            let s = `on myNewMessage arg1, arg2
             global var1, var
             exit myNewMessage\nend myNewMessage`
             let match = g.match(s, 'messageHandler');
             assert.isTrue(match.succeeded())
-            s = `message myNewMessage arg1, arg2
+            s = `on myNewMessage arg1, arg2
             global var1, var
             global var1, var
             exit to SimpleCard\nend myNewMessage`
@@ -101,14 +101,14 @@ describe("SimpleTalk Grammar", function () {
             assert.isTrue(match.failed())
         });
         it ("Bad Message handler (missing 'end' keyword)", function () {
-            let s = `message myNewMessage arg1, arg2
+            let s = `on myNewMessage arg1, arg2
             global var1, var
             global var1, var\nmyNewMessage`
             let match = g.match(s, 'messageHandler');
             assert.isTrue(match.failed())
         });
         it ("Bad Message handler ('()')", function () {
-            let s = `message myNewMessage(arg1, arg2)
+            let s = `on myNewMessage(arg1, arg2)
             global var1, var
             global var1, var\nend myNewMessage`
             let match = g.match(s, 'messageHandler');

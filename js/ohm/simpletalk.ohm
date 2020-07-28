@@ -18,7 +18,7 @@ SimpleTalk {
 	// Note: to distinguish from functions message handler parameters are not
 	// parenthetical; moreover, message names are more restrictive
 	messageHandlerSyntax<name, parameters, statements>
-		= "message" " " name " "? parameterList? " "? "\n" statements? "end" " " name
+		= "on" " " name " "? parameterList? " "? "\n" statements? "end" " " name
 
 	messageHandler = messageHandlerSyntax<messageName, parameterList, statementList>
 
