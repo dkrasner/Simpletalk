@@ -69,6 +69,56 @@ class StackView extends PartView {
             }
         }
     }
+
+    goToNextCard(){
+        let numCards = this.querySelectorAll('st-card').length;
+        if(numCards > 1){
+            let currentCardView = this.querySelector('.current-card');
+            let nextCardView = currentCardView.nextElementSibling;
+            if(nextCardView){
+                // If we get here, there is another st-card element
+                // in the sibling order. So we set it as the current.
+                currentCardView.classList.remove('current-card');
+                nextCardView.classList.add('current-card');
+            } else {
+                // Otherwise we are at the last child st-card element
+                // in the stack, which means we need to loop around
+                // back to the first child.
+                let firstCard = this.querySelector('st-card:first-child');
+                currentCardView.classList.remove('current-card');
+                firstCard.classList.add('current-card');
+            }
+
+            // Then we might want to send some message through
+            // the HC system, letting Parts know that we have
+            // navigated?
+        }
+    }
+
+    goToPrevCard(){
+        let numCards = this.querySelectorAll('st-card').length;
+        if(numCards > 1){
+            let currentCardView = this.querySelector('.current-card');
+            let prevCardView = currentCardView.previousElementSibling;
+            if(prevCardView){
+                // If we get here, there is another card element sibling
+                // before this one, so we set that to be the current.
+                currentCardView.classList.remove('current-card');
+                prevCardView.classList.add('current-card');
+            } else {
+                // Otherwise, the current card is the first st-card
+                // child element in the stack. So we need to 'loop around'
+                // to the *last* card element.
+                prevCardView = this.querySelector('st-card:last-child');
+                prevCardView.classList.add('current-card');
+                currentCardView.classList.remove('current-card');
+            }
+
+            // Then we might want to send some message through
+            // the HC system, letting Parts know that we have
+            // navigated?
+        }
+    }
 };
 
 export {

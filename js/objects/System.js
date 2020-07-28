@@ -267,6 +267,17 @@ const System = {
             document.body.appendChild(area);
             return area;
         }
+    },
+
+    /** Navigation of Current Stack **/
+    goToNextCard: function(){
+        let currentStackView = document.querySelector(
+            'st-stack.current-stack'
+        );
+        if(!currentStackView || currentStackView == undefined){
+            throw new Error(`Could not locate an active current stack!`);
+        }
+        return currentStackView.goToNextCard();
     }
 
 };
