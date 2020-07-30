@@ -1,28 +1,8 @@
 var ohm = require('ohm-js');
 // Instantiate the grammar.
 var fs = require('fs');
-// var g = ohm.grammar(fs.readFileSync('arithmetic.ohm'));
+var g = ohm.grammar(fs.readFileSync('./js/ohm/simpletalk.ohm'));
 
-
-// create some grammar
-var g = ohm.grammar(
-    `Arithmetic {
-      Exp
-        = AddExp
-
-      AddExp
-        = AddExp "+" PriExp  -- plus
-        | AddExp "-" PriExp  -- minus
-        | PriExp
-
-      PriExp
-        = "(" Exp ")"  -- paren
-        | number
-
-      number
-        = digit+
-    }`
-);
 
 // Create an operation that evaluates the expression. An operation always belongs to a Semantics,
 // which is a family of related operations and attributes for a particular grammar.
@@ -50,5 +30,5 @@ var semantics = g.createSemantics().addOperation('eval', {
             },
 });
 var match = g.match('1 + (2 - 3) + 4');
-console.log("we expect 4 and we got: " + semantics(match).eval());
 
+export {g, g as default};
