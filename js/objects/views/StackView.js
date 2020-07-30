@@ -71,13 +71,16 @@ class StackView extends PartView {
     }
 
     goToNextCard(){
-        let numCards = this.querySelectorAll('st-card').length;
-        if(numCards > 1){
+        let cardChildren = Array.from(this.querySelectorAll('st-card'));
+        if(cardChildren.length  > 1){
             let currentCardView = this.querySelector('.current-card');
-            let nextCardView = currentCardView.nextElementSibling;
-            if(nextCardView){
+            let currentCardIndex = cardChildren.indexOf(currentCardView);
+            let nextCardIndex = currentCardIndex + 1;
+            let nextCardView;
+            if(nextCardIndex < cardChildren.length){
                 // If we get here, there is another st-card element
                 // in the sibling order. So we set it as the current.
+                nextCardView = cardChildren[nextCardIndex];
                 currentCardView.classList.remove('current-card');
                 nextCardView.classList.add('current-card');
             } else {
@@ -96,13 +99,16 @@ class StackView extends PartView {
     }
 
     goToPrevCard(){
-        let numCards = this.querySelectorAll('st-card').length;
-        if(numCards > 1){
+        let cardChildren = Array.from(this.querySelectorAll('st-card'));
+        if(cardChildren.length > 1){
             let currentCardView = this.querySelector('.current-card');
-            let prevCardView = currentCardView.previousElementSibling;
-            if(prevCardView){
+            let currentCardIndex = cardChildren.indexOf(currentCardView);
+            let prevCardIndex = currentCardIndex - 1;
+            let prevCardView;
+            if(prevCardIndex >= 0){
                 // If we get here, there is another card element sibling
                 // before this one, so we set that to be the current.
+                prevCardView = cardChildren[prevCardIndex];
                 currentCardView.classList.remove('current-card');
                 prevCardView.classList.add('current-card');
             } else {
@@ -117,6 +123,21 @@ class StackView extends PartView {
             // Then we might want to send some message through
             // the HC system, letting Parts know that we have
             // navigated?
+        }
+    }
+
+    goToNthCard(anInteger){
+        // NOTE: values here are 1-indexed, per
+        // original HC and what normal people expect
+        let trueIndex = anInteger - 1;
+        if(trueIndex < 0){
+            throw new Error(`Cannot navigate to card number ${anInteger} -- invalid!`);
+        }
+        let currentCard = this.querySelector('st-card.current-card');
+        let targetCard = this.querySelector(`st-card:nth-child(${anInteger})`);
+        if(targetCard){
+            currentCard.classList.remove('current-card');
+            targetCard.classList.add('current-card');
         }
     }
 };

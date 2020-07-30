@@ -148,4 +148,55 @@ describe('Stack Navigation Tests', () => {
             assert.isTrue(firstCard.classList.contains('current-card'));
         });
     });
+
+    describe('Nth Card navigation ("go to card 1, etc")', () => {
+        it('Can go from first card to third card', () => {
+            let firstCard = stackView.querySelector('st-card:first-child');
+            let thirdCard = stackView.querySelector('st-card:nth-child(3)');
+            assert.isTrue(firstCard.classList.contains('current-card'));
+            assert.isFalse(thirdCard.classList.contains('current-card'));
+
+            // Do the navigation. goToNthCard uses 1-indexed values
+            stackView.goToNthCard(3);
+            assert.isFalse(firstCard.classList.contains('current-card'));
+            assert.isTrue(thirdCard.classList.contains('current-card'));
+        });
+
+        it('Can go from third card to second card', () => {
+            let thirdCard = stackView.querySelector('st-card:nth-child(3)');
+            let secondCard = stackView.querySelector('st-card:nth-child(2)');
+            assert.isTrue(thirdCard.classList.contains('current-card'));
+            assert.isFalse(secondCard.classList.contains('current-card'));
+
+            // Do the navigation.
+            stackView.goToNthCard(2);
+            assert.isFalse(thirdCard.classList.contains('current-card'));
+            assert.isTrue(secondCard.classList.contains('current-card'));
+        });
+
+        it('Throws an error when attempting to navigate to card 0 (should be 1 indexed)', () => {
+            assert.throws(
+                stackView.goToNthCard.bind(0),
+                Error
+            );
+        });
+
+        it('Throws an error when attempting to navigate to a negative number', () => {
+            assert.throws(
+                stackView.goToNthCard.bind(-13),
+                Error
+            );
+        });
+
+        it('Has no effect if you navigate to positive number that is more than num cards', () => {
+            // NOTE: Not sure if this is the expected behavior. Need
+            // to check and write an appropriate test here if not.
+            let currentCard = stackView.querySelector('st-card.current-card');
+            stackView.goToNthCard(51);
+            assert.isTrue(currentCard.classList.contains('current-card'));
+            stackView.querySelectorAll('st-card:not(.current-card)').forEach(el => {
+                assert.isFalse(el.classList.contains('current-card'));
+            });
+        });
+    });
 });
