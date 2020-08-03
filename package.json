@@ -4,7 +4,7 @@
   "description": "An ohm-js based implementation of HyperTalk.",
   "main": "index.js",
   "scripts": {
-    "test": "./node_modules/mocha/bin/mocha --require esm ./test/"
+    "test": "./node_modules/mocha/bin/mocha --require esm ./test/ && ./js-tests.sh"
   },
   "repository": {
     "type": "git",
@@ -23,6 +23,12 @@
   },
   "homepage": "https://github.com/UnitedLexCorp/SimpleTalk#readme",
   "dependencies": {
+    "chai": "^4.2.0",
+    "esm": "^3.2.25",
+    "happy-dom": "^0.14.1",
+    "jsdom": "^16.3.0",
+    "jsdom-global": "^3.0.2",
+    "mocha": "^8.0.1",
     "ohm-js": "^0.14.0"
   },
   "devDependencies": {

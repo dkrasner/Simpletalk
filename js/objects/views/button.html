@@ -1,0 +1,108 @@
+<!doctype html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <title>ButtonView Example</title>
+        <script src="Halo.js"></script>
+        <script src="ButtonView.js"></script>
+    </head>
+    <body>
+        <st-button style="top:150px;left:150px">
+            Click Me
+        </st-button>
+        <div id="template-area">
+            <template id="button-view-template">
+                <style>
+                 * {
+                     box-sizing: border-box;
+                 }
+
+                 :host {
+                     display: inline-flex;
+                     flex-direction: column;
+                     justify-content: center;
+                     align-items: center;
+                     position: relative;
+                     background-color: white;
+                     padding-left: 10px;
+                     padding-right: 10px;
+                     padding-top: 5px;
+                     padding-bottom: 5px;
+                     font-family: monospace;
+                     border: 1px solid rgb(50, 50, 50);
+                     user-select: none;
+                 }
+
+                 :host(:hover) {
+                     cursor: pointer;
+                 }
+
+                 :host(:active) {
+                     background-color: black;
+                     color: white;
+                 }
+                 :host(.editing){
+                     background-color: white;
+                     color: black;
+                 }
+                </style>
+                <span class="st-button-label">
+                    <slot></slot><!-- Text of the Name -->
+                </span>
+            </template>
+            <template id="halo-template">
+                <style>
+                 @keyFrames onAppear {
+                     0% {
+                         opacity: 0.01;
+                         transform: scale(0.5);
+                     }
+
+                     100% {
+                         opacity: 1.0;
+                         transform: scale(1.0);
+                     }
+                 }
+                 :host {
+                     display: block;
+                     position: absolute;
+                     top: -30px;
+                     left: -30px;
+                     width: calc(100% + 60px);
+                     height: calc(100% + 60px);
+                     border: 1px solid red;
+                     animation: onAppear 0.1s;
+                 }
+
+                 .st-halo-resizer {
+                     display: block;
+                     position: absolute;
+                     left: 100%;
+                     top: 100%;
+                     width: 25px;
+                     height: 25px;
+                     border-radius: 100%;
+                     background-color: red;
+                 }
+
+                 .st-halo-rotater {
+                     display: block;
+                     position: absolute;
+                     left: -25px;
+                     top: 100%;
+                     width: 25px;
+                     height: 25px;
+                     border-radius: 100%;
+                     background-color: blue;
+                 }
+                </style>
+                <div class="st-halo-resizer"></div>
+                <div class="st-halo-rotater"></div>
+            </template>
+        </div>
+        <script>
+         window.customElements.define('st-halo', Halo);
+         window.customElements.define('st-button', ButtonView);
+        </script>
+    </body>
+</html>
