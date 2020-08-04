@@ -8,18 +8,25 @@ import simpleTalkSemantics from '../semantics.js';
 var chai = require('chai');
 var assert = chai.assert;
 
+let MockMessenger = {
+    currentMsg: null,
+    sendMessage: function(message){
+        this.currentMsg = message;
+    }
+};
+
 
 describe("SimpleTalk Semantics", function () {
     let semantics = g.createSemantics().addOperation('parse', simpleTalkSemantics);
     describe("Commands", function () {
-        it ("Arrow card navigation", function () {
-            let direction = ["up", "down", "left", "right"];
-            direction.forEach((d) => {
-                let match = g.match("arrowKey " + d, "command_arrowCardNavigation");
-                //console.log(match);
-                assert.isTrue(match.succeeded());
-                assert.equal(semantics(match).parse(), d);
-            });
+
+        it('messageHandler (no params)', () => {
+            let handler = `on mouseUp\n answer "hello"\nend mouseUp`;
+            let match = g.match(handler, "messageHandler");
+            assert.isTrue(match.succeeded());
+            let handlerFunc = semantics(match).parse();
+            handlerFunc(MockMessenger);
+            assert.isNotNull(MockMessenger.currentMsg);
         });
     });
 });

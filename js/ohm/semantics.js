@@ -6,23 +6,48 @@
  */
 
 let simpleTalkSemantics = {
-    command_arrowCardNavigation: function(arrowKey, space, direction){
-        let d = direction.source.sourceString;
-        switch(d.split(" ")[1]){
-            case "up":
-                return "up";
-            case "down":
-                return "down";
-            case "left":
-                return "left";
-            case "right":
-                return "right";
-
-        }
+    command_answer: function(answer, space, openQuote, text, closeQuote){
+        return function(){
+            let msg = {
+            type: "command",
+                commandName: answer.sourceString,
+                args: [
+                    text.sourceString
+                ]
+            };
+            this.sendMessage(msg);
+        };
     },
 
-    direction: function(d){
-        return this.sourceString;
+    messageHandlerOpen: function(literalOn, space, messageName, optionalSpace, parameterList, newLine){
+        return [messageName.sourceString, parameterList];
+    },
+
+    messageHandler: function(handlerOpen, statementList, handlerClose){
+        let open = handlerOpen.parse();
+        let handlerName = open[0];
+        let paramList = open[1];
+        let parsedParams = paramList.parse();
+        let parsedStatements = statementList.parse();
+        return function(targetObj){
+            let it;
+            console.log(targetObj);
+            parsedStatements.forEach(statementFunc => {
+                statementFunc.bind(targetObj)();
+            });
+        };
+    },
+
+    statementList: function(list){
+        return list.parse()[0];
+    },
+
+    statementLine: function(spaces, statement, newline){
+        return statement.parse();
+    },
+
+    parameterList: function(paramString){
+        return paramString.split(", ");
     }
 }
 

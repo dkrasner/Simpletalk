@@ -646,13 +646,13 @@ describe("SimpleTalk Grammar", function () {
     });
     describe("Commands", function () {
         it ("arrowKey (go to another card)", function () {
-            let direction = ["up", "down", "left", "right"];
+            let direction = ["next", "previous"];
             direction.forEach((d) => {
-                let match = g.match("arrowKey " + d, "command_arrowCardNavigation");
+                let match = g.match("go to " + d, "command_goTo");
                 assert.isTrue(match.succeeded());
-                match = g.match("arrowKey " + d, "command");
+                match = g.match("go to " + d, "command");
                 assert.isTrue(match.succeeded());
-                match = g.match("arrowKey " + d, "statement");
+                match = g.match("go to " + d, "statement");
                 assert.isTrue(match.succeeded());
             });
         });

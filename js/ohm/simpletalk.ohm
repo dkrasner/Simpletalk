@@ -17,10 +17,14 @@ SimpleTalk {
 	// """
 	// Note: to distinguish from functions message handler parameters are not
 	// parenthetical; moreover, message names are more restrictive
-	messageHandlerSyntax<name, parameters, statements>
-		= "on" " " name " "? parameterList? " "? "\n" statements? "end" " " name
+        messageHandlerOpen
+                = "on" " " messageName " "? parameterList? "\n"
 
-	messageHandler = messageHandlerSyntax<messageName, parameterList, statementList>
+        messageHandlerClose
+                ="end" " " messageName
+
+        messageHandler
+                = messageHandlerOpen statementList? messageHandlerClose
 
 	// TODO should we insist that authered messages start with a lower case letter?
 	message
@@ -113,7 +117,8 @@ SimpleTalk {
 		= "global " parameterList
 
 	command (a command statement)
-		= "arrowKey" " " direction --arrowCardNavigation
+		= "go to" " " ("next" | "previous") --goTo
+                | "answer" " " "\"" (letter | digit | space)+ "\"" --answer
 	
 	direction
 		= "left" | "right" | "up" | "down"
