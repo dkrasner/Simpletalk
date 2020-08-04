@@ -644,6 +644,27 @@ describe("SimpleTalk Grammar", function () {
             assert.isTrue(match.failed());
         });
     });
+    describe("Commands", function () {
+        it ("arrowKey (go to another card)", function () {
+            let direction = ["up", "down", "left", "right"];
+            direction.forEach((d) => {
+                let match = g.match("arrowKey " + d, "command_arrowCardNavigation");
+                assert.isTrue(match.succeeded());
+                match = g.match("arrowKey " + d, "command");
+                assert.isTrue(match.succeeded());
+                match = g.match("arrowKey " + d, "statement");
+                assert.isTrue(match.succeeded());
+            });
+        });
+        it ("Bad command (no space)", function () {
+            let match = g.match("arrowKeyup", "command");
+            assert.isTrue(match.failed());
+        });
+        it ("Bad command (starts with space)", function () {
+            let match = g.match(" arrowKey up", "command");
+            assert.isTrue(match.failed());
+        });
+    });
     describe.skip("Symbol", function () {
         it ("Authored symbol", function () {
             let match = g.match("myNewSymbol", "symbol_authored");

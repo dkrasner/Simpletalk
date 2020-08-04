@@ -102,7 +102,7 @@ SimpleTalk {
 
 	// Note we explicitely exclude keywords, i.e. control
 	statement (a statement)
-		= ~"end" (globalStatement | controlStructure)
+		= ~"end" (globalStatement | controlStructure | command)
 	
 	controlStructure (a statement control structure)
 		= "exit" " " ("to SimpleCard" | messageName | functionName) --exit
@@ -111,6 +111,12 @@ SimpleTalk {
 		
 	globalStatement (a "global" statement)
 		= "global " parameterList
+
+	command (a command statement)
+		= "arrowKey" " " direction --arrowCardNavigation
+	
+	direction
+		= "left" | "right" | "up" | "down"
 
 	expression (an expression)
 		= factor | "(" " "? expression " "? ")" --parenthetical
