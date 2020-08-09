@@ -7,16 +7,14 @@
 
 let simpleTalkSemantics = {
     command_answer: function(answer, space, openQuote, text, closeQuote){
-        return function(){
-            let msg = {
+        let msg = {
             type: "command",
-                commandName: answer.sourceString,
-                args: [
-                    text.sourceString
-                ]
-            };
-            this.sendMessage(msg);
+            commandName: "answer",
+            args: [
+                text.sourceString
+            ]
         };
+        return msg;
     },
 
     messageHandlerOpen: function(literalOn, space, messageName, optionalSpace, parameterList, newLine){
@@ -28,14 +26,8 @@ let simpleTalkSemantics = {
         let handlerName = open[0];
         let paramList = open[1];
         let parsedParams = paramList.parse();
-        let parsedStatements = statementList.parse();
-        return function(targetObj){
-            let it;
-            console.log(targetObj);
-            parsedStatements.forEach(statementFunc => {
-                statementFunc.bind(targetObj)();
-            });
-        };
+        // TODO: do we want messageHandler a la HT to be of type 'command'
+        return ["command", handlerName, statementList.parse()];
     },
 
     statementList: function(list){
