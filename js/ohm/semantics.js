@@ -17,7 +17,7 @@ let simpleTalkSemantics = {
         return msg;
     },
 
-    command_goTo: function(goToLiteral, space, nextPrevious){
+    command_goTo: function(goToLiteral, space, nextPrevious, systemObject, objectId){
         let msg = {
             type: "command",
             commandName: "go to",

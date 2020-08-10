@@ -93,7 +93,7 @@ SimpleTalk {
 		| "sizeWindow" | "startUp" | "suspendStack" | "suspend" | "tabKey"
 
 	systemObject (system object such as card, stack etc)
-		= "Background" | "Button" | "Card" | "Field" | "Stack"
+		= ("b"| "B") "ackground" | ("b" | "B") "utton" | ("c" | "C") "ard" | ("f" | "F") "ield" | ("s" | "S") "tack"
 
 	modifierKeyName (a modifier key name)
 		= "command" | "option" | "control" | "shift"
@@ -117,7 +117,7 @@ SimpleTalk {
 		= "global " parameterList
 
 	command (a command statement)
-		= "go to" " " ("next" | "previous") --goTo
+		= "go to" " " ("next" | "previous") systemObject? objectId? --goTo
         | "answer" " " "\"" (letter | digit | space)+ "\"" --answer
 	
 	direction
@@ -137,7 +137,8 @@ SimpleTalk {
 	keyword (a keyword)
 		= "do" | "next" | "else" | "on" | "end" | "pass" | "exit" | "repeat" | "function" | "return" | "global" | "send" | "if" | "then"
 
-
+	objectId (an identifier of an object, string, numeric or mixed)
+		= (letter | digit)*
 
 
 	// CLEAN UP OR REMOVE ALL BELOW
@@ -145,9 +146,6 @@ SimpleTalk {
 	symbol (a symbol, id or keyword)
 		= letter (letter | digit)*  -- authored
 		| keywordWC  -- keywordWC
-
-	id (an id)
-		= letter (letter | digit)*
 
 	// Temporary implementation of WC's keywords
 	keywordWC (a keyword symbol)
