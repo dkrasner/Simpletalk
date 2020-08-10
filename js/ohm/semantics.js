@@ -17,6 +17,17 @@ let simpleTalkSemantics = {
         return msg;
     },
 
+    command_goTo: function(goToLiteral, space, nextPrevious){
+        let msg = {
+            type: "command",
+            commandName: "go to",
+            args: [
+                nextPrevious.sourceString
+            ]
+        };
+        return msg;
+    },
+
     messageHandlerOpen: function(literalOn, space, messageName, optionalSpace, parameterList, newLine){
         return [messageName.sourceString, parameterList];
     },
@@ -27,11 +38,11 @@ let simpleTalkSemantics = {
         let paramList = open[1];
         let parsedParams = paramList.parse();
         // TODO: do we want messageHandler a la HT to be of type 'command'
-        return ["command", handlerName, statementList.parse()];
+        return ["command", handlerName, statementList.parse()[0]];
     },
 
     statementList: function(list){
-        return list.parse()[0];
+        return list.parse();
     },
 
     statementLine: function(spaces, statement, newline){
