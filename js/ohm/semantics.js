@@ -6,18 +6,18 @@
  */
 
 let simpleTalkSemantics = {
-    command_answer: function(answer, space, openQuote, text, closeQuote){
+    Command_answer: function(answer, stringLiteral){
         let msg = {
             type: "command",
             commandName: "answer",
             args: [
-                text.sourceString
+                stringLiteral.parse()
             ]
         };
         return msg;
     },
 
-    command_goTo: function(goToLiteral, space, nextPrevious, systemObject, objectId){
+    Command_goTo: function(goToLiteral, nextPrevious, systemObject, objectId){
         let msg = {
             type: "command",
             commandName: "go to",
@@ -28,11 +28,11 @@ let simpleTalkSemantics = {
         return msg;
     },
 
-    messageHandlerOpen: function(literalOn, space, messageName, optionalSpace, parameterList, newLine){
+    MessageHandlerOpen: function(literalOn, messageName, parameterList, newLine){
         return [messageName.sourceString, parameterList];
     },
 
-    messageHandler: function(handlerOpen, statementList, handlerClose){
+    MessageHandler: function(handlerOpen, statementList, handlerClose){
         let open = handlerOpen.parse();
         let handlerName = open[0];
         let paramList = open[1];
@@ -41,16 +41,20 @@ let simpleTalkSemantics = {
         return ["command", handlerName, statementList.parse()[0]];
     },
 
-    statementList: function(list){
+    StatementList: function(list){
         return list.parse();
     },
 
-    statementLine: function(spaces, statement, newline){
+    StatementLine: function(statement, newline){
         return statement.parse();
     },
 
-    parameterList: function(paramString){
+    ParameterList: function(paramString){
         return paramString.split(", ");
+    },
+
+    stringLiteral: function(openQuote, text, closeQuote){
+        return text;
     }
 }
 
