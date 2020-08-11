@@ -73,7 +73,11 @@
 	FunctionHandlerSyntax<name, parameters, statements> 
 		= "function" name "(" ParameterList? ")" lineTerminator statements? "end" name
 
-	FunctionHandler = FunctionHandlerSyntax<functionName, ParameterList, StatementList>
+        FunctionHandlerOpen = "function" functionName "(" ParameterList? ")" lineTerminator
+
+        FunctionHandlerClose = "end" functionName
+
+	FunctionHandler = FunctionHandlerOpen StatementList? FunctionHandlerClose
 
         // For the moment we allow only the "function()" syntax to describe a function
 	// (as opposed to "the function" or "function of" more general syntax found on HT) 
