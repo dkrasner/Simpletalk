@@ -23,6 +23,7 @@ class Part {
         this._owner = anOwnerPart;
         this._commandHandlers = {};
         this._functionHandlers = {};
+        this._scriptSemantics = {};
         this._propertySubscribers = new Set();
 
         this.isPart = true;

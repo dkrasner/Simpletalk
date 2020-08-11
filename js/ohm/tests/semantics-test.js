@@ -34,11 +34,12 @@ describe("SimpleTalk Semantics", function () {
             compiler.compile(sourceCode, MockObject);
 
             // We expect the list of compiled messages to send
-            // to be attached to the Part's script object somewhere.
+            // to be attached to the Part._scriptSemantics.
             // Here I am using a dict at _compiled but we can all it
             // anything. The important part is that the key is the
             // same as the message/command name
-            assert.deepEqual(MockObject.script._compiled["mouseUp"], expectedMessages);
+            let scriptSemantics = MockObject._scriptSemantics["mouseUp"];
+            assert.deepEqual(scriptSemantics, expectedMessages);
 
             // The "concrete handler" is the actual javascript function
             // that handles a command called "mouseUp" on the given
@@ -47,26 +48,27 @@ describe("SimpleTalk Semantics", function () {
             // Part's script messages and set the command name key
             // to that function.
             let concreteHandler = MockObject._commandHandlers["mouseUp"];
+            assert.isNotNull(concreteHandler);
             assert.equal(typeof concreteHandler, "function");
         });
         it('messageHandler (no params, "go to" command)', () => {
             let handler = `on mouseUp\n go to next\nend mouseUp`;
-            let testMessages = [
+            let expectedMessages = [
             {
                 type: "command",
                 commandName: "go to",
                 args: ["next"]
             }];
             compiler.compile(handler, MockObject);
-            let message = MockObject._commandHandlers["mouseUp"];
-            assert.isNotNull(message);
-            // console.log(message);
-            // console.log(MockObject._commandHandlers["mouseUp"]);
-            assert.deepEqual(message, testMessages);
+            let scriptSemantics = MockObject._scriptSemantics["mouseUp"];
+            assert.deepEqual(scriptSemantics, expectedMessages);
+            let concreteHandler = MockObject._commandHandlers["mouseUp"];
+            assert.isNotNull(concreteHandler);
+            assert.equal(typeof concreteHandler, "function");
         });
         it('messageHandler (no params, multiple statements/commands)', () => {
             let handler = `on mouseUp\n answer "hello"\n go to next\nend mouseUp`;
-            let testMessages = [
+            let expectedMessages = [
             {
                 type: "command",
                 commandName: "answer",
@@ -78,9 +80,11 @@ describe("SimpleTalk Semantics", function () {
                 args: ["next"]
             }];
             compiler.compile(handler, MockObject);
-            let message = MockObject._commandHandlers["mouseUp"];
-            assert.isNotNull(message);
-            assert.equal(JSON.stringify(message), JSON.stringify(testMessages));
+            let scriptSemantics = MockObject._scriptSemantics["mouseUp"];
+            assert.deepEqual(scriptSemantics, expectedMessages);
+            let concreteHandler = MockObject._commandHandlers["mouseUp"];
+            assert.isNotNull(concreteHandler);
+            assert.equal(typeof concreteHandler, "function");
         });
     });
 });
