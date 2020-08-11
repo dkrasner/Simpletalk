@@ -20,7 +20,11 @@ describe("SimpleTalk Semantics", function () {
     describe("Commands", function () {
 
         it('messageHandler (no params, "answer" command)', () => {
-            let sourceCode = `on mouseUp\n answer "hello"\nend mouseUp`;
+            let sourceCode = [
+                `on mouseUp`,
+                `answer "hello"`,
+                `end mouseUp`
+            ].join("\n");
             let expectedMessages = [
             {
                 type: "command",

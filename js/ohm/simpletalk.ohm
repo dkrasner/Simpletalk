@@ -35,7 +35,7 @@
         // definition
 	ParameterList (parameter list)
 		// TODO do we need to prevent keyword overload?
-		= ListOf<#(letter | digit)+, ", ">
+		= NonemptyListOf<#(letter | digit)+, ", ">
 
         StatementList (a statement list, comments included)
 		= StatementLine+
@@ -164,7 +164,9 @@
         // without line terminators wrapped in open and
         // closing quotes
         stringLiteral
-            = "\"" (~end ~lineTerminator any*) "\""
+            = quoteMark nonLineTerminator+ quoteMark
+
+        quoteMark = "\""
 
         // Basic whitespace and line termination handling.
         // Note that we override the default Ohm definition
@@ -180,4 +182,5 @@
              | unicodeSpaceSeparator
         unicodeSpaceSeparator = "\u2000".."\u200B" | "\u3000"
         lineTerminator = "\n" | "\r" | "\u2028" | "\u2029" | "\r\n"
+        nonLineTerminator = ~lineTerminator (alnum | whitespace)
 }

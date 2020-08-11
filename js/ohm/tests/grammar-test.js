@@ -612,6 +612,11 @@ describe("SimpleTalk Grammar", function () {
             });
         });
     });
+    describe("stringLiteral", () => {
+        let sourceCode = '"this is a test"';
+        let match = g.match(sourceCode, 'stringLiteral');
+        assert.isTrue(match.succeeded());
+    });
     describe("object Id", function () {
         it ("Basic Id", function () {
             let match = g.match("myNewId", "objectId");
@@ -683,6 +688,8 @@ describe("SimpleTalk Grammar", function () {
             assert.isTrue(match.failed());
         });
     });
+
+    /** SKIPPED TESTS **/
     describe.skip("Symbol", function () {
         it ("Authored symbol", function () {
             let match = g.match("myNewSymbol", "symbol_authored");

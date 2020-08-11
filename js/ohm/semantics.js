@@ -50,6 +50,7 @@ let simpleTalkSemantics = {
     },
 
     ParameterList: function(paramString){
+        console.log(paramString);
         return paramString.split(", ");
     },
 
