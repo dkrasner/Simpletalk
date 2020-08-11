@@ -5,10 +5,6 @@
 		| comment
 		| end
 
-	// Helper utilities
-	// Accounts for singular and plural word (i.e. with and without 's')
-	singPlu<x> = x "s"?
-
 	// Function definition follows the HT convention
 	// """
 	// message messageName [parameterList]
@@ -32,11 +28,36 @@
 		// TODO do we need to prevent keyword/built in message overload?
 		| messageName ParameterList? --authoredMessage
 
-	// TODO do we want to restrict message names (start with lowercase etc)?
-	// should these be different from functionName?
-	// Note: we prevent keyword overloading
-	messageName (message name)
-		= ~keyword letter+
+        // Any comma-separated string of tokens
+        // that can be used either as arguments to
+        // a called function, arguments in a function
+        // definition, or args in a message handler
+        // definition
+	ParameterList (parameter list)
+		// TODO do we need to prevent keyword overload?
+		= ListOf<#(letter | digit)+, ", ">
+
+        StatementList (a statement list, comments included)
+		= StatementLine+
+
+	StatementLine (a statement line)
+		= Statement lineTerminator+
+
+	// Note we explicitly exclude keywords, i.e. control
+	Statement (a statement)
+		= ~"end" (GlobalStatement | ControlStructure | Command)
+
+	ControlStructure (a statement control structure)
+		= "exit" ("to SimpleCard" | messageName | functionName) --exit
+		| "pass" (messageName | functionName) --pass
+		| "return" functionName --return //TODO we need to return expressions as well!
+
+	GlobalStatement (a "global" statement)
+		= "global" #space+ ParameterList
+
+	Command (a command statement)
+		= "go to" ("next" | "previous") systemObject? objectId? --goTo
+                | "answer" stringLiteral --answer
 
 	// Function definition follows the HT convention
 	// """
@@ -54,23 +75,28 @@
 
 	FunctionHandler = FunctionHandlerSyntax<functionName, ParameterList, StatementList>
 
-	// TODO do we want to restrict function names (start with lowercase etc)?
-	// Note: we prevent keyword overloading
-	functionName (function name)
-		= ~keyword (letter (letter | digit)*)
-
-	// Note: no spaces between parameters
-	ParameterList (parameter list)
-		// TODO do we need to prevent keyword overload?
-		= ListOf<#(letter | digit)+, ", ">
-
-	// For the moment we allow only the "function()" syntax to describe a function
+        // For the moment we allow only the "function()" syntax to describe a function
 	// (as opposed to "the function" or "function of" more general syntax found on HT) 
 	// TODO should we insist that authered functions start with a lower case letter?
 	Function
 		= builtInFunction "(" ParameterList? ")" --builtInFunction
 		// TODO do we need to prevent keyword overload?
 		| functionName "(" ParameterList? ")" --authoredFunction
+
+        Expression (an expression)
+		= Factor | "(" Expression ")" --parenthetical
+
+	Factor (a factor type expression)
+		= digit+ "." digit+ --float
+		| digit+ --integer
+		| "not" Expression --logicalNegation
+		| letter alnum* --literal
+		| "-" Expression --negation
+
+	// TODO do we want to restrict function names (start with lowercase etc)?
+	// Note: we prevent keyword overloading
+	functionName (function name)
+		= ~keyword (letter (letter | digit)*)
 
 	builtInFunction (natively supported functions in SimpleTalk)
 		= builtInMathFunction | "charToNum" | "date" | "length" | "menus"
@@ -82,6 +108,12 @@
 	builtInMathFunction (math function)
 		= "average" | "min" | "max" | "sum" | "random" | "sqrt" | "trunc" | "sin"
 		| "cos" | "tan" | "atan" | "exp" | "ln" | "abs"
+
+        // TODO do we want to restrict message names (start with lowercase etc)?
+	// should these be different from functionName?
+	// Note: we prevent keyword overloading
+	messageName (message name)
+		= ~keyword letter+
 
 	systemMessage (system message)
 		= "systemEvent" | "arrowKey"
@@ -103,49 +135,23 @@
 	modifierKeyName (a modifier key name)
 		= "command" | "option" | "control" | "shift"
 
-	StatementList (a statement list, comments included)
-		= StatementLine+
-
-	StatementLine (a statement line)
-		= Statement lineTerminator 
-
-	// Note we explicitely exclude keywords, i.e. control
-	Statement (a statement)
-		= ~"end" (GlobalStatement | ControlStructure | Command)
-
-	ControlStructure (a statement control structure)
-		= "exit" ("to SimpleCard" | messageName | functionName) --exit
-		| "pass" (messageName | functionName) --pass
-		| "return" functionName --return //TODO we need to return expressions as well!
-
-	GlobalStatement (a "global" statement)
-		= "global" #space+ ParameterList
-
-	Command (a command statement)
-		= "go to" ("next" | "previous") systemObject? objectId? --goTo
-                | "answer" stringLiteral --answer
-	
 	direction
 		= "left" | "right" | "up" | "down"
-
-	Expression (an expression)
-		= Factor | "(" Expression ")" --parenthetical
-	
-	Factor (a factor type expression)
-		= digit+ "." digit+ --float
-		| digit+ --integer
-		| "not" " " Expression --logicalNegation
-		| letter alnum* --literal
-		| "-" Expression --negation
 
 	// We need to prevent keyword overload since these are core control flow indicators
 	keyword (a keyword)
 		= "do" | "next" | "else" | "on" | "end" | "pass" | "exit" | "repeat" | "function" | "return" | "global" | "send" | "if" | "then"
 
 	objectId (an identifier of an object, string, numeric or mixed)
-		= (letter | digit)*
+             = (letter | digit)*
 
-	// TODO
+
+        // Helper utilities
+	// Accounts for singular and plural word (i.e. with and without 's')
+	singPlu<x> = x "s"?
+
+
+        // TODO
 	comment
 		= "--"letter+
 

@@ -410,16 +410,12 @@ describe("SimpleTalk Grammar", function () {
             assert.isTrue(match.failed());
         });
         it ("Multi statement statement list", function () {
-            let s = ` global param1, param2\n
-            global param1, param2\n`
-            ;
+            let s = ` global param1, param2\nglobal param1, param2\n`;
             let match = g.match(s, "StatementList");
             assert.isTrue(match.succeeded());
         });
         it ("Bad multi statement statement list (no newline)", function () {
-            let s = ` global param1, param2\t
-            global param1, param2\n`
-            ;
+            let s = ` global param1, param2\tglobal param1, param2\n`;
             let match = g.match(s, "StatementList");
             assert.isTrue(match.failed());
         });
@@ -544,18 +540,42 @@ describe("SimpleTalk Grammar", function () {
                     assert.isTrue(match.failed());
                 });
             });
-            it ("Logical Negation", function () {
-                let strings = [
-                    "not abc", "not 1", "not 10.10", "not (abc10)"
-                ];
-                let match = null;
-                strings.forEach((s) => {
-                    match = g.match(s, 'Expression');
-                    assert.isTrue(match.succeeded());
-                    match = g.match(s, 'Factor');
-                    assert.isTrue(match.succeeded());
-                    match = g.match(s, 'Factor_logicalNegation');
-                    assert.isTrue(match.succeeded());
+            describe("Logical Negation", () => {
+                it('Matches negation on alpha character string', () => {
+                    let string = "not abc";
+                    let exprMatch = g.match(string, 'Expression');
+                    assert.isTrue(exprMatch.succeeded());
+                    let factorMatch = g.match(string, 'Factor');
+                    assert.isTrue(factorMatch.succeeded());
+                    let factLogNegationMatch = g.match(string, 'Factor_logicalNegation');
+                    assert.isTrue(factLogNegationMatch.succeeded());
+                });
+                it('Matches negation on alpha integer string', () => {
+                    let string = "not 10";
+                    let exprMatch = g.match(string, 'Expression');
+                    assert.isTrue(exprMatch.succeeded());
+                    let factorMatch = g.match(string, 'Factor');
+                    assert.isTrue(factorMatch.succeeded());
+                    let factLogNegationMatch = g.match(string, 'Factor_logicalNegation');
+                    assert.isTrue(factLogNegationMatch.succeeded());
+                });
+                it('Matches negation on alpha float string', () => {
+                    let string = "not 10.99";
+                    let exprMatch = g.match(string, 'Expression');
+                    assert.isTrue(exprMatch.succeeded());
+                    let factorMatch = g.match(string, 'Factor');
+                    assert.isTrue(factorMatch.succeeded());
+                    let factLogNegationMatch = g.match(string, 'Factor_logicalNegation');
+                    assert.isTrue(factLogNegationMatch.succeeded());
+                });
+                it('Matches negation on alpha parenthetical alpha string', () => {
+                    let string = "not (abc1)";
+                    let exprMatch = g.match(string, 'Expression');
+                    assert.isTrue(exprMatch.succeeded());
+                    let factorMatch = g.match(string, 'Factor');
+                    assert.isTrue(factorMatch.succeeded());
+                    let factLogNegationMatch = g.match(string, 'Factor_logicalNegation');
+                    assert.isTrue(factLogNegationMatch.succeeded());
                 });
             });
             it ("Not logical negation", function () {
