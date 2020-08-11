@@ -613,9 +613,21 @@ describe("SimpleTalk Grammar", function () {
         });
     });
     describe("stringLiteral", () => {
-        let sourceCode = '"this is a test"';
-        let match = g.match(sourceCode, 'stringLiteral');
-        assert.isTrue(match.succeeded());
+        it('Can deal with a single word', () => {
+            let sourceCode = '"this is a test"';
+            let match = g.match(sourceCode, 'stringLiteral');
+            assert.isTrue(match.succeeded());
+        });
+        it('Can deal with whitespace', () => {
+            let sourceCode = '" \t   hi \t  \s  "';
+            let match = g.match(sourceCode, 'stringLiteral');
+            assert.isTrue(match.succeeded());
+        });
+        it('Does not match if newline is present', () => {
+            let sourceCode = '"this is a\t\ntest"';
+            match = g.match(sourceCode, 'stringLiteral');
+            assert.isTrue(match.failed());
+        });
     });
     describe("object Id", function () {
         it ("Basic Id", function () {
