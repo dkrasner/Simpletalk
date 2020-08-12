@@ -1,5 +1,5 @@
  SimpleTalk {
-	Script
+ 	Script
 		= MessageHandler
 		| FunctionHandler
 		| comment
@@ -13,14 +13,14 @@
 	// """
 	// Note: to distinguish from functions message handler parameters are not
 	// parenthetical; moreover, message names are more restrictive
-    MessageHandlerOpen
-        = "on" messageName ParameterList? lineTerminator
-    
-    MessageHandlerClose
-        = "end" messageName
-
-    MessageHandler
-        = MessageHandlerOpen StatementList? MessageHandlerClose
+	MessageHandlerOpen
+        	= "on" messageName ParameterList? lineTerminator
+	
+	MessageHandlerClose
+		= "end" messageName
+	
+	MessageHandler
+		= MessageHandlerOpen StatementList? MessageHandlerClose
 
 	// TODO should we insist that authered messages start with a lower case letter?
 	Message
@@ -28,11 +28,11 @@
 		// TODO do we need to prevent keyword/built in message overload?
 		| messageName ParameterList? --authoredMessage
 
-    // Any comma-separated string of tokens
-    // that can be used either as arguments to
-    // a called function, arguments in a function
-    // definition, or args in a message handler
-    // definition
+    	// Any comma-separated string of tokens
+    	// that can be used either as arguments to
+    	// a called function, arguments in a function
+    	// definition, or args in a message handler
+    	// definition
 	ParameterList (parameter list)
 		// TODO do we need to prevent keyword overload?
 		= NonemptyListOf<#(letter | digit)+, ", ">
@@ -66,16 +66,16 @@
 	// end functionName
 	// """
 
-    // TODO: Consider using the "Open/Close" formulation
-    // we have for MessageHandler. We could even use the
-    // MessageHandlerClose for functions, since they are
-    // identical
+    	// TODO: Consider using the "Open/Close" formulation
+    	// we have for MessageHandler. We could even use the
+    	// MessageHandlerClose for functions, since they are
+    	// identical
 	FunctionHandlerSyntax<name, parameters, statements> 
 		= "function" name "(" ParameterList? ")" lineTerminator statements? "end" name
 
-    FunctionHandlerOpen = "function" functionName "(" ParameterList? ")" lineTerminator
+    	FunctionHandlerOpen = "function" functionName "(" ParameterList? ")" lineTerminator
 
-    FunctionHandlerClose = "end" functionName
+    	FunctionHandlerClose = "end" functionName
 
 	FunctionHandler = FunctionHandlerOpen StatementList? FunctionHandlerClose
 
@@ -160,28 +160,28 @@
 		= "--"letter+
 
 
-    // A string literal in SimpleTalk is any string
-    // without line terminators wrapped in open and
-    // closing quotes
-    stringLiteral
-        = quoteMark nonLineTerminator+ quoteMark
-
-    quoteMark = "\""
-
-    // Basic whitespace and line termination handling.
-    // Note that we override the default Ohm definition
-    // of `space` to only be spaces or tabs, and NOT
-    // any of the newline characters
-    space := whitespace
-	whitespace = "\t"
-             | "\x0B"    -- verticalTab
-             | "\x0C"    -- formFeed
-             | " "
-             | "\u00A0"  -- noBreakSpace
-             | "\uFEFF"  -- byteOrderMark
-             | unicodeSpaceSeparator
-
-    unicodeSpaceSeparator = "\u2000".."\u200B" | "\u3000"
-    lineTerminator = "\n" | "\r" | "\u2028" | "\u2029" | "\r\n"
-    nonLineTerminator = ~lineTerminator (alnum | whitespace)
+    	// A string literal in SimpleTalk is any string
+    	// without line terminators wrapped in open and
+    	// closing quotes
+    	stringLiteral
+        	= quoteMark nonLineTerminator+ quoteMark
+	
+	quoteMark = "\""
+	
+	// Basic whitespace and line termination handling.
+    	// Note that we override the default Ohm definition
+    	// of `space` to only be spaces or tabs, and NOT
+    	// any of the newline characters
+	space := whitespace
+		whitespace = "\t"
+		     | "\x0B"    -- verticalTab
+		     | "\x0C"    -- formFeed
+		     | " "
+		     | "\u00A0"  -- noBreakSpace
+		     | "\uFEFF"  -- byteOrderMark
+		     | unicodeSpaceSeparator
+		     
+	unicodeSpaceSeparator = "\u2000".."\u200B" | "\u3000"
+	lineTerminator = "\n" | "\r" | "\u2028" | "\u2029" | "\r\n"
+	nonLineTerminator = ~lineTerminator (alnum | whitespace)
 }
