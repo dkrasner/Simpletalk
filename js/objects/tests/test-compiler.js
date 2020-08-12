@@ -19,7 +19,7 @@ describe("SimpleTalk Compiler", function () {
     let compiler = new Compiler(g, semantics);
     describe("Commands", function () {
 
-        it('messageHandler (no params, "answer" command)', () => {
+        it ('messageHandler (no params, "answer" command)', () => {
             let sourceCode = [
                 `on mouseUp`,
                 `answer "hello"`,
@@ -28,7 +28,7 @@ describe("SimpleTalk Compiler", function () {
             let expectedMessages = [
             {
                 type: "command",
-                commandName: "answer",
+                name: "answer",
                 args: [ "hello"]
             }];
             compiler.compile(sourceCode, MockObject);
@@ -45,15 +45,15 @@ describe("SimpleTalk Compiler", function () {
             let expectedMessages = [
             {
                 type: "command",
-                commandName: "anotherMessage",
-                args: [ "arg1"]
+                name: "go to",
+                args: [ "card", "arg1"]
             }];
             compiler.compile(sourceCode, MockObject);
 
-            let scriptSemantics = MockObject._scriptSemantics["customEvent"];
+            let scriptSemantics = MockObject._scriptSemantics["customMessage"];
             assert.deepEqual(scriptSemantics, expectedMessages);
 
-            let concreteHandler = MockObject._commandHandlers["customEvent"];
+            let concreteHandler = MockObject._commandHandlers["customMessage"];
             assert.isNotNull(concreteHandler);
             assert.equal(typeof concreteHandler, "function");
         });
@@ -62,7 +62,7 @@ describe("SimpleTalk Compiler", function () {
             let expectedMessages = [
             {
                 type: "command",
-                commandName: "go to",
+                name: "go to",
                 args: ["next"]
             }];
             compiler.compile(handler, MockObject);
@@ -77,12 +77,12 @@ describe("SimpleTalk Compiler", function () {
             let expectedMessages = [
             {
                 type: "command",
-                commandName: "answer",
+                name: "answer",
                 args: [ "hello"]
             },
             {
                 type: "command",
-                commandName: "go to",
+                name: "go to",
                 args: ["next"]
             }];
             compiler.compile(handler, MockObject);

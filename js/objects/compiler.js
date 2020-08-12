@@ -23,10 +23,6 @@ class Compiler {
     compile(string, target){
         let match = this.grammar.match(string);
         let [messageType, messageName, messageParameters, messageList] = this.semantics(match).parse();
-        console.log(messageType);
-        console.log(messageName);
-        // console.log(messageParameters);
-        console.log(messageList);
         // We expect the list of compiled messages to send
         // to be attached to the Part._scriptSemantics.
         // Here I am using a dict at _compiled but we can all it
@@ -35,7 +31,6 @@ class Compiler {
         target._scriptSemantics[messageName] = messageList;
         switch(messageType){
             case "command":
-
                 // The "concrete handler" is the actual javascript function
                 // that handles a command called "mouseUp" on the given
                 // Part instance. The semantic compiler should have created
@@ -44,7 +39,7 @@ class Compiler {
                 // to that function.
                 // TODO figure out how to pass the args to the outer func
                 // from the handler itself
-                target._commandHandlers[messageName] = function(...args){
+                target._commandHandlers[messageName] = function(...messageParameters){
                     recursivelySendMessages(
                         target.script._compiled[messageName]
                     ).bind(target)();

@@ -9,7 +9,7 @@ let simpleTalkSemantics = {
     Command_answer: function(answer, stringLiteral){
         let msg = {
             type: "command",
-            commandName: "answer",
+            name: "answer",
             args: [
                 stringLiteral.parse()
             ]
@@ -18,12 +18,21 @@ let simpleTalkSemantics = {
     },
 
     Command_goTo: function(goToLiteral, nextPrevious, systemObject, objectId){
+        let args = [];
+        if (nextPrevious.sourceString){
+            args.push(nextPrevious.sourceString);
+        }
+        if (systemObject.sourceString){
+            args.push(systemObject.sourceString);
+        }
+        if (objectId.sourceString){
+            args.push(objectId.sourceString);
+        }
+
         let msg = {
             type: "command",
-            commandName: "go to",
-            args: [
-                nextPrevious.sourceString
-            ]
+            name: "go to",
+            args: args
         };
         return msg;
     },
@@ -35,9 +44,8 @@ let simpleTalkSemantics = {
     MessageHandler: function(handlerOpen, statementList, handlerClose){
         let open = handlerOpen.parse();
         let handlerName = open[0];
-        let paramList = open[1];
-        let parsedParams = paramList.parse();
-        console.log(parsedParams);
+        let paramList = open[1].parse();
+        // let parsedParams = paramList.parse();
         // TODO: do we want messageHandler a la HT to be of type 'command'
         return ["command", handlerName, paramList, statementList.parse()[0]];
     },
@@ -51,12 +59,13 @@ let simpleTalkSemantics = {
     },
 
     ParameterList: function(paramString){
-        console.log(paramString);
-        return paramString.split(", ");
+        // TODO is the ohm way of doing this? or should we
+        // walk the tree?
+        return paramString.sourceString.split(",")[0];
     },
 
     stringLiteral: function(openQuote, text, closeQuote){
-        return text;
+        return text.sourceString;
     }
 }
 
