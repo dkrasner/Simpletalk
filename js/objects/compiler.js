@@ -22,7 +22,11 @@ class Compiler {
      */
     compile(string, target){
         let match = this.grammar.match(string);
-        let [messageType, messageName, messageList] = this.semantics(match).parse();
+        let [messageType, messageName, messageParameters, messageList] = this.semantics(match).parse();
+        console.log(messageType);
+        console.log(messageName);
+        // console.log(messageParameters);
+        console.log(messageList);
         // We expect the list of compiled messages to send
         // to be attached to the Part._scriptSemantics.
         // Here I am using a dict at _compiled but we can all it

@@ -37,8 +37,9 @@ let simpleTalkSemantics = {
         let handlerName = open[0];
         let paramList = open[1];
         let parsedParams = paramList.parse();
+        console.log(parsedParams);
         // TODO: do we want messageHandler a la HT to be of type 'command'
-        return ["command", handlerName, statementList.parse()[0]];
+        return ["command", handlerName, paramList, statementList.parse()[0]];
     },
 
     StatementList: function(list){
