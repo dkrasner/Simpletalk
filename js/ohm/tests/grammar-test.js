@@ -8,24 +8,34 @@ var assert = chai.assert;
 
 
 describe("SimpleTalk Grammar", function () {
+    describe("Basic lexical", () => {
+        it("`space` does not include any newline chars", () => {
+            let newlineStr = `\n`;
+            let crStr = `\r`;
+            let newlineMatch = g.match(newlineStr, 'space');
+            let crMatch = g.match(crStr, 'space');
+            assert.isFalse(newlineMatch.succeeded());
+            assert.isFalse(crMatch.succeeded());
+        });
+    });
     // TODO add more tests for handlers, comments, end etc
     describe("Script Handler", function () {
         it ("Message handler (args, single statement)", function () {
             let s = `on myNewMessage arg1, arg2
-            global var1, var\nend myNewMessage`
+            global var1, var\nend myNewMessage`;
             let match = g.match(s);
-            assert.isTrue(match.succeeded())
-            match = g.match(s, 'messageHandler');
-            assert.isTrue(match.succeeded())
+            assert.isTrue(match.succeeded());
+            match = g.match(s, 'MessageHandler');
+            assert.isTrue(match.succeeded());
         });
         it ("Function handler (args, statements)", function () {
             let s = `function myNewFunc(arg1, arg2)
             global var1, var
-            global var1, var\nend myNewFunc`
+            global var1, var\nend myNewFunc`;
             let match = g.match(s);
-            assert.isTrue(match.succeeded())
-            match = g.match(s, 'functionHandler');
-            assert.isTrue(match.succeeded())
+            assert.isTrue(match.succeeded());
+            match = g.match(s, 'FunctionHandler');
+            assert.isTrue(match.succeeded());
         });
     });
     describe("Messages", function () {
@@ -51,25 +61,25 @@ describe("SimpleTalk Grammar", function () {
         });
         it ("Message handler (no args, no statements)", function () {
             let s = `on myMessage\nend myMessage`
-            let match = g.match(s, 'messageHandler');
+            let match = g.match(s, 'MessageHandler');
             assert.isTrue(match.succeeded());
         });
         it ("Message handler (args, no statements)", function () {
             let s = `on myNewMessage arg1, arg2\nend myNewMessage`
-            let match = g.match(s, 'messageHandler');
+            let match = g.match(s, 'MessageHandler');
             assert.isTrue(match.succeeded());
         });
         it ("Message handler (args, single statement)", function () {
             let s = `on myNewMessage arg1, arg2
             global var1, var\nend myNewMessage`
-            let match = g.match(s, 'messageHandler');
+            let match = g.match(s, 'MessageHandler');
             assert.isTrue(match.succeeded())
         });
         it ("Message handler (args, statements)", function () {
             let s = `on myNewMessage arg1, arg2
             global var1, var
             global var1, var\nend myNewMessage`
-            let match = g.match(s, 'messageHandler');
+            let match = g.match(s, 'MessageHandler');
             assert.isTrue(match.succeeded())
         });
         it ("Message handler (args, statements with 'pass' control flow)", function () {
@@ -77,41 +87,41 @@ describe("SimpleTalk Grammar", function () {
             global var1, var
             global var1, var
             pass myNewMessage\nend myNewMessage`
-            let match = g.match(s, 'messageHandler');
+            let match = g.match(s, 'MessageHandler');
             assert.isTrue(match.succeeded())
         });
         it ("Message handler (args, statements with 'exit' control flow)", function () {
             let s = `on myNewMessage arg1, arg2
             global var1, var
             exit myNewMessage\nend myNewMessage`
-            let match = g.match(s, 'messageHandler');
+            let match = g.match(s, 'MessageHandler');
             assert.isTrue(match.succeeded())
             s = `on myNewMessage arg1, arg2
             global var1, var
             global var1, var
             exit to SimpleCard\nend myNewMessage`
-            match = g.match(s, 'messageHandler');
+            match = g.match(s, 'MessageHandler');
             assert.isTrue(match.succeeded())
         });
         it ("Bad Message handler (missing 'on' keyword)", function () {
             let s = `notkeyword myNewMessage arg1, arg2
             global var1, var
             global var1, var\nend myNewMessage`
-            let match = g.match(s, 'messageHandler');
+            let match = g.match(s, 'MessageHandler');
             assert.isTrue(match.failed())
         });
         it ("Bad Message handler (missing 'end' keyword)", function () {
             let s = `on myNewMessage arg1, arg2
             global var1, var
             global var1, var\nmyNewMessage`
-            let match = g.match(s, 'messageHandler');
+            let match = g.match(s, 'MessageHandler');
             assert.isTrue(match.failed())
         });
         it ("Bad Message handler ('()')", function () {
             let s = `on myNewMessage(arg1, arg2)
             global var1, var
             global var1, var\nend myNewMessage`
-            let match = g.match(s, 'messageHandler');
+            let match = g.match(s, 'MessageHandler');
             assert.isTrue(match.failed())
         });
         it ("Built in message syntax", function () {
@@ -120,9 +130,9 @@ describe("SimpleTalk Grammar", function () {
             ];
             let match = null;
             strings.forEach((s) => {
-                match = g.match(s, 'message');
+                match = g.match(s, 'Message');
                 assert.isTrue(match.succeeded());
-                match = g.match(s, 'message_system');
+                match = g.match(s, 'Message_system');
                 assert.isTrue(match.succeeded());
             });
         });
@@ -132,9 +142,9 @@ describe("SimpleTalk Grammar", function () {
             ];
             let match = null;
             strings.forEach((s) => {
-                match = g.match(s, 'message');
+                match = g.match(s, 'Message');
                 assert.isTrue(match.succeeded());
-                match = g.match(s, 'message_authoredMessage');
+                match = g.match(s, 'Message_authoredMessage');
                 assert.isTrue(match.succeeded());
             });
         });
@@ -145,7 +155,7 @@ describe("SimpleTalk Grammar", function () {
                 ];
                 let match = null;
                 strings.forEach((s) => {
-                    match = g.match(s, 'message');
+                    match = g.match(s, 'Message');
                     assert.isTrue(match.succeeded());
                     match = g.match(s, 'systemMessage');
                     assert.isTrue(match.succeeded());
@@ -159,7 +169,7 @@ describe("SimpleTalk Grammar", function () {
                 ];
                 let match = null;
                 strings.forEach((s) => {
-                    match = g.match(s, 'message');
+                    match = g.match(s, 'Message');
                     assert.isTrue(match.succeeded());
                     match = g.match(s, 'systemMessage');
                     assert.isTrue(match.succeeded());
@@ -173,7 +183,7 @@ describe("SimpleTalk Grammar", function () {
                 ];
                 let match = null;
                 strings.forEach((s) => {
-                    match = g.match(s, 'message');
+                    match = g.match(s, 'Message');
                     assert.isTrue(match.succeeded());
                     match = g.match(s, 'systemMessage');
                     assert.isTrue(match.succeeded());
@@ -187,7 +197,7 @@ describe("SimpleTalk Grammar", function () {
                 ];
                 let match = null;
                 strings.forEach((s) => {
-                    match = g.match(s, 'message');
+                    match = g.match(s, 'Message');
                     assert.isTrue(match.succeeded());
                     match = g.match(s, 'systemMessage');
                     assert.isTrue(match.succeeded());
@@ -202,7 +212,7 @@ describe("SimpleTalk Grammar", function () {
                 ];
                 let match = null;
                 strings.forEach((s) => {
-                    match = g.match(s, 'message');
+                    match = g.match(s, 'Message');
                     assert.isTrue(match.succeeded());
                     match = g.match(s, 'systemMessage');
                     assert.isTrue(match.succeeded());
@@ -217,7 +227,7 @@ describe("SimpleTalk Grammar", function () {
                 ];
                 let match = null;
                 strings.forEach((s) => {
-                    match = g.match(s, 'message');
+                    match = g.match(s, 'Message');
                     assert.isTrue(match.succeeded());
                     match = g.match(s, 'systemMessage');
                     assert.isTrue(match.succeeded());
@@ -232,7 +242,7 @@ describe("SimpleTalk Grammar", function () {
                 ];
                 let match = null;
                 strings.forEach((s) => {
-                    match = g.match(s, 'message');
+                    match = g.match(s, 'Message');
                     assert.isTrue(match.succeeded());
                     match = g.match(s, 'systemMessage');
                     assert.isTrue(match.succeeded());
@@ -263,25 +273,25 @@ describe("SimpleTalk Grammar", function () {
         });
         it ("Function handler (no args, no statements)", function () {
             let s = `function myNewFunc()\nend myNewFunc`
-            let match = g.match(s, 'functionHandler');
+            let match = g.match(s, 'FunctionHandler');
             assert.isTrue(match.succeeded());
         });
         it ("Function handler (args, no statements)", function () {
             let s = `function myNewFunc(arg1, arg2)\nend myNewFunc`
-            let match = g.match(s, 'functionHandler');
+            let match = g.match(s, 'FunctionHandler');
             assert.isTrue(match.succeeded());
         });
         it ("Function handler (args, single statement)", function () {
             let s = `function myNewFunc(arg1, arg2)
             global var1, var\nend myNewFunc`
-            let match = g.match(s, 'functionHandler');
+            let match = g.match(s, 'FunctionHandler');
             assert.isTrue(match.succeeded())
         });
         it ("Function handler (args, statements)", function () {
             let s = `function myNewFunc(arg1, arg2)
             global var1, var
             global var1, var\nend myNewFunc`
-            let match = g.match(s, 'functionHandler');
+            let match = g.match(s, 'FunctionHandler');
             assert.isTrue(match.succeeded())
         });
         it ("Function handler (args, statements with 'pass' control flow)", function () {
@@ -289,41 +299,41 @@ describe("SimpleTalk Grammar", function () {
             global var1, var
             global var1, var
             pass myNewFunc\nend myNewFunc`
-            let match = g.match(s, 'functionHandler');
+            let match = g.match(s, 'FunctionHandler');
             assert.isTrue(match.succeeded())
         });
         it ("Function handler (args, statements with 'exit' control flow)", function () {
             let s = `function myNewFunc(arg1, arg2)
             global var1, var
             exit myNewFunc\nend myNewFunc`
-            let match = g.match(s, 'functionHandler');
+            let match = g.match(s, 'FunctionHandler');
             assert.isTrue(match.succeeded())
             s = `function myNewFunc(arg1, arg2)
             global var1, var
             global var1, var
             exit to SimpleCard\nend myNewFunc`
-            match = g.match(s, 'functionHandler');
+            match = g.match(s, 'FunctionHandler');
             assert.isTrue(match.succeeded())
         });
         it ("Bad Function handler (missing 'function' keyword)", function () {
             let s = `funct myNewFunc(arg1, arg2)
             global var1, var
             global var1, var\nend myNewFunc`
-            let match = g.match(s, 'functionHandler');
+            let match = g.match(s, 'FunctionHandler');
             assert.isTrue(match.failed())
         });
         it ("Bad Function handler (missing 'end' keyword)", function () {
             let s = `function myNewFunc(arg1, arg2)
             global var1, var
             global var1, var\nmyNewFunc`
-            let match = g.match(s, 'functionHandler');
+            let match = g.match(s, 'FunctionHandler');
             assert.isTrue(match.failed())
         });
         it ("Bad Function handler (missing '()')", function () {
             let s = `function myNewFunc arg1, arg2
             global var1, var
             global var1, var\nend myNewFunc`
-            let match = g.match(s, 'functionHandler');
+            let match = g.match(s, 'FunctionHandler');
             assert.isTrue(match.failed())
         });
         it ("Built in function syntax", function () {
@@ -332,9 +342,9 @@ describe("SimpleTalk Grammar", function () {
             ];
             let match = null;
             strings.forEach((s) => {
-                match = g.match(s, 'function');
+                match = g.match(s, 'Function');
                 assert.isTrue(match.succeeded());
-                match = g.match(s, 'function_builtInFunction');
+                match = g.match(s, 'Function_builtInFunction');
                 assert.isTrue(match.succeeded());
             });
         });
@@ -344,9 +354,9 @@ describe("SimpleTalk Grammar", function () {
             ];
             let match = null;
             strings.forEach((s) => {
-                match = g.match(s, 'function');
+                match = g.match(s, 'Function');
                 assert.isTrue(match.succeeded());
-                match = g.match(s, 'function_authoredFunction');
+                match = g.match(s, 'Function_authoredFunction');
                 assert.isTrue(match.succeeded());
             });
         });
@@ -384,33 +394,29 @@ describe("SimpleTalk Grammar", function () {
     });
     describe("Statement", function () {
         it ("Global Statement", function () {
-            let match = g.match("global param1, param2", "statement");
+            let match = g.match("global param1, param2", "Statement");
             assert.isTrue(match.succeeded());
         });
     });
     describe("Statement List", function () {
         it ("Single statement statement list", function () {
             let s = `global param1, param2\n`;
-            let match = g.match(s, "statementList");
+            let match = g.match(s, "StatementList");
             assert.isTrue(match.succeeded());
         });
         it ("Bad single statement statement list (no newline)", function () {
             let s = `global param1, param2`;
-            let match = g.match(s, "statementList");
+            let match = g.match(s, "StatementList");
             assert.isTrue(match.failed());
         });
         it ("Multi statement statement list", function () {
-            let s = ` global param1, param2\n
-            global param1, param2\n`
-            ;
-            let match = g.match(s, "statementList");
+            let s = ` global param1, param2\nglobal param1, param2\n`;
+            let match = g.match(s, "StatementList");
             assert.isTrue(match.succeeded());
         });
         it ("Bad multi statement statement list (no newline)", function () {
-            let s = ` global param1, param2\t
-            global param1, param2\n`
-            ;
-            let match = g.match(s, "statementList");
+            let s = ` global param1, param2\tglobal param1, param2\n`;
+            let match = g.match(s, "StatementList");
             assert.isTrue(match.failed());
         });
     });
@@ -422,11 +428,11 @@ describe("SimpleTalk Grammar", function () {
                 ];
                 let match = null;
                 strings.forEach((s) => {
-                    match = g.match(s, 'expression');
+                    match = g.match(s, 'Expression');
                     assert.isTrue(match.succeeded());
-                    match = g.match(s, 'factor');
+                    match = g.match(s, 'Factor');
                     assert.isTrue(match.succeeded());
-                    match = g.match(s, 'factor_integer');
+                    match = g.match(s, 'Factor_integer');
                     assert.isTrue(match.succeeded());
                 });
             });
@@ -436,7 +442,7 @@ describe("SimpleTalk Grammar", function () {
                 ];
                 let match = null;
                 strings.forEach((s) => {
-                    match = g.match(s, 'factor_integer');
+                    match = g.match(s, 'Factor_integer');
                     assert.isTrue(match.failed());
                 });
             });
@@ -446,11 +452,11 @@ describe("SimpleTalk Grammar", function () {
                 ];
                 let match = null;
                 strings.forEach((s) => {
-                    match = g.match(s, 'expression');
+                    match = g.match(s, 'Expression');
                     assert.isTrue(match.succeeded());
-                    match = g.match(s, 'factor');
+                    match = g.match(s, 'Factor');
                     assert.isTrue(match.succeeded());
-                    match = g.match(s, 'factor_float');
+                    match = g.match(s, 'Factor_float');
                     assert.isTrue(match.succeeded());
                 });
             });
@@ -460,7 +466,7 @@ describe("SimpleTalk Grammar", function () {
                 ];
                 let match = null;
                 strings.forEach((s) => {
-                    match = g.match(s, 'factor_float');
+                    match = g.match(s, 'Factor_float');
                     assert.isTrue(match.failed());
                 });
             });
@@ -470,11 +476,11 @@ describe("SimpleTalk Grammar", function () {
                 ];
                 let match = null;
                 strings.forEach((s) => {
-                    match = g.match(s, 'expression');
+                    match = g.match(s, 'Expression');
                     assert.isTrue(match.succeeded());
-                    match = g.match(s, 'factor');
+                    match = g.match(s, 'Factor');
                     assert.isTrue(match.succeeded());
-                    match = g.match(s, 'factor_literal');
+                    match = g.match(s, 'Factor_literal');
                     assert.isTrue(match.succeeded());
                 });
             });
@@ -484,7 +490,7 @@ describe("SimpleTalk Grammar", function () {
                 ];
                 let match = null;
                 strings.forEach((s) => {
-                    match = g.match(s, 'factor_literal');
+                    match = g.match(s, 'Factor_literal');
                     assert.isTrue(match.failed());
                 });
             });
@@ -494,11 +500,11 @@ describe("SimpleTalk Grammar", function () {
                 ];
                 let match = null;
                 strings.forEach((s) => {
-                    match = g.match(s, 'expression');
+                    match = g.match(s, 'Expression');
                     assert.isTrue(match.succeeded());
-                    match = g.match(s, 'factor');
+                    match = g.match(s, 'Factor');
                     assert.isTrue(match.succeeded());
-                    match = g.match(s, 'factor_negation');
+                    match = g.match(s, 'Factor_negation');
                     assert.isTrue(match.succeeded());
                 });
             });
@@ -508,7 +514,7 @@ describe("SimpleTalk Grammar", function () {
                 ];
                 let match = null;
                 strings.forEach((s) => {
-                    match = g.match(s, 'factor_negation');
+                    match = g.match(s, 'Factor_negation');
                     assert.isTrue(match.failed());
                 });
             });
@@ -518,9 +524,9 @@ describe("SimpleTalk Grammar", function () {
                 ];
                 let match = null;
                 strings.forEach((s) => {
-                    match = g.match(s, 'expression');
+                    match = g.match(s, 'Expression');
                     assert.isTrue(match.succeeded());
-                    match = g.match(s, 'factor_negation');
+                    match = g.match(s, 'Factor_negation');
                     assert.isTrue(match.succeeded());
                 });
             });
@@ -530,22 +536,46 @@ describe("SimpleTalk Grammar", function () {
                 ];
                 let match = null;
                 strings.forEach((s) => {
-                    match = g.match(s, 'factor_negation');
+                    match = g.match(s, 'Factor_negation');
                     assert.isTrue(match.failed());
                 });
             });
-            it ("Logical Negation", function () {
-                let strings = [
-                    "not abc", "not 1", "not 10.10", "not (abc10)"
-                ];
-                let match = null;
-                strings.forEach((s) => {
-                    match = g.match(s, 'expression');
-                    assert.isTrue(match.succeeded());
-                    match = g.match(s, 'factor');
-                    assert.isTrue(match.succeeded());
-                    match = g.match(s, 'factor_logicalNegation');
-                    assert.isTrue(match.succeeded());
+            describe("Logical Negation", () => {
+                it('Matches negation on alpha character string', () => {
+                    let string = "not abc";
+                    let exprMatch = g.match(string, 'Expression');
+                    assert.isTrue(exprMatch.succeeded());
+                    let factorMatch = g.match(string, 'Factor');
+                    assert.isTrue(factorMatch.succeeded());
+                    let factLogNegationMatch = g.match(string, 'Factor_logicalNegation');
+                    assert.isTrue(factLogNegationMatch.succeeded());
+                });
+                it('Matches negation on alpha integer string', () => {
+                    let string = "not 10";
+                    let exprMatch = g.match(string, 'Expression');
+                    assert.isTrue(exprMatch.succeeded());
+                    let factorMatch = g.match(string, 'Factor');
+                    assert.isTrue(factorMatch.succeeded());
+                    let factLogNegationMatch = g.match(string, 'Factor_logicalNegation');
+                    assert.isTrue(factLogNegationMatch.succeeded());
+                });
+                it('Matches negation on alpha float string', () => {
+                    let string = "not 10.99";
+                    let exprMatch = g.match(string, 'Expression');
+                    assert.isTrue(exprMatch.succeeded());
+                    let factorMatch = g.match(string, 'Factor');
+                    assert.isTrue(factorMatch.succeeded());
+                    let factLogNegationMatch = g.match(string, 'Factor_logicalNegation');
+                    assert.isTrue(factLogNegationMatch.succeeded());
+                });
+                it('Matches negation on alpha parenthetical alpha string', () => {
+                    let string = "not (abc1)";
+                    let exprMatch = g.match(string, 'Expression');
+                    assert.isTrue(exprMatch.succeeded());
+                    let factorMatch = g.match(string, 'Factor');
+                    assert.isTrue(factorMatch.succeeded());
+                    let factLogNegationMatch = g.match(string, 'Factor_logicalNegation');
+                    assert.isTrue(factLogNegationMatch.succeeded());
                 });
             });
             it ("Not logical negation", function () {
@@ -554,7 +584,7 @@ describe("SimpleTalk Grammar", function () {
                 ];
                 let match = null;
                 strings.forEach((s) => {
-                    match = g.match(s, 'factor_logicalNegation');
+                    match = g.match(s, 'Factor_logicalNegation');
                     assert.isTrue(match.failed());
                 });
             });
@@ -565,9 +595,9 @@ describe("SimpleTalk Grammar", function () {
             ];
             let match = null;
             strings.forEach((s) => {
-                match = g.match(s, 'expression');
+                match = g.match(s, 'Expression');
                 assert.isTrue(match.succeeded());
-                match = g.match(s, 'expression_parenthetical');
+                match = g.match(s, 'Expression_parenthetical');
                 assert.isTrue(match.succeeded());
             });
         });
@@ -577,73 +607,101 @@ describe("SimpleTalk Grammar", function () {
             ];
             let match = null;
             strings.forEach((s) => {
-                match = g.match(s, 'expression_parenthetical');
+                match = g.match(s, 'Expression_parenthetical');
                 assert.isTrue(match.failed());
             });
         });
     });
-    describe("Id", function () {
+    describe("stringLiteral", () => {
+        it('Can deal with a single word', () => {
+            let sourceCode = '"this is a test"';
+            let match = g.match(sourceCode, 'stringLiteral');
+            assert.isTrue(match.succeeded());
+        });
+        it('Can deal with whitespace', () => {
+            let sourceCode = '" \t   hi \t  \s  "';
+            let match = g.match(sourceCode, 'stringLiteral');
+            assert.isTrue(match.succeeded());
+        });
+        it('Does not match if newline is present', () => {
+            let sourceCode = '"this is a\t\ntest"';
+            match = g.match(sourceCode, 'stringLiteral');
+            assert.isTrue(match.failed());
+        });
+    });
+    describe("object Id", function () {
         it ("Basic Id", function () {
-            let match = g.match("myNewId", "id");
+            let match = g.match("myNewId", "objectId");
             assert.isTrue(match.succeeded());
         });
         it ("Id with letters and digits", function () {
-            let match = g.match("newIdl123", "id");
+            let match = g.match("newIdl123", "objectId");
             assert.isTrue(match.succeeded());
         });
-        it ("Bad id (with space)", function () {
-            let match = g.match(" badId", "id");
+        it ("Bad objetId (with space)", function () {
+            let match = g.match(" badId", "objectId");
             assert.isTrue(match.failed());
         });
-        it ("Bad id (with space)", function () {
-            let match = g.match(" badId", "id");
-            assert.isTrue(match.failed());
-        });
-        it ("Bad id (digit start)", function () {
-            let match = g.match("1badId", "id");
+        it ("Bad objetId (with space)", function () {
+            let match = g.match(" badId", "objectId");
             assert.isTrue(match.failed());
         });
     });
     describe("Parameter List", function () {
         it ("Single param list", function () {
-            let match = g.match("param1", "parameterList");
+            let match = g.match("param1", "ParameterList");
             assert.isTrue(match.succeeded());
         });
         it ("Simple param list", function () {
-            let match = g.match("param1, param2", "parameterList");
+            let match = g.match("param1, param2", "ParameterList");
             assert.isTrue(match.succeeded());
         });
         it ("Param list with digits", function () {
-            let match = g.match("12, 22, newparam123", "parameterList");
+            let match = g.match("12, 22, newparam123", "ParameterList");
             assert.isTrue(match.succeeded());
         });
         it ("Bad param list (without spaces)", function () {
-            let match = g.match("param1,param2", "parameterList");
+            let match = g.match("param1,param2", "ParameterList");
             assert.isTrue(match.failed());
         });
         it ("Bad param list (space)", function () {
-            let match = g.match("pa ram1, param2", "parameterList");
-            assert.isTrue(match.failed());
-        });
-        it ("Bad param list (start space)", function () {
-            let match = g.match(" param1, param2", "parameterList");
+            let match = g.match("pa ram1, param2", "ParameterList");
             assert.isTrue(match.failed());
         });
     });
     describe("Global Statement", function () {
         it ("Basic global statement", function () {
-            let match = g.match("global param1, param2", "globalStatement");
+            let match = g.match("global param1, param2", "GlobalStatement");
             assert.isTrue(match.succeeded());
         });
         it ("Bad global statement (no space)", function () {
-            let match = g.match("globalparam1, param2", "globalStatement");
-            assert.isTrue(match.failed());
-        });
-        it ("Bad global statement (starts with space)", function () {
-            let match = g.match(" global param1, param2", "globalStatement");
+            let match = g.match("globalparam1, param2", "GlobalStatement");
             assert.isTrue(match.failed());
         });
     });
+    describe("Commands", function () {
+        it ("arrowKey (go to another card)", function () {
+            let direction = ["next", "previous"];
+            direction.forEach((d) => {
+                let match = g.match("go to " + d, "Command_goTo");
+                assert.isTrue(match.succeeded());
+                match = g.match("go to " + d, "Command");
+                assert.isTrue(match.succeeded());
+                match = g.match("go to " + d, "Statement");
+                assert.isTrue(match.succeeded());
+            });
+        });
+        it ("Bad command (no space)", function () {
+            let match = g.match("arrowKeyup", "Command");
+            assert.isTrue(match.failed());
+        });
+        it ("Bad command (starts with space)", function () {
+            let match = g.match(" arrowKey up", "Command");
+            assert.isTrue(match.failed());
+        });
+    });
+
+    /** SKIPPED TESTS **/
     describe.skip("Symbol", function () {
         it ("Authored symbol", function () {
             let match = g.match("myNewSymbol", "symbol_authored");
@@ -1023,4 +1081,4 @@ describe("SimpleTalk Grammar", function () {
         });
     });
     });
-})
+});

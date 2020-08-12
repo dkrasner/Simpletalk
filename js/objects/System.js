@@ -278,6 +278,16 @@ const System = {
             throw new Error(`Could not locate an active current stack!`);
         }
         return currentStackView.goToNextCard();
+    },
+
+    goToPrevCard: function(){
+        let currentStackView = document.querySelector(
+            'st-stack.current-stack'
+        );
+        if(!currentStackView || currentStackView == undefined){
+            throw new Error(`Could not locate an active current stack!`);
+        }
+        return currentStackView.goToPrevCard();
     }
 
 };
@@ -286,6 +296,10 @@ const System = {
 System._commandHandlers['answer'] = function(text){
     alert(text);
 };
+
+System._commandHandlers['go to'] = function(destination){
+
+}
 
 System._commandHandlers['saveHTML'] = function(){
     let anchor = document.createElement('a');
