@@ -94,21 +94,22 @@ const System = {
 
     receiveMessage: function(aMessage){
         switch(aMessage.type){
-        case 'newModel':
-            return this.newModel(aMessage.modelType, aMessage.owner);
-        case 'newView':
-            return this.newView(
-                aMessage.viewType,
-                aMessage.model
-            );
-        case 'propertyChanged':
-            return this.updateSerialization(
-                aMessage.partId
-            );
-        case 'command':
-            return this.receiveCommand(aMessage);
-        default:
-            return this.doesNotUnderstand(aMessage);
+            case 'newModel':
+                return this.newModel(aMessage.modelType, aMessage.owner);
+            case 'newView':
+                return this.newView(
+                    aMessage.viewType,
+                    aMessage.model
+                );
+            case 'propertyChanged':
+                return this.updateSerialization(
+                    aMessage.partId
+                );
+            debugger;
+            case 'command':
+                return this.receiveCommand(aMessage);
+            default:
+                return this.doesNotUnderstand(aMessage);
         }
     },
 
@@ -128,7 +129,7 @@ const System = {
     },
 
     receiveCommand: function(aMessage){
-        let handler = this._commandHandlers[aMessage.commandName];
+        let handler = this._commandHandlers[aMessage.name];
         if(handler){
             let boundHandler = handler.bind(this);
             return boundHandler(...aMessage.args);
@@ -230,6 +231,15 @@ const System = {
         // instantiate models for those parts too,
         // recursively
         if(recursive){
+  var stack = document.querySelector('st-stack');
+  var card = document.querySelector('st-card');
+  card.classList.add('current-card')
+  var newButtonMsg = { type: 'newModel', modelType: 'button', owner: card.model };
+  stack.sendMessage(newButtonMsg, System);
+  var newCardMsg = { type: 'newModel', modelType: 'card', owner: stack.model };
+  stack.sendMessage(newCardMsg, System);
+  var nextCardMsg = { type: 'command', name: 'go to', args: ['next', 'card'] };
+  stack.sendMessage(nextCardMsg, System);
             json.subparts.forEach(subpartId => {
                 let serializationEl = document.querySelector('script[data-part-id="${subpartId}"]');
                 if(serializationEl){
@@ -297,7 +307,28 @@ System._commandHandlers['answer'] = function(text){
     alert(text);
 };
 
-System._commandHandlers['go to'] = function(destination){
+System._commandHandlers['go to'] = function(directive, object){
+    console.log("go to");
+    console.log(directive);
+    console.log(object);
+                    ;
+    switch(object) {
+        case 'card':
+            switch(directive){
+                case 'next':
+                    this.goToNextCard();
+                    break;
+
+                case 'previous':
+                    this.goToPrevCard();
+                    break;
+            }
+            break;
+
+        default:
+            alert(`"go to" not implemented for ${object}`);
+
+    }
 
 }
 
