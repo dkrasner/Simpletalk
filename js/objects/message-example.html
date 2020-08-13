@@ -22,16 +22,17 @@
 
 <!--
 <script>
-  var stack = document.querySelector('st-stack');
+  stack = document.querySelector('st-stack');
   var card = document.querySelector('st-card');
   card.classList.add('current-card')
   var newButtonMsg = { type: 'newModel', modelType: 'button', owner: card.model };
-  stack.sendMessage(newButtonMsg, System);
+  card.sendMessage(newButtonMsg, System);
+  var button = document.querySelector('st-button');
   var newCardMsg = { type: 'newModel', modelType: 'card', owner: stack.model };
   stack.sendMessage(newCardMsg, System);
-  console.log('current card: ' document.querySelector(‘.current-card’));
+  console.log('current card: ' + document.querySelector('.current-card').id);
   var nextCardMsg = { type: 'command', name: 'go to', args: ['next', 'card'] };
-  stack.sendMessage(nextCardMsg, System);
-  console.log('current card: ' document.querySelector(‘.current-card’))
+  button.sendMessage(nextCardMsg, button.model);
+  console.log('current card: ' + document.querySelector('.current-card').id)
 </script>
 -->
