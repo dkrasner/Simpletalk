@@ -69,4 +69,4 @@ let simpleTalkSemantics = {
     }
 }
 
-export {simpleTalkSemantics as default}
+export {simpleTalkSemantics, simpleTalkSemantics as default}

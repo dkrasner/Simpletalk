@@ -65,4 +65,4 @@ let recursivelySendMessages = function(messageList){
     });
 };
 
-export {Compiler as default}
+export {Compiler, Compiler as default}

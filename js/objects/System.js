@@ -21,11 +21,10 @@ import BackgroundView from './views/BackgroundView.js';
 
 import Halo from './views/Halo.js';
 
+import ohm from 'ohm-js';
 import Compiler from './compiler.js';
-import simpleTalkSemantics from '../ohm/semantics.js';
-//TODO uncomment when ready
-// var fs = require('fs');
-// var ohm = require('ohm-js');
+import semantics from '../ohm/semantics.js';
+import grammar from '../ohm/grammar.js';
 
 
 const System = {
@@ -142,8 +141,7 @@ const System = {
         console.log("System Compile");
         console.log(aMessage.codeString);
         console.log(aMessage.targetObject);
-        // TODO add this back in when ready;
-        // this.Compiler.compile(aMessage.codeString, aMessage.targetObject);
+        this.Compiler.compile(aMessage.codeString, aMessage.targetObject);
     },
 
     receiveCommand: function(aMessage){
@@ -381,9 +379,9 @@ System.registerCustomElements = function(){
 
 // iniitalize the compiler and add it to the system
 // Instantiate the grammar.
-// let languageGrammar = ohm.grammar(fs.readFileSync('./js/ohm/simpletalk.ohm'));
-// let languageSemantics = g.createSemantics().addOperation('parse', simpleTalkSemantics);
-// System.compiler = new Compiler(languageGrammar, languageSemantics);
+let languageGrammar = ohm.grammar(grammar);
+let languageSemantics = lam.createSemantics().addOperation('parse', semantics);
+System.compiler = new Compiler(languageGrammar, languageSemantics);
 
 
 // Add the System object to window so
