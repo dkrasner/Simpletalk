@@ -44,8 +44,7 @@
   // add a card and button to the current world
   stack = document.querySelector('st-stack');
   var card = document.querySelector('st-card');
-  // manually set the current card
-  card.classList.add('current-card')
+
   // add a button to the card
   var newButtonMsg = { type: 'newModel', modelType: 'button', owner: card.model };
   card.sendMessage(newButtonMsg, System);
@@ -58,8 +57,8 @@
   console.log('current card: ' + document.querySelector('.current-card').id);
 
   // Send a go to next card message
-  var nextCardMsg = { type: 'command', name: 'go to', args: ['next', 'card'] };
-  button.sendMessage(nextCardMsg, button.model);
+  // var nextCardMsg = { type: 'command', name: 'go to', args: ['next', 'card'] };
+  // button.sendMessage(nextCardMsg, button.model);
   // check that the current card is iterated fwd
   console.log('current card: ' + document.querySelector('.current-card').id)
 
@@ -67,5 +66,9 @@
   button.model.partProperties.setPropertyNamed(button.model, 'script',
       'on mouseUp\n    go to next card\n end mouseUp')
   console.log(button.model.partProperties.getPropertyNamed(button.model, 'script'))
+
+	// now send the button a mouseUp message
+	var mouseUpMsg = { type: 'command', name: 'mouseUp', args: [] };
+  button.sendMessage(mouseUpMsg, button.model);
 </script>
 -->

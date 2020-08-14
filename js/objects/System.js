@@ -141,7 +141,7 @@ const System = {
         console.log("System Compile");
         console.log(aMessage.codeString);
         console.log(aMessage.targetObject);
-        this.Compiler.compile(aMessage.codeString, aMessage.targetObject);
+        this.compiler.compile(aMessage.codeString, aMessage.targetObject);
     },
 
     receiveCommand: function(aMessage){

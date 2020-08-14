@@ -144,7 +144,7 @@ class ButtonView extends PartView {
                     type: 'compile',
                     codeString: aMessage.value,
                     targetObject: this.model
-                }, System);
+                }, window.System);
             }
             this.setPropsFromModel();
         }
