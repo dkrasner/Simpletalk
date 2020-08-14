@@ -96,7 +96,7 @@ class StackView extends PartView {
                 // Otherwise we are at the last child st-card element
                 // in the stack, which means we need to loop around
                 // back to the first child.
-                let firstCard = this.querySelector('st-card:first-child');
+                let firstCard = this.querySelector('st-card');
                 currentCardView.classList.remove('current-card');
                 firstCard.classList.add('current-card');
             }

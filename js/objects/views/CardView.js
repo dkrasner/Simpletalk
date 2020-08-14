@@ -12,11 +12,15 @@ const templateString = `
                      box-sizing: border-box;
                  }
                  :host {
-                     display: block;
+                     display: none;
                      position: relative;
                      width: 100%;
                      height: 100%;
                  }
+:host(.current-card){
+display: block;
+}
+
                 </style>
                 <slot></slot>
 `;
