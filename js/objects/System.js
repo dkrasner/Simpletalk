@@ -24,7 +24,7 @@ import Halo from './views/Halo.js';
 import ohm from 'ohm-js';
 import Compiler from './compiler.js';
 import semantics from '../ohm/semantics.js';
-import grammar from '../ohm/grammar.js';
+// import grammar from '../ohm/grammar.js';
 
 
 const System = {
@@ -379,8 +379,9 @@ System.registerCustomElements = function(){
 
 // iniitalize the compiler and add it to the system
 // Instantiate the grammar.
-let languageGrammar = ohm.grammar(grammar);
-let languageSemantics = lam.createSemantics().addOperation('parse', semantics);
+//let languageGrammar = ohm.grammar(grammar);
+let languageGrammar = ohm.grammarFromScriptElement();
+let languageSemantics = languageGrammar.createSemantics().addOperation('parse', semantics);
 System.compiler = new Compiler(languageGrammar, languageSemantics);
 
 
