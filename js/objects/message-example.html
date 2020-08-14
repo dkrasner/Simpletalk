@@ -3,7 +3,7 @@
     <head>
         <meta charset="utf-8">
         <title>System Object Example</title>
-        <script src="System.js" type="module"></script>
+        <script src="build/devSystem.bundle.js"></script>
     </head>
     <body>
         <style>
@@ -17,6 +17,24 @@
         </style>
         <div id="template-area">
         </div>
+        <script>
+         document.addEventListener('DOMContentLoaded', () => {
+             // Create an initial structure.
+             // Adding a WorldStack will add an initial
+             // empty stack with an initial empty first card,
+             // along with views for all.
+             System.newModel('world', System);
+
+             // Find the current card and add a button
+             // to it
+             let cardModel = document.querySelector('st-card').model;
+             cardModel.sendMessage({
+                 type: 'newModel',
+                 name: 'button',
+                 owner: cardModel
+             }, cardModel);
+         });
+        </script>
     </body>
 </html>
 

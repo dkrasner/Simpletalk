@@ -17,6 +17,7 @@ import StackView from './views/StackView.js';
 import ButtonView from './views/ButtonView.js';
 import PartView from './views/PartView.js';
 import CardView from './views/CardView.js';
+import BackgroundView from './views/BackgroundView.js';
 
 import Halo from './views/Halo.js';
 
@@ -157,6 +158,7 @@ const System = {
     },
 
     newModel(kind, owner){
+        debugger;
         let ownerPart = this.partsById[owner.id];
         if(ownerPart){
             let model;
@@ -365,6 +367,7 @@ System.registerView('button', ButtonView);
 System.registerView('stack', StackView);
 System.registerView('world', WorldView);
 System.registerView('card', CardView);
+System.registerView('background', BackgroundView);
 
 
 // Convenience method for adding all of the
