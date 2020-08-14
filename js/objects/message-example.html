@@ -22,17 +22,31 @@
 
 <!--
 <script>
+  // add a card and button to the current world
   stack = document.querySelector('st-stack');
   var card = document.querySelector('st-card');
+  // manually set the current card
   card.classList.add('current-card')
+  // add a button to the card
   var newButtonMsg = { type: 'newModel', modelType: 'button', owner: card.model };
   card.sendMessage(newButtonMsg, System);
   var button = document.querySelector('st-button');
+  // add another card
   var newCardMsg = { type: 'newModel', modelType: 'card', owner: stack.model };
   stack.sendMessage(newCardMsg, System);
+
+  // make sure the current card is what it is
   console.log('current card: ' + document.querySelector('.current-card').id);
+
+  // Send a go to next card message
   var nextCardMsg = { type: 'command', name: 'go to', args: ['next', 'card'] };
   button.sendMessage(nextCardMsg, button.model);
+  // check that the current card is iterated fwd
   console.log('current card: ' + document.querySelector('.current-card').id)
+
+  // add a script to the button1`
+  button.model.partProperties.setPropertyNamed(button.model, 'script',
+      'on mouseUp\n    go to next card\n end mouseUp')
+  console.log(button.model.partProperties.getPropertyNamed(button.model, 'script'))
 </script>
 -->

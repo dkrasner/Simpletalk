@@ -1,7 +1,7 @@
 {
   "name": "simpletalk",
   "version": "0.0.1",
-  "description": "An ohm-js based implementation of HyperTalk.",
+  "description": "An ohm-js based implementation of a HyperTalk like environment.",
   "main": "index.js",
   "scripts": {
     "test": "./node_modules/mocha/bin/mocha --require esm ./js/ohm/tests/ && ./js-tests.sh",

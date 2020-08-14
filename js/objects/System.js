@@ -20,9 +20,17 @@ import CardView from './views/CardView.js';
 
 import Halo from './views/Halo.js';
 
+import Compiler from './compiler.js';
+import simpleTalkSemantics from '../ohm/semantics.js';
+//TODO uncomment when ready
+// var fs = require('fs');
+// var ohm = require('ohm-js');
+
+
 const System = {
     isLoaded: false,
     partsById: {},
+    compiler: null,
     _commandHandlers: {},
     _functionHandlers: {},
 
@@ -105,7 +113,8 @@ const System = {
                 return this.updateSerialization(
                     aMessage.partId
                 );
-            debugger;
+            case 'compile':
+                return this.compile(aMessage);
             case 'command':
                 return this.receiveCommand(aMessage);
             default:
@@ -126,6 +135,15 @@ const System = {
         }
         throw new Error(`System does not understand message ${aMessage.type}`);
         console.error(aMessage);
+    },
+
+    compile: function(aMessage){
+        debugger;
+        console.log("System Compile");
+        console.log(aMessage.codeString);
+        console.log(aMessage.targetObject);
+        // TODO add this back in when ready;
+        // this.Compiler.compile(aMessage.codeString, aMessage.targetObject);
     },
 
     receiveCommand: function(aMessage){
@@ -231,15 +249,6 @@ const System = {
         // instantiate models for those parts too,
         // recursively
         if(recursive){
-  var stack = document.querySelector('st-stack');
-  var card = document.querySelector('st-card');
-  card.classList.add('current-card')
-  var newButtonMsg = { type: 'newModel', modelType: 'button', owner: card.model };
-  stack.sendMessage(newButtonMsg, System);
-  var newCardMsg = { type: 'newModel', modelType: 'card', owner: stack.model };
-  stack.sendMessage(newCardMsg, System);
-  var nextCardMsg = { type: 'command', name: 'go to', args: ['next', 'card'] };
-  stack.sendMessage(nextCardMsg, System);
             json.subparts.forEach(subpartId => {
                 let serializationEl = document.querySelector('script[data-part-id="${subpartId}"]');
                 if(serializationEl){
@@ -307,12 +316,8 @@ System._commandHandlers['answer'] = function(text){
     alert(text);
 };
 
-System._commandHandlers['go to'] = function(directive, object){
-    console.log("go to");
-    console.log(directive);
-    console.log(object);
-                    ;
-    switch(object) {
+System._commandHandlers['go to'] = function(directive, objectName){
+    switch(objectName) {
         case 'card':
             switch(directive){
                 case 'next':
@@ -329,7 +334,6 @@ System._commandHandlers['go to'] = function(directive, object){
             alert(`"go to" not implemented for ${object}`);
 
     }
-
 }
 
 System._commandHandlers['saveHTML'] = function(){
@@ -373,6 +377,13 @@ System.registerCustomElements = function(){
         window.customElements.define(elementName, viewClass);
     });
 };
+
+// iniitalize the compiler and add it to the system
+// Instantiate the grammar.
+// let languageGrammar = ohm.grammar(fs.readFileSync('./js/ohm/simpletalk.ohm'));
+// let languageSemantics = g.createSemantics().addOperation('parse', simpleTalkSemantics);
+// System.compiler = new Compiler(languageGrammar, languageSemantics);
+
 
 // Add the System object to window so
 // that it is global on the page. We do this
