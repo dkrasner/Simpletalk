@@ -66,6 +66,15 @@ class StackView extends PartView {
                         owner: this.model
                     }, window.System);
                 }
+
+                // Ensure that some Card in the stack
+                // has the `current-card` class set.
+                // If there are none yet, make it the first
+                // card.
+                let current = this.querySelector('.current-card');
+                if(!current){
+                    this.querySelector('st-card').classList.add('current-card');
+                }
             }
         }
     }
