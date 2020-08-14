@@ -139,7 +139,6 @@ const System = {
     },
 
     compile: function(aMessage){
-        debugger;
         console.log("System Compile");
         console.log(aMessage.codeString);
         console.log(aMessage.targetObject);
@@ -158,7 +157,6 @@ const System = {
     },
 
     newModel(kind, owner){
-        debugger;
         let ownerPart = this.partsById[owner.id];
         if(ownerPart){
             let model;
