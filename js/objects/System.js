@@ -18,6 +18,7 @@ import ButtonView from './views/ButtonView.js';
 import PartView from './views/PartView.js';
 import CardView from './views/CardView.js';
 import BackgroundView from './views/BackgroundView.js';
+import WindowView from './views/WindowView';
 
 import Halo from './views/Halo.js';
 
@@ -387,6 +388,7 @@ System.registerView('stack', StackView);
 System.registerView('world', WorldView);
 System.registerView('card', CardView);
 System.registerView('background', BackgroundView);
+System.registerView('window', WindowView);
 
 
 // Convenience method for adding all of the
