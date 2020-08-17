@@ -130,6 +130,7 @@ const System = {
         // which are not captured by default and would otherwise
         // end up arriving to this System object via the
         // message delegation chain.
+        debugger;
         if(aMessage.shouldIgnore){
             return;
         }
@@ -145,7 +146,7 @@ const System = {
     },
 
     receiveCommand: function(aMessage){
-        let handler = this._commandHandlers[aMessage.name];
+        let handler = this._commandHandlers[aMessage.commandName];
         if(handler){
             let boundHandler = handler.bind(this);
             return boundHandler(...aMessage.args);

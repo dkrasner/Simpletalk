@@ -9,7 +9,7 @@ let simpleTalkSemantics = {
     Command_answer: function(answer, stringLiteral){
         let msg = {
             type: "command",
-            name: "answer",
+            commanName: "answer",
             args: [
                 stringLiteral.parse()
             ]
@@ -31,7 +31,7 @@ let simpleTalkSemantics = {
 
         let msg = {
             type: "command",
-            name: "go to",
+            commandName: "go to",
             args: args
         };
         return msg;

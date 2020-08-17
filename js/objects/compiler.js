@@ -41,27 +41,29 @@ class Compiler {
                 // from the handler itself
                 target._commandHandlers[messageName] = function(...messageParameters){
                     recursivelySendMessages(
-                        target.script._compiled[messageName]
-                    ).bind(target)();
+                        target._scriptSemantics[messageName],
+                        target
+                    );
                 };
                 break;
             case "function":
                 target._functionHandlers[messageName] = function(...args){
                     recursivelySendMessages(
-                        target.script._compiled[messageName]
-                    ).bind(target)();
+                        target._scriptSemantics[messageName],
+                        target
+                    );
                 };
                 break;
             }
     }
 }
 
-let recursivelySendMessages = function(messageList){
+let recursivelySendMessages = function(messageList, target){
     // This is just an example. It will be
     // more complex since messages can be
     // nested etc
     messageList.forEach(message => {
-        this.sendMessage(message, this);
+        target.sendMessage(message, target);
     });
 };
 

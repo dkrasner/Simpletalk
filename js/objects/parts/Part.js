@@ -198,12 +198,12 @@ class Part {
         // By default, Parts will only handle
         // messages of type 'command' and 'function'
         switch(aMessage.type){
-        case 'command':
-            this.receiveCmd(aMessage);
-            break;
-        case 'function':
-            this.receiveFunc(aMessage);
-            break;
+            case 'command':
+                this.receiveCmd(aMessage);
+                break;
+            case 'function':
+                this.receiveFunc(aMessage);
+                break;
         }
     }
 

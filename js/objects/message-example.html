@@ -57,7 +57,7 @@
   console.log('current card: ' + document.querySelector('.current-card').id);
 
   // Send a go to next card message
-  // var nextCardMsg = { type: 'command', name: 'go to', args: ['next', 'card'] };
+  // var nextCardMsg = { type: 'command', commandName: 'go to', args: ['next', 'card'] };
   // button.sendMessage(nextCardMsg, button.model);
   // check that the current card is iterated fwd
   console.log('current card: ' + document.querySelector('.current-card').id)
@@ -68,7 +68,7 @@
   console.log(button.model.partProperties.getPropertyNamed(button.model, 'script'))
 
 	// now send the button a mouseUp message
-	var mouseUpMsg = { type: 'command', name: 'mouseUp', args: [] };
+	var mouseUpMsg = { type: 'command', commandName: 'mouseUp', args: [] };
   button.sendMessage(mouseUpMsg, button.model);
 </script>
 -->
