@@ -58,7 +58,8 @@ SimpleTalk {
 
 	Command (a command statement)
 		= "go to" ("next" | "previous")? systemObject? objectId? --goTo
-                | "answer" stringLiteral --answer
+        | "answer" stringLiteral --answer
+        | letter+ --arbitrary
 
 	// Function definition follows the HT convention
 	// """
@@ -67,16 +68,16 @@ SimpleTalk {
 	// end functionName
 	// """
 
-    	// TODO: Consider using the "Open/Close" formulation
-    	// we have for MessageHandler. We could even use the
-    	// MessageHandlerClose for functions, since they are
-    	// identical
+    // TODO: Consider using the "Open/Close" formulation
+    // we have for MessageHandler. We could even use the
+    // MessageHandlerClose for functions, since they are
+    // identical
 	FunctionHandlerSyntax<name, parameters, statements>
 		= "function" name "(" ParameterList? ")" lineTerminator statements? "end" name
 
-    	FunctionHandlerOpen = "function" functionName "(" ParameterList? ")" lineTerminator
+    FunctionHandlerOpen = "function" functionName "(" ParameterList? ")" lineTerminator
 
-    	FunctionHandlerClose = "end" functionName
+    FunctionHandlerClose = "end" functionName
 
 	FunctionHandler = FunctionHandlerOpen StatementList? FunctionHandlerClose
 

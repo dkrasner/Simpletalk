@@ -37,6 +37,15 @@ let simpleTalkSemantics = {
         return msg;
     },
 
+    Command_arbitrary: function(name){
+        let msg = {
+            type: "command",
+            commandName: name,
+            args: []
+        };
+        return msg;
+    },
+
     MessageHandlerOpen: function(literalOn, messageName, parameterList, newLine){
         return [messageName.sourceString, parameterList];
     },
