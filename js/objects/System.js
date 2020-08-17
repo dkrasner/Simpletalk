@@ -130,7 +130,6 @@ const System = {
         // which are not captured by default and would otherwise
         // end up arriving to this System object via the
         // message delegation chain.
-        debugger;
         if(aMessage.shouldIgnore){
             return;
         }
