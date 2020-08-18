@@ -86,6 +86,9 @@ template.innerHTML = `
     <div class="st-window-button close-button"></div>
     <div class="st-window-button shade-button"></div>
     <div class="st-window-button expand-button"></div>
+    <div class="st-window-title">
+        <span></span>
+    </div>
 </div>
 <div class="st-window-pane">
     <slot></slot>
@@ -244,6 +247,37 @@ class WindowView extends PartView {
             }
         }
     }
+
+    receiveMessage(aMessage){
+        switch(aMessage.type){
+        case 'propertyChanged':
+            this.onPropertyChanged(
+                aMessage.propertyName,
+                aMessage.value,
+                aMessage.partId
+            );
+            break;
+        default:
+            break;
+        };
+    }
+
+    onPropertyChanged(propName, newVal, partId){
+        switch(propName){
+        case 'title':
+            this.setTitle(newVal);
+            break;
+        }
+    }
+
+    setTitle(aString){
+        let titleArea = this._shadowRoot.querySelector(
+            '.st-window-title > span'
+        );
+        titleArea.innerText = aString;
+    }
+
+
 
 };
 

@@ -4,7 +4,11 @@
  * A Window is a Part that wraps another
  * Part of type Card, Stack, or WorldStack
  * in a moveable window.
- * I call this, my sole subpart, my "target".
+ * I can also optionally hold a reference
+ * to a target Part that I do not own. I call
+ * this JS property target and I store the
+ * target part's id as a HyperTalk property
+ * called targetId.
  * When my owner part is the current view, I
  * will be visible on top of everything else.
  */
@@ -14,12 +18,17 @@ class Window extends Part {
     constructor(owner, name, target){
         super(owner, name);
 
-        this.allowedTargetTypes = [
+        this.acceptedPartTypes = [
             'card',
             'stack',
             'world'
         ];
-        this.setTarget(target);
+
+        // If we pass in a target,
+        // set it.
+        if(target){
+            this.setTarget(target);
+        }
 
         // Set up Window specific
         // part ptoperties
@@ -28,20 +37,21 @@ class Window extends Part {
             null
         );
 
+        this.partProperties.newBasicProp(
+            'title',
+            `A Window ${this.id}`
+        );
+
+        this.partProperties.newBasicProp(
+            'isResizable',
+            true
+        );
+
         // Bind methods
         this.setTarget = this.setTarget.bind(this);
     }
 
     setTarget(aPart){
-        let isValid = this.allowedTargetTypes.includes(aPart.type);
-        if(!isValid){
-            // We can replace this JS error throw
-            // with some kind of message delegated
-            // to the System that handles runtime errors
-            // that should not be fatal
-            throw new Error(`Windows cannot have targets of type ${aPart.type}`);
-        }
-
         this.target = aPart;
         this.partProperties.setPropertyNamed(
             this,
@@ -58,4 +68,36 @@ class Window extends Part {
             null
         );
     }
+
+    /**
+     * Override
+     * Unlike other kinds of Parts, a window
+     * has only one subpart, which should be
+     * Card, Stack, or WorldStack.
+     */
+    addPart(aPart){
+        let isValid = this.acceptedPartTypes.includes(aPart.type);
+        if(!isValid){
+            // Consider replacing this generic exception
+            // with a message based approach that sends
+            // these sorts of non-fatal errors to System
+            // as a kind of message. This way we can display
+            // errors in SimpltTalk objects.
+            throw new Error(`Windows cannot wrap parts of type ${aPart.type}`);
+        }
+        this.subparts.forEach(subpart => {
+            this.removePart(subpart);
+        });
+        this.subparts.push(aPart);
+        aPart._owner = this;
+    }
+
+    get type(){
+        return 'window';
+    }
 };
+
+export {
+    Window,
+    Window as default
+}

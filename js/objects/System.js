@@ -11,6 +11,7 @@ import Background from './parts/Background.js';
 import Button from './parts/Button.js';
 import Field from './parts/Field.js';
 import WorldStack from './parts/WorldStack.js';
+import Window from './parts/Window.js';
 
 import WorldView from './views/WorldView.js';
 import StackView from './views/StackView.js';
@@ -356,7 +357,38 @@ System._commandHandlers['go to'] = function(directive, objectName){
             alert(`"go to" not implemented for ${object}`);
 
     }
-}
+};
+
+// Opens a basic tool window on the Part of the given
+// id. If no ID is given, we assume the tool window
+// is for the current stack.
+System._commandHandlers['openToolbox'] = function(targetId){
+    let targetPart;
+    if(!targetId){
+        targetId = Object.keys(this.partsById).find(key => {
+            return this.partsById[key].type == 'world';
+        });
+        targetPart = this.partsById[targetId];
+    } else {
+        targetPart = this.partsById[targetId];
+    }
+
+    if(!targetPart || targetPart == undefined){
+        throw new Error(`Could not locate WorldStack or Part with id ${targetId}`);
+    }
+
+    let windowModel = this.newModel('window', targetPart);
+    let windowStack = this.newModel('stack', windowModel);
+    windowModel.partProperties.setPropertyNamed(
+        windowModel,
+        'title',
+        'Toolbox'
+    );
+
+    // Do more toolbox configuration here
+    // like making the buttons with their
+    // scripts, etc
+};
 
 System._commandHandlers['saveHTML'] = function(){
     let anchor = document.createElement('a');
@@ -381,6 +413,7 @@ System.registerPart('background', Background);
 System.registerPart('field', Field);
 System.registerPart('button', Button);
 System.registerPart('world', WorldStack);
+System.registerPart('window', Window);
 
 /** Register the initial set of views in the system **/
 System.registerView('button', ButtonView);
