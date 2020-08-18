@@ -5,8 +5,8 @@
   "main": "index.js",
   "scripts": {
     "test": "./node_modules/mocha/bin/mocha --require esm ./js/ohm/tests/ && ./js-tests.sh",
-      "test-grammar": "./node_modules/mocha/bin/mocha --require esm ./js/ohm/tests/",
-      "build-dev": "webpack --config ./webpack.config.js"
+    "test-grammar": "./node_modules/mocha/bin/mocha --require esm ./js/ohm/tests/",
+    "build-dev": "webpack --config ./webpack.config.js"
   },
   "repository": {
     "type": "git",
