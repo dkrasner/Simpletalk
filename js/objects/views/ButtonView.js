@@ -12,11 +12,12 @@ const templateString = `
                  }
 
                  :host {
+                     box-sizing: border-box;
                      display: inline-flex;
                      flex-direction: column;
                      justify-content: center;
                      align-items: center;
-                     position: relative;
+                     position: absolute;
                      background-color: white;
                      padding-left: 10px;
                      padding-right: 10px;
@@ -70,14 +71,6 @@ class ButtonView extends PartView {
             this.addEventListener('click', this.onClick);
             this.addEventListener('contextmenu', this.onContextMenu);
 
-            // Set my initially computed height and width to
-            // explicit inline style values
-            let rect = this.getBoundingClientRect();
-            this.style.width = `${rect.width}px`;
-            this.style.height = `${rect.height}px`;
-            this.style.top = `${rect.top}px`;
-            this.style.left = `${rect.left}px`;
-
             // If there is a bound model, set all
             // the relevant view properties from
             // model properties
@@ -94,7 +87,7 @@ class ButtonView extends PartView {
     }
 
     onClick(event){
-        console.log(event.button);
+        // Does nothing for now
     }
 
     onMouseUp(event){
@@ -120,6 +113,13 @@ class ButtonView extends PartView {
 
     onContextMenu(event){
         event.preventDefault();
+        // Compute the appropriate width and height from
+        // current rect
+        let rect = this.getBoundingClientRect();
+        this.style.width = `${Math.floor(rect.width)}px`;
+        this.style.height = `${Math.floor(rect.height)}px`;
+        this.style.top = `${Math.floor(rect.top)}px`;
+        this.style.left = `${Math.floor(rect.left)}px`;
         let foundHalo = this._shadowRoot.querySelector('st-halo');
         if(foundHalo){
             this._shadowRoot.removeChild(foundHalo);

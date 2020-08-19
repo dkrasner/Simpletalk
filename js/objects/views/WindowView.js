@@ -66,7 +66,6 @@ template.innerHTML = `
      top: calc(100% - 15px);
      width: 30px;
      height: 30px;
-     border: 1px solid red;
  }
  .right-gripper {
      left: calc(100% - 15px);
@@ -80,7 +79,6 @@ template.innerHTML = `
  .left-gripper:hover {
      cursor: nesw-resize;
  }
- .st-window-pane
 </style>
 <div class="st-window-bar">
     <div class="st-window-button close-button"></div>
