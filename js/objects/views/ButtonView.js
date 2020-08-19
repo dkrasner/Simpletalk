@@ -139,7 +139,7 @@ class ButtonView extends PartView {
     receiveMessage(aMessage){
         if(aMessage.type == 'propertyChanged'){
             // TODO should script property change be handled in the based class?
-            if(aMessage.propertyName = "script"){
+            if(aMessage.propertyName == "script"){
                 this.model.sendMessage({
                     type: 'compile',
                     codeString: aMessage.value,

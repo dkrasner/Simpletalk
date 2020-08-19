@@ -366,7 +366,7 @@ System._commandHandlers['openToolbox'] = function(targetId){
     let targetPart;
     if(!targetId){
         targetId = Object.keys(this.partsById).find(key => {
-            return this.partsById[key].type == 'world';
+            return this.partsById[key].type == 'stack';
         });
         targetPart = this.partsById[targetId];
     } else {
@@ -374,7 +374,7 @@ System._commandHandlers['openToolbox'] = function(targetId){
     }
 
     if(!targetPart || targetPart == undefined){
-        throw new Error(`Could not locate WorldStack or Part with id ${targetId}`);
+        throw new Error(`Could not locate current Stack or Part with id ${targetId}`);
     }
 
     let windowModel = this.newModel('window', targetPart);
@@ -388,6 +388,34 @@ System._commandHandlers['openToolbox'] = function(targetId){
     // Do more toolbox configuration here
     // like making the buttons with their
     // scripts, etc
+    let windowStackView = document.getElementById(windowStack.id);
+    let windowCurrentCardModel = windowStackView.querySelector('.current-card').model;
+    let addBtnBtn = this.newModel('button', windowCurrentCardModel);
+    addBtnBtn.partProperties.setPropertyNamed(
+        addBtnBtn,
+        'name',
+        'Add Button to Card'
+    );
+    // Because we can't yet compile the script needed to do this
+    // (scripts don't yet know about "card" in context), we manually
+    // bind the message handler
+    addBtnBtn._commandHandlers['mouseUp'] = function(){
+        // Find the current active card in the current
+        // active stack and add a button to it
+        let currentCardView = document.querySelector('.current-stack .current-card');
+        let cardModel = currentCardView.model;
+        /*let newButton = cardModel.sendMessage({
+            type: 'newModel',
+            modelType: 'button',
+            owner: cardModel
+            }, System);*/
+        let newButton = System.newModel('button', cardModel);
+        newButton.partProperties.setPropertyNamed(
+            newButton,
+            'name',
+            `Button ${newButton.id}`
+        );
+    };
 };
 
 System._commandHandlers['saveHTML'] = function(){
