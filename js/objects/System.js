@@ -12,6 +12,7 @@ import Button from './parts/Button.js';
 import Field from './parts/Field.js';
 import WorldStack from './parts/WorldStack.js';
 import Window from './parts/Window.js';
+import EricField from './parts/EricField.js';
 
 import WorldView from './views/WorldView.js';
 import StackView from './views/StackView.js';
@@ -20,6 +21,7 @@ import PartView from './views/PartView.js';
 import CardView from './views/CardView.js';
 import BackgroundView from './views/BackgroundView.js';
 import WindowView from './views/WindowView';
+import EricFieldView from './views/EricFieldView.js';
 
 import Halo from './views/Halo.js';
 
@@ -160,6 +162,36 @@ const System = {
         // Lookup the instance of the model that
         // matches the owner's id
         let ownerPart = this.partsById[owner.id];
+<<<<<<< HEAD
+=======
+        if(ownerPart){
+            let model;
+            switch(kind){
+            case 'card':
+                model = new Card(owner);
+                break;
+            case 'stack':
+                model = new Stack(owner);
+                break;
+            case 'background':
+                model = new Background(owner);
+                break;
+            case 'button':
+                model = new Button(owner);
+                break;
+            case 'field':
+                model = new Field(owner);
+                break;
+            case 'window':
+                model = new Window(owner);
+                break;
+            case 'eric-field':
+                model = new EricField(owner);
+                break;
+            default:
+                throw new Error(`Cannot create unknown part type: ${kind}`);
+            }
+>>>>>>> Adding interim basic text field part and view
 
         // Find the class constructor for the kind of
         // part requested as a new model. If not known,
@@ -442,6 +474,7 @@ System.registerPart('field', Field);
 System.registerPart('button', Button);
 System.registerPart('world', WorldStack);
 System.registerPart('window', Window);
+System.registerPart('eric-field', EricField);
 
 /** Register the initial set of views in the system **/
 System.registerView('button', ButtonView);
@@ -450,6 +483,7 @@ System.registerView('world', WorldView);
 System.registerView('card', CardView);
 System.registerView('background', BackgroundView);
 System.registerView('window', WindowView);
+System.registerView('eric-field', EricFieldView);
 
 
 // Convenience method for adding all of the
