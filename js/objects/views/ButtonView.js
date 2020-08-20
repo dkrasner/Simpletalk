@@ -91,15 +91,16 @@ class ButtonView extends PartView {
     }
 
     onMouseUp(event){
-
-        // Send the mouseUp command
-        // message to Button Part.
-        this.model.sendMessage({
-            type: 'command',
-            commandName: 'mouseUp',
-            args: [],
-            shouldIgnore: true // Should ignore if System DNU
-        }, this.model);
+        if(!this.hasOpenHalo){
+            // Send the mouseUp command
+            // message to Button Part.
+            this.model.sendMessage({
+                type: 'command',
+                commandName: 'mouseUp',
+                args: [],
+                shouldIgnore: true // Should ignore if System DNU
+            }, this.model);
+        }
     }
 
     onMouseEnter(event){

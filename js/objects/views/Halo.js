@@ -43,7 +43,7 @@ const templateString = `
                      background-color: red;
                  }
 
-                 .st-halo-rotater {
+                 .st-halo-scripter {
                      display: block;
                      position: absolute;
                      left: -25px;
@@ -55,7 +55,7 @@ const templateString = `
                  }
                 </style>
                 <div class="st-halo-resizer"></div>
-                <div class="st-halo-rotater"></div>
+                <div class="st-halo-scripter"></div>
 `;
 
 class Halo extends HTMLElement {
@@ -71,6 +71,7 @@ class Halo extends HTMLElement {
         this.resizeMouseDown = this.resizeMouseDown.bind(this);
         this.resizeMouseMove = this.resizeMouseMove.bind(this);
         this.resizeMouseUp = this.resizeMouseUp.bind(this);
+        this.scripterClick = this.scripterClick.bind(this);
         this.onClick = this.onClick.bind(this);
         this.onMouseDown = this.onMouseDown.bind(this);
         this.onMouseUp = this.onMouseUp.bind(this);
@@ -85,11 +86,13 @@ class Halo extends HTMLElement {
             this.targetElement = this.getRootNode().host;
             this.targetElement.style.position = "relative";
             this.targetElement.classList.add('editing');
+            this.targetElement.hasOpenHalo = true;
 
-            // Set the resizer click and drag
-            // events
+            // Set the Halo button events
             this.resizer = this._shadowRoot.querySelector('.st-halo-resizer');
             this.resizer.addEventListener('mousedown', this.resizeMouseDown);
+            this.scripter = this._shadowRoot.querySelector('.st-halo-scripter');
+            this.scripter.addEventListener('click', this.scripterClick);
 
             // Bind click events for host (this) element.
             // IF we prevent propagation, it should disable
@@ -107,9 +110,11 @@ class Halo extends HTMLElement {
     disconnectedCallback(){
         this.removeEventListener('mousedown', this.onMouseDown);
         this.resizer.removeEventListener('mousedown', this.resizeMouseDown);
+        this.scripter.removeEventListener('click', this.scripterClick);
         this.removeEventListener('click', this.onClick);
         this.targetElement.style.position = "";
         this.targetElement.classList.remove('editing');
+        this.targetElement.hasOpenHalo = false;
     }
 
     onClick(event){
@@ -135,6 +140,17 @@ class Halo extends HTMLElement {
 
         this.targetElement.style.width = `${newWidth}px`;
         this.targetElement.style.height = `${newHeight}px`;
+    }
+
+    scripterClick(event){
+        // Send a message to the system to open a
+        // script editor on the wrapped Part
+        let targetId = this.targetElement.model.id;
+        this.targetElement.sendMessage({
+            type: 'command',
+            commandName: 'openScriptEditor',
+            args: [targetId]
+        }, window.System);
     }
 
     onMouseDown(event){

@@ -61,17 +61,11 @@ class EricFieldView extends PartView {
     onInput(event){
         event.stopPropagation();
         event.preventDefault();
-        if(event.data){
-            let existingText = this.model.partProperties.getPropertyNamed(
-                this.model,
-                'textContent'
-            );
-            this.model.partProperties.setPropertyNamed(
-                this.model,
-                'textContent',
-                `${existingText}${event.data}`
-            );
-        }
+        this.model.partProperties.setPropertyNamed(
+            this.model,
+            'textContent',
+            event.target.value
+        );
     }
 
     receiveMessage(aMessage){

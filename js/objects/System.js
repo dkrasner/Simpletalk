@@ -450,6 +450,77 @@ System._commandHandlers['openToolbox'] = function(targetId){
     };
 };
 
+System._commandHandlers['openScriptEditor'] = function(targetId){
+    let targetPart = this.partsById[targetId];
+    if(!targetPart){
+        throw new Error(`No such part with id ${targetId}!`);
+    }
+
+    // The stack where the window will be inserted will
+    // be the current stack
+    let currentStackView = document.querySelector('.current-stack');
+    let insertStack = currentStackView.model;
+
+
+    if(!insertStack){
+        throw new Error(`Could not find a Stack parent for ${targetPart.type}[${targetId}]`);
+    }
+
+    let winModel = this.newModel('window', insertStack);
+    let winTitle = `Script: ${targetPart.type}[${targetId}]`;
+    winModel.partProperties.setPropertyNamed(
+        winModel,
+        'name',
+        winTitle
+    );
+    let winView = document.getElementById(winModel.id);
+    let winStackModel = this.newModel('stack', winModel);
+    let currentCardView = winView.querySelector('.current-stack .current-card');
+    let currentCard = currentCardView.model;
+
+    // Create the EricField model and attach to current card
+    // of the new window.
+    let fieldModel = this.newModel('eric-field', currentCard);
+    let saveBtnModel = this.newModel('button', currentCard);
+    saveBtnModel.partProperties.setPropertyNamed(
+        saveBtnModel,
+        'name',
+        'Save Script'
+    );
+
+    let fieldView = document.getElementById(fieldModel.id);
+    let saveBtnView = document.getElementById(saveBtnModel.id);
+
+    // Set the field's textContent to be the script of the given
+    // target part.
+    let currentScript = targetPart.partProperties.getPropertyNamed(
+        targetPart,
+        'script'
+    );
+    fieldModel.partProperties.setPropertyNamed(
+        fieldModel,
+        'textContent',
+        currentScript
+    );
+
+    // Set the save button's action to be to save the script
+    // on the part
+    saveBtnModel._commandHandlers['mouseUp'] = function(){
+        let editedText = fieldModel.partProperties.getPropertyNamed(
+            fieldModel,
+            'textContent'
+        );
+        targetPart.partProperties.setPropertyNamed(
+            targetPart,
+            'script',
+            editedText
+        );
+    };
+    // Manually set the style attributes for this stuff. Since we don't
+    // have layout parts yet we need to do it here to make it look nice
+    fieldView.style.flex = "1";
+};
+
 System._commandHandlers['saveHTML'] = function(){
     let anchor = document.createElement('a');
     anchor.style.display = "none";
