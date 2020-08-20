@@ -70,7 +70,7 @@ const System = {
         this.isLoaded = true;
     },
 
-    loadFromWorldView(aWorldView){
+    loadFromWorldView: function(aWorldView){
         let worldSerialization = this.getSerializationFor(aWorldView.id);
         if(!worldSerialization || worldSerialization == undefined){
             // The element has no corresponding serialized model.
@@ -384,13 +384,10 @@ let languageGrammar = ohm.grammarFromScriptElement();
 let languageSemantics = languageGrammar.createSemantics().addOperation('parse', semantics);
 System.compiler = new Compiler(languageGrammar, languageSemantics);
 
-
-// Add the System object to window so
-// that it is global on the page. We do this
-// for both debugging and testing.
-window.System = System;
-
 document.addEventListener('DOMContentLoaded', () => {
+    // Add the System object to window so
+    // that it is global on the page. We do this
+    // for both debugging and testing.
     window.System = System;
     // Add the possible views as webcomponents
     // in the custom element registry
