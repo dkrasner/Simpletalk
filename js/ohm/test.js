@@ -13,6 +13,6 @@ assert(grammar.match(bad_script1).failed())
 const good_script1 = 'on daSomething\n\tanswer "it worked"\nend daSomething';
 assert(grammar.match(good_script1).succeeded())
 
-// This fails (presumably because messages won't parse).
-const bad_script2 = 'on mouseUp\n\tdaSomething\nend mouseUp\n\non daSomething\n\tanswer "it worked"\nend daSomething';
-assert(grammar.match(bad_script2).failed())
+// This succeeds.
+const good_script2 = 'on mouseUp\n\tdaSomething\nend mouseUp\n\non daSomething\n\tanswer "it worked"\nend daSomething';
+assert(grammar.match(good_script2).succeeded())

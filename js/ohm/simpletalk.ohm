@@ -1,9 +1,12 @@
  SimpleTalk {
  	Script
+		= ScriptLine+ end
+
+	ScriptLine
 		= MessageHandler
 		| FunctionHandler
 		| comment
-		| end
+		| lineTerminator
 
 	// Function definition follows the HT convention
 	// """
