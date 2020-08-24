@@ -5,14 +5,18 @@ const fs = require("fs");
 const grammar = ohm.grammar(fs.readFileSync("./simpletalk.ohm"));
 
 // This fails (presumably because the "do" in "doSomething" is disallowed due
-// to being interpreted as a keyword.
-const bad_script1 = 'on doSomething\n\tanswer "it worked"\nend doSomething';
-assert(grammar.match(bad_script1).failed())
+var testCases = [
+    'on dosomething\n\tanswer "it worked"\nend dosomething',
+    'on dasomething\n\tanswer "it worked"\nend dasomething',
+    'on mouseup\n\tdasomething\nend mouseup\n\non dasomething\n\tanswer "it worked"\nend dasomething'];
+for (key in testCases) {
+    assert(grammar.match(testCases[key]).succeeded());
+}
 
-// This succeeds (and supports the keyword idea from the previous example).
-const good_script1 = 'on daSomething\n\tanswer "it worked"\nend daSomething';
-assert(grammar.match(good_script1).succeeded())
-
-// This succeeds.
-const good_script2 = 'on mouseUp\n\tdaSomething\nend mouseUp\n\non daSomething\n\tanswer "it worked"\nend daSomething';
-assert(grammar.match(good_script2).succeeded())
+testCases = [
+    "doSomething",
+    "daSomething"
+];
+for (key in testCases) {
+    assert(grammar.match(testCases[key], "messageName").succeeded());
+}

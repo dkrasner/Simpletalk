@@ -121,7 +121,7 @@
 	// should these be different from functionName?
 	// Note: we prevent keyword overloading
 	messageName (message name)
-		= ~keyword letter+
+		= ~(keyword end) letter+
 
 	systemMessage (system message)
 		= "systemEvent" | "arrowKey"
