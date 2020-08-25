@@ -6,6 +6,13 @@
  */
 
 let simpleTalkSemantics = {
+    Script: function(scriptLines, _) {
+        return scriptLines.parse();
+    },
+
+    _terminal: function() {
+    },
+
     Command_answer: function(answer, stringLiteral){
         let msg = {
             type: "command",
@@ -78,5 +85,5 @@ let simpleTalkSemantics = {
     }
 }
 
-//export {simpleTalkSemantics, simpleTalkSemantics as default}
-module.exports = simpleTalkSemantics;
+export {simpleTalkSemantics, simpleTalkSemantics as default}
+//module.exports = simpleTalkSemantics;
