@@ -22,7 +22,12 @@ class Compiler {
      */
     compile(string, target){
         let match = this.grammar.match(string);
-        let [messageType, messageName, messageParameters, messageList] = this.semantics(match).parse();
+        let parsedMatch = this.semantics(match).parse();
+        for (var i = 0; i < parsedMatch.length; i++) {
+        if (typeof parsedMatch[i] == 'undefined') {
+            continue;
+        }
+        let [messageType, messageName, messageParameters, messageList] = parsedMatch[i];
         // We expect the list of compiled messages to send
         // to be attached to the Part._scriptSemantics.
         // Here I am using a dict at _compiled but we can all it
@@ -55,6 +60,7 @@ class Compiler {
                 };
                 break;
             }
+        }
     }
 }
 
