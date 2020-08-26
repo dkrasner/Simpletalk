@@ -61,7 +61,10 @@
 	Command (a command statement)
 		= "go to" ("next" | "previous")? systemObject? objectId? --goTo
                 | "answer" stringLiteral --answer
-                | letter+ --arbitrary
+                | command_arbitrary 
+
+	command_arbitrary (an arbitrary command)
+		= letter+
 
 	// Function definition follows the HT convention
 	// """
