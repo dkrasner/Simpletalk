@@ -155,50 +155,66 @@ const System = {
     },
 
     newModel(kind, owner){
+        // Lookup the instance of the model that
+        // matches the owner's id
         let ownerPart = this.partsById[owner.id];
-        if(ownerPart){
-            let model;
-            switch(kind){
-            case 'card':
-                model = new Card(owner);
-                break;
-            case 'stack':
-                model = new Stack(owner);
-                break;
-            case 'background':
-                model = new Background(owner);
-                break;
-            case 'button':
-                model = new Button(owner);
-                break;
-            case 'field':
-                model = new Field(owner);
-                break;
-            default:
-                throw new Error(`Cannot create unknown part type: ${kind}`);
-            }
 
-            if(ownerPart){
-                this.partsById[model.id] = model;
-            }
-            model.addPropertySubscriber(this);
-            this.updateSerialization(model.id);
-
-            // See if there is already a view for the model.
-            // If not, create and attach it.
-            let viewForModel = document.getElementById(model.id);
-            if(!viewForModel){
-                this.newView(model.type, model.id);
-            }
-
-            return model;
+        // Find the class constructor for the kind of
+        // part requested as a new model. If not known,
+        // throw an error
+        let modelClass = this.availableParts[kind];
+        if(!modelClass){
+            throw new Error(`Cannot create unknown part type: ${kind}`);
         }
+        let model = new modelClass(ownerPart);
+        this.partsById[model.id] = model;
+
+        // Any created part might initialize its
+        // own subparts. We need to let the System know
+        // about those too
+        model.subparts.forEach(subpart => {
+            this.partsById[subpart.id] = subpart;
+        });
+
+
+        // If there is a valid owner part for
+        // the newly created part model,
+        // add the new model to the owner's
+        // subparts list
+        if(ownerPart){
+            ownerPart.addPart(model);
+        }
+
+        // Add the System as a property subscriber to
+        // the new model. This will send a message to
+        // this System object whenever any of this model's
+        // properties have changed
+        model.addPropertySubscriber(this);
+
+        // Serialize the new model into the page
+        this.updateSerialization(model.id);
+
+        // See if there is already a view for the model.
+        // If not, create and attach it.
+        let viewForModel = document.getElementById(model.id);
+        if(!viewForModel){
+            this.newView(model.type, model.id);
+        }
+
+        return model;
     },
 
     newView: function(partName, modelId){
         let model = this.partsById[modelId];
         if(!model || model == undefined){
             throw new Error('System does not know part ${partName}[${modelId}]');
+        }
+
+        // If there is alreay a view for this model,
+        // simply return the instance of that view object
+        let existingView = document.getElementById(modelId);
+        if(existingView){
+            return existingView;
         }
 
         // Find the parent model id. This will
@@ -217,6 +233,13 @@ const System = {
         );
         newView.setModel(model);
         parentElement.appendChild(newView);
+
+        // For all subparts of this model, call
+        // the newView method recursively
+        model.subparts.forEach(subpart => {
+            this.newView(subpart.type, subpart.id);
+        });
+
         return newView;
     },
 

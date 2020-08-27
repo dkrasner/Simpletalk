@@ -42,40 +42,14 @@ class StackView extends PartView {
 
     connectedCallback(){
         if(this.isConnected){
-            // If the model has no subparts at this
-            // point, we should create a default background
-            // and single card.
-            if(this.model){
-                let cards = this.model.subparts.filter(part => {
-                    return part.type == 'card';
-                });
-                let backgrounds = this.model.subparts.filter(part => {
-                    return part.type =='backgrounds';
-                });
-                if(!backgrounds.length){
-                    this.sendMessage({
-                        type: 'newModel',
-                        modelType: 'background',
-                        owner: this.model
-                    }, window.System);
-                }
-                if(!cards.length){
-                    this.sendMessage({
-                        type: 'newModel',
-                        modelType: 'card',
-                        owner: this.model
-                    }, window.System);
-                }
+            // For now, do nothing here.
 
-                // Ensure that some Card in the stack
-                // has the `current-card` class set.
-                // If there are none yet, make it the first
-                // card.
-                let current = this.querySelector('.current-card');
-                if(!current){
-                    this.querySelector('st-card').classList.add('current-card');
-                }
-            }
+            // Previously, we attempted to set the current-card
+            // class in this callback. This was incorrect, as the
+            // StackView element can be connected before any of its
+            // children are. Instead, CardView checks to see if it is
+            // the only such view in its parent StackView element.
+            // See the #connectedCallback in CardView.
         }
     }
 

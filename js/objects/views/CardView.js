@@ -37,6 +37,18 @@ class CardView extends PartView {
             template.content.cloneNode(true)
         );
     }
+
+    connectedCallback(){
+        if(this.isConnected){
+            // Check to see if the parent StackView has another
+            // current card set. If not, and I am the first card
+            // in the StackView, set myself to be the current card.
+            let currentCard = this.parentElement.querySelector(':scope > .current-card');
+            if(!currentCard){
+                this.classList.add('current-card');
+            }
+        }
+    }
 };
 
 export {
