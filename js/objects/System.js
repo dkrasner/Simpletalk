@@ -379,8 +379,14 @@ System.registerCustomElements = function(){
 
 // iniitalize the compiler and add it to the system
 // Instantiate the grammar.
-//let languageGrammar = ohm.grammar(grammar);
-let languageGrammar = ohm.grammarFromScriptElement();
+let languageGrammar;
+if (window.grammar){
+    // for testing it is sometimes convenient to load the grammar and add to window
+    // see ./tests/preload.js for example
+   languageGrammar = ohm.grammar(window.grammar);
+} else {
+    languageGrammar = ohm.grammarFromScriptElement();
+}
 let languageSemantics = languageGrammar.createSemantics().addOperation('parse', semantics);
 System.compiler = new Compiler(languageGrammar, languageSemantics);
 

@@ -23,6 +23,7 @@ let stackModel;
 // Load the view into the component registry
 window.customElements.define('st-stack', StackView);
 window.customElements.define('st-card', CardView);
+window.System = System;
 describe('Stack Navigation Tests', () => {
     describe('Setup of StackView', () => {
         it('Can initialize a StackView with model', () => {
@@ -34,10 +35,16 @@ describe('Stack Navigation Tests', () => {
             assert.equal(stackModel, stackView.model);
         });
         it('Can append the StackView to body', () => {
+            let el = document.createElement('st-card');
+            let cardModel = new Card(stackModel);
+            el.setModel(cardModel);
+            stackView.appendChild(el);
             document.body.appendChild(stackView);
             let found = document.body.querySelector('st-stack');
             assert.exists(found);
             assert.equal(found.id, stackModel.id.toString());
+            stackModel.removePart(cardModel);
+            stackView.removeChild(el);
         });
         it('Has no card children yet', () => {
             let numCards = stackView.querySelectorAll('st-card').length;
