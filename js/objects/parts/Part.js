@@ -39,7 +39,6 @@ class Part {
         this.receiveFunc = this.receiveFunc.bind(this);
         this.receiveMessage = this.receiveMessage.bind(this);
         this.delegateMessage = this.delegateMessage.bind(this);
-        this.doesNotUnderstand = this.doesNotUnderstand.bind(this);
         this.sendMessage = this.sendMessage.bind(this);
         this.addPropertySubscriber = this.addPropertySubscriber.bind(this);
         this.removePropertySubscriber = this.removePropertySubscriber.bind(this);
@@ -205,14 +204,7 @@ class Part {
             case 'function':
                 this.receiveFunc(aMessage);
                 break;
-            default:
-                this.doesNotUnderstand(aMessage);
         }
-    }
-
-    doesNotUnderstand(aMessage){
-        throw new Error(`Part ${this.constructor.name} does not understand message ${aMessage.type}`);
-        console.error(aMessage);
     }
 
     receiveCmd(aMessage){
