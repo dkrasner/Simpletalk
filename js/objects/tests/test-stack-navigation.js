@@ -20,10 +20,7 @@ import Card from '../parts/Card.js';
  */
 let stackView;
 let stackModel;
-// Load the view into the component registry
-window.customElements.define('st-stack', StackView);
-window.customElements.define('st-card', CardView);
-window.System = System;
+
 describe('Stack Navigation Tests', () => {
     describe('Setup of StackView', () => {
         it('Can initialize a StackView with model', () => {

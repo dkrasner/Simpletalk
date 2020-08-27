@@ -89,7 +89,6 @@ const System = {
 
     loadFromEmpty: function(){
         let worldModel = new this.availableParts['world']();
-        console.log(worldModel);
         this.partsById[worldModel.id] = worldModel;
         let worldView = document.createElement(
             this.tagNameForViewNamed('world')
