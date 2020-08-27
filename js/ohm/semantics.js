@@ -44,7 +44,7 @@ let simpleTalkSemantics = {
         return msg;
     },
 
-    Command_arbitrary: function(name){
+    command_arbitrary: function(name){
         let msg = {
             type: "command",
             commandName: name.sourceString,
