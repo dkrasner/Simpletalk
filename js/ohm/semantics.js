@@ -6,8 +6,8 @@
  */
 
 let simpleTalkSemantics = {
-    Script: function(scriptLines, _) {
-        return scriptLines.parse();
+    Script: function(scriptParts, _) {
+        return scriptParts.parse();
     },
 
     _terminal: function() {

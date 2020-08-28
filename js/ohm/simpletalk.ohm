@@ -1,8 +1,8 @@
  SimpleTalk {
  	Script
-		= ScriptLine+ end
+		= ScriptPart+ end
 
-	ScriptLine
+	ScriptPart
 		= MessageHandler
 		| FunctionHandler
 		| comment
