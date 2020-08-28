@@ -1,0 +1,643 @@
+<!DOCTYPE html><html xmlns="http://www.w3.org/1999/xhtml"><head>
+        <meta charset="utf-8" />
+        <title>System Object Example</title>
+				<script src="../ohm/simpletalk.ohm" type="text/ohm-js"></script>
+				<script src="build/devSystem.bundle.js"></script>
+    </head>
+    <body>
+        <style>
+         body {
+             display: block;
+             width: 100vw;
+             height: 100vh;
+             padding: 0;
+             margin: 0;
+         }
+        </style>
+        <div id="template-area">
+        </div>
+    
+
+<st-world id="0"><st-stack id="1" class="current-stack"><st-background id="2"></st-background><st-card id="3" class="current-card"><st-button id="9" class="" style="width: 305px; height: 100px; top: 362px; left: 321px;">Click to open Toolbox</st-button></st-card></st-stack></st-world><div id="serialization-container"><script data-part-id="2" data-role="part-serialization" type="application/json">{
+    "type": "background",
+    "id": 2,
+    "properties": {
+        "bottom": 0,
+        "bottomRight": 0,
+        "contents": null,
+        "enabled": true,
+        "height": 0,
+        "id": 2,
+        "left": 0,
+        "location": 0,
+        "name": "",
+        "rectangle": "0, 0, 0, 0",
+        "right": 0,
+        "script": null,
+        "top": 0,
+        "topLeft": 0,
+        "width": 0,
+        "number": -1,
+        "marked": false,
+        "cantDelete": false,
+        "dontSearch": false,
+        "showPict": false
+    },
+    "subparts": [],
+    "ownerId": 1
+}</script><script data-part-id="0" data-role="part-serialization" type="application/json">{
+    "type": "world",
+    "id": 0,
+    "properties": [],
+    "subparts": [
+        1
+    ],
+    "ownerId": null,
+    "loadedStacks": [
+        1
+    ],
+    "currentStack": null
+}</script><script data-part-id="5" data-role="part-serialization" type="application/json">{
+    "type": "stack",
+    "id": 5,
+    "properties": {
+        "bottom": 0,
+        "bottomRight": 0,
+        "contents": null,
+        "enabled": true,
+        "height": 0,
+        "id": 5,
+        "left": 0,
+        "location": 0,
+        "name": "",
+        "rectangle": "0, 0, 0, 0",
+        "right": 0,
+        "script": null,
+        "top": 0,
+        "topLeft": 0,
+        "width": 0,
+        "number": -1,
+        "cantPeek": false,
+        "resizable": false
+    },
+    "subparts": [
+        6,
+        7
+    ],
+    "ownerId": 4
+}</script><script data-part-id="6" data-role="part-serialization" type="application/json">{
+    "type": "background",
+    "id": 6,
+    "properties": {
+        "bottom": 0,
+        "bottomRight": 0,
+        "contents": null,
+        "enabled": true,
+        "height": 0,
+        "id": 6,
+        "left": 0,
+        "location": 0,
+        "name": "",
+        "rectangle": "0, 0, 0, 0",
+        "right": 0,
+        "script": null,
+        "top": 0,
+        "topLeft": 0,
+        "width": 0,
+        "number": -1,
+        "marked": false,
+        "cantDelete": false,
+        "dontSearch": false,
+        "showPict": false
+    },
+    "subparts": [],
+    "ownerId": 5
+}</script><script data-part-id="7" data-role="part-serialization" type="application/json">{
+    "type": "card",
+    "id": 7,
+    "properties": {
+        "bottom": 0,
+        "bottomRight": 0,
+        "contents": null,
+        "enabled": true,
+        "height": 0,
+        "id": 7,
+        "left": 0,
+        "location": 0,
+        "name": "",
+        "rectangle": "0, 0, 0, 0",
+        "right": 0,
+        "script": null,
+        "top": 0,
+        "topLeft": 0,
+        "width": 0,
+        "number": -1,
+        "marked": false,
+        "cantDelete": false,
+        "dontSearch": false,
+        "showPict": false
+    },
+    "subparts": [
+        8
+    ],
+    "ownerId": 5
+}</script><script data-part-id="8" data-role="part-serialization" type="application/json">{
+    "type": "button",
+    "id": 8,
+    "properties": {
+        "bottom": 0,
+        "bottomRight": 0,
+        "contents": null,
+        "enabled": true,
+        "height": 0,
+        "id": 8,
+        "left": 0,
+        "location": 0,
+        "name": "Add Button to Card",
+        "rectangle": "0, 0, 0, 0",
+        "right": 0,
+        "script": null,
+        "top": 0,
+        "topLeft": 0,
+        "width": 0,
+        "number": -1,
+        "selectedText": null,
+        "style": "normal",
+        "textAlign": "center",
+        "textFont": "default",
+        "textStyle": "plain",
+        "visible": true,
+        "autoHilite": true,
+        "hilite": false,
+        "iconAlign": "center",
+        "showName": true
+    },
+    "subparts": [],
+    "ownerId": 7
+}</script><script data-part-id="3" data-role="part-serialization" type="application/json">{
+    "type": "card",
+    "id": 3,
+    "properties": {
+        "bottom": 0,
+        "bottomRight": 0,
+        "contents": null,
+        "enabled": true,
+        "height": 0,
+        "id": 3,
+        "left": 0,
+        "location": 0,
+        "name": "",
+        "rectangle": "0, 0, 0, 0",
+        "right": 0,
+        "script": null,
+        "top": 0,
+        "topLeft": 0,
+        "width": 0,
+        "number": -1,
+        "marked": false,
+        "cantDelete": false,
+        "dontSearch": false,
+        "showPict": false
+    },
+    "subparts": [
+        9
+    ],
+    "ownerId": 1
+}</script><script data-part-id="11" data-role="part-serialization" type="application/json">{
+    "type": "stack",
+    "id": 11,
+    "properties": {
+        "bottom": 0,
+        "bottomRight": 0,
+        "contents": null,
+        "enabled": true,
+        "height": 0,
+        "id": 11,
+        "left": 0,
+        "location": 0,
+        "name": "",
+        "rectangle": "0, 0, 0, 0",
+        "right": 0,
+        "script": null,
+        "top": 0,
+        "topLeft": 0,
+        "width": 0,
+        "number": -1,
+        "cantPeek": false,
+        "resizable": false
+    },
+    "subparts": [
+        12,
+        13
+    ],
+    "ownerId": 10
+}</script><script data-part-id="12" data-role="part-serialization" type="application/json">{
+    "type": "background",
+    "id": 12,
+    "properties": {
+        "bottom": 0,
+        "bottomRight": 0,
+        "contents": null,
+        "enabled": true,
+        "height": 0,
+        "id": 12,
+        "left": 0,
+        "location": 0,
+        "name": "",
+        "rectangle": "0, 0, 0, 0",
+        "right": 0,
+        "script": null,
+        "top": 0,
+        "topLeft": 0,
+        "width": 0,
+        "number": -1,
+        "marked": false,
+        "cantDelete": false,
+        "dontSearch": false,
+        "showPict": false
+    },
+    "subparts": [],
+    "ownerId": 11
+}</script><script data-part-id="13" data-role="part-serialization" type="application/json">{
+    "type": "card",
+    "id": 13,
+    "properties": {
+        "bottom": 0,
+        "bottomRight": 0,
+        "contents": null,
+        "enabled": true,
+        "height": 0,
+        "id": 13,
+        "left": 0,
+        "location": 0,
+        "name": "",
+        "rectangle": "0, 0, 0, 0",
+        "right": 0,
+        "script": null,
+        "top": 0,
+        "topLeft": 0,
+        "width": 0,
+        "number": -1,
+        "marked": false,
+        "cantDelete": false,
+        "dontSearch": false,
+        "showPict": false
+    },
+    "subparts": [
+        14,
+        15
+    ],
+    "ownerId": 11
+}</script><script data-part-id="15" data-role="part-serialization" type="application/json">{
+    "type": "button",
+    "id": 15,
+    "properties": {
+        "bottom": 0,
+        "bottomRight": 0,
+        "contents": null,
+        "enabled": true,
+        "height": 0,
+        "id": 15,
+        "left": 0,
+        "location": 0,
+        "name": "Save Script",
+        "rectangle": "0, 0, 0, 0",
+        "right": 0,
+        "script": null,
+        "top": 0,
+        "topLeft": 0,
+        "width": 0,
+        "number": -1,
+        "selectedText": null,
+        "style": "normal",
+        "textAlign": "center",
+        "textFont": "default",
+        "textStyle": "plain",
+        "visible": true,
+        "autoHilite": true,
+        "hilite": false,
+        "iconAlign": "center",
+        "showName": true
+    },
+    "subparts": [],
+    "ownerId": 13
+}</script><script data-part-id="14" data-role="part-serialization" type="application/json">{
+    "type": "eric-field",
+    "id": 14,
+    "properties": {
+        "bottom": 0,
+        "bottomRight": 0,
+        "contents": null,
+        "enabled": true,
+        "height": 0,
+        "id": 14,
+        "left": 0,
+        "location": 0,
+        "name": "",
+        "rectangle": "0, 0, 0, 0",
+        "right": 0,
+        "script": null,
+        "top": 0,
+        "topLeft": 0,
+        "width": 0,
+        "number": -1,
+        "textContent": "on mouseUp\n  openToolbox\nend mouseUp"
+    },
+    "subparts": [],
+    "ownerId": 13
+}</script><script data-part-id="17" data-role="part-serialization" type="application/json">{
+    "type": "stack",
+    "id": 17,
+    "properties": {
+        "bottom": 0,
+        "bottomRight": 0,
+        "contents": null,
+        "enabled": true,
+        "height": 0,
+        "id": 17,
+        "left": 0,
+        "location": 0,
+        "name": "",
+        "rectangle": "0, 0, 0, 0",
+        "right": 0,
+        "script": null,
+        "top": 0,
+        "topLeft": 0,
+        "width": 0,
+        "number": -1,
+        "cantPeek": false,
+        "resizable": false
+    },
+    "subparts": [
+        18,
+        19
+    ],
+    "ownerId": 16
+}</script><script data-part-id="18" data-role="part-serialization" type="application/json">{
+    "type": "background",
+    "id": 18,
+    "properties": {
+        "bottom": 0,
+        "bottomRight": 0,
+        "contents": null,
+        "enabled": true,
+        "height": 0,
+        "id": 18,
+        "left": 0,
+        "location": 0,
+        "name": "",
+        "rectangle": "0, 0, 0, 0",
+        "right": 0,
+        "script": null,
+        "top": 0,
+        "topLeft": 0,
+        "width": 0,
+        "number": -1,
+        "marked": false,
+        "cantDelete": false,
+        "dontSearch": false,
+        "showPict": false
+    },
+    "subparts": [],
+    "ownerId": 17
+}</script><script data-part-id="19" data-role="part-serialization" type="application/json">{
+    "type": "card",
+    "id": 19,
+    "properties": {
+        "bottom": 0,
+        "bottomRight": 0,
+        "contents": null,
+        "enabled": true,
+        "height": 0,
+        "id": 19,
+        "left": 0,
+        "location": 0,
+        "name": "",
+        "rectangle": "0, 0, 0, 0",
+        "right": 0,
+        "script": null,
+        "top": 0,
+        "topLeft": 0,
+        "width": 0,
+        "number": -1,
+        "marked": false,
+        "cantDelete": false,
+        "dontSearch": false,
+        "showPict": false
+    },
+    "subparts": [
+        20
+    ],
+    "ownerId": 17
+}</script><script data-part-id="20" data-role="part-serialization" type="application/json">{
+    "type": "button",
+    "id": 20,
+    "properties": {
+        "bottom": 0,
+        "bottomRight": 0,
+        "contents": null,
+        "enabled": true,
+        "height": 0,
+        "id": 20,
+        "left": 0,
+        "location": 0,
+        "name": "Add Button to Card",
+        "rectangle": "0, 0, 0, 0",
+        "right": 0,
+        "script": null,
+        "top": 0,
+        "topLeft": 0,
+        "width": 0,
+        "number": -1,
+        "selectedText": null,
+        "style": "normal",
+        "textAlign": "center",
+        "textFont": "default",
+        "textStyle": "plain",
+        "visible": true,
+        "autoHilite": true,
+        "hilite": false,
+        "iconAlign": "center",
+        "showName": true
+    },
+    "subparts": [],
+    "ownerId": 19
+}</script><script data-part-id="22" data-role="part-serialization" type="application/json">{
+    "type": "stack",
+    "id": 22,
+    "properties": {
+        "bottom": 0,
+        "bottomRight": 0,
+        "contents": null,
+        "enabled": true,
+        "height": 0,
+        "id": 22,
+        "left": 0,
+        "location": 0,
+        "name": "",
+        "rectangle": "0, 0, 0, 0",
+        "right": 0,
+        "script": null,
+        "top": 0,
+        "topLeft": 0,
+        "width": 0,
+        "number": -1,
+        "cantPeek": false,
+        "resizable": false
+    },
+    "subparts": [
+        23,
+        24
+    ],
+    "ownerId": 21
+}</script><script data-part-id="23" data-role="part-serialization" type="application/json">{
+    "type": "background",
+    "id": 23,
+    "properties": {
+        "bottom": 0,
+        "bottomRight": 0,
+        "contents": null,
+        "enabled": true,
+        "height": 0,
+        "id": 23,
+        "left": 0,
+        "location": 0,
+        "name": "",
+        "rectangle": "0, 0, 0, 0",
+        "right": 0,
+        "script": null,
+        "top": 0,
+        "topLeft": 0,
+        "width": 0,
+        "number": -1,
+        "marked": false,
+        "cantDelete": false,
+        "dontSearch": false,
+        "showPict": false
+    },
+    "subparts": [],
+    "ownerId": 22
+}</script><script data-part-id="24" data-role="part-serialization" type="application/json">{
+    "type": "card",
+    "id": 24,
+    "properties": {
+        "bottom": 0,
+        "bottomRight": 0,
+        "contents": null,
+        "enabled": true,
+        "height": 0,
+        "id": 24,
+        "left": 0,
+        "location": 0,
+        "name": "",
+        "rectangle": "0, 0, 0, 0",
+        "right": 0,
+        "script": null,
+        "top": 0,
+        "topLeft": 0,
+        "width": 0,
+        "number": -1,
+        "marked": false,
+        "cantDelete": false,
+        "dontSearch": false,
+        "showPict": false
+    },
+    "subparts": [
+        25
+    ],
+    "ownerId": 22
+}</script><script data-part-id="25" data-role="part-serialization" type="application/json">{
+    "type": "button",
+    "id": 25,
+    "properties": {
+        "bottom": 0,
+        "bottomRight": 0,
+        "contents": null,
+        "enabled": true,
+        "height": 0,
+        "id": 25,
+        "left": 0,
+        "location": 0,
+        "name": "Add Button to Card",
+        "rectangle": "0, 0, 0, 0",
+        "right": 0,
+        "script": null,
+        "top": 0,
+        "topLeft": 0,
+        "width": 0,
+        "number": -1,
+        "selectedText": null,
+        "style": "normal",
+        "textAlign": "center",
+        "textFont": "default",
+        "textStyle": "plain",
+        "visible": true,
+        "autoHilite": true,
+        "hilite": false,
+        "iconAlign": "center",
+        "showName": true
+    },
+    "subparts": [],
+    "ownerId": 24
+}</script><script data-part-id="9" data-role="part-serialization" type="application/json">{
+    "type": "button",
+    "id": 9,
+    "properties": {
+        "bottom": 0,
+        "bottomRight": 0,
+        "contents": null,
+        "enabled": true,
+        "height": 0,
+        "id": 9,
+        "left": 0,
+        "location": 0,
+        "name": "Click to open Toolbox",
+        "rectangle": "0, 0, 0, 0",
+        "right": 0,
+        "script": "on mouseUp\n  openToolbox\nend mouseUp",
+        "top": 0,
+        "topLeft": 0,
+        "width": 0,
+        "number": -1,
+        "selectedText": null,
+        "style": "normal",
+        "textAlign": "center",
+        "textFont": "default",
+        "textStyle": "plain",
+        "visible": true,
+        "autoHilite": true,
+        "hilite": false,
+        "iconAlign": "center",
+        "showName": true
+    },
+    "subparts": [],
+    "ownerId": 3
+}</script><script data-part-id="1" data-role="part-serialization" type="application/json">{
+    "type": "stack",
+    "id": 1,
+    "properties": {
+        "bottom": 0,
+        "bottomRight": 0,
+        "contents": null,
+        "enabled": true,
+        "height": 0,
+        "id": 1,
+        "left": 0,
+        "location": 0,
+        "name": "",
+        "rectangle": "0, 0, 0, 0",
+        "right": 0,
+        "script": null,
+        "top": 0,
+        "topLeft": 0,
+        "width": 0,
+        "number": -1,
+        "cantPeek": false,
+        "resizable": false
+    },
+    "subparts": [
+        2,
+        3
+    ],
+    "ownerId": 0
+}</script></div><a style="display: none;"></a></body></html>

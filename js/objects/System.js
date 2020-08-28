@@ -87,7 +87,37 @@ const System = {
                 worldSerialization
             );
             aWorldView.setModel(worldModel);
-            this.attachSubParts(worldModel);
+            this.partsById['world'] = worldModel;
+            this.attachSubPartsFromDeserialized(
+                worldModel,
+                JSON.parse(worldSerialization)
+            );
+            worldModel.subparts.forEach(subpart => {
+                this.attachOrCreateView(subpart, worldModel);
+            });
+
+            // Finally, compile all of the scripts on
+            // the available Part models
+            Object.keys(this.partsById).forEach(partId => {
+                let targetPart = this.partsById[partId];
+                let scriptText = targetPart.partProperties.getPropertyNamed(
+                    targetPart,
+                    'script'
+                );
+                if(scriptText){
+                    // Here we just re-set the script
+                    // to its original value. This should trigger
+                    // all prop change subscribers that listen
+                    // for script changes, which will trigger
+                    // a compilation step
+                    targetPart.partProperties.setPropertyNamed(
+                        targetPart,
+                        'script',
+                        scriptText
+                    );
+                }
+            });
+
         }
     },
 
@@ -99,7 +129,60 @@ const System = {
         );
         worldView.setModel(worldModel);
         document.body.appendChild(worldView);
+
+        // Create an initial blank Stack in this
+        // case
+        this.newModel('stack', worldModel);
+        document.querySelector('st-stack').classList.add('current-stack');
+
         this.updateSerialization(worldModel.id);
+    },
+
+    attachSubPartsFromDeserialized: function(aModel, aSerialization){
+        // The serialization contains an array of subparts
+        // that contains integer ids of other models.
+        // For each of these IDs we need to find the
+        // subpart serialization for that id and create a new model
+        // instance
+        aSerialization.subparts.forEach(partId => {
+            let subSerialization = JSON.parse(this.getSerializationFor(partId));
+            let partClass = this.availableParts[subSerialization.type];
+            if(!partClass){
+                throw new Error(`Could not deserialize Part of type ${subSerialization.type}`);
+            }
+            let part = new partClass(aModel);
+            part.id = subSerialization.id;
+            part.setFromDeserialized(subSerialization);
+            aModel.addPart(part);
+            this.partsById[part.id] = part;
+
+            // Recursively get the subparts of the subpart
+            this.attachSubPartsFromDeserialized(
+                part,
+                subSerialization
+            );
+        });
+    },
+
+    attachOrCreateView: function(aModel, parentView){
+        // We look up to see if a view for this
+        // model by id is already in the DOM.
+        // If so, we set it to the model.
+        // If not, we create a new view and append it
+        // to the parent view.
+        let found = document.getElementById(aModel.id);
+        if(!found){
+            found = this.newView(aModel.type, aModel.id);
+        } else {
+            found.setModel(aModel);
+            found.parentElement.append(found);
+        }
+
+        // Now recursively do the same for any
+        // children
+        aModel.subparts.forEach(subpart => {
+            this.attachOrCreateView(subpart, found);
+        });
     },
 
     // Recursively go through the
@@ -142,10 +225,10 @@ const System = {
     },
 
     compile: function(aMessage){
-        console.log("System Compile");
-        console.log(aMessage.codeString);
-        console.log(aMessage.targetObject);
-        this.compiler.compile(aMessage.codeString, aMessage.targetObject);
+        this.compiler.compile(
+            aMessage.codeString,
+            aMessage.targetObject
+        );
     },
 
     receiveCommand: function(aMessage){
@@ -187,6 +270,7 @@ const System = {
         // subparts list
         if(ownerPart){
             ownerPart.addPart(model);
+            this.updateSerialization(ownerPart.id);
         }
 
         // Add the System as a property subscriber to
@@ -197,6 +281,9 @@ const System = {
 
         // Serialize the new model into the page
         this.updateSerialization(model.id);
+        model.subparts.forEach(subpart => {
+            this.updateSerialization(subpart.id);
+        });
 
         // See if there is already a view for the model.
         // If not, create and attach it.
@@ -262,11 +349,11 @@ const System = {
     /** Serialization / Deserialization **/
     fromSerialization: function(aString, recursive=true){
         let json = JSON.parse(aString);
-        let newPart = this.availableParts[json.type];
-        if(!newPart){
+        let newPartClass = this.availableParts[json.type];
+        if(!newPartClass){
             throw new Error(`System could not deserialize Part of type "${json.type}"`);
         }
-        newPart.setFromDeserialized(json);
+        let newPart = newPartClass.setFromDeserialized(json);
         this.partsById[newPart.id] = newPart;
 
         // If the deserialized object has a subparts
@@ -299,6 +386,14 @@ const System = {
 
         serializationEl.innerHTML = model.serialize();
         this.serialScriptArea().appendChild(serializationEl);
+    },
+
+    getSerializationFor: function(aPartId){
+        let element = document.querySelector(`script[data-part-id="${aPartId}"]`);
+        if(element){
+            return element.innerText;
+        }
+        return null;
     },
 
     serialScriptArea: function(){

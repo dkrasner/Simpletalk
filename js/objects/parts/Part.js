@@ -45,6 +45,7 @@ class Part {
         this.serialize = this.serialize.bind(this);
         this.setFromDeserialized = this.setFromDeserialized.bind(this);
 
+
         // Finally, we finish initialization
         this.setupProperties();
     }
@@ -53,6 +54,10 @@ class Part {
     // from the partProperties
     get id(){
         return this.partProperties.getPropertyNamed(this, 'id');
+    }
+
+    set id(val){
+        return this.partProperties.setPropertyNamed(this, 'id', val);
     }
 
     // Configures the specific properties that the
@@ -312,7 +317,7 @@ class Part {
         // to the incoming values
         let incomingProps = anObject.properties;
         Object.keys(incomingProps).forEach(propName => {
-            let property = this.partProperties.getPropertyNamed(this, propName);
+            let property = this.partProperties.findPropertyNamed(propName);
             if(!property){
                 throw new Error(`Invalid deserialized property: ${propName}`);
             }
