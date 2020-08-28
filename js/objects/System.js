@@ -532,6 +532,7 @@ System._commandHandlers['openScriptEditor'] = function(targetId){
     }
 
     let winModel = this.newModel('window', insertStack);
+    winModel.setTarget(targetPart);
     let winTitle = `Script: ${targetPart.type}[${targetId}]`;
     winModel.partProperties.setPropertyNamed(
         winModel,
