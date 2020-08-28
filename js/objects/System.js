@@ -32,6 +32,8 @@ import semantics from '../ohm/semantics.js';
 
 
 const System = {
+    name: "System",
+    id: -1,
     isLoaded: false,
     partsById: {},
     compiler: null,
@@ -46,6 +48,12 @@ const System = {
     // 'button' to their view classes (ButtonView)
     availableViews: {},
 
+    // A registry that keeps all system messages from
+    // beginnign of time; TODO in the future we might want
+    // to note keep all this in memory
+    // each log consists of:
+    // [aMessage, (sourceName, sourceId), (targetName, targetId)]
+    messageLog: [],
 
     // Will be called when a page loads.
     // Checks for any view elements in the
@@ -138,6 +146,7 @@ const System = {
         this.updateSerialization(worldModel.id);
     },
 
+<<<<<<< HEAD
     attachSubPartsFromDeserialized: function(aModel, aSerialization){
         // The serialization contains an array of subparts
         // that contains integer ids of other models.
@@ -185,7 +194,18 @@ const System = {
         });
     },
 
-    // Recursively go through the
+    sendMessage: function(aMessage, source, target){
+        if(!target || target == undefined){
+            throw new Error('Messages must be sent with target receivers specified!');
+        }
+
+        this.messageLog.push(
+            [aMessage,
+            [source.name, source.id],
+            [target.name, target.id]]);
+        target.receiveMessage(aMessage);
+        console.log(this.messageLog);
+    },
 
     receiveMessage: function(aMessage){
         switch(aMessage.type){
