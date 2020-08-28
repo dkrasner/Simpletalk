@@ -162,36 +162,6 @@ const System = {
         // Lookup the instance of the model that
         // matches the owner's id
         let ownerPart = this.partsById[owner.id];
-<<<<<<< HEAD
-=======
-        if(ownerPart){
-            let model;
-            switch(kind){
-            case 'card':
-                model = new Card(owner);
-                break;
-            case 'stack':
-                model = new Stack(owner);
-                break;
-            case 'background':
-                model = new Background(owner);
-                break;
-            case 'button':
-                model = new Button(owner);
-                break;
-            case 'field':
-                model = new Field(owner);
-                break;
-            case 'window':
-                model = new Window(owner);
-                break;
-            case 'eric-field':
-                model = new EricField(owner);
-                break;
-            default:
-                throw new Error(`Cannot create unknown part type: ${kind}`);
-            }
->>>>>>> Adding interim basic text field part and view
 
         // Find the class constructor for the kind of
         // part requested as a new model. If not known,
