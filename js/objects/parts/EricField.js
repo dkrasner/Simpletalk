@@ -33,7 +33,7 @@ class EricField extends Part {
 
     // For now, EricFields don't accept
     // any subparts
-    checkSubpartValidity(aPart){
+    acceptsSubpart(aPart){
         return false;
     }
 

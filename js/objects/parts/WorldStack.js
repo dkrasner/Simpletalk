@@ -90,7 +90,7 @@ class WorldStack extends Part {
     // Override the subpart validity check.
     // For now, the WorldStack only accepts subparts
     // that are Stacks
-    checkSubpartValidity(aPart){
+    acceptsSubpart(aPart){
         return aPart.type == 'stack';
     }
 };

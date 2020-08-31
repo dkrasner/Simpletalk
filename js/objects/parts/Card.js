@@ -72,7 +72,7 @@ class Card extends Part {
     }
 
     // Override the subpart validity check
-    checkSubpartValidity(aPart){
+    acceptsSubpart(aPart){
         if([
             'world',
             'stack',

@@ -39,7 +39,7 @@ class Background extends Card {
         );
     }
 
-    checkSubpartValidity(aPart){
+    acceptsSubpart(aPart){
         return !this.invalidSubpartTypes.includes(aPart.type);
     }
 

@@ -54,38 +54,38 @@ describe('Subpart Validity Tests', () => {
         it('Accepts Button', () => {
             let button = new Button();
             let card = new Card();
-            assert.isTrue(card.checkSubpartValidity(button));
+            assert.isTrue(card.acceptsSubpart(button));
         });
         it('Accepts EricField', () => {
             let ericField = new EricField();
             let card = new Card();
-            assert.isTrue(card.checkSubpartValidity(ericField));
+            assert.isTrue(card.acceptsSubpart(ericField));
         });
         it('Rejects Stack', () => {
             let stack = new Stack();
             let card = new Card();
             assert.isFalse(
-                card.checkSubpartValidity(stack)
+                card.acceptsSubpart(stack)
             );
         });
         it('Rejects World', () => {
             let world = new WorldStack();
             let card = new Card();
             assert.isFalse(
-                card.checkSubpartValidity(world)
+                card.acceptsSubpart(world)
             );
         });
         it('Rejects Background', () => {
             let background = new Background();
             let card = new Card();
             assert.isFalse(
-                card.checkSubpartValidity(background)
+                card.acceptsSubpart(background)
             );
         });
         it('Rejects Window', () => {
             let win = new Window();
             let card = new Card();
-            assert.isFalse(card.checkSubpartValidity(win));
+            assert.isFalse(card.acceptsSubpart(win));
         });
     });
 
@@ -93,27 +93,27 @@ describe('Subpart Validity Tests', () => {
         it('Accepts Card', () => {
             let card = new Card();
             let stack = new Stack();
-            assert.isTrue(stack.checkSubpartValidity(card));
+            assert.isTrue(stack.acceptsSubpart(card));
         });
         it('Accepts Window', () => {
             let win = new Window();
             let stack = new Stack();
-            assert.isTrue(stack.checkSubpartValidity(win));
+            assert.isTrue(stack.acceptsSubpart(win));
         });
         it('Rejects Button', () => {
             let button = new Button();
             let stack = new Stack();
-            assert.isFalse(stack.checkSubpartValidity(button));
+            assert.isFalse(stack.acceptsSubpart(button));
         });
         it('Rejects EricField', () => {
             let ericField = new EricField();
             let stack = new Stack();
-            assert.isFalse(stack.checkSubpartValidity(ericField));
+            assert.isFalse(stack.acceptsSubpart(ericField));
         });
         it('Rejects World', () => {
             let world = new WorldStack();
             let stack = new Stack();
-            assert.isFalse(stack.checkSubpartValidity(world));
+            assert.isFalse(stack.acceptsSubpart(world));
         });
     });
 
@@ -121,27 +121,27 @@ describe('Subpart Validity Tests', () => {
         it('Rejects Card', () => {
             let card = new Card();
             let button = new Button();
-            assert.isFalse(button.checkSubpartValidity(card));
+            assert.isFalse(button.acceptsSubpart(card));
         });
         it('Rejects EricField', () => {
             let ericField = new EricField();
             let button = new Button();
-            assert.isFalse(button.checkSubpartValidity(ericField));
+            assert.isFalse(button.acceptsSubpart(ericField));
         });
         it('Rejects World', () => {
             let world = new WorldStack();
             let button = new Button();
-            assert.isFalse(button.checkSubpartValidity(world));
+            assert.isFalse(button.acceptsSubpart(world));
         });
         it('Rejects Stack', () => {
             let stack = new Stack();
             let button = new Button();
-            assert.isFalse(button.checkSubpartValidity(stack));
+            assert.isFalse(button.acceptsSubpart(stack));
         });
         it('Rejects Window', () => {
             let win = new Window();
             let button = new Button();
-            assert.isFalse(button.checkSubpartValidity(win));
+            assert.isFalse(button.acceptsSubpart(win));
         });
     });
 
@@ -149,27 +149,27 @@ describe('Subpart Validity Tests', () => {
         it('Accepts Stack', () => {
             let stack = new Stack();
             let world = new WorldStack();
-            assert.isTrue(world.checkSubpartValidity(stack));
+            assert.isTrue(world.acceptsSubpart(stack));
         });
         it('Rejects Card', () => {
             let card = new Card();
             let world = new WorldStack();
-            assert.isFalse(world.checkSubpartValidity(card));
+            assert.isFalse(world.acceptsSubpart(card));
         });
         it('Rejects Window', () => {
             let win = new Window();
             let world = new WorldStack();
-            assert.isFalse(world.checkSubpartValidity(win));
+            assert.isFalse(world.acceptsSubpart(win));
         });
         it('Rejects Button', () => {
             let button = new Button();
             let world = new WorldStack();
-            assert.isFalse(world.checkSubpartValidity(button));
+            assert.isFalse(world.acceptsSubpart(button));
         });
         it('Rejects EricField', () => {
             let ericField = new EricField();
             let world = new WorldStack();
-            assert.isFalse(world.checkSubpartValidity(ericField));
+            assert.isFalse(world.acceptsSubpart(ericField));
         });
     });
 
@@ -177,27 +177,27 @@ describe('Subpart Validity Tests', () => {
         it('Rejects Card', () => {
             let card = new Card();
             let field = new EricField();
-            assert.isFalse(field.checkSubpartValidity(card));
+            assert.isFalse(field.acceptsSubpart(card));
         });
         it('Rejects Button', () => {
             let button = new Button();
             let field = new EricField();
-            assert.isFalse(field.checkSubpartValidity(button));
+            assert.isFalse(field.acceptsSubpart(button));
         });
         it('Rejects World', () => {
             let world = new WorldStack();
             let field = new EricField();
-            assert.isFalse(field.checkSubpartValidity(world));
+            assert.isFalse(field.acceptsSubpart(world));
         });
         it('Rejects Stack', () => {
             let stack = new Stack();
             let field = new EricField();
-            assert.isFalse(field.checkSubpartValidity(stack));
+            assert.isFalse(field.acceptsSubpart(stack));
         });
         it('Rejects Window', () => {
             let win = new Window();
             let field = new EricField();
-            assert.isFalse(field.checkSubpartValidity(win));
+            assert.isFalse(field.acceptsSubpart(win));
         });
     });
 });

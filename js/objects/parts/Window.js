@@ -92,7 +92,7 @@ class Window extends Part {
         aPart._owner = this;
     }
 
-    checkSubpartValidity(aPart){
+    acceptsSubpart(aPart){
         return aPart.type == 'window';
     }
 

@@ -92,7 +92,7 @@ class Button extends Part {
 
     // For now, Buttons don't take
     // any subpart types
-    checkSubpartValidity(aPart){
+    acceptsSubpart(aPart){
         return false;
     }
 

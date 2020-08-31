@@ -61,7 +61,7 @@ class Stack extends Part {
     }
 
     // Override the subpart validity check
-    checkSubpartValidity(aPart){
+    acceptsSubpart(aPart){
         let notValidSubparts = ["world", "button", "field", "eric-field"];
         if(notValidSubparts.includes(aPart.type)){
             return false;
