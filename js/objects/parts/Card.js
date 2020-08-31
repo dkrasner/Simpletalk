@@ -15,18 +15,8 @@ import {
 
 class Card extends Part {
     constructor(owner, name){
-        if(owner.type != 'stack'){
-            throw new Error(`Cards can only be parts of Stacks!`);
-        }
         super(owner);
-
-        // By default, a new Card's background
-        // is the first Background in it's owner Stack.
         this.stack = this._owner;
-        this.currentBackground = this.stack.subparts.find(part => {
-            return part.type == 'background';
-        });
-
         this.isCard = true;
 
         // Add Card-specific part
@@ -82,11 +72,17 @@ class Card extends Part {
     }
 
     // Override the subpart validity check
-    checkSubpartValidity(aPart){
-        let notValidSubparts = ["world", "stack", "background"];
-        if(notValidSubparts.includes(aPart.type)){
-            throw new Error(`${aPart.type} is not a valid subpart of ${this.type}`);
-        };
+    acceptsSubpart(aPart){
+        if([
+            'world',
+            'stack',
+            'card',
+            'background',
+            'window'
+        ].includes(aPart.type)){
+            return false;
+        }
+        return true;
     }
 };
 

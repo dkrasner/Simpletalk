@@ -18,7 +18,6 @@ class Part {
         // An array of child parts
         this.subparts = [];
 
-
         this.partProperties = new PartProperties();
         this._owner = anOwnerPart;
         this._commandHandlers = {};
@@ -33,7 +32,7 @@ class Part {
 
         this.addPart = this.addPart.bind(this);
         this.removePart = this.removePart.bind(this);
-        this.checkSubpartValidity = this.checkSubpartValidity.bind(this);
+        this.acceptsSubpart = this.acceptsSubpart.bind(this);
         this.setCmdHandler = this.setCmdHandler.bind(this);
         this.setFuncHandler = this.setFuncHandler.bind(this);
         this.receiveCmd = this.receiveCmd.bind(this);
@@ -157,8 +156,8 @@ class Part {
      * Each subclass will implement its own set of checks,
      * and throw an approprite error if the subpart is invalid.
      */
-    checkSubpartValidity(aPart){
-        //TODO return this.shouldBeImplemented('checkSubpartValidity');
+    acceptsSubpart(aPart){
+        return true;
     }
 
     /**
@@ -168,7 +167,10 @@ class Part {
      * added part to be this part.
      */
     addPart(aPart){
-        this.checkSubpartValidity(aPart);
+        if(!this.acceptsSubpart(aPart)){
+            throw new Error(`${this.typ}e does not accept subparts of type ${aPart.type}`);
+        }
+
         let found = this.subparts.indexOf(aPart);
         if(found < 0){
             this.subparts.push(aPart);
