@@ -5,24 +5,25 @@
  * navigate between cards (ie, go to next card,
  * go to card 2, etc)
  */
+
+/* NOTE: This test module does NOT
+ * use the preload.js file
+ */
+import 'jsdom-global/register';
 import chai from 'chai';
 const assert = chai.assert;
-import System from '../System.js';
+
 import StackView from '../views/StackView.js';
 import Stack from '../parts/Stack.js';
 import CardView from '../views/CardView.js';
 import Card from '../parts/Card.js';
 
-/* NOTE: We assume you will run Mocha with
- * the preload.js file as a requirement argument.
- * This sets up a correctly-configured global
- * JSDom
- */
-let stackView;
-let stackModel;
-// Load the view into the component registry
 window.customElements.define('st-stack', StackView);
 window.customElements.define('st-card', CardView);
+
+let stackView;
+let stackModel;
+
 describe('Stack Navigation Tests', () => {
     describe('Setup of StackView', () => {
         it('Can initialize a StackView with model', () => {
@@ -33,32 +34,59 @@ describe('Stack Navigation Tests', () => {
             assert.exists(stackView);
             assert.equal(stackModel, stackView.model);
         });
+        it('Stack part has only one Card subpart', () => {
+            let cardParts = stackModel.subparts.filter(part => {
+                return part.type == 'card';
+            });
+
+            assert.equal(1, cardParts.length);
+        });
         it('Can append the StackView to body', () => {
             document.body.appendChild(stackView);
             let found = document.body.querySelector('st-stack');
+
             assert.exists(found);
             assert.equal(found.id, stackModel.id.toString());
         });
-        it('Has no card children yet', () => {
+        it('Stack part STILL has only one Card subpart', () => {
+            let cardParts = stackModel.subparts.filter(part => {
+                return part.type == 'card';
+            });
+
+            assert.equal(1, cardParts.length);
+        });
+        it('StackView has no CardView children yet', () => {
             let numCards = stackView.querySelectorAll('st-card').length;
             assert.equal(0, numCards);
         });
         it('Can create 2 additional cards (stack model has one by default)', () => {
             let card2 = new Card(stackModel);
             let card3 = new Card(stackModel);
+
             stackModel.addPart(card2);
             stackModel.addPart(card3);
+
             assert.include(stackModel.subparts, card2);
             assert.include(stackModel.subparts, card3);
         });
+        it('Stack model should have 3 cards total now', () => {
+            let subCards = stackModel.subparts.filter(subpart => {
+                return subpart.type == 'card';
+            });
+            assert.equal(
+                subCards.length,
+                3
+            );
+        });
         it('Can append StackViews from the models', () => {
-            stackModel.subparts.forEach(cardModel => {
-                let el = document.createElement('st-card');
-                el.setModel(cardModel);
-                stackView.appendChild(el);
+            let cardViews = stackModel.subparts.filter(part => {
+                return part.type == 'card';
+            }).forEach(cardModel => {
+                let cardElement = document.createElement('st-card');
+                cardElement.setModel(cardModel);
+                stackView.appendChild(cardElement);
             });
             let first = stackView.querySelector('st-card:first-child');
-            first.classList.add('current-card');
             let second = stackView.querySelector('st-card:nth-child(2)');
             let third = stackView.querySelector('st-card:nth-child(3)');
 
@@ -70,6 +98,23 @@ describe('Stack Navigation Tests', () => {
                 3,
                 stackView.querySelectorAll('st-card').length
             );
+        });
+        it('First child CardView is set to current card', () => {
+            let firstCardView = stackView.querySelector('st-card:first-child');
+            assert.isTrue(
+                firstCardView.classList.contains('current-card')
+            );
+        });
+        it('Other CardViews are NOT set to current-card', () => {
+            let otherCards = stackView.querySelectorAll(
+                'st-card:not(:first-child)'
+            );
+
+            otherCards.forEach(cardView => {
+                assert.isFalse(
+                    cardView.classList.contains('current-card')
+                );
+            });
         });
     });
 

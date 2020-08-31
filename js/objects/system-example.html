@@ -1,26 +1,110 @@
-<!doctype html>
-<html>
-    <head>
-        <meta charset="utf-8">
-        <title>System Object Example</title>
-        <script src="System.js" type="module"></script>
-    </head>
-    <body>
-        <style>
-         body {
-             display: block;
-             width: 100vw;
-             height: 100vh;
-             padding: 0;
-             margin: 0;
-         }
-        </style>
-        <div id="template-area">
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+
+<head>
+    <meta charset="utf-8" />
+    <title>System Object Example</title>
+    <script src="../ohm/simpletalk.ohm" type="text/ohm-js"></script>
+    <script src="build/devSystem.bundle.js"></script>
+</head>
+
+<body>
+    <style>
+        body {
+            display: block;
+            width: 100vw;
+            height: 100vh;
+            padding: 0;
+            margin: 0;
+        }
+    </style>
+    <div id="template-area">
 
 
 
 
 
-        </div>
-    </body>
+    </div>
+
+
+    <st-world id="0">
+        <st-stack id="1" class="current-stack">
+            <st-card id="3"></st-card>
+        </st-stack>
+    </st-world>
+    <div id="serialization-container">
+        <script data-part-id="1" data-role="part-serialization" type="application/json">
+            {
+                "type": "stack",
+                "id": 1,
+                "properties": {
+                    "bottom": 0,
+                    "bottomRight": 0,
+                    "contents": null,
+                    "enabled": true,
+                    "height": 0,
+                    "id": 1,
+                    "left": 0,
+                    "location": 0,
+                    "name": "",
+                    "rectangle": "0, 0, 0, 0",
+                    "right": 0,
+                    "script": null,
+                    "top": 0,
+                    "topLeft": 0,
+                    "width": 0,
+                    "number": -1,
+                    "cantPeek": false,
+                    "resizable": false
+                },
+                "subparts": [
+                    2
+                ],
+                "ownerId": 0
+            }
+        </script>
+        <script data-part-id="3" data-role="part-serialization" type="application/json">
+            {
+                "type": "card",
+                "id": 3,
+                "properties": {
+                    "bottom": 0,
+                    "bottomRight": 0,
+                    "contents": null,
+                    "enabled": true,
+                    "height": 0,
+                    "id": 3,
+                    "left": 0,
+                    "location": 0,
+                    "name": "",
+                    "rectangle": "0, 0, 0, 0",
+                    "right": 0,
+                    "script": null,
+                    "top": 0,
+                    "topLeft": 0,
+                    "width": 0,
+                    "number": -1,
+                    "marked": false,
+                    "cantDelete": false,
+                    "dontSearch": false,
+                    "showPict": false
+                },
+                "subparts": [],
+                "ownerId": 1
+            }
+        </script>
+        <script data-part-id="0" data-role="part-serialization" type="application/json">
+            {
+                "type": "world",
+                "id": 0,
+                "properties": [],
+                "subparts": [],
+                "ownerId": null,
+                "loadedStacks": [],
+                "currentStack": null
+            }
+        </script>
+    </div><a style="display: none;"></a>
+</body>
+
 </html>

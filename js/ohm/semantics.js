@@ -6,10 +6,17 @@
  */
 
 let simpleTalkSemantics = {
+    Script: function(scriptParts, _) {
+        return scriptParts.parse();
+    },
+
+    _terminal: function() {
+    },
+
     Command_answer: function(answer, stringLiteral){
         let msg = {
             type: "command",
-            name: "answer",
+            commandName: "answer",
             args: [
                 stringLiteral.parse()
             ]
@@ -31,8 +38,17 @@ let simpleTalkSemantics = {
 
         let msg = {
             type: "command",
-            name: "go to",
+            commandName: "go to",
             args: args
+        };
+        return msg;
+    },
+
+    command_arbitrary: function(name){
+        let msg = {
+            type: "command",
+            commandName: name.sourceString,
+            args: []
         };
         return msg;
     },
@@ -69,4 +85,5 @@ let simpleTalkSemantics = {
     }
 }
 
-export {simpleTalkSemantics as default}
+export {simpleTalkSemantics, simpleTalkSemantics as default}
+//module.exports = simpleTalkSemantics;

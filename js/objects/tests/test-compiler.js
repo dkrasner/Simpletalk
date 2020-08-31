@@ -28,7 +28,7 @@ describe("SimpleTalk Compiler", function () {
             let expectedMessages = [
             {
                 type: "command",
-                name: "answer",
+                commandName: "answer",
                 args: [ "hello"]
             }];
             compiler.compile(sourceCode, MockObject);
@@ -39,13 +39,15 @@ describe("SimpleTalk Compiler", function () {
             let concreteHandler = MockObject._commandHandlers["mouseUp"];
             assert.isNotNull(concreteHandler);
             assert.equal(typeof concreteHandler, "function");
+            MockObject._commandHandlers = {};
+            MockObject._scriptSemantics = {};
         });
         it('messageHandler (args, "go to" command)', () => {
             let sourceCode = `on customMessage arg1\n go to card arg1\nend customMessage`;
             let expectedMessages = [
             {
                 type: "command",
-                name: "go to",
+                commandName: "go to",
                 args: [ "card", "arg1"]
             }];
             compiler.compile(sourceCode, MockObject);
@@ -56,13 +58,15 @@ describe("SimpleTalk Compiler", function () {
             let concreteHandler = MockObject._commandHandlers["customMessage"];
             assert.isNotNull(concreteHandler);
             assert.equal(typeof concreteHandler, "function");
+            MockObject._commandHandlers = {};
+            MockObject._scriptSemantics = {};
         });
         it('messageHandler (no args, "go to" command)', () => {
             let handler = `on mouseUp\n go to next\nend mouseUp`;
             let expectedMessages = [
             {
                 type: "command",
-                name: "go to",
+                commandName: "go to",
                 args: ["next"]
             }];
             compiler.compile(handler, MockObject);
@@ -71,18 +75,20 @@ describe("SimpleTalk Compiler", function () {
             let concreteHandler = MockObject._commandHandlers["mouseUp"];
             assert.isNotNull(concreteHandler);
             assert.equal(typeof concreteHandler, "function");
+            MockObject._commandHandlers = {};
+            MockObject._scriptSemantics = {};
         });
         it('messageHandler (no args, multiple statements/commands)', () => {
             let handler = `on mouseUp\n answer "hello"\n go to next\nend mouseUp`;
             let expectedMessages = [
             {
                 type: "command",
-                name: "answer",
+                commandName: "answer",
                 args: [ "hello"]
             },
             {
                 type: "command",
-                name: "go to",
+                commandName: "go to",
                 args: ["next"]
             }];
             compiler.compile(handler, MockObject);
@@ -91,6 +97,38 @@ describe("SimpleTalk Compiler", function () {
             let concreteHandler = MockObject._commandHandlers["mouseUp"];
             assert.isNotNull(concreteHandler);
             assert.equal(typeof concreteHandler, "function");
+            MockObject._commandHandlers = {};
+            MockObject._scriptSemantics = {};
+        });
+        it('messageHandler (no args, multi-script-part message)', () => {
+            let script = 'on mouseUp\n\tdoSomething\nend mouseUp\n\non doSomething\n\tanswer "it worked"\nend doSomething';
+            let onMouseUpExpected = [
+            {
+                type: "command",
+                commandName: "doSomething",
+                args: []
+            }
+            ];
+            let onDoSomethingExpected = [
+            {
+                type: "command",
+                commandName: "answer",
+                args: [ "it worked"]
+            }
+            ];
+            compiler.compile(script, MockObject);
+            let onMouseUp = MockObject._scriptSemantics["mouseUp"];
+            let onDoSomething = MockObject._scriptSemantics["doSomething"];
+            assert.deepEqual(onMouseUp, onMouseUpExpected);
+            assert.deepEqual(onDoSomething, onDoSomethingExpected);
+            let onMouseUpHandler = MockObject._commandHandlers["mouseUp"];
+            let onDoSomethingHandler = MockObject._commandHandlers["doSomething"];
+            assert.isNotNull(onMouseUpHandler);
+            assert.equal(typeof onMouseUpHandler, "function");
+            assert.isNotNull(onDoSomethingHandler);
+            assert.equal(typeof onDoSomethingHandler, "function");
+            MockObject._commandHandlers = {};
+            MockObject._scriptSemantics = {};
         });
     });
 });

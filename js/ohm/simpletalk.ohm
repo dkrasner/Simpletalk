@@ -1,9 +1,12 @@
  SimpleTalk {
  	Script
+		= ScriptPart+ end
+
+	ScriptPart
 		= MessageHandler
 		| FunctionHandler
 		| comment
-		| end
+		| lineTerminator
 
 	// Function definition follows the HT convention
 	// """
@@ -14,7 +17,7 @@
 	// Note: to distinguish from functions message handler parameters are not
 	// parenthetical; moreover, message names are more restrictive
 	MessageHandlerOpen
-        	= "on" messageName ParameterList? lineTerminator
+		= "on" messageName ParameterList? lineTerminator
 	
 	MessageHandlerClose
 		= "end" messageName
@@ -28,16 +31,16 @@
 		// TODO do we need to prevent keyword/built in message overload?
 		| messageName ParameterList? --authoredMessage
 
-    	// Any comma-separated string of tokens
-    	// that can be used either as arguments to
-    	// a called function, arguments in a function
-    	// definition, or args in a message handler
-    	// definition
+	// Any comma-separated string of tokens
+	// that can be used either as arguments to
+	// a called function, arguments in a function
+	// definition, or args in a message handler
+	// definition
 	ParameterList (parameter list)
 		// TODO do we need to prevent keyword overload?
 		= NonemptyListOf<#(letter | digit)+, ", ">
-
-        StatementList (a statement list, comments included)
+		
+	StatementList (a statement list, comments included)
 		= StatementLine+
 
 	StatementLine (a statement line)
@@ -57,7 +60,11 @@
 
 	Command (a command statement)
 		= "go to" ("next" | "previous")? systemObject? objectId? --goTo
-                | "answer" stringLiteral --answer
+		| "answer" stringLiteral --answer
+		| command_arbitrary 
+
+	command_arbitrary (an arbitrary command)
+		= letter+
 
 	// Function definition follows the HT convention
 	// """
@@ -66,20 +73,20 @@
 	// end functionName
 	// """
 
-    	// TODO: Consider using the "Open/Close" formulation
-    	// we have for MessageHandler. We could even use the
-    	// MessageHandlerClose for functions, since they are
-    	// identical
+	// TODO: Consider using the "Open/Close" formulation
+	// we have for MessageHandler. We could even use the
+	// MessageHandlerClose for functions, since they are
+	// identical
 	FunctionHandlerSyntax<name, parameters, statements> 
 		= "function" name "(" ParameterList? ")" lineTerminator statements? "end" name
 
-    	FunctionHandlerOpen = "function" functionName "(" ParameterList? ")" lineTerminator
+	FunctionHandlerOpen = "function" functionName "(" ParameterList? ")" lineTerminator
 
-    	FunctionHandlerClose = "end" functionName
+	FunctionHandlerClose = "end" functionName
 
 	FunctionHandler = FunctionHandlerOpen StatementList? FunctionHandlerClose
-
-        // For the moment we allow only the "function()" syntax to describe a function
+	
+	// For the moment we allow only the "function()" syntax to describe a function
 	// (as opposed to "the function" or "function of" more general syntax found on HT) 
 	// TODO should we insist that authered functions start with a lower case letter?
 	Function
@@ -87,7 +94,7 @@
 		// TODO do we need to prevent keyword overload?
 		| functionName "(" ParameterList? ")" --authoredFunction
 
-        Expression (an expression)
+	Expression (an expression)
 		= Factor | "(" Expression ")" --parenthetical
 
 	Factor (a factor type expression)
@@ -113,11 +120,11 @@
 		= "average" | "min" | "max" | "sum" | "random" | "sqrt" | "trunc" | "sin"
 		| "cos" | "tan" | "atan" | "exp" | "ln" | "abs"
 
-        // TODO do we want to restrict message names (start with lowercase etc)?
+	// TODO do we want to restrict message names (start with lowercase etc)?
 	// should these be different from functionName?
 	// Note: we prevent keyword overloading
 	messageName (message name)
-		= ~keyword letter+
+		= ~(keyword end) letter+
 
 	systemMessage (system message)
 		= "systemEvent" | "arrowKey"
@@ -147,40 +154,40 @@
 		= "do" | "next" | "else" | "on" | "end" | "pass" | "exit" | "repeat" | "function" | "return" | "global" | "send" | "if" | "then"
 
 	objectId (an identifier of an object, string, numeric or mixed)
-             = (letter | digit)*
+		= (letter | digit)*
 
 
-        // Helper utilities
+	// Helper utilities
 	// Accounts for singular and plural word (i.e. with and without 's')
 	singPlu<x> = x "s"?
 
 
-        // TODO
+	// TODO
 	comment
 		= "--"letter+
 
 
-    	// A string literal in SimpleTalk is any string
-    	// without line terminators wrapped in open and
-    	// closing quotes
-    	stringLiteral
-        	= quoteMark nonLineTerminator+ quoteMark
+	// A string literal in SimpleTalk is any string
+	// without line terminators wrapped in open and
+	// closing quotes
+	stringLiteral
+		= quoteMark nonLineTerminator+ quoteMark
 	
 	quoteMark = "\""
 	
 	// Basic whitespace and line termination handling.
-    	// Note that we override the default Ohm definition
-    	// of `space` to only be spaces or tabs, and NOT
-    	// any of the newline characters
+	// Note that we override the default Ohm definition
+	// of `space` to only be spaces or tabs, and NOT
+	// any of the newline characters
 	space := whitespace
 		whitespace = "\t"
-		     | "\x0B"    -- verticalTab
-		     | "\x0C"    -- formFeed
-		     | " "
-		     | "\u00A0"  -- noBreakSpace
-		     | "\uFEFF"  -- byteOrderMark
-		     | unicodeSpaceSeparator
-		     
+		| "\x0B"    -- verticalTab
+		| "\x0C"    -- formFeed
+		| " "
+		| "\u00A0"  -- noBreakSpace
+		| "\uFEFF"  -- byteOrderMark
+		| unicodeSpaceSeparator
+
 	unicodeSpaceSeparator = "\u2000".."\u200B" | "\u3000"
 	lineTerminator = "\n" | "\r" | "\u2028" | "\u2029" | "\r\n"
 	nonLineTerminator = ~lineTerminator (alnum | whitespace)

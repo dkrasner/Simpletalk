@@ -12,11 +12,15 @@ const templateString = `
                      box-sizing: border-box;
                  }
                  :host {
-                     display: block;
+                     display: none;
                      position: relative;
                      width: 100%;
                      height: 100%;
                  }
+:host(.current-card){
+display: block;
+}
+
                 </style>
                 <slot></slot>
 `;
@@ -32,6 +36,21 @@ class CardView extends PartView {
         this._shadowRoot.appendChild(
             template.content.cloneNode(true)
         );
+    }
+
+    connectedCallback(){
+        if(this.isConnected){
+            // Check to see if the parent StackView has another
+            // current card set. If not, and I am the first card
+            // in the StackView, set myself to be the current card.
+            let currentCard = Array.from(this.parentElement.children).find(childEl => {
+                return childEl.classList.contains('current-card');
+            });
+
+            if(!currentCard){
+                this.classList.add('current-card');
+            }
+        }
     }
 };
 

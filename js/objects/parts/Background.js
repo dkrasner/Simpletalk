@@ -32,6 +32,10 @@ class Background extends Card {
             this._owner
         );
     }
+
+    get type(){
+        return 'background';
+    }
 };
 
 export {

@@ -86,6 +86,14 @@ class WorldStack extends Part {
     delegateMessage(aMessage){
         this.sendMessage(aMessage, window.System);
     }
+
+    // Override the subpart validity check
+    checkSubpartValidity(aPart){
+        let notValidSubparts = ["card", "button", "field"];
+        if(notValidSubparts.includes(aPart.type)){
+            throw new Error(`${aPart.type} is not a valid subpart of ${this.type}`);
+        };
+    }
 };
 
 
@@ -96,25 +104,9 @@ class WorldStack extends Part {
  */
 WorldStack.fromSerialization = function(aString){
     let json = JSON.parse(aString);
-    let newPart = null;
-    switch(json.type){
-    case 'stack':
-        newPart = new Stack();
-    case 'card':
-        newPart = new Card();
-    case 'background':
-        newPart = new Background();
-    case 'button':
-        newPart = new Button();
-    case 'field':
-        newPart = new Field();
-    }
-
-    if(!newPart){
-        throw new Error(`Could not deserialize: type ${json.type} is not a valid part!`);
-    }
-
+    let newPart = new WorldStack();
     newPart.setFromDeserialized(json);
+    return newPart;
 };
 
 export {

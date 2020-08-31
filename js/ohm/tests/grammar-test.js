@@ -691,12 +691,12 @@ describe("SimpleTalk Grammar", function () {
                 assert.isTrue(match.succeeded());
             });
         });
-        it ("Bad command (no space)", function () {
-            let match = g.match("arrowKeyup", "Command");
+        it ("Bad command (arbitrary with digits)", function () {
+            let match = g.match("1234arrowKe", "Command");
             assert.isTrue(match.failed());
         });
-        it ("Bad command (starts with space)", function () {
-            let match = g.match(" arrowKey up", "Command");
+        it ("Bad command (arbitrary with space)", function () {
+            let match = g.match("aCommand another", "Command");
             assert.isTrue(match.failed());
         });
     });

@@ -75,11 +75,18 @@ class Card extends Part {
     // For the time being, send directly to
     // the Card owner and not the background.
     delegateMessage(aMessage){
-        debugger;
         this.sendMessage(
             aMessage,
             this._owner
         );
+    }
+
+    // Override the subpart validity check
+    checkSubpartValidity(aPart){
+        let notValidSubparts = ["world", "stack", "background"];
+        if(notValidSubparts.includes(aPart.type)){
+            throw new Error(`${aPart.type} is not a valid subpart of ${this.type}`);
+        };
     }
 };
 

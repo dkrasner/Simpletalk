@@ -9,17 +9,6 @@
  */
 import chai from 'chai';
 const assert = chai.assert;
-import System from '../System.js';
-
-// Setup a World model and view for the System.
-System.registerCustomElements();
-/*let world = new System.availableParts['world'](System);
-let worldView = document.createElement(
-    System.tagNameForViewNamed('world')
-);
-worldView.setModel(world);
-document.body.appendChild(worldView);*/
-System.initialLoad();
 
 describe('Button System Command Tests', () => {
     describe('System initialialization', () => {
@@ -49,7 +38,7 @@ describe('Button System Command Tests', () => {
         });
     });
 
-    describe('Adding the button that will be tested', () => {
+    describe.skip('Adding the button that will be tested', () => {
         var buttonModel;
         it('Can add the button via System message', () => {
             let stackEl = document.querySelector('.current-stack');

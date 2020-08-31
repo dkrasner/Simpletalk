@@ -33,6 +33,7 @@ class Part {
 
         this.addPart = this.addPart.bind(this);
         this.removePart = this.removePart.bind(this);
+        this.checkSubpartValidity = this.checkSubpartValidity.bind(this);
         this.setCmdHandler = this.setCmdHandler.bind(this);
         this.setFuncHandler = this.setFuncHandler.bind(this);
         this.receiveCmd = this.receiveCmd.bind(this);
@@ -45,6 +46,7 @@ class Part {
         this.serialize = this.serialize.bind(this);
         this.setFromDeserialized = this.setFromDeserialized.bind(this);
 
+
         // Finally, we finish initialization
         this.setupProperties();
     }
@@ -53,6 +55,10 @@ class Part {
     // from the partProperties
     get id(){
         return this.partProperties.getPropertyNamed(this, 'id');
+    }
+
+    set id(val){
+        return this.partProperties.setPropertyNamed(this, 'id', val);
     }
 
     // Configures the specific properties that the
@@ -147,6 +153,13 @@ class Part {
     }
 
     /** Subpart Access **/
+    /**
+     * Each subclass will implement its own set of checks,
+     * and throw an approprite error if the subpart is invalid.
+     */
+    checkSubpartValidity(aPart){
+        //TODO return this.shouldBeImplemented('checkSubpartValidity');
+    }
 
     /**
      * Adds a part to this part's subparts
@@ -155,6 +168,7 @@ class Part {
      * added part to be this part.
      */
     addPart(aPart){
+        this.checkSubpartValidity(aPart);
         let found = this.subparts.indexOf(aPart);
         if(found < 0){
             this.subparts.push(aPart);
@@ -198,12 +212,12 @@ class Part {
         // By default, Parts will only handle
         // messages of type 'command' and 'function'
         switch(aMessage.type){
-        case 'command':
-            this.receiveCmd(aMessage);
-            break;
-        case 'function':
-            this.receiveFunc(aMessage);
-            break;
+            case 'command':
+                this.receiveCmd(aMessage);
+                break;
+            case 'function':
+                this.receiveFunc(aMessage);
+                break;
         }
     }
 
@@ -312,7 +326,7 @@ class Part {
         // to the incoming values
         let incomingProps = anObject.properties;
         Object.keys(incomingProps).forEach(propName => {
-            let property = this.partProperties.getPropertyNamed(this, propName);
+            let property = this.partProperties.findPropertyNamed(propName);
             if(!property){
                 throw new Error(`Invalid deserialized property: ${propName}`);
             }

@@ -42,6 +42,11 @@ class Stack extends Part {
         // to be at least one
         let initBackground = new Background(this);
         this.addPart(initBackground);
+
+        // We construct with an initial Card part,
+        // since there needs to be at least one
+        let initCard = new Card(this);
+        this.addPart(initCard);
     }
 
     get type(){
@@ -53,6 +58,14 @@ class Stack extends Part {
             aMessage,
             this._owner
         );
+    }
+
+    // Override the subpart validity check
+    checkSubpartValidity(aPart){
+        let notValidSubparts = ["world", "button", "field"];
+        if(notValidSubparts.includes(aPart.type)){
+            throw new Error(`${aPart.type} is not a valid subpart of ${this.type}`);
+        };
     }
 };
 
