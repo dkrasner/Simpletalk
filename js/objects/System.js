@@ -93,7 +93,7 @@ const System = {
                 JSON.parse(worldSerialization)
             );
             worldModel.subparts.forEach(subpart => {
-                this.attachOrCreateView(subpart, worldModel);
+                this.attachView(subpart, worldModel);
             });
 
             // Finally, compile all of the scripts on
@@ -164,25 +164,21 @@ const System = {
         });
     },
 
-    attachOrCreateView: function(aModel, parentView){
+    attachView: function(aModel, parentView){
         // We look up to see if a view for this
         // model by id is already in the DOM.
         // If so, we set it to the model.
-        // If not, we create a new view and append it
-        // to the parent view.
+        // If not, we ignore it. It was already absent from
+        // the DOM in the serialized saved state
         let found = document.getElementById(aModel.id);
-        if(!found){
-            found = this.newView(aModel.type, aModel.id);
-        } else {
+        if(found){
             found.setModel(aModel);
-            found.parentElement.append(found);
+            // Now recursively do the same for any
+            // children
+            aModel.subparts.forEach(subpart => {
+                this.attachView(subpart, found);
+            });
         }
-
-        // Now recursively do the same for any
-        // children
-        aModel.subparts.forEach(subpart => {
-            this.attachOrCreateView(subpart, found);
-        });
     },
 
     // Recursively go through the
