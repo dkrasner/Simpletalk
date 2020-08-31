@@ -225,6 +225,11 @@ const System = {
             aMessage.codeString,
             aMessage.targetObject
         );
+        // Be sure to then update the
+        // serialization for the target
+        // part, thus adding the script to
+        // its serialization
+        this.updateSerialization(aMessage.targetObject.id);
     },
 
     receiveCommand: function(aMessage){
