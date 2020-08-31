@@ -92,6 +92,10 @@ class Window extends Part {
         aPart._owner = this;
     }
 
+    checkSubpartValidity(aPart){
+        return aPart.type == 'window';
+    }
+
     delegateMessage(aMessage){
         this.sendMessage(aMessage, this._owner);
     }

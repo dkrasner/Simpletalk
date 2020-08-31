@@ -21,6 +21,12 @@ class Background extends Card {
         super(owner, name);
 
         this.isBackground = true;
+
+        this.invalidSubpartTypes = [
+            'stack',
+            'card',
+            'world'
+        ];
     }
 
     // Delegation override.
@@ -31,6 +37,10 @@ class Background extends Card {
             aMessage,
             this._owner
         );
+    }
+
+    checkSubpartValidity(aPart){
+        return !this.invalidSubpartTypes.includes(aPart.type);
     }
 
     get type(){

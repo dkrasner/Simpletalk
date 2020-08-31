@@ -14,9 +14,6 @@ import {
 
 class Button extends Part {
     constructor(owner, name){
-        if(owner.type !== 'card'){
-            throw new Error(`Buttons can only be parts of Cards!`);
-        }
         super(owner);
 
         // If we are initializing with a name,
@@ -91,6 +88,12 @@ class Button extends Part {
             aMessage,
             this._owner
         );
+    }
+
+    // For now, Buttons don't take
+    // any subpart types
+    checkSubpartValidity(aPart){
+        return false;
     }
 
     //TODO: implement this property

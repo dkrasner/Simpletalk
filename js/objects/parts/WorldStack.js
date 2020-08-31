@@ -87,12 +87,11 @@ class WorldStack extends Part {
         this.sendMessage(aMessage, window.System);
     }
 
-    // Override the subpart validity check
+    // Override the subpart validity check.
+    // For now, the WorldStack only accepts subparts
+    // that are Stacks
     checkSubpartValidity(aPart){
-        let notValidSubparts = ["card", "button", "field"];
-        if(notValidSubparts.includes(aPart.type)){
-            throw new Error(`${aPart.type} is not a valid subpart of ${this.type}`);
-        };
+        return aPart.type == 'stack';
     }
 };
 

@@ -62,10 +62,11 @@ class Stack extends Part {
 
     // Override the subpart validity check
     checkSubpartValidity(aPart){
-        let notValidSubparts = ["world", "button", "field"];
+        let notValidSubparts = ["world", "button", "field", "eric-field"];
         if(notValidSubparts.includes(aPart.type)){
-            throw new Error(`${aPart.type} is not a valid subpart of ${this.type}`);
+            return false;
         };
+        return true;
     }
 };
 
