@@ -33,6 +33,7 @@ class Part {
 
         this.addPart = this.addPart.bind(this);
         this.removePart = this.removePart.bind(this);
+        this.checkSubpartValidity = this.checkSubpartValidity.bind(this);
         this.setCmdHandler = this.setCmdHandler.bind(this);
         this.setFuncHandler = this.setFuncHandler.bind(this);
         this.receiveCmd = this.receiveCmd.bind(this);
@@ -152,6 +153,13 @@ class Part {
     }
 
     /** Subpart Access **/
+    /**
+     * Each subclass will implement its own set of checks,
+     * and throw an approprite error if the subpart is invalid.
+     */
+    checkSubpartValidity(aPart){
+        //TODO return this.shouldBeImplemented('checkSubpartValidity');
+    }
 
     /**
      * Adds a part to this part's subparts
@@ -160,6 +168,7 @@ class Part {
      * added part to be this part.
      */
     addPart(aPart){
+        this.checkSubpartValidity(aPart);
         let found = this.subparts.indexOf(aPart);
         if(found < 0){
             this.subparts.push(aPart);

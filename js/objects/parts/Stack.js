@@ -59,6 +59,14 @@ class Stack extends Part {
             this._owner
         );
     }
+
+    // Override the subpart validity check
+    checkSubpartValidity(aPart){
+        let notValidSubparts = ["world", "button", "field"];
+        if(notValidSubparts.includes(aPart.type)){
+            throw new Error(`${aPart.type} is not a valid subpart of ${this.type}`);
+        };
+    }
 };
 
 export {
