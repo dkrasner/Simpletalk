@@ -146,7 +146,6 @@ const System = {
         this.updateSerialization(worldModel.id);
     },
 
-<<<<<<< HEAD
     attachSubPartsFromDeserialized: function(aModel, aSerialization){
         // The serialization contains an array of subparts
         // that contains integer ids of other models.
@@ -204,7 +203,8 @@ const System = {
             [source.name, source.id],
             [target.name, target.id]]);
         target.receiveMessage(aMessage);
-        console.log(this.messageLog);
+        console.log(this.messageLog.length);
+        // console.log(this.messageLog[this.messageLog.length - 1]);
     },
 
     receiveMessage: function(aMessage){
