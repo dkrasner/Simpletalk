@@ -31,6 +31,21 @@ import semantics from '../ohm/semantics.js';
 // import grammar from '../ohm/grammar.js';
 
 
+const newMessage = new CustomEvent("newMessage", {
+    detail: {message: () => System.messageLog[System.messageLog.length - 1]}
+    }
+);
+
+document.addEventListener("newMessage", messageContentScript);
+
+function messageContentScript() {
+    console.log("sending message to debugger");
+    window.postMessage({
+        direction: "from-System",
+        message: "Message from the page"
+    }, "*");
+}
+
 const System = {
     name: "System",
     id: -1,
@@ -203,8 +218,7 @@ const System = {
             [source.name, source.id],
             [target.name, target.id]]);
         target.receiveMessage(aMessage);
-        console.log(this.messageLog.length);
-        // console.log(this.messageLog[this.messageLog.length - 1]);
+        document.dispatchEvent(newMessage);
     },
 
     receiveMessage: function(aMessage){
