@@ -24,17 +24,25 @@ let simpleTalkSemantics = {
         return msg;
     },
 
-    Command_goTo: function(goToLiteral, nextPrevious, systemObject, objectId){
+    Command_goToDirection: function(goToLiteral, nextPrevious, systemObject){
         let args = [];
-        if (nextPrevious.sourceString){
-            args.push(nextPrevious.sourceString);
-        }
+        args.push(nextPrevious.sourceString);
         if (systemObject.sourceString){
             args.push(systemObject.sourceString);
         }
-        if (objectId.sourceString){
-            args.push(objectId.sourceString);
-        }
+
+        let msg = {
+            type: "command",
+            commandName: "go to",
+            args: args
+        };
+        return msg;
+    },
+
+    Command_goToByReference: function(goToLiteral, systemObject, objectId){
+        let args = [];
+        args.push(systemObject.sourceString);
+        args.push(objectId.sourceString);
 
         let msg = {
             type: "command",

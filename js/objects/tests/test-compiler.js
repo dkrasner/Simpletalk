@@ -76,6 +76,10 @@ describe("SimpleTalk Compiler", function () {
                     expect(() => compiler.compile(sourceCode, MockObject)).to.throw();
                 })
             });
+            it('messageHandler ("go to" invalid construction)', () => {
+                const sourceCode = `on customMessage arg1\n go to next card arg1\nend customMessage`;
+                expect(() => compiler.compile(sourceCode, MockObject)).to.throw();
+            });
             it('messageHandler (no args, "go to" command)', () => {
                 directions.forEach((d) => {
                     const handler = `on mouseUp\n go to ${d}\nend mouseUp`;
