@@ -3,7 +3,6 @@ This script is run whenever the devtools are open.
 In here, we can create our panel.
 */
 
-alert("hello from debug");
 function handleShown() {
   console.log("panel is being shown");
 }
@@ -25,10 +24,6 @@ browser.devtools.panels.create(
 });
 
 
-window.addEventListener("message", function(event) {
-    alert("message");
-    if(event.source == window && event.data && event.data.direction == "from-System"){
-        console.log("got a message from System");
-        console.log(event);
-    }
-}, false);
+browser.browserAction.onClicked.addListener(function() {
+    portFromCS.postMessage({greeting: "they clicked the button!"});
+});
