@@ -1,3 +1,4 @@
+
 /*
 window.addEventListener("message", function(event) {
     // console.log("message")
@@ -8,6 +9,7 @@ window.addEventListener("message", function(event) {
             data: event});
     }
 }, false);
+*/
 
 var myPort = browser.runtime.connect({name:"port-from-cs"});
 myPort.postMessage({greeting: "hello from content script"});
@@ -20,6 +22,5 @@ myPort.onMessage.addListener(function(m) {
 document.body.addEventListener("newMessage", function() {
     myPort.postMessage({greeting: "they clicked the page!"});
 });
-*/
 
 // myPort.postMessage({greeting: "ok this is a message from content"});

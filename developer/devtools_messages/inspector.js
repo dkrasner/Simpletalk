@@ -23,7 +23,8 @@ browser.devtools.panels.create(
   newPanel.onHidden.addListener(handleHidden);
 });
 
-
+/*
 browser.browserAction.onClicked.addListener(function() {
     portFromCS.postMessage({greeting: "they clicked the button!"});
 });
+*/

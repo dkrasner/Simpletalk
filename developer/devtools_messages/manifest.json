@@ -15,7 +15,7 @@
     ],
     "background": {
         "scripts": ["background.js"]
-    }, 
+    },
     "permissions":[
         "<all_urls>"
     ],

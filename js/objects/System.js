@@ -219,6 +219,7 @@ const System = {
             [target.name, target.id]]);
         target.receiveMessage(aMessage);
         document.dispatchEvent(newMessage);
+        // window.postMessage(...);
     },
 
     receiveMessage: function(aMessage){
