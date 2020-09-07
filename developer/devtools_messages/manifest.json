@@ -17,7 +17,7 @@
         "scripts": ["background.js"]
     },
     "permissions":[
-        "<all_urls>"
+        "http://localhost:8000/*"
     ],
     "devtools_page": "inspector.html"
 }

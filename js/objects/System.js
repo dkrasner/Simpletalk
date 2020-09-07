@@ -36,7 +36,7 @@ const newMessage = new CustomEvent("newMessage", {
     }
 );
 
-document.addEventListener("newMessage", messageContentScript);
+// document.addEventListener("newMessage", messageContentScript);
 
 function messageContentScript() {
     console.log("sending message to debugger");
@@ -219,7 +219,6 @@ const System = {
             [target.name, target.id]]);
         target.receiveMessage(aMessage);
         document.dispatchEvent(newMessage);
-        // window.postMessage(...);
     },
 
     receiveMessage: function(aMessage){
