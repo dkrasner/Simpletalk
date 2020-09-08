@@ -30,13 +30,13 @@ class PartView extends HTMLElement {
     setModel(aModel){
         this.model = aModel;
         aModel.addPropertySubscriber(this);
-        this.setAttribute('id', aModel.id);
+        this.setAttribute('part-id', aModel.id);
     }
 
     unsetModel(aModel){
         this.model = null;
         aModel.removePropertySubscriber(this);
-        this.setAttribute('id', "");
+        this.setAttribute('part-id', "");
     }
 
     sendMessage(aMessage, target){

@@ -151,10 +151,10 @@ const System = {
                 throw new Error(`Could not deserialize Part of type ${subSerialization.type}`);
             }
             let part = new partClass(aModel);
-            part.id = subSerialization.id;
+            part.setAttribute('part-id', subSerialization.id);
             part.setFromDeserialized(subSerialization);
             aModel.addPart(part);
-            this.partsById[part.id] = part;
+            this.partsById[subSerialization.id] = part;
 
             // Recursively get the subparts of the subpart
             this.attachSubPartsFromDeserialized(
@@ -170,7 +170,7 @@ const System = {
         // If so, we set it to the model.
         // If not, we ignore it. It was already absent from
         // the DOM in the serialized saved state
-        let found = document.getElementById(aModel.id);
+        let found = this.findViewById(aModel.id);
         if(found){
             found.setModel(aModel);
             // Now recursively do the same for any
@@ -288,7 +288,7 @@ const System = {
 
         // See if there is already a view for the model.
         // If not, create and attach it.
-        let viewForModel = document.getElementById(model.id);
+        let viewForModel = this.findViewById(model.id);
         if(!viewForModel){
             this.newView(model.type, model.id);
         }
@@ -304,7 +304,7 @@ const System = {
 
         // If there is alreay a view for this model,
         // simply return the instance of that view object
-        let existingView = document.getElementById(modelId);
+        let existingView = this.findViewById(modelId);
         if(existingView){
             return existingView;
         }
@@ -313,7 +313,7 @@ const System = {
         // help us find the parent view element for
         // appending the new element.
         let parentId = model._owner.id;
-        let parentElement = document.getElementById(parentId);
+        let parentElement = this.findViewById(parentId);
         if(!parentElement){
             throw new Error(`Could not find parent element for ${partName}[${modelId}] (model owner id: ${model._owner.id})`);
         }
@@ -345,6 +345,18 @@ const System = {
 
     tagNameForViewNamed: function(name){
         return `st-${name}`;
+    },
+
+    // Find the first matching view element
+    // with the given id
+    findViewById: function(id){
+        return document.querySelector(`[part-id="${id}"]`);
+    },
+
+    // Find all matching view elements with
+    // the given part id
+    findViewsById: function(id){
+        return document.querySelectorAll(`[part-id="${id}"]`);
     },
 
     /** Serialization / Deserialization **/
@@ -486,7 +498,7 @@ System._commandHandlers['openToolbox'] = function(targetId){
     // Do more toolbox configuration here
     // like making the buttons with their
     // scripts, etc
-    let windowStackView = document.getElementById(windowStack.id);
+    let windowStackView = this.findViewById(windowStack.id);
     let windowCurrentCardModel = windowStackView.querySelector('.current-card').model;
     let addBtnBtn = this.newModel('button', windowCurrentCardModel);
     addBtnBtn.partProperties.setPropertyNamed(
@@ -540,7 +552,7 @@ System._commandHandlers['openScriptEditor'] = function(targetId){
         'name',
         winTitle
     );
-    let winView = document.getElementById(winModel.id);
+    let winView = this.findViewById(winModel.id);
     let winStackModel = this.newModel('stack', winModel);
     let currentCardView = winView.querySelector('.current-stack .current-card');
     let currentCard = currentCardView.model;
@@ -555,8 +567,8 @@ System._commandHandlers['openScriptEditor'] = function(targetId){
         'Save Script'
     );
 
-    let fieldView = document.getElementById(fieldModel.id);
-    let saveBtnView = document.getElementById(saveBtnModel.id);
+    let fieldView = this.findViewById(fieldModel.id);
+    let saveBtnView = this.findViewById(saveBtnModel.id);
 
     // Set the field's textContent to be the script of the given
     // target part.

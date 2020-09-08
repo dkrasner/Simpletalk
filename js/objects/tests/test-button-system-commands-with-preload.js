@@ -31,8 +31,8 @@ describe('Button System Command Tests', () => {
         });
         it('Can get card view by its id', () => {
             let cardEl = document.querySelector('st-card');
-            let id = cardEl.id;
-            let found = document.getElementById(id.toString());
+            let id = cardEl.getAttribute('part-id');
+            let found = document.querySelector(`[part-id="${id}"]`);
             assert.equal(id, "3");
             assert.exists(found);
         });
