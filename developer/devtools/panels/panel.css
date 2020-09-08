@@ -1,0 +1,28 @@
+body {
+    width: 100vw;
+    height: 100vh;
+    padding: 0;
+    margin: 0;
+};
+
+table {
+    width: 100%!important;
+    text-align: center;
+}
+
+thead {
+    background-color: #EFEFEF;
+}
+
+tbody > :nth-child(even) {
+    background-color: #EFEFEF;
+}
+
+tr {
+    border-bottom: 1px solid black;
+}
+
+tr > * {
+    width: 30vw;
+    border-right: 1px solid black;
+}

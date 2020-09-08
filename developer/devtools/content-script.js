@@ -21,8 +21,7 @@ portFromCS.onMessage.addListener(function(msg) {
 
 window.addEventListener("message", (event) => {
     // filter on the target windows url
-    // TODO this origin url should defined at runtime
-    if(event.origin === "http://localhost:8000"){
+    if(event.origin === window.location.origin){
         // reoute the message to the background script
         portFromCS.postMessage({data: event.data});
     }

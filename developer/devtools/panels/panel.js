@@ -8,9 +8,19 @@
  */
 
 
+var messageTableBody = document.getElementById("message-tbody");
+
 function handleMessageFromBackground(msg) {
     console.log("getting message from background");
-    document.body.textContent += '\n' + msg;
+    let tr = document.createElement("tr");
+    let td;
+    for (let i = 0; i < msg.length; i++){
+        td = document.createElement("td");
+        td.textContent = JSON.stringify(msg[i]);
+        tr.appendChild(td);
+    }
+    messageTableBody.appendChild(tr);
+    // document.body.textContent += '\n' + msg;
 }
 
 

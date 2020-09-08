@@ -198,13 +198,15 @@ const System = {
             throw new Error('Messages must be sent with target receivers specified!');
         }
 
-        this.messageLog.push(
-            [aMessage,
+        let messageData = [
+            aMessage,
             [source.name, source.id],
-            [target.name, target.id]]);
+            [target.name, target.id]
+        ];
+        this.messageLog.push(messageData);
         target.receiveMessage(aMessage);
 
-        window.postMessage(target.name, "http://localhost:8000");
+        window.postMessage(messageData, "http://localhost:8000");
     },
 
     receiveMessage: function(aMessage){
