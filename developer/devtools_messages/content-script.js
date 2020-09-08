@@ -1,31 +1,29 @@
-
 /*
-window.addEventListener("message", function(event) {
-    // console.log("message")
-    if(event.source == window && event.data && event.data.direction == "from-System"){
-        console.log("sending runtime message to background");
-        browser.runtime.sendMessage({
-            tabId: browser.devtools.inspectedWindow.tabId,
-            data: event});
-    }
-}, false);
-*/
+ * I am the conect script which is injected into the target
+ * document window when devtools is open.
+ *
+ * I create connection port to handle communication between myself
+ * and the devtools browser script (which then passes these messages
+ * onto the devtools panel scripts).
+ *
+ * In addition, I handle incoming window level messaging (
+ * window.postMessage() API) and routing these application
+ * originating messaged to the devtools background.
+ */
 
-var myPort = browser.runtime.connect({name:"port-from-cs"});
-console.log("port runtime connection defined in content script:")
-console.log("my port");
-// myPort.postMessage({greeting: "hello from content script"});
+var portFromCS = browser.runtime.connect({name:"port-from-cs"});
 
-myPort.onMessage.addListener(function(m) {
-    console.log("In content script, received message from background script: ");
-    console.log(m.greeting);
+// at the moment nothing much is done with messages going
+// to the content-script port
+portFromCS.onMessage.addListener(function(msg) {
+    console.log("recieved message from background", msg);
 });
 
 window.addEventListener("message", (event) => {
-    myPort.postMessage({greeting: event.data});
+    // filter on the target windows url
+    // TODO this origin url should defined at runtime
+    if(event.origin === "http://localhost:8000"){
+        // reoute the message to the background script
+        portFromCS.postMessage({data: event.data});
+    }
 }, false);
-
-// document.body.addEventListener("click", () => {
-//    myPort.postMessage({greeting: "they clicked the page!"});
-// });
-// myPort.postMessage({greeting: "ok this is a message from content"});

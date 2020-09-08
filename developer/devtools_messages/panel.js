@@ -1,9 +1,25 @@
-/**
-    * Handle errors from the injected script.
-    * Errors may come from evaluating the JavaScript itself
-    * or from the devtools framework.
-    * See https://developer.mozilla.org/en-US/Add-ons/WebExtensions/API/devtools.inspectedWindow/eval#Return_value
-    * */
+/*
+ * I am the inspector panel.
+ * I handle incoming messages from background and
+ * send sometimes inject scripts directly into the target
+ * window.
+ *
+ * I also handle how the information is displayed.
+ */
+
+
+function handleMessageFromBackground(msg) {
+    console.log("getting message from background");
+    document.body.textContent += '\n' + msg;
+}
+
+
+/*
+const inspectString = "System.messageLog[System.messageLog.length - 1]";
+document.getElementById("button_1").addEventListener("click", () => {
+    browser.devtools.inspectedWindow.eval(inspectString)
+    .then(handleResult);
+});
 function handleError(error) {
     if (error.isError) {
         console.log(`Devtools error: ${error.code}`);
@@ -12,10 +28,6 @@ function handleError(error) {
     }
 }
 
-/**
- * Handle the result of evaluating the script.
- * If there was an error, call handleError.
- * */
 function handleResult(result) {
     console.log("result");
     console.log(result);
@@ -24,9 +36,4 @@ function handleResult(result) {
     }
 }
 
-const inspectString = "System.messageLog[System.messageLog.length - 1]";
-document.getElementById("button_1").addEventListener("click", () => {
-    browser.devtools.inspectedWindow.eval(inspectString)
-    .then(handleResult);
-});
-
+*/
