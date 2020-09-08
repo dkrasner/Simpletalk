@@ -59,7 +59,8 @@
 		= "global" #space+ ParameterList
 
 	Command (a command statement)
-		= "go to" ("next" | "previous")? systemObject? objectId? --goTo
+   		= "go to" ("next" | "previous") systemObject? --goToDirection
+   		| "go to" systemObject objectId --goToByReference
 		| "answer" stringLiteral --answer
 		| command_arbitrary 
 
@@ -164,7 +165,7 @@
 
 	// TODO
 	comment
-		= "--"letter+
+		= "--"(letter | whitespace | digit)+
 
 
 	// A string literal in SimpleTalk is any string
