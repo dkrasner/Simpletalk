@@ -9,7 +9,7 @@ Create a panel, and add listeners for panel show/hide events.
 browser.devtools.panels.create(
     "Message Inspector Panel",
     "/icons/distill-48.jpg",
-    "/panel.html"
+    "/panels/panel.html"
 ).then((panel) => {
     var _window; // hold a reference to panel.html
 
