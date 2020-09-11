@@ -17,12 +17,15 @@ const templateString = `
                      box-sizing: border-box;
                  }
                  :host {
-                     display: block;
+                     display: none;
+                     position: relative;
                      width: 100%;
                      height: 100%;
-                     position: relative;
                      background-color: white;
                  }
+                :host(.current-stack){
+                    display: block;
+                }
                 </style>
                 <slot></slot>
 `;
