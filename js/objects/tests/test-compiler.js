@@ -57,7 +57,7 @@ describe("SimpleTalk Compiler", function () {
                     const expectedMessages = [
                     {
                         type: "command",
-                        commandName: "go to",
+                        commandName: "go to reference",
                         args: [s, "arg1"]
                     }];
                     compiler.compile(sourceCode, MockObject);
@@ -86,7 +86,7 @@ describe("SimpleTalk Compiler", function () {
                     const expectedMessages = [
                     {
                         type: "command",
-                        commandName: "go to",
+                        commandName: "go to direction",
                         args: [d]
                     }];
                     compiler.compile(handler, MockObject);
@@ -108,7 +108,7 @@ describe("SimpleTalk Compiler", function () {
             },
             {
                 type: "command",
-                commandName: "go to",
+                commandName: "go to direction",
                 args: ["next"]
             }];
             compiler.compile(handler, MockObject);
