@@ -109,6 +109,21 @@ class StackView extends PartView {
         }
     }
 
+    goToCardById(cardId){
+        let currentCardView = this.querySelector('.current-card');
+        let selectedCardView = this.querySelector(`[id='${cardId}']`)
+
+        if (selectedCardView !== null) {
+            currentCardView.classList.remove('current-card');
+            selectedCardView.classList.add('current-card');
+        } else {
+            console.log(`The card id: ${cardId} couldn't be found on this stack`)
+        }
+        // Then we might want to send some message through
+        // the HC system, letting Parts know that we have
+        // navigated?
+    }
+
     goToNthCard(anInteger){
         // NOTE: values here are 1-indexed, per
         // original HC and what normal people expect
