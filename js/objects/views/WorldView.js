@@ -131,6 +131,77 @@ class WorldView extends PartView {
             nextStackView.classList.add('current-stack');
         }
     }
+
+    goToNextStack(){
+        let stackChildren = Array.from(this.querySelectorAll('st-stack'));
+        if(stackChildren.length  > 1){
+            let currentStackView = this.querySelector('.current-stack');
+            let currentStackIndex = stackChildren.indexOf(currentStackView);
+            let nextStackIndex = currentStackIndex + 1;
+            let nextStackView;
+            if(nextStackIndex < stackChildren.length){
+                // If we get here, there is another st-stack element
+                // in the sibling order. So we set it as the current.
+                nextStackView = stackChildren[nextStackIndex];
+                currentStackView.classList.remove('current-stack');
+                nextStackView.classList.add('current-stack');
+            } else {
+                // Otherwise we are at the last child st-stack element
+                // in the stack, which means we need to loop around
+                // back to the first child.
+                let firstStack = this.querySelector('st-stack');
+                currentStackView.classList.remove('current-stack');
+                firstStack.classList.add('current-stack');
+            }
+
+            // Then we might want to send some message through
+            // the HC system, letting Parts know that we have
+            // navigated?
+        }
+    }
+
+    goToPrevStack(){
+        let stackChildren = Array.from(this.querySelectorAll('st-stack'));
+        if(stackChildren.length > 1){
+            let currentStackView = this.querySelector('.current-stack');
+            let currentStackIndex = stackChildren.indexOf(currentStackView);
+            let prevStackIndex = currentStackIndex - 1;
+            let prevStackView;
+            if(prevStackIndex >= 0){
+                // If we get here, there is another stack element sibling
+                // before this one, so we set that to be the current.
+                prevStackView = stackChildren[prevStackIndex];
+                currentStackView.classList.remove('current-stack');
+                prevStackView.classList.add('current-stack');
+            } else {
+                // Otherwise, the current stack is the first st-stack
+                // child element in the stack. So we need to 'loop around'
+                // to the *last* stack element.
+                prevStackView = this.querySelector('st-stack:last-child');
+                prevStackView.classList.add('current-stack');
+                currentStackView.classList.remove('current-stack');
+            }
+
+            // Then we might want to send some message through
+            // the HC system, letting Parts know that we have
+            // navigated?
+        }
+    }
+
+    goToStackById(stackId){
+        let currentStackView = this.querySelector('.current-stack');
+        let selectedStackView = this.querySelector(`[id='${stackId}']`)
+
+        if (selectedStackView !== null) {
+            currentStackView.classList.remove('current-stack');
+            selectedStackView.classList.add('current-stack');
+        } else {
+            console.log(`The stack id: ${stackId} couldn't be found on this stack`)
+        }
+        // Then we might want to send some message through
+        // the HC system, letting Parts know that we have
+        // navigated?
+    }
 };
 
 export {
