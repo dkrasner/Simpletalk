@@ -44,9 +44,10 @@ describe('Stack Navigation Tests', () => {
         it('Can append the StackView to body', () => {
             document.body.appendChild(stackView);
             let found = document.body.querySelector('st-stack');
+            let foundElementId = found.getAttribute('part-id');
 
             assert.exists(found);
-            assert.equal(found.id, stackModel.id.toString());
+            assert.equal(foundElementId, stackModel.id.toString());
         });
         it('Stack part STILL has only one Card subpart', () => {
             let cardParts = stackModel.subparts.filter(part => {

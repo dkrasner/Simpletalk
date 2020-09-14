@@ -33,6 +33,10 @@ class WorldStack extends Part {
             'currentStack',
             -1
         );
+
+        // Set the id property to always
+        // be 'world'
+        this.id = 'world';
     }
 
     get type(){
