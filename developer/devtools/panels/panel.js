@@ -12,15 +12,33 @@ var messageTableBody = document.getElementById("message-tbody");
 
 function handleMessageFromBackground(msg) {
     console.log("getting message from background");
+    if (msg.length !== 3){
+        console.error("message is not length 3!: " + msg);
+    }
     let tr = document.createElement("tr");
     let td;
-    for (let i = 0; i < msg.length; i++){
-        td = document.createElement("td");
-        td.textContent = JSON.stringify(msg[i]);
-        tr.appendChild(td);
-    }
+    let messageEl = _prepMessage(msg[0]);
+    let senderEl = _prepObject(msg[1][0], msg[1][1]);
+    let receiverEl = _prepObject(msg[2][0], msg[2][1]);
+    tr.appendChild(messageEl);
+    tr.appendChild(senderEl);
+    tr.appendChild(receiverEl);
     messageTableBody.appendChild(tr);
-    // document.body.textContent += '\n' + msg;
+}
+
+function _prepMessage(msg){
+    let td = document.createElement("td");
+    let pre = document.createElement("pre");
+    pre.textContent = JSON.stringify(msg, null, '\t');
+    td.appendChild(pre);
+    return td;
+}
+
+function _prepObject(name, id){
+    let td = document.createElement("td");
+    let objectStr = `${name} (id=${id})`;
+    td.textContent = objectStr;
+    return td;
 }
 
 

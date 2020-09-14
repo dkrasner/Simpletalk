@@ -206,7 +206,7 @@ const System = {
         this.messageLog.push(messageData);
         target.receiveMessage(aMessage);
 
-        window.postMessage(messageData, "http://localhost:8000");
+        window.postMessage(messageData, window.location.origin);
     },
 
     receiveMessage: function(aMessage){
