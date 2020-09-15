@@ -25,4 +25,6 @@ tr {
 tr > * {
     width: 30vw;
     border-right: 1px solid black;
+    cursor: pointer;
 }
+

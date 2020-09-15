@@ -13,7 +13,8 @@ var messageTableBody = document.getElementById("message-tbody");
 function handleMessageFromBackground(msg) {
     console.log("getting message from background");
     if (msg.length !== 3){
-        console.error("message is not length 3!: " + msg);
+        console.warning("message is not length 3!: " + msg);
+        return;
     }
     let tr = document.createElement("tr");
     let td;
@@ -37,31 +38,18 @@ function _prepMessage(msg){
 function _prepObject(name, id){
     let td = document.createElement("td");
     let objectStr = `${name} (id=${id})`;
+    // add the ability to click on any object and see it's DOM view
+    // in the inspector
+    td.addEventListener("click", () => {
+        let inspectCommand = `inspect(document.getElementById(${id}))`;
+        browser.devtools.inspectedWindow.eval(inspectCommand).then(handleResult);
+    });
     td.textContent = objectStr;
     return td;
 }
 
-
-/*
-const inspectString = "System.messageLog[System.messageLog.length - 1]";
-document.getElementById("button_1").addEventListener("click", () => {
-    browser.devtools.inspectedWindow.eval(inspectString)
-    .then(handleResult);
-});
-function handleError(error) {
-    if (error.isError) {
-        console.log(`Devtools error: ${error.code}`);
-    } else {
-        console.log(`JavaScript error: ${error.value}`);
+function handleResult(result){
+    if(result[1]){
+        console.error(result);
     }
 }
-
-function handleResult(result) {
-    console.log("result");
-    console.log(result);
-    if (result[1]) {
-        handleError(result[1]);
-    }
-}
-
-*/
