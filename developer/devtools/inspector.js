@@ -50,5 +50,6 @@ browser.devtools.panels.create(
              portFromPanel.postMessage(msg);
         }
     });
+
     panel.onHidden.addListener(function() {console.log("panel is being hidden")});
 });

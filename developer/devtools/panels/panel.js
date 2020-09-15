@@ -13,7 +13,7 @@ var messageTableBody = document.getElementById("message-tbody");
 function handleMessageFromBackground(msg) {
     console.log("getting message from background");
     if (msg.length !== 3){
-        console.warning("message is not length 3!: " + msg);
+        console.log("message is not length 3!: " + msg);
         return;
     }
     let tr = document.createElement("tr");
