@@ -2,6 +2,6 @@
 
 Here you will find various developer utilities and the like.
 
-Browser devtools extensions can be found [here][./devtools].
+Browser devtools extensions can be found [here](./devtools).
 
 
