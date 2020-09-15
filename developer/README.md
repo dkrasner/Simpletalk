@@ -2,9 +2,6 @@
 
 Here you will find various developer utilities and the like.
 
-
-### Browser Devtools Extensions ###
-#### Installation ####
-### Development ####
+Browser devtools extensions can be found [here][./devtools].
 
 
