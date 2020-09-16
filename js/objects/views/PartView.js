@@ -16,6 +16,7 @@ class PartView extends HTMLElement {
         super();
         this.model = null;
         this.isPartView = true;
+        this.name = this.constructor.name;
 
         // Bind component methods
         this.setModel = this.setModel.bind(this);
@@ -40,7 +41,7 @@ class PartView extends HTMLElement {
     }
 
     sendMessage(aMessage, target){
-        target.receiveMessage(aMessage);
+        window.System.sendMessage(aMessage, this, target);
     }
 
     receiveMessage(aMessage){

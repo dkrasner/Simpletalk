@@ -1,0 +1,23 @@
+{
+    "manifest_version": 2,
+    "name": "devtools-message-inspector",
+    "version": "1.0",
+    "description": "Message Inspection in the SimpleTalk Environment",
+    "icons": {
+        "48": "icons/distill-48.jpg",
+        "96": "icons/distill-96.jpg"
+    },
+    "content_scripts": [
+        {
+            "matches": ["*://*/*"],
+             "js": ["content-script.js"]
+        }
+    ],
+    "background": {
+        "scripts": ["background.js"]
+    },
+    "permissions":[
+        "<all_urls>"
+    ],
+    "devtools_page": "inspector.html"
+}

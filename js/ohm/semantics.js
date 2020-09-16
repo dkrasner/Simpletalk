@@ -94,4 +94,3 @@ let simpleTalkSemantics = {
 }
 
 export {simpleTalkSemantics, simpleTalkSemantics as default}
-//module.exports = simpleTalkSemantics;
