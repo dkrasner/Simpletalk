@@ -65,15 +65,6 @@ class WorldView extends PartView {
 
     connectedCallback(){
         if(this.isConnected && this.model){
-            // If the model has no loaded stacks,
-            // create a new blank one
-            /*if(this.model && this.model.loadedStacks.length == 0){
-                this.sendMessage({
-                    type: 'newModel',
-                    modelType: 'stack',
-                    owner: this.model
-                }, window.System);
-            }*/
 
             // If the model specifies a current stack,
             // update it.
