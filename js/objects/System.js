@@ -75,7 +75,7 @@ const System = {
     },
 
     loadFromWorldView: function(aWorldView){
-        let worldSerialization = this.getSerializationFor(aWorldView.id);
+        let worldSerialization = this.getSerializationFor(aWorldView.getAttribute("part-id"));
         if(!worldSerialization || worldSerialization == undefined){
             // The element has no corresponding serialized model.
             // Remove the element from the DOM and initialize
@@ -136,6 +136,8 @@ const System = {
         document.querySelector('st-stack').classList.add('current-stack');
 
         this.updateSerialization(worldModel.id);
+        let msg = {type: 'command', commandName: 'openToolbox', args:[]}
+        this.receiveMessage(msg);
     },
 
     attachSubPartsFromDeserialized: function(aModel, aSerialization){
@@ -150,8 +152,8 @@ const System = {
             if(!partClass){
                 throw new Error(`Could not deserialize Part of type ${subSerialization.type}`);
             }
-            let part = new partClass(aModel);
-            part.setAttribute('part-id', subSerialization.id);
+            let part = new partClass(aModel, subSerialization.properties.name);
+            part.id = subSerialization.id;
             part.setFromDeserialized(subSerialization);
             aModel.addPart(part);
             this.partsById[subSerialization.id] = part;

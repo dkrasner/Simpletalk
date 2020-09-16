@@ -146,8 +146,9 @@ class ButtonView extends PartView {
                     codeString: aMessage.value,
                     targetObject: this.model
                 }, window.System);
+            } else {
+                this.setPropsFromModel();
             }
-            this.setPropsFromModel();
         }
     }
 };
