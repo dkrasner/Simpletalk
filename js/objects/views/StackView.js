@@ -114,7 +114,7 @@ class StackView extends PartView {
 
     goToCardById(cardId){
         let currentCardView = this.querySelector('.current-card');
-        let selectedCardView = this.querySelector(`[id='${cardId}']`)
+        let selectedCardView = this.querySelector(`[part-id='${cardId}']`)
 
         if (selectedCardView !== null) {
             currentCardView.classList.remove('current-card');

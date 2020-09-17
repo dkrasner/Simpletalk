@@ -190,10 +190,13 @@ class WorldView extends PartView {
 
     goToStackById(stackId){
         let currentStackView = this.querySelector('.current-stack');
-        let selectedStackView = this.querySelector(`[id='${stackId}']`)
+        let selectedStackView = this.querySelector(`[part-id='${stackId}']`)
+
+        if (currentStackView !== null) {
+            currentStackView.classList.remove('current-stack');
+        }
 
         if (selectedStackView !== null) {
-            currentStackView.classList.remove('current-stack');
             selectedStackView.classList.add('current-stack');
         } else {
             console.log(`The stack id: ${stackId} couldn't be found on this stack`)

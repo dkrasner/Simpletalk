@@ -522,14 +522,14 @@ const System = {
         return worldView.goToPrevStack();
     },
 
-    goToStackById: function(cardId){
+    goToStackById: function(stackId){
         let worldView = document.querySelector(
             'st-world'
         );
         if(!worldView || worldView == undefined){
             throw new Error(`Could not locate the world view!`);
         }
-        return worldView.goToStackById(cardId);
+        return worldView.goToStackById(stackId);
     },
 
     /** Navigation of Current Stack **/

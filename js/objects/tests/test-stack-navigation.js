@@ -17,12 +17,153 @@ import StackView from '../views/StackView.js';
 import Stack from '../parts/Stack.js';
 import CardView from '../views/CardView.js';
 import Card from '../parts/Card.js';
+import World from '../parts/WorldStack.js';
+import WorldView from '../views/WorldView.js';
 
 window.customElements.define('st-stack', StackView);
 window.customElements.define('st-card', CardView);
+window.customElements.define('st-world', WorldView);
 
 let stackView;
 let stackModel;
+let worldView;
+let worldModel;
+
+describe('World Navigation Tests', () => {
+    describe('Setup of WorldView', () => {
+        it('Can initialize a WorldView with model', () => {
+            worldModel = new World(null);
+            worldView = document.createElement('st-world');
+            worldView.setModel(worldModel);
+            assert.exists(worldModel);
+            assert.exists(worldView);
+            assert.equal(worldModel, worldView.model);
+        });
+        it('World part has no Stacks on initialization', () => {
+            let stackParts = worldModel.subparts.filter(part => {
+                return part.type == 'stack';
+            });
+
+            assert.equal(stackParts.length, 0);
+        });
+        it('We can add two Stacks to the world', () => {
+            let stack1 = new Stack(worldModel);
+            let stack2 = new Stack(worldModel);
+            let stack3 = new Stack(worldModel);
+
+            worldModel.addPart(stack1);
+            worldModel.addPart(stack2);
+            worldModel.addPart(stack3);
+
+            let stackParts = worldModel.subparts.filter(part => {
+                return part.type == 'stack';
+            });
+
+            assert.equal(stackParts.length, 3);
+        });
+        it('Can append StackViews from the models', () => {
+            worldModel.subparts.filter(part => {
+                return part.type == 'stack';
+            }).forEach(stackModel => {
+                let stackElement = document.createElement('st-stack');
+                stackElement.setModel(stackModel);
+                worldView.appendChild(stackElement);
+            });
+            // assumes that the first stack has id 1!
+            worldView.goToStackById(1);
+
+            let first = worldView.querySelector('st-stack:first-child');
+            let second = worldView.querySelector('st-stack:nth-child(2)');
+
+            assert.exists(first);
+            assert.exists(second);
+            assert.equal(first.getAttribute('class'), 'current-stack');
+            assert.equal(
+                worldView.querySelectorAll('st-stack').length,
+                3
+            );
+        });
+        it('First child stackView is set to current stack', () => {
+            let firstStackView = worldView.querySelector('st-stack:first-child');
+            assert.isTrue(
+                firstStackView.classList.contains('current-stack')
+            );
+        });
+        it('Other stackView is NOT set to current-stack', () => {
+            let otherStacks = worldView.querySelectorAll(
+                'st-stack:not(:first-child)'
+            );
+
+            otherStacks.forEach(cardView => {
+                assert.isFalse(
+                    cardView.classList.contains('current-stack')
+                );
+            });
+        });
+    });
+    describe('Stack Navigation', () => {
+        it('#goToNextStack: Can go to next (2nd) stack from current (1st)', () => {
+            let first = worldView.querySelector('st-stack:nth-child(1)');
+            let second = worldView.querySelector('st-stack:nth-child(2)');
+            assert.isTrue(first.classList.contains('current-stack'));
+            assert.isFalse(second.classList.contains('current-stack'));
+
+            // Do the navigation
+            worldView.goToNextStack();
+
+            assert.isFalse(first.classList.contains('current-stack'));
+            assert.isTrue(second.classList.contains('current-stack'));
+        });
+        it('#goToPrevStack: Can go to prev (1st) stack from current (2nd)', () => {
+            let first = worldView.querySelector('st-stack:nth-child(1)');
+            let second = worldView.querySelector('st-stack:nth-child(2)');
+            assert.isFalse(first.classList.contains('current-stack'));
+            assert.isTrue(second.classList.contains('current-stack'));
+
+            // Do the navigation
+            worldView.goToPrevStack();
+
+            assert.isTrue(first.classList.contains('current-stack'));
+            assert.isFalse(second.classList.contains('current-stack'));
+        });
+        it('looping forward and backward through stacks cycles around', () => {
+            let first = worldView.querySelector('st-stack:nth-child(1)');
+
+            // first stack is curent, and going next 3 times returns it to current
+            assert.isTrue(first.classList.contains('current-stack'));
+            worldView.goToNextStack();
+            assert.isFalse(first.classList.contains('current-stack'));
+            worldView.goToNextStack();
+            worldView.goToNextStack();
+            assert.isTrue(first.classList.contains('current-stack'));
+
+            // repeat shuffle backwards
+            worldView.goToPrevStack();
+            assert.isFalse(first.classList.contains('current-stack'));
+            worldView.goToPrevStack();
+            worldView.goToPrevStack();
+            assert.isTrue(first.classList.contains('current-stack'));
+        });
+        it('#goToStackById: Can go to 3rd stack by id (and return)', () => {
+            let first = worldView.querySelector('st-stack:nth-child(1)');
+            let third = worldView.querySelector('st-stack:nth-child(3)');
+
+            assert.isTrue(first.classList.contains('current-stack'));
+            assert.isFalse(third.classList.contains('current-stack'));
+
+            // Do the navigation
+            worldView.goToStackById(third.getAttribute("part-id"));
+
+            assert.isTrue(third.classList.contains('current-stack'));
+            assert.isFalse(first.classList.contains('current-stack'));
+
+            // Reset the navigation
+            worldView.goToStackById(first.getAttribute("part-id"));
+            assert.isTrue(first.classList.contains('current-stack'));
+            assert.isFalse(third.classList.contains('current-stack'));
+        });
+    });
+});
 
 describe('Stack Navigation Tests', () => {
     describe('Setup of StackView', () => {
@@ -80,7 +221,7 @@ describe('Stack Navigation Tests', () => {
             );
         });
         it('Can append StackViews from the models', () => {
-            let cardViews = stackModel.subparts.filter(part => {
+            stackModel.subparts.filter(part => {
                 return part.type == 'card';
             }).forEach(cardModel => {
                 let cardElement = document.createElement('st-card');
@@ -192,6 +333,23 @@ describe('Stack Navigation Tests', () => {
             stackView.goToPrevCard();
             assert.isFalse(secondCard.classList.contains('current-card'));
             assert.isTrue(firstCard.classList.contains('current-card'));
+        });
+
+        it('#goToCardById: go to 2nd card by id', () => {
+            let secondCard = stackView.querySelector('st-card:nth-child(2)');
+            let firstCard = stackView.querySelector('st-card:first-child');
+            assert.isTrue(firstCard.classList.contains('current-card'));
+            assert.isFalse(secondCard.classList.contains('current-card'));
+
+            // Do the navigation
+            stackView.goToCardById(secondCard.getAttribute("part-id"));
+            assert.isFalse(firstCard.classList.contains('current-card'));
+            assert.isTrue(secondCard.classList.contains('current-card'));
+
+            // Undo the navigation
+            stackView.goToCardById(firstCard.getAttribute("part-id"));
+            assert.isTrue(firstCard.classList.contains('current-card'));
+            assert.isFalse(secondCard.classList.contains('current-card'));
         });
     });
 
