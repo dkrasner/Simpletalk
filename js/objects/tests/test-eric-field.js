@@ -14,7 +14,11 @@ const assert = chai.assert;
 import EricField from '../parts/EricField.js';
 import EricFieldView from '../views/EricFieldView.js';
 
-window.customElements.define('st-eric-field', EricFieldView);
+//window.customElements.define('st-eric-field', EricFieldView);
+var fs = require('fs');
+window.grammar = fs.readFileSync('./js/ohm/simpletalk.ohm');
+const System = require('../System.js').System;
+window.System = System;
 
 let ericFieldModel;
 describe('EricField Part/Model Tests', () =>{

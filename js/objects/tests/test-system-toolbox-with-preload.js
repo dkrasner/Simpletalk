@@ -14,8 +14,14 @@ const assert = chai.assert;
 const expect = chai.expect;
 
 describe('Opening a Toolbox', () => {
-    it('There are no windows open anywhere in the world', () => {
+    it('There exactly one open window (toolbox) in the world', () => {
         let foundWindows = document.querySelectorAll('st-window');
+        assert.equal(1, foundWindows.length);
+    });
+    it('Can remove the current window from the world for further testing (TODO! make programmatic) ', () => {
+        let foundWindows = document.querySelectorAll('st-window');
+        foundWindows.forEach((node) => {node.remove()});
+        foundWindows = document.querySelectorAll('st-window');
         assert.equal(0, foundWindows.length);
     });
     it('Sending the #openToolbox message to System will be understood', () => {
