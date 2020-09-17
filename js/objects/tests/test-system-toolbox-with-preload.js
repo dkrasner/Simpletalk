@@ -14,15 +14,15 @@ const assert = chai.assert;
 const expect = chai.expect;
 
 describe('Opening a Toolbox', () => {
-    it('There exactly one open window (toolbox) in the world', () => {
+    it('There is exactly one open window (toolbox) in the world', () => {
         let foundWindows = document.querySelectorAll('st-window');
-        assert.equal(1, foundWindows.length);
+        assert.equal(foundWindows.length, 1 );
     });
     it('Can remove the current window from the world for further testing (TODO! make programmatic) ', () => {
         let foundWindows = document.querySelectorAll('st-window');
         foundWindows.forEach((node) => {node.remove()});
         foundWindows = document.querySelectorAll('st-window');
-        assert.equal(0, foundWindows.length);
+        assert.equal(foundWindows.length, 0);
     });
     it('Sending the #openToolbox message to System will be understood', () => {
         let openMsg = {
@@ -115,11 +115,11 @@ describe('Toolbox functionality', () => {
             let buttonModels = cardModel.subparts.filter(subpart => {
                 return subpart.type == 'button';
             });
-            assert.equal(2, buttonModels.length);
+            assert.equal(buttonModels.length, 2);
 
             // Check views
             let buttonViews = currentCardView.querySelectorAll('st-button');
-            assert.equal(2, buttonViews.length);
+            assert.equal(buttonViews.length, 2);
         });
     });
 });

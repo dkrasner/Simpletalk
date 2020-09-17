@@ -22,7 +22,7 @@ let originalScript = `on mouseUp\n\tanswer "hello"\nend mouseUp`;
 
 
 describe('Opening a Script Editor', () => {
-    it('There exactly one window (toolbox) in the world', () => {
+    it('There is exactly one window (toolbox) in the world', () => {
         let foundWindows = document.querySelectorAll('st-window');
         assert.equal(1, foundWindows.length);
     });
