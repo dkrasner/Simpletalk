@@ -22,8 +22,14 @@ let originalScript = `on mouseUp\n\tanswer "hello"\nend mouseUp`;
 
 
 describe('Opening a Script Editor', () => {
-    it('There are no windows open anywhere in the world yet', () => {
+    it('There is exactly one window (toolbox) in the world', () => {
         let foundWindows = document.querySelectorAll('st-window');
+        assert.equal(1, foundWindows.length);
+    });
+    it('Can remove the current window from the world for further testing (TODO! make programmatic) ', () => {
+        let foundWindows = document.querySelectorAll('st-window');
+        foundWindows.forEach((node) => {node.remove()});
+        foundWindows = document.querySelectorAll('st-window');
         assert.equal(0, foundWindows.length);
     });
     it('Can set the script of the current card without issue', () => {
