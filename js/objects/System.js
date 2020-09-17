@@ -471,6 +471,16 @@ const System = {
         this.serialScriptArea().appendChild(serializationEl);
     },
 
+    removeSerializationFor: function(aPartId){
+        // Remove the script tag serialization for the given
+        // Part ID. This is usually done after a Part has been
+        // removed from the System, via removeModel.
+        let element = document.querySelector(`script[data-part-id="${aPartId}"]`);
+        if(element){
+            element.parentElement.removeChild(element);
+        }
+    },
+
     getSerializationFor: function(aPartId){
         let element = document.querySelector(`script[data-part-id="${aPartId}"]`);
         if(element){
