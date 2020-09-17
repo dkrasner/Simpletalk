@@ -144,7 +144,7 @@ const System = {
         document.querySelector('st-stack').classList.add('current-stack');
 
         this.updateSerialization(worldModel.id);
-        let msg = {type: 'command', commandName: 'openToolbox', args:[]}
+        let msg = {type: 'command', commandName: 'openToolbox', args:[]};
         this.receiveMessage(msg);
     },
 
@@ -225,6 +225,8 @@ const System = {
                     aMessage.viewType,
                     aMessage.modelId
                 );
+            case 'removeModel':
+                return this.removeModel(aMessage.modelId);
             case 'propertyChanged':
                 return this.updateSerialization(
                     aMessage.partId
@@ -334,6 +336,34 @@ const System = {
         }
 
         return model;
+    },
+
+    // Remove the model with the given ID from
+    // the System's registry, as well as from the subparts
+    // array of any owners
+    removeModel: function(modelId){
+        let foundModel = this.partsById[modelId];
+        if(!foundModel){
+            return false;
+        }
+
+        let ownerModel = foundModel._owner;
+        if(ownerModel){
+            ownerModel.removePart(foundModel);
+        }
+
+        delete this.partsById[modelId];
+        this.removeViews(modelId);
+        return true;
+    },
+
+    // Remove all views with the corresponding
+    // model id from the DOM
+    removeViews: function(modelId){
+        let views = Array.from(this.findViewsById(modelId));
+        views.forEach(view => {
+            view.parentElement.removeChild(view);
+        });
     },
 
     newView: function(partName, modelId){
