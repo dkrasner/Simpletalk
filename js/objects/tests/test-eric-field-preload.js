@@ -7,18 +7,14 @@
  * NOTE: These classes are designed to be replaced with
  * a more comprehensive Field part/view combo
  */
-import 'jsdom-global/register';
 import chai from 'chai';
 const assert = chai.assert;
 
 import EricField from '../parts/EricField.js';
-import EricFieldView from '../views/EricFieldView.js';
+//import EricFieldView from '../views/EricFieldView.js';
+const EricFieldView = System.availableViews['eric-field'];
 
 //window.customElements.define('st-eric-field', EricFieldView);
-var fs = require('fs');
-window.grammar = fs.readFileSync('./js/ohm/simpletalk.ohm');
-const System = require('../System.js').System;
-window.System = System;
 
 let ericFieldModel;
 describe('EricField Part/Model Tests', () =>{
@@ -77,7 +73,7 @@ describe('EricFieldView tests', () => {
         let expectedContent = `this is the new text!`;
 
         // Simulate typing the input events
-        let event = new Event('input');
+        let event = new window.Event('input');
         textArea.value = expectedContent;
         textArea.dispatchEvent(event);
 
