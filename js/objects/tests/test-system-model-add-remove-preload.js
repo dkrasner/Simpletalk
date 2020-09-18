@@ -36,7 +36,7 @@ describe('newModel tests', () => {
         let msg = {
             type: 'newModel',
             modelType: 'button',
-            owner: currentCard
+            ownerId: currentCard.id
         };
         let sendFunc = function(){
             currentCard.sendMessage(msg, System);
