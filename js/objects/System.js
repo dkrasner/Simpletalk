@@ -210,25 +210,8 @@ const System = {
             try{
                 window.postMessage(messageData, window.location.origin);
             } catch(error){
-                // TODO: current message implementation creates cyclicity in how
-                // the objects are passed along
-                let targetObject = messageData[0]["targetObject"];
-                if(targetObject){
-                    let ids = [];
-                    targetObject["_propertySubscribers"].forEach((item) => {
-                        ids.push(item.id);
-                    });
-                    targetObject = {
-                        "_propertySubscriberIds": ids,
-                        "NOTE": "message modified for devtools!!!"
-                        };
-                    // try posting again
-                    messageData[0]["targetObject"] = targetObject;
-                    window.postMessage(messageData, window.location.origin);
-                } else {
-                    console.log("failed to postMessage to devtool: ");
-                    console.log(messageData);
-                }
+                console.log("failed to postMessage to devtool: ");
+                console.log(messageData);
             }
         }
     },
