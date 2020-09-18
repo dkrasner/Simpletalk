@@ -144,7 +144,7 @@ class ButtonView extends PartView {
                 this.model.sendMessage({
                     type: 'compile',
                     codeString: aMessage.value,
-                    targetObject: this.model
+                    targetId: this.model.id
                 }, window.System);
             } else {
                 this.setPropsFromModel();

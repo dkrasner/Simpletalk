@@ -140,7 +140,7 @@ const System = {
 
         // Create an initial blank Stack in this
         // case
-        this.newModel('stack', worldModel);
+        this.newModel('stack', worldModel.id);
         document.querySelector('st-stack').classList.add('current-stack');
 
         this.updateSerialization(worldModel.id);
@@ -210,25 +210,8 @@ const System = {
             try{
                 window.postMessage(messageData, window.location.origin);
             } catch(error){
-                // TODO: current message implementation creates cyclicity in how
-                // the objects are passed along
-                let targetObject = messageData[0]["targetObject"];
-                if(targetObject){
-                    let ids = [];
-                    targetObject["_propertySubscribers"].forEach((item) => {
-                        ids.push(item.id);
-                    });
-                    targetObject = {
-                        "_propertySubscriberIds": ids,
-                        "NOTE": "message modified for devtools!!!"
-                        };
-                    // try posting again
-                    messageData[0]["targetObject"] = targetObject;
-                    window.postMessage(messageData, window.location.origin);
-                } else {
-                    console.log("failed to postMessage to devtool: ");
-                    console.log(messageData);
-                }
+                console.log("failed to postMessage to devtool: ");
+                console.log(messageData);
             }
         }
     },
@@ -236,11 +219,11 @@ const System = {
     receiveMessage: function(aMessage){
         switch(aMessage.type){
             case 'newModel':
-                return this.newModel(aMessage.modelType, aMessage.owner);
+                return this.newModel(aMessage.modelType, aMessage.ownerId);
             case 'newView':
                 return this.newView(
                     aMessage.viewType,
-                    aMessage.model
+                    aMessage.modelId
                 );
             case 'propertyChanged':
                 return this.updateSerialization(
@@ -271,15 +254,19 @@ const System = {
     },
 
     compile: function(aMessage){
+        let targetObject = this.partsById[aMessage.targetId];
+        if(!targetObject || targetObject == undefined){
+            throw new Error(`System could not compile target object ${aMessage.targetId}`);
+        }
         this.compiler.compile(
             aMessage.codeString,
-            aMessage.targetObject
+            targetObject
         );
         // Be sure to then update the
         // serialization for the target
         // part, thus adding the script to
         // its serialization
-        this.updateSerialization(aMessage.targetObject.id);
+        this.updateSerialization(aMessage.targetId);
     },
 
     receiveCommand: function(aMessage){
@@ -292,10 +279,13 @@ const System = {
         }
     },
 
-    newModel(kind, owner){
+    newModel(kind, ownerId){
         // Lookup the instance of the model that
         // matches the owner's id
-        let ownerPart = this.partsById[owner.id];
+        let ownerPart = this.partsById[ownerId];
+        if(!ownerPart || ownerPart == undefined){
+            throw new Error(`System could not locate owner part with id ${ownerId}`);
+        }
 
         // Find the class constructor for the kind of
         // part requested as a new model. If not known,
@@ -537,8 +527,8 @@ System._commandHandlers['openToolbox'] = function(targetId){
         throw new Error(`Could not locate current Stack or Part with id ${targetId}`);
     }
 
-    let windowModel = this.newModel('window', targetPart);
-    let windowStack = this.newModel('stack', windowModel);
+    let windowModel = this.newModel('window', targetPart.id);
+    let windowStack = this.newModel('stack', windowModel.id);
     windowModel.partProperties.setPropertyNamed(
         windowModel,
         'title',
@@ -550,7 +540,7 @@ System._commandHandlers['openToolbox'] = function(targetId){
     // scripts, etc
     let windowStackView = this.findViewById(windowStack.id);
     let windowCurrentCardModel = windowStackView.querySelector('.current-card').model;
-    let addBtnBtn = this.newModel('button', windowCurrentCardModel);
+    let addBtnBtn = this.newModel('button', windowCurrentCardModel.id);
     addBtnBtn.partProperties.setPropertyNamed(
         addBtnBtn,
         'name',
@@ -569,7 +559,7 @@ System._commandHandlers['openToolbox'] = function(targetId){
             modelType: 'button',
             owner: cardModel
             }, System);*/
-        let newButton = System.newModel('button', cardModel);
+        let newButton = System.newModel('button', cardModel.id);
         newButton.partProperties.setPropertyNamed(
             newButton,
             'name',
@@ -594,7 +584,7 @@ System._commandHandlers['openScriptEditor'] = function(targetId){
         throw new Error(`Could not find a Stack parent for ${targetPart.type}[${targetId}]`);
     }
 
-    let winModel = this.newModel('window', insertStack);
+    let winModel = this.newModel('window', insertStack.id);
     winModel.setTarget(targetPart);
     let winTitle = `Script: ${targetPart.type}[${targetId}]`;
     winModel.partProperties.setPropertyNamed(
@@ -603,14 +593,14 @@ System._commandHandlers['openScriptEditor'] = function(targetId){
         winTitle
     );
     let winView = this.findViewById(winModel.id);
-    let winStackModel = this.newModel('stack', winModel);
+    let winStackModel = this.newModel('stack', winModel.id);
     let currentCardView = winView.querySelector('.current-stack .current-card');
     let currentCard = currentCardView.model;
 
     // Create the EricField model and attach to current card
     // of the new window.
-    let fieldModel = this.newModel('eric-field', currentCard);
-    let saveBtnModel = this.newModel('button', currentCard);
+    let fieldModel = this.newModel('eric-field', currentCard.id);
+    let saveBtnModel = this.newModel('button', currentCard.id);
     saveBtnModel.partProperties.setPropertyNamed(
         saveBtnModel,
         'name',
