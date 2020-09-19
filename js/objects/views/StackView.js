@@ -11,6 +11,10 @@
 import PartView from './PartView.js';
 import Stack from '../parts/Stack.js';
 
+// by default, stacks are hidden unless they're 
+// the current stack, or else they have the class
+// window-stack (suggesting there's window part
+// who wishes to display it)
 const templateString = `
                 <style>
                  * {
@@ -24,6 +28,9 @@ const templateString = `
                      background-color: white;
                  }
                 :host(.current-stack){
+                    display: block;
+                }
+                :host(.window-stack) {
                     display: block;
                 }
                 </style>
