@@ -51,6 +51,19 @@ class PartView extends HTMLElement {
         // messages
     }
 
+    onHaloDelete(){
+        // What to do when the user clicks the
+        // delete button on a halo for this partview.
+        // The default implementation is to send a message
+        // to the System to delete the corresponding
+        // model and *all* views referencing that
+        // model.
+        this.sendMessage({
+            type: 'removeModel',
+            modelId: this.model.id
+        }, window.System);
+    }
+
 
 };
 

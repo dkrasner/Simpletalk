@@ -53,7 +53,20 @@ const templateString = `
                      border-radius: 100%;
                      background-color: blue;
                  }
+                 .st-halo-deleter {
+                     display: block;
+                     content: "X";
+                     position: absolute;
+                     left: -25px;
+                     top: -25px;
+                     height: 25px;
+                     width: 25px;
+                     border-radius: 100%;
+                     border-color: rgb(150, 150, 150);
+                     background-color: white;
+                }
                 </style>
+                <div class="st-halo-deleter"></div>
                 <div class="st-halo-resizer"></div>
                 <div class="st-halo-scripter"></div>
 `;
@@ -72,6 +85,7 @@ class Halo extends HTMLElement {
         this.resizeMouseMove = this.resizeMouseMove.bind(this);
         this.resizeMouseUp = this.resizeMouseUp.bind(this);
         this.scripterClick = this.scripterClick.bind(this);
+        this.deleterClick = this.deleterClick.bind(this);
         this.onClick = this.onClick.bind(this);
         this.onMouseDown = this.onMouseDown.bind(this);
         this.onMouseUp = this.onMouseUp.bind(this);
@@ -93,6 +107,8 @@ class Halo extends HTMLElement {
             this.resizer.addEventListener('mousedown', this.resizeMouseDown);
             this.scripter = this._shadowRoot.querySelector('.st-halo-scripter');
             this.scripter.addEventListener('click', this.scripterClick);
+            this.deleter = this._shadowRoot.querySelector('.st-halo-deleter');
+            this.deleter.addEventListener('click', this.deleterClick);
 
             // Bind click events for host (this) element.
             // IF we prevent propagation, it should disable
@@ -111,6 +127,7 @@ class Halo extends HTMLElement {
         this.removeEventListener('mousedown', this.onMouseDown);
         this.resizer.removeEventListener('mousedown', this.resizeMouseDown);
         this.scripter.removeEventListener('click', this.scripterClick);
+        this.deleter.removeEventListener('click', this.deleterClick);
         this.removeEventListener('click', this.onClick);
         this.targetElement.style.position = "";
         this.targetElement.classList.remove('editing');
@@ -151,6 +168,10 @@ class Halo extends HTMLElement {
             commandName: 'openScriptEditor',
             args: [targetId]
         }, window.System);
+    }
+
+    deleterClick(event){
+        this.targetElement.onHaloDelete();
     }
 
     onMouseDown(event){

@@ -194,7 +194,7 @@ class WindowView extends PartView {
 
     onClose(event){
         // Remove from the DOM
-        this.parentNode.removeChild(this);
+        this.onHaloDelete();
     }
 
     onMouseDownInBar(event){
