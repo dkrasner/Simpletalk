@@ -13,6 +13,7 @@ import Field from './parts/Field.js';
 import WorldStack from './parts/WorldStack.js';
 import Window from './parts/Window.js';
 import EricField from './parts/EricField.js';
+import Layout from './parts/Layout.js';
 
 import WorldView from './views/WorldView.js';
 import StackView from './views/StackView.js';
@@ -22,6 +23,7 @@ import CardView from './views/CardView.js';
 import BackgroundView from './views/BackgroundView.js';
 import WindowView from './views/WindowView';
 import EricFieldView from './views/EricFieldView.js';
+import LayoutView from './views/LayoutView.js';
 
 import Halo from './views/Halo.js';
 
@@ -705,6 +707,7 @@ System.registerPart('button', Button);
 System.registerPart('world', WorldStack);
 System.registerPart('window', Window);
 System.registerPart('eric-field', EricField);
+System.registerPart('layout', Layout);
 
 /** Register the initial set of views in the system **/
 System.registerView('button', ButtonView);
@@ -714,6 +717,7 @@ System.registerView('card', CardView);
 System.registerView('background', BackgroundView);
 System.registerView('window', WindowView);
 System.registerView('eric-field', EricFieldView);
+System.registerView('layout', LayoutView);
 
 
 // Convenience method for adding all of the

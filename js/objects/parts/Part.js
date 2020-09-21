@@ -170,7 +170,7 @@ class Part {
      */
     addPart(aPart){
         if(!this.acceptsSubpart(aPart)){
-            throw new Error(`${this.typ}e does not accept subparts of type ${aPart.type}`);
+            throw new Error(`${this.type} does not accept subparts of type ${aPart.type}`);
         }
 
         let found = this.subparts.indexOf(aPart);
