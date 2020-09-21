@@ -16,6 +16,12 @@ const templateString = `
         border: 1px solid transparent;
         box-sizing: border-box;
     }
+    :host(.list-column){
+        flex-direction: column;
+    }
+    :host(.list-row){
+        flex-direction: row;
+    }
     :host(.editing){
         border: 1px dotted black;
     }
@@ -37,11 +43,16 @@ class LayoutView extends PartView {
 
         // Bind event methods
         this.onClick = this.onClick.bind(this);
+        this.setPropsFromModel = this.setPropsFromModel.bind(this);
     }
 
     connectedCallback(){
         if(this.isConnected){
             this.addEventListener('click', this.onClick);
+
+            if(this.model){
+                this.setPropsFromModel();
+            }
         }
     }
 
@@ -78,6 +89,47 @@ class LayoutView extends PartView {
             event.preventDefault();
             this.openHalo();
             event.stopPropagation();
+        }
+    }
+
+    setPropsFromModel(){
+        let hResizing = this.model.partProperties.getPropertyNamed(
+            this.model,
+            'horizontalResizing'
+        );
+        if(hResizing == 'matchParent'){
+            this.style.width = "100%";
+        } else {
+            this.style.width = "";
+        }
+
+        let vResizing = this.model.partProperties.getPropertyNamed(
+            this.model,
+            'verticalResizing'
+        );
+        if(vResizing == 'matchParent'){
+            this.style.height = "100%";
+        } else {
+            this.style.height = "";
+        }
+
+        let listDirection = this.model.partProperties.getPropertyNamed(
+            this.model,
+            'listDirection'
+        );
+        if(listDirection == 'row'){
+            this.classList.remove('list-column');
+            this.classList.add('list-row');
+        } else {
+            this.classList.remove('list-row');
+            this.classList.add('list-column');
+        }
+    }
+
+    receiveMessage(aMessage){
+        if(aMessage.type == 'propertyChanged'){
+            console.log(aMessage);
+            this.setPropsFromModel();
         }
     }
 

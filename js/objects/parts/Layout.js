@@ -10,6 +10,20 @@ import Part from './Part.js';
 class Layout extends Part {
     constructor(owner, name){
         super(owner, name);
+
+        // Add properties
+        this.partProperties.newBasicProp(
+            'horizontalResizing',
+            ''
+        );
+        this.partProperties.newBasicProp(
+            'verticalResizing',
+            ''
+        );
+        this.partProperties.newBasicProp(
+            'listDirection',
+            'column'
+        );
     }
 
     get type(){
