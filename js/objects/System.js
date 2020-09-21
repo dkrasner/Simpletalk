@@ -577,12 +577,28 @@ System._commandHandlers['openToolbox'] = function(targetId){
         'Toolbox'
     );
 
+    // Get the current card on the window stack etc
+    let windowStackView = this.findViewById(windowStack.id);
+    let windowCurrentCardModel = windowStackView.querySelector('.current-card').model;
+
+    // Create a Layout that should take up all
+    // the space on the first card.
+    let layoutModel = this.newModel('layout', windowCurrentCardModel.id);
+    layoutModel.partProperties.setPropertyNamed(
+        layoutModel,
+        'horizontalResizing',
+        'matchParent'
+    );
+    layoutModel.partProperties.setPropertyNamed(
+        layoutModel,
+        'verticalResizing',
+        'matchParent'
+    );
+
     // Do more toolbox configuration here
     // like making the buttons with their
     // scripts, etc
-    let windowStackView = this.findViewById(windowStack.id);
-    let windowCurrentCardModel = windowStackView.querySelector('.current-card').model;
-    let addBtnBtn = this.newModel('button', windowCurrentCardModel.id);
+    let addBtnBtn = this.newModel('button', layoutModel.id);
     addBtnBtn.partProperties.setPropertyNamed(
         addBtnBtn,
         'name',
@@ -596,16 +612,29 @@ System._commandHandlers['openToolbox'] = function(targetId){
         // active stack and add a button to it
         let currentCardView = document.querySelector('.current-stack .current-card');
         let cardModel = currentCardView.model;
-        /*let newButton = cardModel.sendMessage({
-            type: 'newModel',
-            modelType: 'button',
-            owner: cardModel
-            }, System);*/
         let newButton = System.newModel('button', cardModel.id);
         newButton.partProperties.setPropertyNamed(
             newButton,
             'name',
             `Button ${newButton.id}`
+        );
+    };
+
+    // Add a button to add a new Layout
+    let addLayoutBtn = this.newModel('button', layoutModel.id);
+    addLayoutBtn.partProperties.setPropertyNamed(
+        addLayoutBtn,
+        'name',
+        'Add Layout to Card'
+    );
+    addLayoutBtn._commandHandlers['mouseUp'] = function(){
+        let currentCardView = document.querySelector('.current-stack > .current-card');
+        let cardModel = currentCardView.model;
+        let newLayout = System.newModel('layout', cardModel.id);
+        newLayout.partProperties.setPropertyNamed(
+            newLayout,
+            'name',
+            `Layout ${newLayout.id}`
         );
     };
 };
