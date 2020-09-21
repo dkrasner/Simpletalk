@@ -13,16 +13,6 @@ import Stack from '../parts/Stack.js';
 
 const templateString = `
                 <style>
-                 * {
-                     box-sizing: border-box;
-                 }
-                 :host {
-                     display: block;
-                     width: 100%;
-                     height: 100%;
-                     position: relative;
-                     background-color: white;
-                 }
                 </style>
                 <slot></slot>
 `;

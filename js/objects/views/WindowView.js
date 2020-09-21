@@ -15,16 +15,7 @@ template.innerHTML = `
  * {
      box-sizing: border-box;
  }
- :host {
-     box-sizing: border-box;
-     display: flex;
-     position: absolute;
-     flex-direction: column;
-     min-width: 150px;
-     background-color: rgb(253, 253, 253);
-     border: 1px solid rgba(100, 100, 100, 0.2);
-     box-shadow: 3px 4px 4px 0px rgba(50, 50, 50, 0.3);
- }
+
  .st-window-bar {
      display: flex;
      flex-direction: row;
@@ -55,6 +46,7 @@ template.innerHTML = `
  .st-window-pane {
      display: block;
      position: relative;
+     min-height: 50px;
      flex: 1;
  }
  .st-window-pane.shaded {

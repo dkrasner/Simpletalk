@@ -8,19 +8,6 @@ import PartView from './PartView.js';
 
 const templateString = `
                 <style>
-                 * {
-                     box-sizing: border-box;
-                 }
-                 :host {
-                     display: none;
-                     position: relative;
-                     width: 100%;
-                     height: 100%;
-                 }
-:host(.current-card){
-display: block;
-}
-
                 </style>
                 <slot></slot>
 `;

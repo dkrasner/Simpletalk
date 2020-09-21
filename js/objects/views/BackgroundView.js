@@ -2,18 +2,6 @@ import PartView from './PartView.js';
 
 const templateString = `
                 <style>
-                 * {
-                     box-sizing: border-box;
-                 }
-                 :host {
-                     display: block;
-                     position: absolute;
-                     top: 0px;
-                     left: 0px;
-                     width: 100%;
-                     height: 100%;
-                     background-color: rgb(200, 200, 222);
-                 }
                 </style>
                 <slot></slot>
 `;
