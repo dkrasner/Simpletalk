@@ -136,6 +136,9 @@ class Halo extends HTMLElement {
 
     onClick(event){
         event.stopPropagation();
+        if(event.button == 0 && event.shiftKey){
+            this.targetElement.closeHalo();
+        }
     }
 
     resizeMouseDown(event){
