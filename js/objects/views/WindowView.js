@@ -59,6 +59,10 @@ template.innerHTML = `
      width: 30px;
      height: 30px;
  }
+ .st-window-title {
+     font-family: monospace;
+     user-select: none;
+ }
  .right-gripper {
      left: calc(100% - 15px);
  }
@@ -109,7 +113,7 @@ class WindowView extends PartView {
         this.setupExpanderAreas = this.setupExpanderAreas.bind(this);
         this.onMouseMoveInBar = this.onMouseMoveInBar.bind(this);
         this.onMouseDownInBar = this.onMouseDownInBar.bind(this);
-        this.onMouseUpInBar = this.onMouseUpInBar.bind(this);
+        this.onMouseUpAfterDrag = this.onMouseUpAfterDrag.bind(this);
         this.onClose = this.onClose.bind(this);
         this.onShade = this.onShade.bind(this);
         this.onExpand = this.onExpand.bind(this);
@@ -132,7 +136,6 @@ class WindowView extends PartView {
     setupClickAndDrag(){
         let bar = this._shadowRoot.querySelector('.st-window-bar');
         bar.addEventListener('mousedown', this.onMouseDownInBar);
-        bar.addEventListener('mouseup', this.onMouseUpInBar);
     }
 
     setupBarButtons(){
@@ -193,11 +196,13 @@ class WindowView extends PartView {
         this.mouseDownInBar = true;
         let bar = event.target;
         document.addEventListener('mousemove', this.onMouseMoveInBar);
+        document.addEventListener('mouseup', this.onMouseUpAfterDrag);
     }
 
-    onMouseUpInBar(event){
+    onMouseUpAfterDrag(event){
         this.mouseDownInBar = false;
         let bar = event.target;
+        document.removeEventListener('mouseup', this.onMouseUpAfterDrag);
         document.removeEventListener('mousemove', this.onMouseMoveInBar);
     }
 
