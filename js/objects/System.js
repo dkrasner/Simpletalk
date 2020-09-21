@@ -587,12 +587,12 @@ System._commandHandlers['openToolbox'] = function(targetId){
     layoutModel.partProperties.setPropertyNamed(
         layoutModel,
         'horizontalResizing',
-        'matchParent'
+        'wrapContents'
     );
     layoutModel.partProperties.setPropertyNamed(
         layoutModel,
         'verticalResizing',
-        'matchParent'
+        'wrapContents'
     );
 
     // Do more toolbox configuration here

@@ -7,35 +7,6 @@ import PartView from './PartView.js';
 
 const templateString = `
                 <style>
-                 * {
-                     box-sizing: border-box;
-                 }
-
-                 :host {
-                     box-sizing: border-box;
-                     display: inline-flex;
-                     flex-direction: column;
-                     justify-content: center;
-                     align-items: center;
-                     position: absolute;
-                     background-color: white;
-                     padding-left: 10px;
-                     padding-right: 10px;
-                     padding-top: 5px;
-                     padding-bottom: 5px;
-                     font-family: monospace;
-                     border: 1px solid rgb(50, 50, 50);
-                     user-select: none;
-                 }
-
-                 :host(:hover) {
-                     cursor: pointer;
-                 }
-
-                 :host(:active) {
-                     background-color: black;
-                     color: white;
-                 }
                  :host(.editing){
                      background-color: white;
                      color: black;

@@ -68,6 +68,52 @@ st-card.current-card {
     display: block;
 }
 
+/* =Button Styles
+ *----------------------------------------------------*/
+st-button {
+    box-sizing: border-box;
+    display: flex;
+    position: absolute;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    background-color: white;
+    padding-left: 10px;
+    padding-right: 10px;
+    padding-top: 5px;
+    padding-bottom: 5px;
+    font-family: monospace;
+    border: 1px solid rgb(50, 50, 50);
+    user-select: none;
+}
+
+st-button:hover {
+    cursor: pointer;
+}
+
+st-button:active {
+    background-color: black;
+    color: white;
+}
+
+
+/* =Layout Styles
+ *----------------------------------------------------*/
+st-layout {
+    display: flex;
+    position: absolute;
+    border: 1px solid transparent;
+    box-sizing: border-box;
+}
+
+st-layout.list-column {
+    flex-direction: column;
+}
+
+st-layout.list-row {
+    flex-direction: row;
+}
+
 
 /* =Window Styles
  *----------------------------------------------------*/
@@ -86,12 +132,18 @@ st-window {
  * adjust based on contents, but at minimum be 100%
  * of parent
  */
-st-window > st-stack {
-    min-width: 100%;
-    min-height: 100%;
+st-window > st-stack,
+st-window > st-stack > .current-card {
+    min-width: auto;
+    min-height: auto;
+    height: auto;
+    width: auto
 }
 
-st-window > st-stack > .current-card {
-    min-width: 100%;
-    min-height: 100%;
+/* This is the fix for Toolbox window's
+ * layout, but it's hacky and suggests that
+ * perhaps layouts should be more fundamental
+ **/
+st-window > st-stack > .current-card > st-layout {
+    position: relative;
 }

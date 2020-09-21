@@ -8,20 +8,6 @@ import PartView from './PartView.js';
 
 const templateString = `
 <style>
-    :host {
-        display: flex;
-        position: absolute;
-        min-height: 50px;
-        min-width: 50px;
-        border: 1px solid transparent;
-        box-sizing: border-box;
-    }
-    :host(.list-column){
-        flex-direction: column;
-    }
-    :host(.list-row){
-        flex-direction: row;
-    }
     :host(.editing){
         border: 1px dotted black;
     }
