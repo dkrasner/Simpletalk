@@ -16,11 +16,8 @@ const templateString = `
         border: 1px solid transparent;
         box-sizing: border-box;
     }
-    :host(.halo-editing){
+    :host(.editing){
         border: 1px dotted black;
-    }
-    :host > * {
-        position: relative !important;
     }
     ::slotted(*) {
         position: relative !important;
@@ -39,40 +36,51 @@ class LayoutView extends PartView {
         this._shadowRoot.appendChild(this.template.content.cloneNode(true));
 
         // Bind event methods
-        this.onContextMenu = this.onContextMenu.bind(this);
+        this.onClick = this.onClick.bind(this);
     }
 
     connectedCallback(){
         if(this.isConnected){
-            this.addEventListener('contextmenu', this.onContextMenu);
+            this.addEventListener('click', this.onClick);
         }
     }
 
     disconnectedCallback(){
-        this.removeEventListener('contextmenu', this.onContextMenu);
+        this.removeEventListener('click', this.onClick);
     }
 
-    onContextMenu(event){
-        if(event.shiftKey){
-            event.preventDefault();
-            // compute the appropriate width and height
-            // from the current rect
-            let rect = this.getBoundingClientRect();
-            this.style.width = `${Math.floor(rect.width)}px`;
-            this.style.height = `${Math.floor(rect.height)}px`;
-            this.style.top = `${Math.floor(rect.top)}px`;
-            this.style.left = `${Math.floor(rect.left)}px`;
-            let foundHalo = this._shadowRoot.querySelector('st-halo');
-            if(foundHalo){
-                this._shadowRoot.removeChild(foundHalo);
-                this.classList.remove('halo-editing');
-            } else {
-                let newHalo = document.createElement('st-halo');
-                this._shadowRoot.appendChild(newHalo);
-                this.classList.add('halo-editing');
-            }
+    closeHalo(){
+        let foundHalo = this._shadowRoot.querySelector('st-halo');
+        if(foundHalo){
+            this._shadowRoot.removeChild(foundHalo);
         }
     }
+
+    openHalo(){
+        // Compute the appropriate width and height from
+        // current rect
+        let rect = this.getBoundingClientRect();
+        this.style.width = `${Math.floor(rect.width)}px`;
+        this.style.height = `${Math.floor(rect.height)}px`;
+        this.style.top = `${Math.floor(rect.top)}px`;
+        this.style.left = `${Math.floor(rect.left)}px`;
+        let foundHalo = this._shadowRoot.querySelector('st-halo');
+        if(foundHalo){
+            this._shadowRoot.removeChild(foundHalo);
+        } else {
+            let newHalo = document.createElement('st-halo');
+            this._shadowRoot.appendChild(newHalo);
+        }
+    }
+
+    onClick(event){
+        if(event.button == 0 && event.shiftKey){
+            event.preventDefault();
+            this.openHalo();
+            event.stopPropagation();
+        }
+    }
+
 };
 
 export {
