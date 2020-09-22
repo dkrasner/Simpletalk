@@ -64,7 +64,7 @@ st-card {
     height: 100%;
 }
 
-st-card.current-card {
+.current-card {
     display: block;
 }
 
@@ -159,9 +159,9 @@ st-window > st-stack > .current-card > st-layout {
 }
 
 .list-row {
-    list-direction: row;
+    flex-direction: row;
 }
 
 .list-column {
-    list-direction: column;
+    flex-direction: column;
 }

@@ -6,8 +6,6 @@
  * Properties relevant to Layouts.
  */
 const addLayoutProperties = (aPart) => {
-    console.log('Passed aPart');
-    console.log(aPart);
     // The kind of layout. For now
     // only 'list' and null are possible.
     // null is the normal, absolute position
