@@ -233,15 +233,15 @@ class WindowView extends PartView {
             // Figure out the current width and height.
             // For Windows, the grip will actually be adjusting
             // the underlying StackView's minHeight/minWidth
-            let stackView = this.querySelector('st-stack');
-            let box = stackView.getBoundingClientRect();
+            let view = this.querySelector('st-stack');
+            let box = view.getBoundingClientRect();
             let newWidth = Math.floor(box.width) + event.movementX;
             if(newWidth){
-                stackView.style.minWidth = `${newWidth}px`;
+                view.style.minWidth = `${newWidth}px`;
             }
             let newHeight = Math.floor(box.height) + event.movementY;
             if(newHeight){
-                stackView.style.minHeight = `${newHeight}px`;
+                view.style.minHeight = `${newHeight}px`;
             }
         }
     }

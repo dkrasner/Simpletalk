@@ -13,7 +13,7 @@ import Field from './parts/Field.js';
 import WorldStack from './parts/WorldStack.js';
 import Window from './parts/Window.js';
 import EricField from './parts/EricField.js';
-import Layout from './parts/Layout.js';
+import Container from './parts/Container.js';
 
 import WorldView from './views/WorldView.js';
 import StackView from './views/StackView.js';
@@ -23,7 +23,7 @@ import CardView from './views/CardView.js';
 import BackgroundView from './views/BackgroundView.js';
 import WindowView from './views/WindowView';
 import EricFieldView from './views/EricFieldView.js';
-import LayoutView from './views/LayoutView.js';
+import ContainerView from './views/ContainerView.js';
 
 import Halo from './views/Halo.js';
 
@@ -614,21 +614,21 @@ System._commandHandlers['openToolbox'] = function(targetId){
         );
     };
 
-    // Add a button to add a new Layout
-    let addLayoutBtn = this.newModel('button', windowCurrentCardModel.id);
-    addLayoutBtn.partProperties.setPropertyNamed(
-        addLayoutBtn,
+    // Add a button to add a new Container
+    let addContainerBtn = this.newModel('button', windowCurrentCardModel.id);
+    addContainerBtn.partProperties.setPropertyNamed(
+        addContainerBtn,
         'name',
-        'Add Layout to Card'
+        'Add Container to Card'
     );
-    addLayoutBtn._commandHandlers['mouseUp'] = function(){
+    addContainerBtn._commandHandlers['mouseUp'] = function(){
         let currentCardView = document.querySelector('.current-stack > .current-card');
         let cardModel = currentCardView.model;
-        let newLayout = System.newModel('layout', cardModel.id);
-        newLayout.partProperties.setPropertyNamed(
-            newLayout,
+        let newContainer = System.newModel('container', cardModel.id);
+        newContainer.partProperties.setPropertyNamed(
+            newContainer,
             'name',
-            `Layout ${newLayout.id}`
+            `Container ${newContainer.id}`
         );
     };
 };
@@ -730,7 +730,7 @@ System.registerPart('button', Button);
 System.registerPart('world', WorldStack);
 System.registerPart('window', Window);
 System.registerPart('eric-field', EricField);
-System.registerPart('layout', Layout);
+System.registerPart('container', Container);
 
 /** Register the initial set of views in the system **/
 System.registerView('button', ButtonView);
@@ -740,7 +740,7 @@ System.registerView('card', CardView);
 System.registerView('background', BackgroundView);
 System.registerView('window', WindowView);
 System.registerView('eric-field', EricFieldView);
-System.registerView('layout', LayoutView);
+System.registerView('container', ContainerView);
 
 
 // Convenience method for adding all of the
