@@ -226,7 +226,7 @@ const System = {
                     aMessage.modelId
                 );
             case 'removeModel':
-                return this.removeModel(aMessage.modelId);
+                return this.removeModel(aMessage.modelType, aMessage.modelId);
             case 'propertyChanged':
                 return this.updateSerialization(
                     aMessage.partId
@@ -341,7 +341,7 @@ const System = {
     // Remove the model with the given ID from
     // the System's registry, as well as from the subparts
     // array of any owners
-    removeModel: function(modelId){
+    removeModel: function(modelType, modelId){
         let foundModel = this.partsById[modelId];
         if(!foundModel){
             return false;

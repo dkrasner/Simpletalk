@@ -46,10 +46,14 @@ class Part {
         this.removePropertySubscriber = this.removePropertySubscriber.bind(this);
         this.serialize = this.serialize.bind(this);
         this.setFromDeserialized = this.setFromDeserialized.bind(this);
+        this.removeModelCmdHandler = this.removeModelCmdHandler.bind(this);
 
 
         // Finally, we finish initialization
         this.setupProperties();
+
+        // command handlers
+        this.setCmdHandler("removeModel", this.removeModelCmdHandler);
     }
 
     // Convenience getter to get the id
@@ -237,7 +241,7 @@ class Part {
             // instance as the 'this' context for
             // the handler
             let boundHandler = handler.bind(this);
-            boundHandler();
+            boundHandler(...aMessage.args);
         } else {
             // Otherwise, we have no handler for
             // it, so we delegate along the
@@ -265,6 +269,24 @@ class Part {
 
     setFuncHandler(funcName, handler){
         this._functionHandlers[funcName] = handler;
+    }
+
+    /** Command Handlers
+        ----------------
+        Command handlers which are invoked at the Part level
+        which are not immediately delegaed to the Part._owner
+    **/
+
+    removeModelCmdHandler(modelType, objectId){
+        debugger;
+        if (modelType === this.name && !objectId){
+            objectId = this.id
+        }
+        this.delegateMessage({
+            type: 'removeModel',
+            modelType: modelType,
+            modelId: objectId,
+        });
     }
 
     /** Property Subscribers

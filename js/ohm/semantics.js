@@ -52,6 +52,31 @@ let simpleTalkSemantics = {
         return msg;
     },
 
+    Command_removeModel: function(removeModelLiteral, systemObject, objectId){
+        let args = [];
+        args.push(systemObject.sourceString);
+        args.push(objectId.sourceString);
+
+        let msg = {
+            type: "command",
+            commandName: "removeModel",
+            args: args
+        };
+        return msg;
+    },
+
+    Command_addModel: function(removeModelLiteral, systemObject){
+        let args = [];
+        args.push(systemObject.sourceString);
+
+        let msg = {
+            type: "command",
+            commandName: "addModel",
+            args: args
+        };
+        return msg;
+    },
+
     command_arbitrary: function(name){
         let msg = {
             type: "command",
