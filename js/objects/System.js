@@ -581,24 +581,18 @@ System._commandHandlers['openToolbox'] = function(targetId){
     let windowStackView = this.findViewById(windowStack.id);
     let windowCurrentCardModel = windowStackView.querySelector('.current-card').model;
 
-    // Create a Layout that should take up all
-    // the space on the first card.
-    let layoutModel = this.newModel('layout', windowCurrentCardModel.id);
-    layoutModel.partProperties.setPropertyNamed(
-        layoutModel,
-        'horizontalResizing',
-        'wrapContents'
-    );
-    layoutModel.partProperties.setPropertyNamed(
-        layoutModel,
-        'verticalResizing',
-        'wrapContents'
+    // Set the current card of the window to have a list layout,
+    // which defaults to a column listDirection
+    windowCurrentCardModel.partProperties.setPropertyNamed(
+        windowCurrentCardModel,
+        'layout',
+        'list'
     );
 
     // Do more toolbox configuration here
     // like making the buttons with their
     // scripts, etc
-    let addBtnBtn = this.newModel('button', layoutModel.id);
+    let addBtnBtn = this.newModel('button', windowCurrentCardModel.id);
     addBtnBtn.partProperties.setPropertyNamed(
         addBtnBtn,
         'name',
@@ -621,7 +615,7 @@ System._commandHandlers['openToolbox'] = function(targetId){
     };
 
     // Add a button to add a new Layout
-    let addLayoutBtn = this.newModel('button', layoutModel.id);
+    let addLayoutBtn = this.newModel('button', windowCurrentCardModel.id);
     addLayoutBtn.partProperties.setPropertyNamed(
         addLayoutBtn,
         'name',
