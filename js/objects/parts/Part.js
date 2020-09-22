@@ -202,7 +202,10 @@ class Part {
 
     /** Message Handling and Delegation **/
     delegateMessage(aMessage){
-        return this.shouldBeImplemented('delegateMessage');
+        this.sendMessage(
+            aMessage,
+            this._owner
+        );
     }
 
     sendMessage(aMessage, target){
@@ -219,6 +222,8 @@ class Part {
             case 'function':
                 this.receiveFunc(aMessage);
                 break;
+            default:
+                this.delegateMessage(aMessage);
         }
     }
 

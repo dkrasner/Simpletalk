@@ -29,16 +29,6 @@ class Background extends Card {
         ];
     }
 
-    // Delegation override.
-    // I pass any untrapped command
-    // messages to my parent Stack
-    delegateMessage(aMessage){
-        this.sendMessage(
-            aMessage,
-            this._owner
-        );
-    }
-
     acceptsSubpart(aPart){
         return !this.invalidSubpartTypes.includes(aPart.type);
     }

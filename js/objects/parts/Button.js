@@ -79,16 +79,6 @@ class Button extends Part {
         return 'button';
     }
 
-    // Delegation override.
-    // Buttons delegate passed or
-    // untrapped command messages
-    // to their owner card
-    delegateMessage(aMessage){
-        this.sendMessage(
-            aMessage,
-            this._owner
-        );
-    }
 
     // For now, Buttons don't take
     // any subpart types

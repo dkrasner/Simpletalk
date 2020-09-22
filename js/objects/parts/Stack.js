@@ -53,13 +53,6 @@ class Stack extends Part {
         return 'stack';
     }
 
-    delegateMessage(aMessage){
-        this.sendMessage(
-            aMessage,
-            this._owner
-        );
-    }
-
     // Override the subpart validity check
     acceptsSubpart(aPart){
         let notValidSubparts = ["world", "button", "field", "eric-field"];

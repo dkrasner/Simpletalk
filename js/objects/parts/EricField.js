@@ -24,13 +24,6 @@ class EricField extends Part {
         );
     }
 
-    delegateMessage(aMessage){
-        this.sendMessage(
-            aMessage,
-            this._owner
-        );
-    }
-
     // For now, EricFields don't accept
     // any subparts
     acceptsSubpart(aPart){
