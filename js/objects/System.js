@@ -662,6 +662,13 @@ System._commandHandlers['openScriptEditor'] = function(targetId){
     let currentCardView = winView.querySelector('.current-stack .current-card');
     let currentCard = currentCardView.model;
 
+    // Set the current card's layout to be a column list
+    currentCard.partProperties.setPropertyNamed(
+        currentCard,
+        'layout',
+        'list'
+    );
+
     // Create the EricField model and attach to current card
     // of the new window.
     let fieldModel = this.newModel('eric-field', currentCard.id);

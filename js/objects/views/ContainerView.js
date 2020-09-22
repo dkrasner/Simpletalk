@@ -28,6 +28,7 @@ class ContainerView extends PartView {
         this.onDragEnter = this.onDragEnter.bind(this);
         this.onDragLeave = this.onDragLeave.bind(this);
         this.onDrop = this.onDrop.bind(this);
+        this.onClick = this.onClick.bind(this);
     }
 
     connectedCallback(){
@@ -36,10 +37,13 @@ class ContainerView extends PartView {
                 this.setPropsFromModel();
             }
         }
+
+        // Bind events
+        this.addEventListener('click', this.onClick);
     }
 
     disconnectedCallback(){
-
+        this.removeEventListener('click', this.onClick);
     }
 
     receiveMessage(aMessage){
@@ -74,6 +78,37 @@ class ContainerView extends PartView {
                 'list-row',
                 'list-column'
             );
+        }
+    }
+
+    /* Halo Operations */
+    onClick(event){
+        if(event.button == 0 && event.shiftKey){
+            this.openHalo();
+        }
+    }
+
+    openHalo(){
+        // Compute the appropriate width and height from
+        // current rect
+        let rect = this.getBoundingClientRect();
+        this.style.width = `${Math.floor(rect.width)}px`;
+        this.style.height = `${Math.floor(rect.height)}px`;
+        this.style.top = `${Math.floor(rect.top)}px`;
+        this.style.left = `${Math.floor(rect.left)}px`;
+        let foundHalo = this._shadowRoot.querySelector('st-halo');
+        if(foundHalo){
+            this._shadowRoot.removeChild(foundHalo);
+        } else {
+            let newHalo = document.createElement('st-halo');
+            this._shadowRoot.appendChild(newHalo);
+        }
+    }
+
+    closeHalo(){
+        let foundHalo = this._shadowRoot.querySelector('st-halo');
+        if(foundHalo){
+            this._shadowRoot.removeChild(foundHalo);
         }
     }
 
