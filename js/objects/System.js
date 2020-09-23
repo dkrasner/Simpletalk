@@ -704,6 +704,8 @@ System._commandHandlers['openScriptEditor'] = function(targetId){
     );
     let winView = this.findViewById(winModel.id);
     let winStackModel = this.newModel('stack', winModel.id);
+    let winStackView = this.findViewById(winStackModel.id)
+    winStackView.classList.add('window-stack');
     let currentCardView = winView.querySelector('.current-stack .current-card');
     let currentCard = currentCardView.model;
 
