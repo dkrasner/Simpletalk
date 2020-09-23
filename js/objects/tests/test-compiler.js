@@ -80,26 +80,15 @@ describe("SimpleTalk Compiler", function () {
                 const sourceCode = `on customMessage arg1\n go to next card arg1\nend customMessage`;
                 expect(() => compiler.compile(sourceCode, MockObject)).to.throw();
             });
-            it('messageHandler (no args, "go to" command)', () => {
+            it('messageHandler (no args, "go to" invalid construction)', () => {
                 directions.forEach((d) => {
                     const handler = `on mouseUp\n go to ${d}\nend mouseUp`;
-                    const expectedMessages = [
-                    {
-                        type: "command",
-                        commandName: "go to direction",
-                        args: [d]
-                    }];
-                    compiler.compile(handler, MockObject);
-                    const scriptSemantics = MockObject._scriptSemantics["mouseUp"];
-                    assert.deepEqual(scriptSemantics, expectedMessages);
-                    const concreteHandler = MockObject._commandHandlers["mouseUp"];
-                    assert.isNotNull(concreteHandler);
-                    assert.equal(typeof concreteHandler, "function");
+                    expect(() => compiler.compile(sourceCode, MockObject)).to.throw();
                 })
             });
         });
         it('messageHandler (no args, multiple statements/commands)', () => {
-            let handler = `on mouseUp\n answer "hello"\n go to next\nend mouseUp`;
+            let handler = `on mouseUp\n answer "hello"\n go to next card\nend mouseUp`;
             let expectedMessages = [
             {
                 type: "command",
@@ -109,7 +98,7 @@ describe("SimpleTalk Compiler", function () {
             {
                 type: "command",
                 commandName: "go to direction",
-                args: ["next"]
+                args: ["next", "card"]
             }];
             compiler.compile(handler, MockObject);
             let scriptSemantics = MockObject._scriptSemantics["mouseUp"];
