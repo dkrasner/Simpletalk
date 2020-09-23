@@ -133,9 +133,9 @@ class WorldView extends PartView {
     }
 
     goToNextStack(){
-        let stackChildren = Array.from(this.querySelectorAll('st-stack'));
+        let stackChildren = Array.from(this.querySelectorAll(':scope > st-stack'));
         if(stackChildren.length  > 1){
-            let currentStackView = this.querySelector('.current-stack');
+            let currentStackView = this.querySelector(':scope > .current-stack');
             let currentStackIndex = stackChildren.indexOf(currentStackView);
             let nextStackIndex = currentStackIndex + 1;
             let nextStackView;
@@ -149,7 +149,7 @@ class WorldView extends PartView {
                 // Otherwise we are at the last child st-stack element
                 // in the stack, which means we need to loop around
                 // back to the first child.
-                let firstStack = this.querySelector('st-stack');
+                let firstStack = this.querySelector(':scope > st-stack');
                 currentStackView.classList.remove('current-stack');
                 firstStack.classList.add('current-stack');
             }
@@ -161,9 +161,9 @@ class WorldView extends PartView {
     }
 
     goToPrevStack(){
-        let stackChildren = Array.from(this.querySelectorAll('st-stack'));
+        let stackChildren = Array.from(this.querySelectorAll(':scope > st-stack'));
         if(stackChildren.length > 1){
-            let currentStackView = this.querySelector('.current-stack');
+            let currentStackView = this.querySelector(':scope > .current-stack');
             let currentStackIndex = stackChildren.indexOf(currentStackView);
             let prevStackIndex = currentStackIndex - 1;
             let prevStackView;
@@ -177,7 +177,7 @@ class WorldView extends PartView {
                 // Otherwise, the current stack is the first st-stack
                 // child element in the stack. So we need to 'loop around'
                 // to the *last* stack element.
-                prevStackView = this.querySelector('st-stack:last-child');
+                prevStackView = this.querySelector(':scope > st-stack:last-child');
                 prevStackView.classList.add('current-stack');
                 currentStackView.classList.remove('current-stack');
             }
@@ -189,8 +189,8 @@ class WorldView extends PartView {
     }
 
     goToStackById(stackId){
-        let currentStackView = this.querySelector('.current-stack');
-        let selectedStackView = this.querySelector(`[part-id='${stackId}']`)
+        let currentStackView = this.querySelector(':scope > .current-stack');
+        let selectedStackView = this.querySelector(`:scope > [part-id='${stackId}']`)
 
         if (currentStackView !== null) {
             currentStackView.classList.remove('current-stack');
