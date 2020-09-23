@@ -23,7 +23,6 @@ class Compiler {
     compile(string, target){
         let match = this.grammar.match(string);
         let parsedMatch = this.semantics(match).parse();
-        debugger;
         for (var i = 0; i < parsedMatch.length; i++) {
             if (typeof parsedMatch[i] == 'undefined') {
                 continue;

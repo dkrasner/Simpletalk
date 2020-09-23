@@ -277,9 +277,8 @@ class Part {
         which are not immediately delegaed to the Part._owner
     **/
 
-    removeModelCmdHandler(modelType, objectId){
-        debugger;
-        if (modelType === this.name && !objectId){
+    removeModelCmdHandler(objectId, modelType){
+        if (modelType.toLowerCase() === this.name.toLowerCase() && !objectId){
             objectId = this.id
         }
         this.delegateMessage({
