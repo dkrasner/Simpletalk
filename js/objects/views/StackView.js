@@ -11,18 +11,28 @@
 import PartView from './PartView.js';
 import Stack from '../parts/Stack.js';
 
+// by default, stacks are hidden unless they're 
+// the current stack, or else they have the class
+// window-stack (suggesting there's window part
+// who wishes to display it)
 const templateString = `
                 <style>
                  * {
                      box-sizing: border-box;
                  }
                  :host {
-                     display: block;
+                     display: none;
+                     position: relative;
                      width: 100%;
                      height: 100%;
-                     position: relative;
                      background-color: white;
                  }
+                :host(.current-stack){
+                    display: block;
+                }
+                :host(.window-stack) {
+                    display: block;
+                }
                 </style>
                 <slot></slot>
 `;
@@ -54,9 +64,9 @@ class StackView extends PartView {
     }
 
     goToNextCard(){
-        let cardChildren = Array.from(this.querySelectorAll('st-card'));
+        let cardChildren = Array.from(this.querySelectorAll(':scope > st-card'));
         if(cardChildren.length  > 1){
-            let currentCardView = this.querySelector('.current-card');
+            let currentCardView = this.querySelector(':scope > .current-card');
             let currentCardIndex = cardChildren.indexOf(currentCardView);
             let nextCardIndex = currentCardIndex + 1;
             let nextCardView;
@@ -70,7 +80,7 @@ class StackView extends PartView {
                 // Otherwise we are at the last child st-card element
                 // in the stack, which means we need to loop around
                 // back to the first child.
-                let firstCard = this.querySelector('st-card');
+                let firstCard = this.querySelector(':scope > st-card');
                 currentCardView.classList.remove('current-card');
                 firstCard.classList.add('current-card');
             }
@@ -82,7 +92,7 @@ class StackView extends PartView {
     }
 
     goToPrevCard(){
-        let cardChildren = Array.from(this.querySelectorAll('st-card'));
+        let cardChildren = Array.from(this.querySelectorAll(':scope > st-card'));
         if(cardChildren.length > 1){
             let currentCardView = this.querySelector('.current-card');
             let currentCardIndex = cardChildren.indexOf(currentCardView);
@@ -98,7 +108,7 @@ class StackView extends PartView {
                 // Otherwise, the current card is the first st-card
                 // child element in the stack. So we need to 'loop around'
                 // to the *last* card element.
-                prevCardView = this.querySelector('st-card:last-child');
+                prevCardView = this.querySelector(':scope > st-card:last-child');
                 prevCardView.classList.add('current-card');
                 currentCardView.classList.remove('current-card');
             }
@@ -107,6 +117,21 @@ class StackView extends PartView {
             // the HC system, letting Parts know that we have
             // navigated?
         }
+    }
+
+    goToCardById(cardId){
+        let currentCardView = this.querySelector(':scope > .current-card');
+        let selectedCardView = this.querySelector(`:scope > [part-id='${cardId}']`)
+
+        if (selectedCardView !== null) {
+            currentCardView.classList.remove('current-card');
+            selectedCardView.classList.add('current-card');
+        } else {
+            console.log(`The card id: ${cardId} couldn't be found on this stack`)
+        }
+        // Then we might want to send some message through
+        // the HC system, letting Parts know that we have
+        // navigated?
     }
 
     goToNthCard(anInteger){

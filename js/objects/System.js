@@ -369,7 +369,7 @@ const System = {
     newView: function(partName, modelId){
         let model = this.partsById[modelId];
         if(!model || model == undefined){
-            throw new Error('System does not know part ${partName}[${modelId}]');
+            throw new Error(`System does not know part ${partName}[${modelId}]`);
         }
 
         // If there is alreay a view for this model,
@@ -501,6 +501,37 @@ const System = {
         }
     },
 
+    /** Navigation of Current World **/
+    goToNextStack: function(){
+        let worldView = document.querySelector(
+            'st-world'
+        );
+        if(!worldView || worldView == undefined){
+            throw new Error(`Could not locate the world view!`);
+        }
+        return worldView.goToNextStack();
+    },
+
+    goToPrevStack: function(){
+        let worldView = document.querySelector(
+            'st-world'
+        );
+        if(!worldView || worldView == undefined){
+            throw new Error(`Could not locate the world view!`);
+        }
+        return worldView.goToPrevStack();
+    },
+
+    goToStackById: function(stackId){
+        let worldView = document.querySelector(
+            'st-world'
+        );
+        if(!worldView || worldView == undefined){
+            throw new Error(`Could not locate the world view!`);
+        }
+        return worldView.goToStackById(stackId);
+    },
+
     /** Navigation of Current Stack **/
     goToNextCard: function(){
         let currentStackView = document.querySelector(
@@ -520,6 +551,16 @@ const System = {
             throw new Error(`Could not locate an active current stack!`);
         }
         return currentStackView.goToPrevCard();
+    },
+
+    goToCardById: function(cardId){
+        let currentStackView = document.querySelector(
+            'st-stack.current-stack'
+        );
+        if(!currentStackView || currentStackView == undefined){
+            throw new Error(`Could not locate an active current stack!`);
+        }
+        return currentStackView.goToCardById(cardId);
     }
 
 };
@@ -529,7 +570,7 @@ System._commandHandlers['answer'] = function(text){
     alert(text);
 };
 
-System._commandHandlers['go to'] = function(directive, objectName){
+System._commandHandlers['go to direction'] = function(directive, objectName){
     switch(objectName) {
         case 'card':
             switch(directive){
@@ -543,8 +584,36 @@ System._commandHandlers['go to'] = function(directive, objectName){
             }
             break;
 
+        case 'stack':
+            switch(directive){
+                case 'next':
+                    this.goToNextStack();
+                    break;
+
+                case 'previous':
+                    this.goToPrevStack();
+                    break;
+            }
+            break;
+
         default:
-            alert(`"go to" not implemented for ${object}`);
+            alert(`"go to" not implemented for ${objectName}`);
+
+    }
+};
+
+System._commandHandlers['go to reference'] = function(objectName, referenceId){
+    switch(objectName) {
+        case 'card':
+            this.goToCardById(referenceId);
+            break;
+
+        case 'stack':
+            this.goToStackById(referenceId);
+            break;
+
+        default:
+            alert(`"go to" not implemented for ${objectName}`);
 
     }
 };
@@ -579,6 +648,7 @@ System._commandHandlers['openToolbox'] = function(targetId){
     // like making the buttons with their
     // scripts, etc
     let windowStackView = this.findViewById(windowStack.id);
+    windowStackView.classList.add('window-stack');
     let windowCurrentCardModel = windowStackView.querySelector('.current-card').model;
     let addBtnBtn = this.newModel('button', windowCurrentCardModel.id);
     addBtnBtn.partProperties.setPropertyNamed(
@@ -634,6 +704,8 @@ System._commandHandlers['openScriptEditor'] = function(targetId){
     );
     let winView = this.findViewById(winModel.id);
     let winStackModel = this.newModel('stack', winModel.id);
+    let winStackView = this.findViewById(winStackModel.id)
+    winStackView.classList.add('window-stack');
     let currentCardView = winView.querySelector('.current-stack .current-card');
     let currentCard = currentCardView.model;
 
