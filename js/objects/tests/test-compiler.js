@@ -146,5 +146,90 @@ describe("SimpleTalk Compiler", function () {
             assert.isNotNull(onDoSomethingHandler);
             assert.equal(typeof onDoSomethingHandler, "function");
         });
+        describe("Remove Model Commands", function () {
+            var systemObjects = ["background", "button", "card", "field", "stack"];
+            systemObjects = systemObjects.concat(systemObjects.map(w => w.charAt(0).toUpperCase() + w.slice(1)));
+            const invalidObjects = ["ackground", "cardd", "world"]
+
+            it('messageHandler (args, "remove model" command)', () => {
+                systemObjects.forEach((s) => {
+                    const sourceCode = `on customMessage idArg\n remove model ${s} idArg\nend customMessage`;
+                    const expectedMessages = [
+                    {
+                        type: "command",
+                        commandName: "removeModel",
+                        args: ["idArg", s]
+                    }];
+                    compiler.compile(sourceCode, MockObject);
+
+                    const scriptSemantics = MockObject._scriptSemantics["customMessage"];
+                    assert.deepEqual(scriptSemantics, expectedMessages);
+
+                    const concreteHandler = MockObject._commandHandlers["customMessage"];
+                    assert.isNotNull(concreteHandler);
+                    assert.equal(typeof concreteHandler, "function");
+                })
+            });
+            it('messageHandler (no args, no id, "remove model" command)', () => {
+                systemObjects.forEach((d) => {
+                    const handler = `on mouseUp\n remove model ${d}\nend mouseUp`;
+                    const expectedMessages = [
+                    {
+                        type: "command",
+                        commandName: "removeModel",
+                        args: [undefined, d]
+                    }];
+                    compiler.compile(handler, MockObject);
+                    const scriptSemantics = MockObject._scriptSemantics["mouseUp"];
+                    assert.deepEqual(scriptSemantics, expectedMessages);
+                    const concreteHandler = MockObject._commandHandlers["mouseUp"];
+                    assert.isNotNull(concreteHandler);
+                    assert.equal(typeof concreteHandler, "function");
+                })
+            });
+            it('messageHandler ("remove model" invalid object)', () => {
+                invalidObjects.forEach((s) => {
+                    const sourceCode = `on customMessage idArg\n remove model ${s} idArg\nend customMessage`;
+                    expect(() => compiler.compile(sourceCode, MockObject)).to.throw();
+                })
+            });
+            it('messageHandler ("remove model" invalid construction)', () => {
+                const sourceCode = `on customMessage idArg\n remove idArg\nend customMessage`;
+                expect(() => compiler.compile(sourceCode, MockObject)).to.throw();
+            });
+        });
+        describe("Add Model Commands", function () {
+            var systemObjects = ["background", "button", "card", "field", "stack"];
+            systemObjects = systemObjects.concat(systemObjects.map(w => w.charAt(0).toUpperCase() + w.slice(1)));
+            const invalidObjects = ["ackground", "cardd", "world"]
+
+            it('messageHandler (no args, "add model" command)', () => {
+                systemObjects.forEach((d) => {
+                    const handler = `on mouseUp\n add model ${d}\nend mouseUp`;
+                    const expectedMessages = [
+                    {
+                        type: "command",
+                        commandName: "addModel",
+                        args: [d]
+                    }];
+                    compiler.compile(handler, MockObject);
+                    const scriptSemantics = MockObject._scriptSemantics["mouseUp"];
+                    assert.deepEqual(scriptSemantics, expectedMessages);
+                    const concreteHandler = MockObject._commandHandlers["mouseUp"];
+                    assert.isNotNull(concreteHandler);
+                    assert.equal(typeof concreteHandler, "function");
+                })
+            });
+            it('messageHandler ("add model" invalid object)', () => {
+                invalidObjects.forEach((s) => {
+                    const sourceCode = `on customMessage idArg\n add model ${s} idArg\nend customMessage`;
+                    expect(() => compiler.compile(sourceCode, MockObject)).to.throw();
+                })
+            });
+            it('messageHandler ("add model" invalid construction)', () => {
+                const sourceCode = `on customMessage idArg\n add idArg\nend customMessage`;
+                expect(() => compiler.compile(sourceCode, MockObject)).to.throw();
+            });
+        });
     });
 });

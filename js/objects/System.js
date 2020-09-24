@@ -525,6 +525,8 @@ const System = {
 };
 
 /** Add Default System Command Handlers **/
+System._commandHandlers['removeModel'] = System.removeModel;
+
 System._commandHandlers['answer'] = function(text){
     alert(text);
 };
