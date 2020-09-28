@@ -563,7 +563,7 @@ describe("SimpleTalk Grammar", () => {
             it ("Basic Remove (no id)", () => {
                 const direction = ["stack", "background", "card", "button"];
                 direction.forEach((d) => {
-                    const s = `remove model ${d}`;
+                    const s = `remove this ${d}`;
                     semanticMatchTest(s, "Command");
                     semanticMatchTest(s, "Command_removeModel");
                     semanticMatchTest(s, "Statement");
@@ -572,14 +572,14 @@ describe("SimpleTalk Grammar", () => {
             it ("Basic Remove (with id)", () => {
                 const direction = ["stack", "background", "card", "button"];
                 direction.forEach((d) => {
-                    const s = `remove model ${d} 20`;
+                    const s = `remove ${d} 20`;
                     semanticMatchTest(s, "Command");
                     semanticMatchTest(s, "Command_removeModel");
                     semanticMatchTest(s, "Statement");
                 });
             });
             it ("Bad remove (world)", () => {
-                const s = "remove model world"
+                const s = "remove this world"
                 semanticMatchFailTest(s, "Command_removeModel")
                 semanticMatchFailTest(s, "Command")
             });
@@ -588,14 +588,14 @@ describe("SimpleTalk Grammar", () => {
             it ("Basic Add (no id)", () => {
                 const direction = ["stack", "background", "card", "button"];
                 direction.forEach((d) => {
-                    const s = `add model ${d}`;
+                    const s = `add ${d}`;
                     semanticMatchTest(s, "Command");
                     semanticMatchTest(s, "Command_addModel");
                     semanticMatchTest(s, "Statement");
                 });
             });
             it ("Bad add (world)", () => {
-                const s = "add model world"
+                const s = "add world"
                 semanticMatchFailTest(s, "Command_addModel")
                 semanticMatchFailTest(s, "Command")
             });

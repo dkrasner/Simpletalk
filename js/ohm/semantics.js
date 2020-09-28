@@ -52,7 +52,7 @@ let simpleTalkSemantics = {
         return msg;
     },
 
-    Command_removeModel: function(removeModelLiteral, systemObject, objectId){
+    Command_removeModel: function(removeLiteral, thisLiteral, systemObject, objectId){
         let args = [];
         if (!objectId.sourceString){
             args.push(undefined);

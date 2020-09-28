@@ -15,7 +15,7 @@ import simpleTalkSemantics from '../../ohm/semantics.js';
 let MockObject = new Part();
 
 describe("SimpleTalk Compiler", function () {
-    beforeEach(function() { 
+    beforeEach(function() {
         MockObject._commandHandlers = {};
         MockObject._scriptSemantics = {};
     })
@@ -151,9 +151,9 @@ describe("SimpleTalk Compiler", function () {
             systemObjects = systemObjects.concat(systemObjects.map(w => w.charAt(0).toUpperCase() + w.slice(1)));
             const invalidObjects = ["ackground", "cardd", "world"]
 
-            it('messageHandler (args, "remove model" command)', () => {
+            it('messageHandler (args, "remove" command)', () => {
                 systemObjects.forEach((s) => {
-                    const sourceCode = `on customMessage idArg\n remove model ${s} idArg\nend customMessage`;
+                    const sourceCode = `on customMessage idArg\n remove ${s} idArg\nend customMessage`;
                     const expectedMessages = [
                     {
                         type: "command",
@@ -170,9 +170,9 @@ describe("SimpleTalk Compiler", function () {
                     assert.equal(typeof concreteHandler, "function");
                 })
             });
-            it('messageHandler (no args, no id, "remove model" command)', () => {
+            it('messageHandler (no args, no id, "remove" command)', () => {
                 systemObjects.forEach((d) => {
-                    const handler = `on mouseUp\n remove model ${d}\nend mouseUp`;
+                    const handler = `on mouseUp\n remove ${d}\nend mouseUp`;
                     const expectedMessages = [
                     {
                         type: "command",
@@ -187,13 +187,30 @@ describe("SimpleTalk Compiler", function () {
                     assert.equal(typeof concreteHandler, "function");
                 })
             });
-            it('messageHandler ("remove model" invalid object)', () => {
+            it('messageHandler (no args, no id, "remove this" command)', () => {
+                systemObjects.forEach((d) => {
+                    const handler = `on mouseUp\n remove this ${d}\nend mouseUp`;
+                    const expectedMessages = [
+                    {
+                        type: "command",
+                        commandName: "removeModel",
+                        args: [undefined, d]
+                    }];
+                    compiler.compile(handler, MockObject);
+                    const scriptSemantics = MockObject._scriptSemantics["mouseUp"];
+                    assert.deepEqual(scriptSemantics, expectedMessages);
+                    const concreteHandler = MockObject._commandHandlers["mouseUp"];
+                    assert.isNotNull(concreteHandler);
+                    assert.equal(typeof concreteHandler, "function");
+                })
+            });
+            it('messageHandler ("remove" invalid object)', () => {
                 invalidObjects.forEach((s) => {
                     const sourceCode = `on customMessage idArg\n remove model ${s} idArg\nend customMessage`;
                     expect(() => compiler.compile(sourceCode, MockObject)).to.throw();
                 })
             });
-            it('messageHandler ("remove model" invalid construction)', () => {
+            it('messageHandler ("remove" invalid construction)', () => {
                 const sourceCode = `on customMessage idArg\n remove idArg\nend customMessage`;
                 expect(() => compiler.compile(sourceCode, MockObject)).to.throw();
             });
@@ -203,9 +220,9 @@ describe("SimpleTalk Compiler", function () {
             systemObjects = systemObjects.concat(systemObjects.map(w => w.charAt(0).toUpperCase() + w.slice(1)));
             const invalidObjects = ["ackground", "cardd", "world"]
 
-            it('messageHandler (no args, "add model" command)', () => {
+            it('messageHandler (no args, "add" command)', () => {
                 systemObjects.forEach((d) => {
-                    const handler = `on mouseUp\n add model ${d}\nend mouseUp`;
+                    const handler = `on mouseUp\n add ${d}\nend mouseUp`;
                     const expectedMessages = [
                     {
                         type: "command",
@@ -220,13 +237,13 @@ describe("SimpleTalk Compiler", function () {
                     assert.equal(typeof concreteHandler, "function");
                 })
             });
-            it('messageHandler ("add model" invalid object)', () => {
+            it('messageHandler ("add" invalid object)', () => {
                 invalidObjects.forEach((s) => {
-                    const sourceCode = `on customMessage idArg\n add model ${s} idArg\nend customMessage`;
+                    const sourceCode = `on customMessage idArg\n add ${s} idArg\nend customMessage`;
                     expect(() => compiler.compile(sourceCode, MockObject)).to.throw();
                 })
             });
-            it('messageHandler ("add model" invalid construction)', () => {
+            it('messageHandler ("add" invalid construction)', () => {
                 const sourceCode = `on customMessage idArg\n add idArg\nend customMessage`;
                 expect(() => compiler.compile(sourceCode, MockObject)).to.throw();
             });

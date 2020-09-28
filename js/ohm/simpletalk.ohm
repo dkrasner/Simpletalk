@@ -62,8 +62,8 @@
    		= "go to" ("next" | "previous") systemObject? --goToDirection
    		| "go to" systemObject objectId --goToByReference
 		| "answer" stringLiteral --answer
-        | "remove model" systemObject objectId? --removeModel
-        | "add model" systemObject --addModel
+        | "remove" "this"? systemObject objectId? --removeModel
+        | "add" systemObject --addModel
 		| command_arbitrary
 
 	command_arbitrary (an arbitrary command)
@@ -157,7 +157,7 @@
 		= "do" | "next" | "else" | "on" | "end" | "pass" | "exit" | "repeat" | "function" | "return" | "global" | "send" | "if" | "then"
 
 	objectId (an identifier of an object, string, numeric or mixed)
-		= (letter | digit)*
+		= ~systemObject (letter | digit)*
 
 
 	// Helper utilities
