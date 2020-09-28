@@ -160,7 +160,10 @@ const System = {
             if(!partClass){
                 throw new Error(`Could not deserialize Part of type ${subSerialization.type}`);
             }
-            let part = new partClass(aModel, subSerialization.properties.name);
+            let part = partClass === Stack ?
+                new partClass(aModel, subSerialization.properties.name, true) :
+                new partClass(aModel, subSerialization.properties.name);
+
             part.id = subSerialization.id;
             part.setFromDeserialized(subSerialization);
             aModel.addPart(part);
