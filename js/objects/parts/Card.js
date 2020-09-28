@@ -17,6 +17,9 @@ class Card extends Part {
     constructor(owner, name){
         super(owner);
         this.stack = this._owner;
+        this.acceptedSubpartTypes = [
+            "button", "field", "eric-field"
+        ];
         this.isCard = true;
 
         // Add Card-specific part
@@ -64,20 +67,6 @@ class Card extends Part {
         }*/
     // For the time being, send directly to
     // the Card owner and not the background.
-
-    // Override the subpart validity check
-    acceptsSubpart(aPart){
-        if([
-            'world',
-            'stack',
-            'card',
-            'background',
-            'window'
-        ].includes(aPart.type)){
-            return false;
-        }
-        return true;
-    }
 };
 
 export {

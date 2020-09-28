@@ -18,6 +18,8 @@ class WorldStack extends Part {
     constructor(){
         super(null);
 
+        this.acceptedSubpartTypes = ["stack"];
+
         // The currentStack is the
         // stack that should be currently displayed.
         this.currentStack = null;
@@ -85,13 +87,6 @@ class WorldStack extends Part {
     // 'handlers of last resort'
     delegateMessage(aMessage){
         this.sendMessage(aMessage, window.System);
-    }
-
-    // Override the subpart validity check.
-    // For now, the WorldStack only accepts subparts
-    // that are Stacks
-    acceptsSubpart(aPart){
-        return aPart.type == 'stack';
     }
 };
 

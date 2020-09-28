@@ -19,6 +19,10 @@ class Part {
 
         // An array of child parts
         this.subparts = [];
+        // a list of all accepted subparts by type
+        // By default this is null and each Part subclcass should
+        // specify aif otherwise
+        this.acceptedSubpartTypes = null;
 
         this.partProperties = new PartProperties();
         this._owner = anOwnerPart;
@@ -160,10 +164,13 @@ class Part {
     /** Subpart Access **/
     /**
      * Each subclass will implement its own set of checks,
-     * and throw an approprite error if the subpart is invalid.
+     * and throw an approprite error if the subpart type is invalid.
      */
-    acceptsSubpart(aPart){
-        return true;
+    acceptsSubpart(aPartType){
+        if(!this.acceptedSubpartTypes){
+            return false;
+        }
+        return this.acceptedSubpartTypes.includes(aPartType);
     }
 
     /**
@@ -173,8 +180,8 @@ class Part {
      * added part to be this part.
      */
     addPart(aPart){
-        if(!this.acceptsSubpart(aPart)){
-            throw new Error(`${this.typ}e does not accept subparts of type ${aPart.type}`);
+        if(!this.acceptsSubpart(aPart.type)){
+            throw new Error(`${this.type} does not accept subparts of type ${aPart.type}`);
         }
 
         let found = this.subparts.indexOf(aPart);

@@ -15,6 +15,7 @@ import {
 class Stack extends Part {
     constructor(owner, name){
         super(owner);
+        this.acceptedSubpartTypes = ["card", "background", "window"];
 
         // Set up Stack specific
         // PartProperties
@@ -51,15 +52,6 @@ class Stack extends Part {
 
     get type(){
         return 'stack';
-    }
-
-    // Override the subpart validity check
-    acceptsSubpart(aPart){
-        let notValidSubparts = ["world", "button", "field", "eric-field"];
-        if(notValidSubparts.includes(aPart.type)){
-            return false;
-        };
-        return true;
     }
 };
 

@@ -14,6 +14,7 @@ import {
 class Field extends Part {
     constructor(owner, name){
         super(owner);
+
         if(name){
             this.partProperties.setPropertyNamed(
                 this,
