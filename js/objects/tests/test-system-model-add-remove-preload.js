@@ -34,9 +34,9 @@ describe('newModel tests', () => {
 
     it('Can send newModel message without error (add button to current card)', () => {
         let msg = {
-            type: 'newModel',
-            modelType: 'button',
-            ownerId: currentCard.id
+            type: 'command',
+            commandName: 'newModel',
+            args: ['button', currentCard.id]
         };
         let sendFunc = function(){
             currentCard.sendMessage(msg, System);
@@ -68,9 +68,9 @@ describe('newModel tests', () => {
 describe('deleteModel tests', () => {
     beforeEach(function() {
         let msg = {
-            type: 'newModel',
-            modelType: 'button',
-            ownerId: currentCard.id
+            type: 'command',
+            commandName: 'newModel',
+            args: ['button', currentCard.id]
         };
         currentCard.sendMessage(msg, System);
     });

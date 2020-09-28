@@ -69,13 +69,13 @@ let simpleTalkSemantics = {
         return msg;
     },
 
-    Command_addModel: function(removeModelLiteral, systemObject){
+    Command_addModel: function(addLiteral, systemObject){
         let args = [];
         args.push(systemObject.sourceString);
 
         let msg = {
             type: "command",
-            commandName: "addModel",
+            commandName: "newModel",
             args: args
         };
         return msg;

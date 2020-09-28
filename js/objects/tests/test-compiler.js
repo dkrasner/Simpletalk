@@ -226,7 +226,7 @@ describe("SimpleTalk Compiler", function () {
                     const expectedMessages = [
                     {
                         type: "command",
-                        commandName: "addModel",
+                        commandName: "newModel",
                         args: [d]
                     }];
                     compiler.compile(handler, MockObject);

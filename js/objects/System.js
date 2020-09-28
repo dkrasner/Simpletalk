@@ -218,8 +218,6 @@ const System = {
 
     receiveMessage: function(aMessage){
         switch(aMessage.type){
-            case 'newModel':
-                return this.newModel(aMessage.modelType, aMessage.ownerId);
             case 'newView':
                 return this.newView(
                     aMessage.viewType,
@@ -524,6 +522,7 @@ const System = {
 
 /** Add Default System Command Handlers **/
 System._commandHandlers['deleteModel'] = System.deleteModel;
+System._commandHandlers['newModel'] = System.newModel;
 
 System._commandHandlers['answer'] = function(text){
     alert(text);
