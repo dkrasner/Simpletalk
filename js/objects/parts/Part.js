@@ -50,14 +50,14 @@ class Part {
         this.removePropertySubscriber = this.removePropertySubscriber.bind(this);
         this.serialize = this.serialize.bind(this);
         this.setFromDeserialized = this.setFromDeserialized.bind(this);
-        this.removeModelCmdHandler = this.removeModelCmdHandler.bind(this);
+        this.deleteModelCmdHandler = this.deleteModelCmdHandler.bind(this);
 
 
         // Finally, we finish initialization
         this.setupProperties();
 
         // command handlers
-        this.setCmdHandler("removeModel", this.removeModelCmdHandler);
+        this.setCmdHandler("deleteModel", this.deleteModelCmdHandler);
     }
 
     // Convenience getter to get the id
@@ -284,13 +284,13 @@ class Part {
         which are not immediately delegaed to the Part._owner
     **/
 
-    removeModelCmdHandler(objectId, modelType){
+    deleteModelCmdHandler(objectId, modelType){
         if (modelType && modelType.toLowerCase() === this.name.toLowerCase() && !objectId){
             objectId = this.id
         }
         this.delegateMessage({
             type: 'command',
-            commandName: 'removeModel',
+            commandName: 'deleteModel',
             args: [objectId, modelType]
         });
     }

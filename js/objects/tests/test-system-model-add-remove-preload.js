@@ -2,8 +2,8 @@
  * System Add/Remove Model Tests
  * --------------------------------------
  * Integration test of System messages
- * `newModel` and `removeModel`.
- * These add and remove models from the System,
+ * `newModel` and `deleteModel`.
+ * These add and delete models from the System,
  * along with references to any of their Views.
  */
 import chai from 'chai';
@@ -65,7 +65,7 @@ describe('newModel tests', () => {
     });
 });
 
-describe('removeModel tests', () => {
+describe('deleteModel tests', () => {
     beforeEach(function() {
         let msg = {
             type: 'newModel',
@@ -74,7 +74,7 @@ describe('removeModel tests', () => {
         };
         currentCard.sendMessage(msg, System);
     });
-    it('Can send removeModel message without error (remove the button by id)', () => {
+    it('Can send deleteModel message without error (delete the button by id)', () => {
         let targetButton = currentCard.subparts.filter(part => {
             return part.type == 'button';
         })[0];
@@ -83,7 +83,7 @@ describe('removeModel tests', () => {
 
         let msg = {
             type: 'command',
-            commandName: 'removeModel',
+            commandName: 'deleteModel',
             args: [targetButton.id]
         };
 
@@ -93,7 +93,7 @@ describe('removeModel tests', () => {
 
         expect(sendFunc).to.not.throw(Error);
     });
-    it('Can send removeModel message without error (remove the button without id, self referentially)', () => {
+    it('Can send deleteModel message without error (delete the button without id, self referentially)', () => {
         let targetButton = currentCard.subparts.filter(part => {
             return part.type == 'button';
         })[0];
@@ -102,7 +102,7 @@ describe('removeModel tests', () => {
 
         let msg = {
             type: 'command',
-            commandName: 'removeModel',
+            commandName: 'deleteModel',
             args: [undefined, "button"]
         };
 
@@ -112,7 +112,7 @@ describe('removeModel tests', () => {
 
         expect(sendFunc).to.not.throw(Error);
     });
-    it('Current card should remove button subpart by Id', () => {
+    it('Current card should delete button subpart by Id', () => {
         let targetButton = currentCard.subparts.filter(part => {
             return part.type == 'button';
         })[0];
@@ -121,7 +121,7 @@ describe('removeModel tests', () => {
 
         let msg = {
             type: 'command',
-            commandName: 'removeModel',
+            commandName: 'deleteModel',
             args: [targetButton.id]
         };
 
@@ -133,7 +133,7 @@ describe('removeModel tests', () => {
         assert.equal(matchingButtons.length, 0);
     });
 
-    it('Current CardView should not have any direct ButtonView children after it is removed', () => {
+    it('Current CardView should not have any direct ButtonView children after it is deleted', () => {
         let targetButton = currentCard.subparts.filter(part => {
             return part.type == 'button';
         })[0];
@@ -142,7 +142,7 @@ describe('removeModel tests', () => {
 
         let msg = {
             type: 'command',
-            commandName: 'removeModel',
+            commandName: 'deleteModel',
             args: [targetButton.id]
         };
 
@@ -151,7 +151,7 @@ describe('removeModel tests', () => {
         assert.equal(buttonViews.length, 0);
     });
 
-    it('Current card should remove button subpart wihout Id, self-referentially', () => {
+    it('Current card should delete button subpart wihout Id, self-referentially', () => {
         let targetButton = currentCard.subparts.filter(part => {
             return part.type == 'button';
         })[0];
@@ -160,7 +160,7 @@ describe('removeModel tests', () => {
 
         let msg = {
             type: 'command',
-            commandName: 'removeModel',
+            commandName: 'deleteModel',
             args: [undefined, "button"]
         };
 
