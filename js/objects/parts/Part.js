@@ -285,13 +285,13 @@ class Part {
     **/
 
     removeModelCmdHandler(objectId, modelType){
-        if (modelType.toLowerCase() === this.name.toLowerCase() && !objectId){
+        if (modelType && modelType.toLowerCase() === this.name.toLowerCase() && !objectId){
             objectId = this.id
         }
         this.delegateMessage({
-            type: 'removeModel',
-            modelType: modelType,
-            modelId: objectId,
+            type: 'command',
+            commandName: 'removeModel',
+            args: [objectId, modelType]
         });
     }
 

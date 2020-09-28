@@ -225,8 +225,6 @@ const System = {
                     aMessage.viewType,
                     aMessage.modelId
                 );
-            case 'removeModel':
-                return this.removeModel(aMessage.modelId);
             case 'propertyChanged':
                 return this.updateSerialization(
                     aMessage.partId

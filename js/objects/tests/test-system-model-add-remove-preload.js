@@ -120,8 +120,9 @@ describe('removeModel tests', () => {
         assert.exists(targetButton);
 
         let msg = {
-            type: 'removeModel',
-            modelId: targetButton.id
+            type: 'command',
+            commandName: 'removeModel',
+            args: [targetButton.id]
         };
 
         currentCard.sendMessage(msg, targetButton);
