@@ -469,7 +469,7 @@ const System = {
 
     removeSerializationFor: function(aPartId){
         // Remove the script tag serialization for the given
-        // Part IDhttps://www.kickstarter.com/projects/messagenotunderstood/message-not-understood?ref=creator_nav. This is usually done after a Part has been
+        // Part ID. This is usually done after a Part has been
         // removed from the System, via deleteModel.
         let element = document.querySelector(`script[data-part-id="${aPartId}"]`);
         if(element){
