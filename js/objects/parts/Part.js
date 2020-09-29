@@ -22,7 +22,7 @@ class Part {
         // a list of all accepted subparts by type
         // By default this is null and each Part subclcass should
         // specify aif otherwise
-        this.acceptedSubpartTypes = null;
+        this.acceptedSubpartTypes = [];
 
         this.partProperties = new PartProperties();
         this._owner = anOwnerPart;
@@ -168,9 +168,6 @@ class Part {
      * and throw an approprite error if the subpart type is invalid.
      */
     acceptsSubpart(aPartType){
-        if(!this.acceptedSubpartTypes){
-            return false;
-        }
         return this.acceptedSubpartTypes.includes(aPartType.toLowerCase());
     }
 
