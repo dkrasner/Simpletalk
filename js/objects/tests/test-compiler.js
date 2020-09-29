@@ -151,13 +151,13 @@ describe("SimpleTalk Compiler", function () {
             systemObjects = systemObjects.concat(systemObjects.map(w => w.charAt(0).toUpperCase() + w.slice(1)));
             const invalidObjects = ["ackground", "cardd", "world"]
 
-            it('messageHandler (args, "remove" command)', () => {
+            it('messageHandler (args, "delete" command)', () => {
                 systemObjects.forEach((s) => {
-                    const sourceCode = `on customMessage idArg\n remove ${s} idArg\nend customMessage`;
+                    const sourceCode = `on customMessage idArg\n delete ${s} idArg\nend customMessage`;
                     const expectedMessages = [
                     {
                         type: "command",
-                        commandName: "removeModel",
+                        commandName: "deleteModel",
                         args: ["idArg", s]
                     }];
                     compiler.compile(sourceCode, MockObject);
@@ -170,13 +170,13 @@ describe("SimpleTalk Compiler", function () {
                     assert.equal(typeof concreteHandler, "function");
                 })
             });
-            it('messageHandler (no args, no id, "remove" command)', () => {
+            it('messageHandler (no args, no id, "delete" command)', () => {
                 systemObjects.forEach((d) => {
-                    const handler = `on mouseUp\n remove ${d}\nend mouseUp`;
+                    const handler = `on mouseUp\n delete ${d}\nend mouseUp`;
                     const expectedMessages = [
                     {
                         type: "command",
-                        commandName: "removeModel",
+                        commandName: "deleteModel",
                         args: [undefined, d]
                     }];
                     compiler.compile(handler, MockObject);
@@ -187,13 +187,13 @@ describe("SimpleTalk Compiler", function () {
                     assert.equal(typeof concreteHandler, "function");
                 })
             });
-            it('messageHandler (no args, no id, "remove this" command)', () => {
+            it('messageHandler (no args, no id, "delete this" command)', () => {
                 systemObjects.forEach((d) => {
-                    const handler = `on mouseUp\n remove this ${d}\nend mouseUp`;
+                    const handler = `on mouseUp\n delete this ${d}\nend mouseUp`;
                     const expectedMessages = [
                     {
                         type: "command",
-                        commandName: "removeModel",
+                        commandName: "deleteModel",
                         args: [undefined, d]
                     }];
                     compiler.compile(handler, MockObject);
@@ -204,14 +204,14 @@ describe("SimpleTalk Compiler", function () {
                     assert.equal(typeof concreteHandler, "function");
                 })
             });
-            it('messageHandler ("remove" invalid object)', () => {
+            it('messageHandler ("delete" invalid object)', () => {
                 invalidObjects.forEach((s) => {
-                    const sourceCode = `on customMessage idArg\n remove model ${s} idArg\nend customMessage`;
+                    const sourceCode = `on customMessage idArg\n delete model ${s} idArg\nend customMessage`;
                     expect(() => compiler.compile(sourceCode, MockObject)).to.throw();
                 })
             });
-            it('messageHandler ("remove" invalid construction)', () => {
-                const sourceCode = `on customMessage idArg\n remove idArg\nend customMessage`;
+            it('messageHandler ("delete" invalid construction)', () => {
+                const sourceCode = `on customMessage idArg\n delete idArg\nend customMessage`;
                 expect(() => compiler.compile(sourceCode, MockObject)).to.throw();
             });
         });

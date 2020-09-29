@@ -60,7 +60,7 @@ class PartView extends HTMLElement {
         // model.
         this.sendMessage({
             type: 'command',
-            commandName: 'removeModel',
+            commandName: 'deleteModel',
             modelId: this.model.id
         }, window.System);
     }

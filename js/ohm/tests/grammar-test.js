@@ -563,24 +563,24 @@ describe("SimpleTalk Grammar", () => {
             it ("Basic Remove (no id)", () => {
                 const direction = ["stack", "background", "card", "button"];
                 direction.forEach((d) => {
-                    const s = `remove this ${d}`;
+                    const s = `delete this ${d}`;
                     semanticMatchTest(s, "Command");
-                    semanticMatchTest(s, "Command_removeModel");
+                    semanticMatchTest(s, "Command_deleteModel");
                     semanticMatchTest(s, "Statement");
                 });
             });
             it ("Basic Remove (with id)", () => {
                 const direction = ["stack", "background", "card", "button"];
                 direction.forEach((d) => {
-                    const s = `remove ${d} 20`;
+                    const s = `delete ${d} 20`;
                     semanticMatchTest(s, "Command");
-                    semanticMatchTest(s, "Command_removeModel");
+                    semanticMatchTest(s, "Command_deleteModel");
                     semanticMatchTest(s, "Statement");
                 });
             });
-            it ("Bad remove (world)", () => {
-                const s = "remove this world"
-                semanticMatchFailTest(s, "Command_removeModel")
+            it ("Bad delete (world)", () => {
+                const s = "delete this world"
+                semanticMatchFailTest(s, "Command_deleteModel")
                 semanticMatchFailTest(s, "Command")
             });
         });

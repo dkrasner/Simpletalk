@@ -62,7 +62,7 @@
    		= "go to" ("next" | "previous") systemObject? --goToDirection
    		| "go to" systemObject objectId --goToByReference
 		| "answer" stringLiteral --answer
-		| "remove" "this"? systemObject objectId? --removeModel
+		| "delete" "this"? systemObject objectId? --deleteModel
 		| "add" systemObject --addModel
 		| command_arbitrary
 
