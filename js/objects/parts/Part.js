@@ -58,6 +58,7 @@ class Part {
 
         // command handlers
         this.setCmdHandler("deleteModel", this.deleteModelCmdHandler);
+        this.setCmdHandler("newModel", this.newModelCmdHandler);
     }
 
     // Convenience getter to get the id
@@ -295,6 +296,16 @@ class Part {
         });
     }
 
+    newModelCmdHandler(modelType, ownerId){
+        if (modelType && modelType.toLowerCase() === this.name.toLowerCase() && !ownerId){
+            ownerId = this._owner.id
+        }
+        this.delegateMessage({
+            type: 'command',
+            commandName: 'newModel',
+            args: [modelType, ownerId]
+        });
+    }
     /** Property Subscribers
         ------------------------
         Objects added as property subscribers
