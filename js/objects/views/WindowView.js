@@ -15,16 +15,7 @@ template.innerHTML = `
  * {
      box-sizing: border-box;
  }
- :host {
-     box-sizing: border-box;
-     display: flex;
-     position: absolute;
-     flex-direction: column;
-     min-width: 150px;
-     background-color: rgb(253, 253, 253);
-     border: 1px solid rgba(100, 100, 100, 0.2);
-     box-shadow: 3px 4px 4px 0px rgba(50, 50, 50, 0.3);
- }
+
  .st-window-bar {
      display: flex;
      flex-direction: row;
@@ -55,6 +46,7 @@ template.innerHTML = `
  .st-window-pane {
      display: block;
      position: relative;
+     min-height: 50px;
      flex: 1;
  }
  .st-window-pane.shaded {
@@ -66,6 +58,10 @@ template.innerHTML = `
      top: calc(100% - 15px);
      width: 30px;
      height: 30px;
+ }
+ .st-window-title {
+     font-family: monospace;
+     user-select: none;
  }
  .right-gripper {
      left: calc(100% - 15px);
@@ -117,7 +113,7 @@ class WindowView extends PartView {
         this.setupExpanderAreas = this.setupExpanderAreas.bind(this);
         this.onMouseMoveInBar = this.onMouseMoveInBar.bind(this);
         this.onMouseDownInBar = this.onMouseDownInBar.bind(this);
-        this.onMouseUpInBar = this.onMouseUpInBar.bind(this);
+        this.onMouseUpAfterDrag = this.onMouseUpAfterDrag.bind(this);
         this.onClose = this.onClose.bind(this);
         this.onShade = this.onShade.bind(this);
         this.onExpand = this.onExpand.bind(this);
@@ -140,7 +136,6 @@ class WindowView extends PartView {
     setupClickAndDrag(){
         let bar = this._shadowRoot.querySelector('.st-window-bar');
         bar.addEventListener('mousedown', this.onMouseDownInBar);
-        bar.addEventListener('mouseup', this.onMouseUpInBar);
     }
 
     setupBarButtons(){
@@ -201,11 +196,13 @@ class WindowView extends PartView {
         this.mouseDownInBar = true;
         let bar = event.target;
         document.addEventListener('mousemove', this.onMouseMoveInBar);
+        document.addEventListener('mouseup', this.onMouseUpAfterDrag);
     }
 
-    onMouseUpInBar(event){
+    onMouseUpAfterDrag(event){
         this.mouseDownInBar = false;
         let bar = event.target;
+        document.removeEventListener('mouseup', this.onMouseUpAfterDrag);
         document.removeEventListener('mousemove', this.onMouseMoveInBar);
     }
 
@@ -233,15 +230,18 @@ class WindowView extends PartView {
 
     onGripMove(event){
         if(this.isGripping){
-            // Figure out the current width and height
-            let box = this.getBoundingClientRect();
+            // Figure out the current width and height.
+            // For Windows, the grip will actually be adjusting
+            // the underlying StackView's minHeight/minWidth
+            let view = this.querySelector('st-stack');
+            let box = view.getBoundingClientRect();
             let newWidth = Math.floor(box.width) + event.movementX;
             if(newWidth){
-                this.style.width = `${newWidth}px`;
+                view.style.minWidth = `${newWidth}px`;
             }
             let newHeight = Math.floor(box.height) + event.movementY;
             if(newHeight){
-                this.style.height = `${newHeight}px`;
+                view.style.minHeight = `${newHeight}px`;
             }
         }
     }

@@ -17,22 +17,6 @@ import Stack from '../parts/Stack.js';
 // who wishes to display it)
 const templateString = `
                 <style>
-                 * {
-                     box-sizing: border-box;
-                 }
-                 :host {
-                     display: none;
-                     position: relative;
-                     width: 100%;
-                     height: 100%;
-                     background-color: white;
-                 }
-                :host(.current-stack){
-                    display: block;
-                }
-                :host(.window-stack) {
-                    display: block;
-                }
                 </style>
                 <slot></slot>
 `;

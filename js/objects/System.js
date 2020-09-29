@@ -13,6 +13,7 @@ import Field from './parts/Field.js';
 import WorldStack from './parts/WorldStack.js';
 import Window from './parts/Window.js';
 import EricField from './parts/EricField.js';
+import Container from './parts/Container.js';
 
 import WorldView from './views/WorldView.js';
 import StackView from './views/StackView.js';
@@ -22,6 +23,7 @@ import CardView from './views/CardView.js';
 import BackgroundView from './views/BackgroundView.js';
 import WindowView from './views/WindowView';
 import EricFieldView from './views/EricFieldView.js';
+import ContainerView from './views/ContainerView.js';
 
 import Halo from './views/Halo.js';
 
@@ -647,6 +649,18 @@ System._commandHandlers['openToolbox'] = function(targetId){
         'Toolbox'
     );
 
+    // Get the current card on the window stack etc
+    let windowStackView = this.findViewById(windowStack.id);
+    let windowCurrentCardModel = windowStackView.querySelector('.current-card').model;
+
+    // Set the current card of the window to have a list layout,
+    // which defaults to a column listDirection
+    windowCurrentCardModel.partProperties.setPropertyNamed(
+        windowCurrentCardModel,
+        'layout',
+        'list'
+    );
+
     // Do more toolbox configuration here
     // like making the buttons with their
     // scripts, etc
@@ -667,16 +681,29 @@ System._commandHandlers['openToolbox'] = function(targetId){
         // active stack and add a button to it
         let currentCardView = document.querySelector('.current-stack .current-card');
         let cardModel = currentCardView.model;
-        /*let newButton = cardModel.sendMessage({
-            type: 'newModel',
-            modelType: 'button',
-            owner: cardModel
-            }, System);*/
         let newButton = System.newModel('button', cardModel.id);
         newButton.partProperties.setPropertyNamed(
             newButton,
             'name',
             `Button ${newButton.id}`
+        );
+    };
+
+    // Add a button to add a new Container
+    let addContainerBtn = this.newModel('button', windowCurrentCardModel.id);
+    addContainerBtn.partProperties.setPropertyNamed(
+        addContainerBtn,
+        'name',
+        'Add Container to Card'
+    );
+    addContainerBtn._commandHandlers['mouseUp'] = function(){
+        let currentCardView = document.querySelector('.current-stack > .current-card');
+        let cardModel = currentCardView.model;
+        let newContainer = System.newModel('container', cardModel.id);
+        newContainer.partProperties.setPropertyNamed(
+            newContainer,
+            'name',
+            `Container ${newContainer.id}`
         );
     };
 };
@@ -711,6 +738,13 @@ System._commandHandlers['openScriptEditor'] = function(targetId){
     winStackView.classList.add('window-stack');
     let currentCardView = winView.querySelector('.current-stack .current-card');
     let currentCard = currentCardView.model;
+
+    // Set the current card's layout to be a column list
+    currentCard.partProperties.setPropertyNamed(
+        currentCard,
+        'layout',
+        'list'
+    );
 
     // Create the EricField model and attach to current card
     // of the new window.
@@ -780,6 +814,7 @@ System.registerPart('button', Button);
 System.registerPart('world', WorldStack);
 System.registerPart('window', Window);
 System.registerPart('eric-field', EricField);
+System.registerPart('container', Container);
 
 /** Register the initial set of views in the system **/
 System.registerView('button', ButtonView);
@@ -789,6 +824,7 @@ System.registerView('card', CardView);
 System.registerView('background', BackgroundView);
 System.registerView('window', WindowView);
 System.registerView('eric-field', EricFieldView);
+System.registerView('container', ContainerView);
 
 
 // Convenience method for adding all of the
