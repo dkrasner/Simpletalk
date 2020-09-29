@@ -45,17 +45,27 @@ describe('newModel tests', () => {
         expect(sendFunc).to.not.throw(Error);
     });
 
-    it('Current card model now has button subpart', () => {
-        let buttons = currentCard.subparts.filter(part => {
-            return part.type == 'button';
-        });
-
-        assert.equal(buttons.length, 1);
-    });
-
     it('Current card view has a child button view', () => {
         let buttonViews = Array.from(currentCardView.querySelectorAll('st-button'));
         assert.equal(buttonViews.length, 1);
+    });
+
+    it('Can send newModel message in a context (without ownerId) without error (add button to current card)', () => {
+        let msg = {
+            type: 'command',
+            commandName: 'newModel',
+            args: ['button']
+        };
+        let sendFunc = function(){
+            currentCard.sendMessage(msg, currentCard);
+        };
+
+        expect(sendFunc).to.not.throw(Error);
+    });
+
+    it('Current card view has a second child button view', () => {
+        let buttonViews = Array.from(currentCardView.querySelectorAll('st-button'));
+        assert.equal(buttonViews.length, 2);
     });
 
     it('There should be a serialization for the new button', () => {

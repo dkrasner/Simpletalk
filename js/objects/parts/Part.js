@@ -171,7 +171,7 @@ class Part {
         if(!this.acceptedSubpartTypes){
             return false;
         }
-        return this.acceptedSubpartTypes.includes(aPartType);
+        return this.acceptedSubpartTypes.includes(aPartType.toLowerCase());
     }
 
     /**
@@ -297,8 +297,10 @@ class Part {
     }
 
     newModelCmdHandler(modelType, ownerId){
-        if (modelType && modelType.toLowerCase() === this.name.toLowerCase() && !ownerId){
-            ownerId = this._owner.id
+        // if no owner Id is provided and I accept the modelType
+        // as a subpart, then add the new model as a subpart
+        if (this.acceptsSubpart(modelType) && !ownerId){
+            ownerId = this.id;
         }
         this.delegateMessage({
             type: 'command',
