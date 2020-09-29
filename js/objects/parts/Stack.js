@@ -13,7 +13,7 @@ import {
 } from '../properties/PartProperties.js';
 
 class Stack extends Part {
-    constructor(owner, name){
+    constructor(owner, name, deserializing=false){
         super(owner);
 
         // Set up Stack specific
@@ -37,27 +37,24 @@ class Stack extends Part {
             );
         }
 
-        // We construct with an initial
-        // Background part, since there needs
-        // to be at least one
-        let initBackground = new Background(this);
-        this.addPart(initBackground);
+        // if we are deserializing, we don't need to
+        // instantiate any default children
+        if (!deserializing) {
+            // We construct with an initial
+            // Background part, since there needs
+            // to be at least one
+            let initBackground = new Background(this);
+            this.addPart(initBackground);
 
-        // We construct with an initial Card part,
-        // since there needs to be at least one
-        let initCard = new Card(this);
-        this.addPart(initCard);
+            // We construct with an initial Card part,
+            // since there needs to be at least one
+            let initCard = new Card(this);
+            this.addPart(initCard);
+        }
     }
 
     get type(){
         return 'stack';
-    }
-
-    delegateMessage(aMessage){
-        this.sendMessage(
-            aMessage,
-            this._owner
-        );
     }
 
     // Override the subpart validity check
