@@ -204,8 +204,6 @@ const System = {
             [source.name, source.id],
             [target.name, target.id]
         ];
-        this.messageLog.push(messageData);
-        target.receiveMessage(aMessage);
 
         // if we don't have an origin we are running at test
         // can return the string "null"
@@ -217,6 +215,8 @@ const System = {
                 console.log(messageData);
             }
         }
+        this.messageLog.push(messageData);
+        target.receiveMessage(aMessage);
     },
 
     receiveMessage: function(aMessage){

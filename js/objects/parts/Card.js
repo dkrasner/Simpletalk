@@ -64,12 +64,6 @@ class Card extends Part {
         }*/
     // For the time being, send directly to
     // the Card owner and not the background.
-    delegateMessage(aMessage){
-        this.sendMessage(
-            aMessage,
-            this._owner
-        );
-    }
 
     // Override the subpart validity check
     acceptsSubpart(aPart){
