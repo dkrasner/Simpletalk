@@ -588,14 +588,19 @@ describe("SimpleTalk Grammar", () => {
             it ("Basic Add (no id)", () => {
                 const direction = ["stack", "background", "card", "button"];
                 direction.forEach((d) => {
-                    const s = `add ${d}`;
+                    const s = `add ${d} to card`;
                     semanticMatchTest(s, "Command");
                     semanticMatchTest(s, "Command_addModel");
                     semanticMatchTest(s, "Statement");
                 });
             });
             it ("Bad add (world)", () => {
-                const s = "add world"
+                const s = "add world to card"
+                semanticMatchFailTest(s, "Command_addModel")
+                semanticMatchFailTest(s, "Command")
+            });
+            it ("Bad add (no target)", () => {
+                const s = "add button"
                 semanticMatchFailTest(s, "Command_addModel")
                 semanticMatchFailTest(s, "Command")
             });

@@ -222,7 +222,7 @@ describe("SimpleTalk Compiler", function () {
 
             it('messageHandler (no args, "add" command)', () => {
                 systemObjects.forEach((d) => {
-                    const handler = `on mouseUp\n add ${d}\nend mouseUp`;
+                    const handler = `on mouseUp\n add ${d} to card\nend mouseUp`;
                     const expectedMessages = [
                     {
                         type: "command",
@@ -239,7 +239,7 @@ describe("SimpleTalk Compiler", function () {
             });
             it('messageHandler ("add" invalid object)', () => {
                 invalidObjects.forEach((s) => {
-                    const sourceCode = `on customMessage idArg\n add ${s} idArg\nend customMessage`;
+                    const sourceCode = `on customMessage targetArg\n add ${s} to targetArg\nend customMessage`;
                     expect(() => compiler.compile(sourceCode, MockObject)).to.throw();
                 })
             });
