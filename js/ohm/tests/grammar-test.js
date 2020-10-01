@@ -530,13 +530,11 @@ describe("SimpleTalk Grammar", () => {
     });
     describe("Commands", () => {
         describe("Go To", () => {
-            it ("go to direction", () => {
+            it ("go to direction with no object fails", () => {
                 const direction = ["next", "previous"];
                 direction.forEach((d) => {
                     const s = `go to ${d}`;
-                    semanticMatchTest(s, "Command");
-                    semanticMatchTest(s, "Command_goToDirection");
-                    semanticMatchTest(s, "Statement");
+                    semanticMatchFailTest(s, "Command")
                 });
             });
             it ("go to with object", () => {

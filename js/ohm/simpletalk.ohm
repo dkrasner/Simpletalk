@@ -59,7 +59,7 @@
 		= "global" #space+ ParameterList
 
 	Command (a command statement)
-   		= "go to" ("next" | "previous") systemObject? --goToDirection
+   		= "go to" ("next" | "previous") systemObject --goToDirection
    		| "go to" systemObject objectId --goToByReference
 		| "answer" stringLiteral --answer
 		| "delete" "this"? systemObject objectId? --deleteModel

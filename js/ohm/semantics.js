@@ -33,7 +33,7 @@ let simpleTalkSemantics = {
 
         let msg = {
             type: "command",
-            commandName: "go to",
+            commandName: "go to direction",
             args: args
         };
         return msg;
@@ -46,7 +46,7 @@ let simpleTalkSemantics = {
 
         let msg = {
             type: "command",
-            commandName: "go to",
+            commandName: "go to reference",
             args: args
         };
         return msg;
