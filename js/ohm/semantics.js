@@ -52,6 +52,35 @@ let simpleTalkSemantics = {
         return msg;
     },
 
+    Command_deleteModel: function(deleteLiteral, thisLiteral, systemObject, objectId){
+        let args = [];
+        if (!objectId.sourceString){
+            args.push(undefined);
+        } else {
+            args.push(objectId.sourceString);
+        }
+        args.push(systemObject.sourceString);
+
+        let msg = {
+            type: "command",
+            commandName: "deleteModel",
+            args: args
+        };
+        return msg;
+    },
+
+    Command_addModel: function(addLiteral, newObject, toLiteral, targetObject){
+        let args = [];
+        args.push(newObject.sourceString);
+
+        let msg = {
+            type: "command",
+            commandName: "newModel",
+            args: args
+        };
+        return msg;
+    },
+
     command_arbitrary: function(name){
         let msg = {
             type: "command",

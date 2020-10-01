@@ -18,10 +18,10 @@
 	// parenthetical; moreover, message names are more restrictive
 	MessageHandlerOpen
 		= "on" messageName ParameterList? lineTerminator
-	
+
 	MessageHandlerClose
 		= "end" messageName
-	
+
 	MessageHandler
 		= MessageHandlerOpen StatementList? MessageHandlerClose
 
@@ -39,7 +39,7 @@
 	ParameterList (parameter list)
 		// TODO do we need to prevent keyword overload?
 		= NonemptyListOf<#(letter | digit)+, ", ">
-		
+
 	StatementList (a statement list, comments included)
 		= StatementLine+
 
@@ -62,7 +62,9 @@
    		= "go to" ("next" | "previous") systemObject --goToDirection
    		| "go to" systemObject objectId --goToByReference
 		| "answer" stringLiteral --answer
-		| command_arbitrary 
+		| "delete" "this"? systemObject objectId? --deleteModel
+		| "add" systemObject "to" systemObject--addModel
+		| command_arbitrary
 
 	command_arbitrary (an arbitrary command)
 		= letter+
@@ -78,7 +80,7 @@
 	// we have for MessageHandler. We could even use the
 	// MessageHandlerClose for functions, since they are
 	// identical
-	FunctionHandlerSyntax<name, parameters, statements> 
+	FunctionHandlerSyntax<name, parameters, statements>
 		= "function" name "(" ParameterList? ")" lineTerminator statements? "end" name
 
 	FunctionHandlerOpen = "function" functionName "(" ParameterList? ")" lineTerminator
@@ -86,9 +88,9 @@
 	FunctionHandlerClose = "end" functionName
 
 	FunctionHandler = FunctionHandlerOpen StatementList? FunctionHandlerClose
-	
+
 	// For the moment we allow only the "function()" syntax to describe a function
-	// (as opposed to "the function" or "function of" more general syntax found on HT) 
+	// (as opposed to "the function" or "function of" more general syntax found on HT)
 	// TODO should we insist that authered functions start with a lower case letter?
 	Function
 		= builtInFunction "(" ParameterList? ")" --builtInFunction
@@ -113,7 +115,7 @@
 	builtInFunction (natively supported functions in SimpleTalk)
 		= builtInMathFunction | "charToNum" | "date" | "length" | "menus"
 		| "mouseClick" | "mouse"
-		| modifierKeyName "key" -- modifierKeyBuiltInFunction 
+		| modifierKeyName "key" -- modifierKeyBuiltInFunction
 
 	// TODO should we insist on certain functions having no argument or single args
 	// at the grammar level?
@@ -155,7 +157,7 @@
 		= "do" | "next" | "else" | "on" | "end" | "pass" | "exit" | "repeat" | "function" | "return" | "global" | "send" | "if" | "then"
 
 	objectId (an identifier of an object, string, numeric or mixed)
-		= (letter | digit)*
+		= ~systemObject (letter | digit)*
 
 
 	// Helper utilities
@@ -173,9 +175,9 @@
 	// closing quotes
 	stringLiteral
 		= quoteMark nonLineTerminator+ quoteMark
-	
+
 	quoteMark = "\""
-	
+
 	// Basic whitespace and line termination handling.
 	// Note that we override the default Ohm definition
 	// of `space` to only be spaces or tabs, and NOT

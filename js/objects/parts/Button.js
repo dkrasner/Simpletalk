@@ -79,13 +79,6 @@ class Button extends Part {
         return 'button';
     }
 
-
-    // For now, Buttons don't take
-    // any subpart types
-    acceptsSubpart(aPart){
-        return false;
-    }
-
     //TODO: implement this property
     // getter for real
     getSelectedText(propName, propVal){

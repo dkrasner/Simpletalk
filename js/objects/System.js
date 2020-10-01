@@ -221,15 +221,11 @@ const System = {
 
     receiveMessage: function(aMessage){
         switch(aMessage.type){
-            case 'newModel':
-                return this.newModel(aMessage.modelType, aMessage.ownerId);
             case 'newView':
                 return this.newView(
                     aMessage.viewType,
                     aMessage.modelId
                 );
-            case 'removeModel':
-                return this.removeModel(aMessage.modelId);
             case 'propertyChanged':
                 return this.updateSerialization(
                     aMessage.partId
@@ -344,7 +340,7 @@ const System = {
     // Remove the model with the given ID from
     // the System's registry, as well as from the subparts
     // array of any owners
-    removeModel: function(modelId){
+    deleteModel: function(modelId){
         let foundModel = this.partsById[modelId];
         if(!foundModel){
             return false;
@@ -477,7 +473,7 @@ const System = {
     removeSerializationFor: function(aPartId){
         // Remove the script tag serialization for the given
         // Part ID. This is usually done after a Part has been
-        // removed from the System, via removeModel.
+        // removed from the System, via deleteModel.
         let element = document.querySelector(`script[data-part-id="${aPartId}"]`);
         if(element){
             element.parentElement.removeChild(element);
@@ -569,6 +565,9 @@ const System = {
 };
 
 /** Add Default System Command Handlers **/
+System._commandHandlers['deleteModel'] = System.deleteModel;
+System._commandHandlers['newModel'] = System.newModel;
+
 System._commandHandlers['answer'] = function(text){
     alert(text);
 };

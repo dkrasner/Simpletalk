@@ -2,8 +2,8 @@
  * System Add/Remove Model Tests
  * --------------------------------------
  * Integration test of System messages
- * `newModel` and `removeModel`.
- * These add and remove models from the System,
+ * `newModel` and `deleteModel`.
+ * These add and delete models from the System,
  * along with references to any of their Views.
  */
 import chai from 'chai';
@@ -34,9 +34,9 @@ describe('newModel tests', () => {
 
     it('Can send newModel message without error (add button to current card)', () => {
         let msg = {
-            type: 'newModel',
-            modelType: 'button',
-            ownerId: currentCard.id
+            type: 'command',
+            commandName: 'newModel',
+            args: ['button', currentCard.id]
         };
         let sendFunc = function(){
             currentCard.sendMessage(msg, System);
@@ -45,17 +45,27 @@ describe('newModel tests', () => {
         expect(sendFunc).to.not.throw(Error);
     });
 
-    it('Current card model now has button subpart', () => {
-        let buttons = currentCard.subparts.filter(part => {
-            return part.type == 'button';
-        });
-
-        assert.equal(buttons.length, 1);
-    });
-
     it('Current card view has a child button view', () => {
         let buttonViews = Array.from(currentCardView.querySelectorAll('st-button'));
         assert.equal(buttonViews.length, 1);
+    });
+
+    it('Can send newModel message in a context (without ownerId) without error (add button to current card)', () => {
+        let msg = {
+            type: 'command',
+            commandName: 'newModel',
+            args: ['button']
+        };
+        let sendFunc = function(){
+            currentCard.sendMessage(msg, currentCard);
+        };
+
+        expect(sendFunc).to.not.throw(Error);
+    });
+
+    it('Current card view has a second child button view', () => {
+        let buttonViews = Array.from(currentCardView.querySelectorAll('st-button'));
+        assert.equal(buttonViews.length, 2);
     });
 
     it('There should be a serialization for the new button', () => {
@@ -65,8 +75,16 @@ describe('newModel tests', () => {
     });
 });
 
-describe('removeModel tests', () => {
-    it('Can send removeModel message without error (remove the button by id)', () => {
+describe('deleteModel tests', () => {
+    beforeEach(function() {
+        let msg = {
+            type: 'command',
+            commandName: 'newModel',
+            args: ['button', currentCard.id]
+        };
+        currentCard.sendMessage(msg, System);
+    });
+    it('Can send deleteModel message without error (delete the button by id)', () => {
         let targetButton = currentCard.subparts.filter(part => {
             return part.type == 'button';
         })[0];
@@ -74,8 +92,9 @@ describe('removeModel tests', () => {
         assert.exists(targetButton);
 
         let msg = {
-            type: 'removeModel',
-            modelId: targetButton.id
+            type: 'command',
+            commandName: 'deleteModel',
+            args: [targetButton.id]
         };
 
         let sendFunc = function(){
@@ -84,16 +103,83 @@ describe('removeModel tests', () => {
 
         expect(sendFunc).to.not.throw(Error);
     });
+    it('Can send deleteModel message without error (delete the button without id, self referentially)', () => {
+        let targetButton = currentCard.subparts.filter(part => {
+            return part.type == 'button';
+        })[0];
 
-    it('Current card should not longer have any button subparts', () => {
-        let buttons = currentCard.subparts.filter(subpart => {
-            return subpart.type == 'button';
+        assert.exists(targetButton);
+
+        let msg = {
+            type: 'command',
+            commandName: 'deleteModel',
+            args: [undefined, "button"]
+        };
+
+        let sendFunc = function(){
+            currentCard.sendMessage(msg, targetButton);
+        };
+
+        expect(sendFunc).to.not.throw(Error);
+    });
+    it('Current card should delete button subpart by Id', () => {
+        let targetButton = currentCard.subparts.filter(part => {
+            return part.type == 'button';
+        })[0];
+
+        assert.exists(targetButton);
+
+        let msg = {
+            type: 'command',
+            commandName: 'deleteModel',
+            args: [targetButton.id]
+        };
+
+        currentCard.sendMessage(msg, targetButton);
+
+        let matchingButtons = currentCard.subparts.filter(subpart => {
+            return subpart.id == targetButton.id;
         });
-        assert.equal(buttons.length, 0);
+        assert.equal(matchingButtons.length, 0);
     });
 
-    it('Current CardView should not have any direct ButtonView children', () => {
-        let buttonViews = currentCardView.querySelectorAll('st-button');
+    it('Current CardView should not have any direct ButtonView children after it is deleted', () => {
+        let targetButton = currentCard.subparts.filter(part => {
+            return part.type == 'button';
+        })[0];
+
+        assert.exists(targetButton);
+
+        let msg = {
+            type: 'command',
+            commandName: 'deleteModel',
+            args: [targetButton.id]
+        };
+
+        currentCard.sendMessage(msg, System);
+        let buttonViews = currentCardView.querySelectorAll(`[part-id="{targetButton.id}"]`);
         assert.equal(buttonViews.length, 0);
     });
+
+    it('Current card should delete button subpart wihout Id, self-referentially', () => {
+        let targetButton = currentCard.subparts.filter(part => {
+            return part.type == 'button';
+        })[0];
+
+        assert.exists(targetButton);
+
+        let msg = {
+            type: 'command',
+            commandName: 'deleteModel',
+            args: [undefined, "button"]
+        };
+
+        currentCard.sendMessage(msg, targetButton);
+
+        let matchingButtons = currentCard.subparts.filter(subpart => {
+            return subpart.id == targetButton.id;
+        });
+        assert.equal(matchingButtons.length, 0);
+    });
+
 });

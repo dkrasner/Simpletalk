@@ -12,15 +12,13 @@
  * SimpleTalk environment.
  */
 import Part from './Part.js';
-import Card from './Card.js';
-import Field from './Field.js';
-import Stack from './Stack.js';
-import Background from './Background.js';
-import Button from './Button.js';
+
 
 class WorldStack extends Part {
     constructor(){
         super(null);
+
+        this.acceptedSubpartTypes = ["stack"];
 
         // The currentStack is the
         // stack that should be currently displayed.
@@ -89,13 +87,6 @@ class WorldStack extends Part {
     // 'handlers of last resort'
     delegateMessage(aMessage){
         this.sendMessage(aMessage, window.System);
-    }
-
-    // Override the subpart validity check.
-    // For now, the WorldStack only accepts subparts
-    // that are Stacks
-    acceptsSubpart(aPart){
-        return aPart.type == 'stack';
     }
 };
 

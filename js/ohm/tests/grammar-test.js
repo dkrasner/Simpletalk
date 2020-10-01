@@ -1,4 +1,4 @@
-var ohm = require('ohm-js');
+ohm = require('ohm-js');
 // Instantiate the grammar.
 var fs = require('fs');
 var g = ohm.grammar(fs.readFileSync('./js/ohm/simpletalk.ohm'));
@@ -112,7 +112,7 @@ describe("SimpleTalk Grammar", () => {
             global var1, var
             exit myNewMessage\nend myNewMessage`
             matchAndsemanticMatchTest(s, 'MessageHandler')
-            
+
             const s2 = `on myNewMessage arg1, arg2
             global var1, var
             global var1, var
@@ -554,6 +554,52 @@ describe("SimpleTalk Grammar", () => {
             });
             it ("Bad go to: invalid object", () => {
                 const s = "go to world 42";
+                semanticMatchFailTest(s, "Command")
+            });
+        });
+        describe("Remove Model", () => {
+            it ("Basic Remove (no id)", () => {
+                const direction = ["stack", "background", "card", "button"];
+                direction.forEach((d) => {
+                    const s = `delete this ${d}`;
+                    semanticMatchTest(s, "Command");
+                    semanticMatchTest(s, "Command_deleteModel");
+                    semanticMatchTest(s, "Statement");
+                });
+            });
+            it ("Basic Remove (with id)", () => {
+                const direction = ["stack", "background", "card", "button"];
+                direction.forEach((d) => {
+                    const s = `delete ${d} 20`;
+                    semanticMatchTest(s, "Command");
+                    semanticMatchTest(s, "Command_deleteModel");
+                    semanticMatchTest(s, "Statement");
+                });
+            });
+            it ("Bad delete (world)", () => {
+                const s = "delete this world"
+                semanticMatchFailTest(s, "Command_deleteModel")
+                semanticMatchFailTest(s, "Command")
+            });
+        });
+        describe("Add Model", () => {
+            it ("Basic Add (no id)", () => {
+                const direction = ["stack", "background", "card", "button"];
+                direction.forEach((d) => {
+                    const s = `add ${d} to card`;
+                    semanticMatchTest(s, "Command");
+                    semanticMatchTest(s, "Command_addModel");
+                    semanticMatchTest(s, "Statement");
+                });
+            });
+            it ("Bad add (world)", () => {
+                const s = "add world to card"
+                semanticMatchFailTest(s, "Command_addModel")
+                semanticMatchFailTest(s, "Command")
+            });
+            it ("Bad add (no target)", () => {
+                const s = "add button"
+                semanticMatchFailTest(s, "Command_addModel")
                 semanticMatchFailTest(s, "Command")
             });
         });

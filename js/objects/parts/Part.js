@@ -19,6 +19,10 @@ class Part {
 
         // An array of child parts
         this.subparts = [];
+        // a list of all accepted subparts by type
+        // By default this is null and each Part subclcass should
+        // specify aif otherwise
+        this.acceptedSubpartTypes = [];
 
         this.partProperties = new PartProperties();
         this._owner = anOwnerPart;
@@ -46,10 +50,15 @@ class Part {
         this.removePropertySubscriber = this.removePropertySubscriber.bind(this);
         this.serialize = this.serialize.bind(this);
         this.setFromDeserialized = this.setFromDeserialized.bind(this);
+        this.deleteModelCmdHandler = this.deleteModelCmdHandler.bind(this);
 
 
         // Finally, we finish initialization
         this.setupProperties();
+
+        // command handlers
+        this.setCmdHandler("deleteModel", this.deleteModelCmdHandler);
+        this.setCmdHandler("newModel", this.newModelCmdHandler);
     }
 
     // Convenience getter to get the id
@@ -156,10 +165,10 @@ class Part {
     /** Subpart Access **/
     /**
      * Each subclass will implement its own set of checks,
-     * and throw an approprite error if the subpart is invalid.
+     * and throw an approprite error if the subpart type is invalid.
      */
-    acceptsSubpart(aPart){
-        return true;
+    acceptsSubpart(aPartType){
+        return this.acceptedSubpartTypes.includes(aPartType.toLowerCase());
     }
 
     /**
@@ -169,8 +178,8 @@ class Part {
      * added part to be this part.
      */
     addPart(aPart){
-        if(!this.acceptsSubpart(aPart)){
-            throw new Error(`${this.typ}e does not accept subparts of type ${aPart.type}`);
+        if(!this.acceptsSubpart(aPart.type)){
+            throw new Error(`${this.type} does not accept subparts of type ${aPart.type}`);
         }
 
         let found = this.subparts.indexOf(aPart);
@@ -237,7 +246,7 @@ class Part {
             // instance as the 'this' context for
             // the handler
             let boundHandler = handler.bind(this);
-            boundHandler();
+            boundHandler(...aMessage.args);
         } else {
             // Otherwise, we have no handler for
             // it, so we delegate along the
@@ -267,6 +276,35 @@ class Part {
         this._functionHandlers[funcName] = handler;
     }
 
+    /** Command Handlers
+        ----------------
+        Command handlers which are invoked at the Part level
+        which are not immediately delegaed to the Part._owner
+    **/
+
+    deleteModelCmdHandler(objectId, modelType){
+        if (modelType && modelType.toLowerCase() === this.name.toLowerCase() && !objectId){
+            objectId = this.id
+        }
+        this.delegateMessage({
+            type: 'command',
+            commandName: 'deleteModel',
+            args: [objectId, modelType]
+        });
+    }
+
+    newModelCmdHandler(modelType, ownerId){
+        // if no owner Id is provided and I accept the modelType
+        // as a subpart, then add the new model as a subpart
+        if (this.acceptsSubpart(modelType) && !ownerId){
+            ownerId = this.id;
+        }
+        this.delegateMessage({
+            type: 'command',
+            commandName: 'newModel',
+            args: [modelType, ownerId]
+        });
+    }
     /** Property Subscribers
         ------------------------
         Objects added as property subscribers

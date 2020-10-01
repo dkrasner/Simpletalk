@@ -44,9 +44,9 @@ describe('Button System Command Tests', () => {
             let stackEl = document.querySelector('.current-stack');
             let cardEl = stackEl.querySelector('st-card');
             let msg = {
-                type: 'newModel',
-                modelType: 'button',
-                owner: cardEl.model
+                type: "command",
+                commandName: "newModel",
+                args: ["button", card.model.id]
             };
             System.receiveMessage(msg);
             let btnEl = document.querySelector('st-button');
