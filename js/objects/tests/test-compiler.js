@@ -15,7 +15,7 @@ import simpleTalkSemantics from '../../ohm/semantics.js';
 let MockObject = new Part();
 
 describe("SimpleTalk Compiler", function () {
-    beforeEach(function() { 
+    beforeEach(function() {
         MockObject._commandHandlers = {};
         MockObject._scriptSemantics = {};
     })
@@ -134,6 +134,108 @@ describe("SimpleTalk Compiler", function () {
             assert.equal(typeof onMouseUpHandler, "function");
             assert.isNotNull(onDoSomethingHandler);
             assert.equal(typeof onDoSomethingHandler, "function");
+        });
+        describe("Remove Model Commands", function () {
+            var systemObjects = ["background", "button", "card", "field", "stack"];
+            systemObjects = systemObjects.concat(systemObjects.map(w => w.charAt(0).toUpperCase() + w.slice(1)));
+            const invalidObjects = ["ackground", "cardd", "world"]
+
+            it('messageHandler (args, "delete" command)', () => {
+                systemObjects.forEach((s) => {
+                    const sourceCode = `on customMessage idArg\n delete ${s} idArg\nend customMessage`;
+                    const expectedMessages = [
+                    {
+                        type: "command",
+                        commandName: "deleteModel",
+                        args: ["idArg", s]
+                    }];
+                    compiler.compile(sourceCode, MockObject);
+
+                    const scriptSemantics = MockObject._scriptSemantics["customMessage"];
+                    assert.deepEqual(scriptSemantics, expectedMessages);
+
+                    const concreteHandler = MockObject._commandHandlers["customMessage"];
+                    assert.isNotNull(concreteHandler);
+                    assert.equal(typeof concreteHandler, "function");
+                })
+            });
+            it('messageHandler (no args, no id, "delete" command)', () => {
+                systemObjects.forEach((d) => {
+                    const handler = `on mouseUp\n delete ${d}\nend mouseUp`;
+                    const expectedMessages = [
+                    {
+                        type: "command",
+                        commandName: "deleteModel",
+                        args: [undefined, d]
+                    }];
+                    compiler.compile(handler, MockObject);
+                    const scriptSemantics = MockObject._scriptSemantics["mouseUp"];
+                    assert.deepEqual(scriptSemantics, expectedMessages);
+                    const concreteHandler = MockObject._commandHandlers["mouseUp"];
+                    assert.isNotNull(concreteHandler);
+                    assert.equal(typeof concreteHandler, "function");
+                })
+            });
+            it('messageHandler (no args, no id, "delete this" command)', () => {
+                systemObjects.forEach((d) => {
+                    const handler = `on mouseUp\n delete this ${d}\nend mouseUp`;
+                    const expectedMessages = [
+                    {
+                        type: "command",
+                        commandName: "deleteModel",
+                        args: [undefined, d]
+                    }];
+                    compiler.compile(handler, MockObject);
+                    const scriptSemantics = MockObject._scriptSemantics["mouseUp"];
+                    assert.deepEqual(scriptSemantics, expectedMessages);
+                    const concreteHandler = MockObject._commandHandlers["mouseUp"];
+                    assert.isNotNull(concreteHandler);
+                    assert.equal(typeof concreteHandler, "function");
+                })
+            });
+            it('messageHandler ("delete" invalid object)', () => {
+                invalidObjects.forEach((s) => {
+                    const sourceCode = `on customMessage idArg\n delete model ${s} idArg\nend customMessage`;
+                    expect(() => compiler.compile(sourceCode, MockObject)).to.throw();
+                })
+            });
+            it('messageHandler ("delete" invalid construction)', () => {
+                const sourceCode = `on customMessage idArg\n delete idArg\nend customMessage`;
+                expect(() => compiler.compile(sourceCode, MockObject)).to.throw();
+            });
+        });
+        describe("Add Model Commands", function () {
+            var systemObjects = ["background", "button", "card", "field", "stack"];
+            systemObjects = systemObjects.concat(systemObjects.map(w => w.charAt(0).toUpperCase() + w.slice(1)));
+            const invalidObjects = ["ackground", "cardd", "world"]
+
+            it('messageHandler (no args, "add" command)', () => {
+                systemObjects.forEach((d) => {
+                    const handler = `on mouseUp\n add ${d} to card\nend mouseUp`;
+                    const expectedMessages = [
+                    {
+                        type: "command",
+                        commandName: "newModel",
+                        args: [d]
+                    }];
+                    compiler.compile(handler, MockObject);
+                    const scriptSemantics = MockObject._scriptSemantics["mouseUp"];
+                    assert.deepEqual(scriptSemantics, expectedMessages);
+                    const concreteHandler = MockObject._commandHandlers["mouseUp"];
+                    assert.isNotNull(concreteHandler);
+                    assert.equal(typeof concreteHandler, "function");
+                })
+            });
+            it('messageHandler ("add" invalid object)', () => {
+                invalidObjects.forEach((s) => {
+                    const sourceCode = `on customMessage targetArg\n add ${s} to targetArg\nend customMessage`;
+                    expect(() => compiler.compile(sourceCode, MockObject)).to.throw();
+                })
+            });
+            it('messageHandler ("add" invalid construction)', () => {
+                const sourceCode = `on customMessage idArg\n add idArg\nend customMessage`;
+                expect(() => compiler.compile(sourceCode, MockObject)).to.throw();
+            });
         });
     });
 });

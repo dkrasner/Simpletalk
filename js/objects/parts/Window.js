@@ -18,7 +18,7 @@ class Window extends Part {
     constructor(owner, name, target){
         super(owner, name);
 
-        this.acceptedPartTypes = [
+        this.acceptedSubpartTypes = [
             'card',
             'stack',
             'world'
@@ -76,7 +76,7 @@ class Window extends Part {
      * Card, Stack, or WorldStack.
      */
     addPart(aPart){
-        let isValid = this.acceptedPartTypes.includes(aPart.type);
+        let isValid = this.acceptsSubpart(aPart.type);
         if(!isValid){
             // Consider replacing this generic exception
             // with a message based approach that sends
@@ -90,10 +90,6 @@ class Window extends Part {
         });
         this.subparts.push(aPart);
         aPart._owner = this;
-    }
-
-    acceptsSubpart(aPart){
-        return aPart.type == 'window';
     }
 
     delegateMessage(aMessage){

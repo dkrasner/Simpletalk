@@ -24,12 +24,6 @@ class EricField extends Part {
         );
     }
 
-    // For now, EricFields don't accept
-    // any subparts
-    acceptsSubpart(aPart){
-        return false;
-    }
-
     get type(){
         return 'eric-field';
     }

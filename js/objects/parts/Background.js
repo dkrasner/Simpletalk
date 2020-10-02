@@ -22,15 +22,7 @@ class Background extends Card {
 
         this.isBackground = true;
 
-        this.invalidSubpartTypes = [
-            'stack',
-            'card',
-            'world'
-        ];
-    }
-
-    acceptsSubpart(aPart){
-        return !this.invalidSubpartTypes.includes(aPart.type);
+        this.acceptedSubpartTypes = ["card"];
     }
 
     get type(){
