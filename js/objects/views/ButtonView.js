@@ -7,35 +7,6 @@ import PartView from './PartView.js';
 
 const templateString = `
                 <style>
-                 * {
-                     box-sizing: border-box;
-                 }
-
-                 :host {
-                     box-sizing: border-box;
-                     display: inline-flex;
-                     flex-direction: column;
-                     justify-content: center;
-                     align-items: center;
-                     position: absolute;
-                     background-color: white;
-                     padding-left: 10px;
-                     padding-right: 10px;
-                     padding-top: 5px;
-                     padding-bottom: 5px;
-                     font-family: monospace;
-                     border: 1px solid rgb(50, 50, 50);
-                     user-select: none;
-                 }
-
-                 :host(:hover) {
-                     cursor: pointer;
-                 }
-
-                 :host(:active) {
-                     background-color: black;
-                     color: white;
-                 }
                  :host(.editing){
                      background-color: white;
                      color: black;
@@ -69,7 +40,6 @@ class ButtonView extends PartView {
             this.addEventListener('mouseup', this.onMouseUp);
             this.addEventListener('mouseenter', this.onMouseEnter);
             this.addEventListener('click', this.onClick);
-            this.addEventListener('contextmenu', this.onContextMenu);
 
             // If there is a bound model, set all
             // the relevant view properties from
@@ -82,12 +52,38 @@ class ButtonView extends PartView {
 
     disconnectedCallback(){
         this.removeEventListener('click', this.onClick);
-        this.removeEventListener('contextmenu', this.onContextMenu);
         this.removeEventListener('mouseup', this.onMouseUp);
     }
 
     onClick(event){
-        // Does nothing for now
+        if(event.button == 0 && event.shiftKey){
+            event.preventDefault();
+            this.openHalo();
+        }
+    }
+
+    closeHalo(){
+        let foundHalo = this._shadowRoot.querySelector('st-halo');
+        if(foundHalo){
+            this._shadowRoot.removeChild(foundHalo);
+        }
+    }
+
+    openHalo(){
+        // Compute the appropriate width and height from
+        // current rect
+        let rect = this.getBoundingClientRect();
+        this.style.width = `${Math.floor(rect.width)}px`;
+        this.style.height = `${Math.floor(rect.height)}px`;
+        this.style.top = `${Math.floor(rect.top)}px`;
+        this.style.left = `${Math.floor(rect.left)}px`;
+        let foundHalo = this._shadowRoot.querySelector('st-halo');
+        if(foundHalo){
+            this._shadowRoot.removeChild(foundHalo);
+        } else {
+            let newHalo = document.createElement('st-halo');
+            this._shadowRoot.appendChild(newHalo);
+        }
     }
 
     onMouseUp(event){

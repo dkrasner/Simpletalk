@@ -12,6 +12,9 @@ import {Part} from './Part.js';
 import {
     BasicProperty
 } from '../properties/PartProperties.js';
+import {
+    addLayoutProperties
+} from '../properties/LayoutProperties.js';
 
 class Card extends Part {
     constructor(owner, name){
@@ -50,6 +53,11 @@ class Card extends Part {
                 name
             );
         }
+
+        // Cards have the layout set
+        // of properties, so we add
+        // those
+        addLayoutProperties(this);
     }
 
     get type(){

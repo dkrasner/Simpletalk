@@ -8,19 +8,6 @@ import PartView from './PartView.js';
 
 const templateString = `
                 <style>
-                 * {
-                     box-sizing: border-box;
-                 }
-                 :host {
-                     display: none;
-                     position: relative;
-                     width: 100%;
-                     height: 100%;
-                 }
-:host(.current-card){
-display: block;
-}
-
                 </style>
                 <slot></slot>
 `;
@@ -36,6 +23,9 @@ class CardView extends PartView {
         this._shadowRoot.appendChild(
             template.content.cloneNode(true)
         );
+
+        // Bind component methods
+        this.setPropsFromModel = this.setPropsFromModel.bind(this);
     }
 
     connectedCallback(){
@@ -50,6 +40,41 @@ class CardView extends PartView {
             if(!currentCard){
                 this.classList.add('current-card');
             }
+        }
+    }
+
+    receiveMessage(aMessage){
+        if(aMessage.type == 'propertyChanged'){
+            this.setPropsFromModel();
+        }
+    }
+
+    setPropsFromModel(){
+        // Layout stuff
+        let layout = this.model.partProperties.getPropertyNamed(
+            this.model,
+            'layout'
+        );
+        if(layout == 'list'){
+            this.classList.add('list-layout');
+        } else {
+            this.classList.remove('list-layout');
+        }
+        let listDirection = this.model.partProperties.getPropertyNamed(
+            this.model,
+            'listDirection'
+        );
+        if(layout && listDirection == 'row'){
+            this.classList.add('list-row');
+            this.classList.remove('list-column');
+        } else if(layout && listDirection){
+            this.classList.remove('list-row');
+            this.classList.add('list-column');
+        } else {
+            this.classList.remove(
+                'list-row',
+                'list-column'
+            );
         }
     }
 };

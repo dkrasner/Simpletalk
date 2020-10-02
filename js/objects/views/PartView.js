@@ -22,6 +22,8 @@ class PartView extends HTMLElement {
         this.setModel = this.setModel.bind(this);
         this.unsetModel = this.unsetModel.bind(this);
         this.sendMessage = this.sendMessage.bind(this);
+        this.openHalo = this.openHalo.bind(this);
+        this.closeHalo = this.closeHalo.bind(this);
     }
 
     modelPropertyChanged(){
@@ -38,6 +40,14 @@ class PartView extends HTMLElement {
         this.model = null;
         aModel.removePropertySubscriber(this);
         this.setAttribute('part-id', "");
+    }
+
+    openHalo(){
+        // By default, do nothing
+    }
+
+    closeHalo(){
+        // By default, do nothing
     }
 
     sendMessage(aMessage, target){

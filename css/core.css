@@ -1,0 +1,179 @@
+/**
+ * SimpleTalk Core CSS
+ * ---------------------------------
+ * This CSS file includes all "public" stlying for
+ * the base PartViews, like WorldView, StackView, etc.
+ * If you come across behavior not defined in this file,
+ * be sure to check the Shadow DOM styling for the given
+ * View components.
+ **/
+
+/* Prerequisites */
+* {
+    box-sizing: border-box;
+}
+
+
+/* =World Styles
+ *----------------------------------------------------*/
+st-world {
+    display: block;
+    position: relative;
+    width: 100%;
+    height: 100%;
+    background-color: pink;
+}
+
+
+/* =Stack Styles
+ *----------------------------------------------------*/
+st-stack {
+    display: block;
+    width: 100%;
+    height: 100%;
+    position: relative;
+    background-color: rgba(200, 200, 200, 0.5);
+}
+
+
+/* =Background Styles
+ *----------------------------------------------------*/
+st-background {
+    display: block;
+    position: absolute;
+    width: 100%;
+    height: 100%;
+}
+
+/* Give a pinkish background color to the background
+ * of the current Stack in the world (but not Windows, etc)
+ */
+st-world > .current-stack > st-background {
+    background-color: rgb(200, 200, 222);
+}
+
+
+
+
+/* =Card Styles
+ *----------------------------------------------------*/
+st-card {
+    display: none;
+    position: relative;
+    width: 100%;
+    height: 100%;
+}
+
+.current-card {
+    display: block;
+}
+
+/* =Button Styles
+ *----------------------------------------------------*/
+st-button {
+    box-sizing: border-box;
+    display: flex;
+    position: absolute;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    background-color: white;
+    padding-left: 10px;
+    padding-right: 10px;
+    padding-top: 5px;
+    padding-bottom: 5px;
+    font-family: monospace;
+    border: 1px solid rgb(50, 50, 50);
+    user-select: none;
+}
+
+st-button:hover {
+    cursor: pointer;
+}
+
+st-button:active {
+    background-color: black;
+    color: white;
+}
+
+
+/* =Layout Styles
+ *----------------------------------------------------*/
+st-layout {
+    display: flex;
+    position: absolute;
+    border: 1px solid transparent;
+    box-sizing: border-box;
+}
+
+st-layout.list-column {
+    flex-direction: column;
+}
+
+st-layout.list-row {
+    flex-direction: row;
+}
+
+
+/* =Window Styles
+ *----------------------------------------------------*/
+st-window {
+    box-sizing: border-box;
+    display: flex;
+    position: absolute;
+    flex-direction: column;
+    background-color: rgb(253, 253, 253);
+    border: 1px solid rgba(100, 100, 100, 0.2);
+    box-shadow: 3px 4px 4px 0px rgba(50, 50, 50, 0.3);
+}
+
+/* width and height of stacks in windows should
+ * adjust based on contents, but at minimum be 100%
+ * of parent
+ */
+st-window > st-stack,
+st-window > st-stack > .current-card {
+    min-width: auto;
+    min-height: auto;
+    height: auto;
+    width: auto
+}
+
+/* This is the fix for Toolbox window's
+ * layout, but it's hacky and suggests that
+ * perhaps layouts should be more fundamental
+ **/
+st-window > st-stack > .current-card > st-layout {
+    position: relative;
+}
+
+/* =Container Styles
+ *---------------------------------------------------------*/
+st-container {
+    display: block;
+    position: absolute;
+    border: 1px solid rgb(150, 150, 150);
+}
+
+st-container:empty {
+    min-height: 100px;
+    min-width: 100px;
+}
+
+/* =Layout Class Styles
+ * --------------------------------------------------------*/
+.list-layout {
+    display: flex;
+}
+
+.list-layout > * {
+    position: relative !important;
+}
+
+.list-row {
+    flex-direction: row;
+}
+
+.list-column {
+    flex-direction: column;
+}
