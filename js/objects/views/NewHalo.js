@@ -87,7 +87,7 @@ const templateString = `
  #halo-right-column {
      right: 0;
      top: 0;
-     align-items: end;
+     align-items: flex-end;
  }
 
  #halo-left-column {
@@ -103,10 +103,22 @@ const templateString = `
      background-color: rgb(220, 220, 220);
  }
 
+ .halo-button:hover {
+     cursor: pointer;
+ }
+
+ .halo-button:active {
+     border: 1px solid black;
+ }
+
+ .halo-button.hidden {
+     display: none;
+ }
+
 </style>
 
 <div id="halo-top-row" class="halo-row">
-    <div id="halo-close" class="halo-button">
+    <div id="halo-delete" class="halo-button">
         ${deleteIcon}
     </div>
 </div>
@@ -147,6 +159,9 @@ class Halo extends HTMLElement {
         this.onMouseDown = this.onMouseDown.bind(this);
         this.onMouseUp = this.onMouseUp.bind(this);
         this.onMouseMove = this.onMouseMove.bind(this);
+        this.onResizeMouseDown = this.onResizeMouseDown.bind(this);
+        this.onResizeMouseUp = this.onResizeMouseUp.bind(this);
+        this.onResizeMouseMove = this.onResizeMouseMove.bind(this);
     }
 
     connectedCallback(){
@@ -157,6 +172,27 @@ class Halo extends HTMLElement {
 
             // Add event listeners
             this.addEventListener('mousedown', this.onMouseDown);
+
+            // Resize button
+            this.resizer = this.shadowRoot.getElementById('halo-resize');
+            this.resizer.addEventListener('mousedown', this.onResizeMouseDown);
+            if(!this.targetElement.wantsHaloResize){
+                this.resizer.classList.add('hidden');
+            }
+
+            // Delete button
+            this.deleter = this.shadowRoot.getElementById('halo-delete');
+            this.deleter.addEventListener('click', this.targetElement.onHaloDelete);
+            if(!this.targetElement.wantsHaloDelete){
+                this.deleter.classList.add('hidden');
+            }
+
+            // Edit button
+            this.editor = this.shadowRoot.getElementById('halo-script-edit');
+            this.editor.addEventListener('click', this.targetElement.onHaloOpenEditor);
+            if(!this.targetElement.wantsHaloScriptEdit){
+                this.editor.classList.add('hidden');
+            }
         }
     }
 
@@ -166,12 +202,13 @@ class Halo extends HTMLElement {
 
         // Remove event listeners
         this.removeEventListener('mousedown', this.onMouseDown);
+        this.resizer.removeEventListener('mousedown', this.onResizeMouseDown);
     }
 
 
     /* Event Handling */
     onMouseDown(event){
-        if(event.button == 0){
+        if(event.button == 0 && this.targetElement.wantsHaloMove){
             document.addEventListener('mousemove', this.onMouseMove);
             document.addEventListener('mouseup', this.onMouseUp);
         }
@@ -190,6 +227,25 @@ class Halo extends HTMLElement {
     onMouseUp(event){
         document.removeEventListener('mousemove', this.onMouseMove);
         document.removeEventListener('mouseup', this.onMouseUp);
+    }
+
+    onResizeMouseDown(event){
+        event.stopPropagation();
+        document.addEventListener('mousemove', this.onResizeMouseMove);
+        document.addEventListener('mouseup', this.onResizeMouseUp);
+    }
+
+    onResizeMouseUp(event){
+        document.removeEventListener('mousemove', this.onResizeMouseMove);
+        document.removeEventListener('mouseup', this.onResizeMouseUp);
+    }
+
+    onResizeMouseMove(event){
+        let rect = this.targetElement.getBoundingClientRect();
+        let newWidth = event.movementX + rect.width;
+        let newHeight = event.movementY + rect.height;
+        this.targetElement.style.width = `${newWidth}px`;
+        this.targetElement.style.height = `${newHeight}px`;
     }
 };
 

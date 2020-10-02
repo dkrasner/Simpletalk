@@ -18,12 +18,20 @@ class PartView extends HTMLElement {
         this.isPartView = true;
         this.name = this.constructor.name;
 
+        // Halo settings. All are on by default
+        this.wantsHaloResize = true;
+        this.wantsHaloScriptEdit = true;
+        this.wantsHaloDelete = true;
+        // Note: see getter for wantsHaloMove
+
         // Bind component methods
         this.setModel = this.setModel.bind(this);
         this.unsetModel = this.unsetModel.bind(this);
         this.sendMessage = this.sendMessage.bind(this);
         this.openHalo = this.openHalo.bind(this);
         this.closeHalo = this.closeHalo.bind(this);
+        this.onHaloDelete = this.onHaloDelete.bind(this);
+        this.onHaloOpenEditor = this.onHaloOpenEditor.bind(this);
     }
 
     modelPropertyChanged(){
@@ -40,14 +48,6 @@ class PartView extends HTMLElement {
         this.model = null;
         aModel.removePropertySubscriber(this);
         this.setAttribute('part-id', "");
-    }
-
-    openHalo(){
-        // By default, do nothing
-    }
-
-    closeHalo(){
-        // By default, do nothing
     }
 
     sendMessage(aMessage, target){
@@ -78,6 +78,14 @@ class PartView extends HTMLElement {
         }
     }
 
+    toggleAntsBorder(){
+        if(this.classList.contains('marching-ants')){
+            this.classList.remove('marching-ants');
+        } else {
+            this.classList.add('marching-ants');
+        }
+    }
+
     onHaloDelete(){
         // What to do when the user clicks the
         // delete button on a halo for this partview.
@@ -90,6 +98,36 @@ class PartView extends HTMLElement {
             commandName: 'deleteModel',
             args: [this.model.id]
         }, window.System);
+    }
+
+    onHaloOpenEditor(){
+        // Send the message to open a script editor
+        // with this view's model as the target
+        this.model.sendMessage({
+            type: 'command',
+            commandName: 'openScriptEditor',
+            args: [this.model.id]
+        }, this.model);
+    }
+
+    get wantsHaloMove(){
+        if(!this.parentElement || !this.isConnected){
+            return false;
+        }
+        let parentModel = this.parentElement.model;
+        if(!parentModel){
+            return true;
+        }
+
+        let parentLayout = parentModel.partProperties.getPropertyNamed(
+            parentModel,
+            'layout'
+        );
+        if(!parentLayout || parentLayout == ""){
+            return true;
+        }
+
+        return false;
     }
 
 

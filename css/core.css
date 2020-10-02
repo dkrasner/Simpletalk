@@ -8,6 +8,19 @@
  * View components.
  **/
 
+/* Global Variables */
+:root {
+    --marching-ant-width: 1px;
+    --marching-ant-length: 10px;
+    --marching-ant-color: black;
+}
+
+/* Keyframe Animations */
+@keyframes marching-ants-animation {
+    0%   {background-position: 0 0, var(--marching-ant-length) 100%, 0 var(--marching-ant-length), 100% 0;}
+    100% {background-position: var(--marching-ant-length) 0, 0 100%, 0 0, 100% var(--marching-ant-length);}
+}
+
 /* Prerequisites */
 * {
     box-sizing: border-box;
@@ -87,11 +100,11 @@ st-button {
     user-select: none;
 }
 
-st-button:hover {
+st-button:not(.editing):hover {
     cursor: pointer;
 }
 
-st-button:active {
+st-button:not(.editing):active {
     background-color: black;
     color: white;
 }
@@ -176,4 +189,18 @@ st-container:empty {
 
 .list-column {
     flex-direction: column;
+}
+
+
+/* =Utility Classes
+ * --------------------------------------------------------*/
+.editing {
+    background-image: linear-gradient(90deg, var(--marching-ant-color) 50%, transparent 50%),
+        linear-gradient(90deg, var(--marching-ant-color) 50%, transparent 50%),
+        linear-gradient(0, var(--marching-ant-color) 50%, transparent 50%),
+        linear-gradient(0, var(--marching-ant-color) 50%, transparent 50%);
+    background-repeat: repeat-x, repeat-x, repeat-y, repeat-y;
+    background-size: var(--marching-ant-length) var(--marching-ant-width), var(--marching-ant-length) var(--marching-ant-width), var(--marching-ant-width) var(--marching-ant-length), var(--marching-ant-width) var(--marching-ant-length);
+    animation: marching-ants-animation 400ms infinite linear;
+    border-color: transparent;
 }
