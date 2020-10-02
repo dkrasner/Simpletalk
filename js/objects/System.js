@@ -664,9 +664,7 @@ System._commandHandlers['openToolbox'] = function(targetId){
     // Do more toolbox configuration here
     // like making the buttons with their
     // scripts, etc
-    let windowStackView = this.findViewById(windowStack.id);
     windowStackView.classList.add('window-stack');
-    let windowCurrentCardModel = windowStackView.querySelector('.current-card').model;
     let addBtnBtn = this.newModel('button', windowCurrentCardModel.id);
     addBtnBtn.partProperties.setPropertyNamed(
         addBtnBtn,
