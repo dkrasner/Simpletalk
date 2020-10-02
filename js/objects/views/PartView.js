@@ -61,6 +61,23 @@ class PartView extends HTMLElement {
         // messages
     }
 
+    openHalo(){
+        // Check to see if there's a halo in
+        // the component's shadow root already
+        let foundHalo = this.shadowRoot.querySelector('st-halo');
+        if(!foundHalo){
+            let newHalo = document.createElement('st-halo');
+            this.shadowRoot.appendChild(newHalo);
+        }
+    }
+
+    closeHalo(){
+        let foundHalo = this.shadowRoot.querySelector('st-halo');
+        if(foundHalo){
+            foundHalo.remove();
+        }
+    }
+
     onHaloDelete(){
         // What to do when the user clicks the
         // delete button on a halo for this partview.
