@@ -21,7 +21,7 @@ class Card extends Part {
         super(owner);
         this.stack = this._owner;
         this.acceptedSubpartTypes = [
-            "button", "field", "eric-field"
+            "button", "field", "eric-field", "container"
         ];
         this.isCard = true;
 
@@ -63,18 +63,6 @@ class Card extends Part {
     get type(){
         return 'card';
     }
-
-    // Override for delegation. Command messages
-    // that are passed or otherwise not handled
-    // by this card are delegated to the background
-    /*delegateMessage(aMessage){
-        this.sendMessage(
-            aMessage,
-            this.currentBackground
-        );
-        }*/
-    // For the time being, send directly to
-    // the Card owner and not the background.
 };
 
 export {
