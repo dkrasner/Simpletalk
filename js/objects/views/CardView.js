@@ -26,6 +26,20 @@ class CardView extends PartView {
 
         // Bind component methods
         this.setPropsFromModel = this.setPropsFromModel.bind(this);
+        this.onClick = this.onClick.bind(this);
+    }
+
+    onClick(event){
+        if(event.button == 0 && event.shiftKey){
+            event.preventDefault();
+            event.stopPropagation();
+            // TODO
+            // At the moment we close the toolbox in the UI natively
+            // but in the future this should probably be a message
+            if(!this.hasOpenToolbox){
+                this.openToolbox();
+            }
+        }
     }
 
     connectedCallback(){
@@ -40,6 +54,7 @@ class CardView extends PartView {
             if(!currentCard){
                 this.classList.add('current-card');
             }
+            this.addEventListener('click', this.onClick);
         }
     }
 

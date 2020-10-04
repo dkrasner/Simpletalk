@@ -703,6 +703,17 @@ System._commandHandlers['openToolbox'] = function(targetId){
             `Container ${newContainer.id}`
         );
     };
+
+    let addBtnToStackBtn = this.newModel('button', windowCurrentCardModel.id);
+    addBtnToStackBtn.partProperties.setPropertyNamed(
+        addBtnToStackBtn,
+        'name',
+        'Add Button to Stack'
+    );
+    addBtnToStackBtn._commandHandlers['mouseUp'] = function(){
+        console.log("add button to stack clicked");
+    };
+
 };
 
 System._commandHandlers['openScriptEditor'] = function(targetId){
