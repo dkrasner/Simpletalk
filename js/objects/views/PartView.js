@@ -18,12 +18,20 @@ class PartView extends HTMLElement {
         this.isPartView = true;
         this.name = this.constructor.name;
 
+        // Halo settings. All are on by default
+        this.wantsHaloResize = true;
+        this.wantsHaloScriptEdit = true;
+        this.wantsHaloDelete = true;
+        // Note: see getter for wantsHaloMove
+
         // Bind component methods
         this.setModel = this.setModel.bind(this);
         this.unsetModel = this.unsetModel.bind(this);
         this.sendMessage = this.sendMessage.bind(this);
         this.openHalo = this.openHalo.bind(this);
         this.closeHalo = this.closeHalo.bind(this);
+        this.onHaloDelete = this.onHaloDelete.bind(this);
+        this.onHaloOpenEditor = this.onHaloOpenEditor.bind(this);
     }
 
     modelPropertyChanged(){
@@ -42,14 +50,6 @@ class PartView extends HTMLElement {
         this.setAttribute('part-id', "");
     }
 
-    openHalo(){
-        // By default, do nothing
-    }
-
-    closeHalo(){
-        // By default, do nothing
-    }
-
     sendMessage(aMessage, target){
         window.System.sendMessage(aMessage, this, target);
     }
@@ -59,6 +59,31 @@ class PartView extends HTMLElement {
         // subclasses should implement
         // their own handling of received
         // messages
+    }
+
+    openHalo(){
+        // Check to see if there's a halo in
+        // the component's shadow root already
+        let foundHalo = this.shadowRoot.querySelector('st-halo');
+        if(!foundHalo){
+            let newHalo = document.createElement('st-halo');
+            this.shadowRoot.appendChild(newHalo);
+        }
+    }
+
+    closeHalo(){
+        let foundHalo = this.shadowRoot.querySelector('st-halo');
+        if(foundHalo){
+            foundHalo.remove();
+        }
+    }
+
+    toggleAntsBorder(){
+        if(this.classList.contains('marching-ants')){
+            this.classList.remove('marching-ants');
+        } else {
+            this.classList.add('marching-ants');
+        }
     }
 
     onHaloDelete(){
@@ -73,6 +98,36 @@ class PartView extends HTMLElement {
             commandName: 'deleteModel',
             args: [this.model.id]
         }, window.System);
+    }
+
+    onHaloOpenEditor(){
+        // Send the message to open a script editor
+        // with this view's model as the target
+        this.model.sendMessage({
+            type: 'command',
+            commandName: 'openScriptEditor',
+            args: [this.model.id]
+        }, this.model);
+    }
+
+    get wantsHaloMove(){
+        if(!this.parentElement || !this.isConnected){
+            return false;
+        }
+        let parentModel = this.parentElement.model;
+        if(!parentModel){
+            return true;
+        }
+
+        let parentLayout = parentModel.partProperties.getPropertyNamed(
+            parentModel,
+            'layout'
+        );
+        if(!parentLayout || parentLayout == ""){
+            return true;
+        }
+
+        return false;
     }
 
 

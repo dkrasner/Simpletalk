@@ -11,6 +11,10 @@ const templateString = `
                      background-color: white;
                      color: black;
                  }
+                 .st-button-label {
+                     user-select: none;
+                     pointer-events: none;
+                 }
                 </style>
                 <span class="st-button-label">
                     <slot></slot><!-- Text of the Name -->
@@ -27,6 +31,7 @@ class ButtonView extends PartView {
         this._shadowRoot.appendChild(this.template.content.cloneNode(true));
 
         // Bound methods
+        this.onMouseDown = this.onMouseDown.bind(this);
         this.onMouseUp = this.onMouseUp.bind(this);
         this.onMouseEnter = this.onMouseEnter.bind(this);
         this.onClick = this.onClick.bind(this);
@@ -37,6 +42,7 @@ class ButtonView extends PartView {
         if(this.isConnected){
 
             // Setup mouse event handling
+            this.addEventListener('mousedown', this.onMouseDown);
             this.addEventListener('mouseup', this.onMouseUp);
             this.addEventListener('mouseenter', this.onMouseEnter);
             this.addEventListener('click', this.onClick);
@@ -53,36 +59,24 @@ class ButtonView extends PartView {
     disconnectedCallback(){
         this.removeEventListener('click', this.onClick);
         this.removeEventListener('mouseup', this.onMouseUp);
+        this.removeEventListener('mousedown', this.onMouseDown);
     }
 
     onClick(event){
         if(event.button == 0 && event.shiftKey){
             event.preventDefault();
-            this.openHalo();
+            event.stopPropagation();
+            if(this.hasOpenHalo){
+                this.closeHalo();
+            } else {
+                this.openHalo();
+            }
         }
     }
 
-    closeHalo(){
-        let foundHalo = this._shadowRoot.querySelector('st-halo');
-        if(foundHalo){
-            this._shadowRoot.removeChild(foundHalo);
-        }
-    }
-
-    openHalo(){
-        // Compute the appropriate width and height from
-        // current rect
-        let rect = this.getBoundingClientRect();
-        this.style.width = `${Math.floor(rect.width)}px`;
-        this.style.height = `${Math.floor(rect.height)}px`;
-        this.style.top = `${Math.floor(rect.top)}px`;
-        this.style.left = `${Math.floor(rect.left)}px`;
-        let foundHalo = this._shadowRoot.querySelector('st-halo');
-        if(foundHalo){
-            this._shadowRoot.removeChild(foundHalo);
-        } else {
-            let newHalo = document.createElement('st-halo');
-            this._shadowRoot.appendChild(newHalo);
+    onMouseDown(event){
+        if(event.shiftKey){
+            event.preventDefault();
         }
     }
 
@@ -106,24 +100,6 @@ class ButtonView extends PartView {
             args: [],
             shouldIgnore: true
         }, this.model);
-    }
-
-    onContextMenu(event){
-        event.preventDefault();
-        // Compute the appropriate width and height from
-        // current rect
-        let rect = this.getBoundingClientRect();
-        this.style.width = `${Math.floor(rect.width)}px`;
-        this.style.height = `${Math.floor(rect.height)}px`;
-        this.style.top = `${Math.floor(rect.top)}px`;
-        this.style.left = `${Math.floor(rect.left)}px`;
-        let foundHalo = this._shadowRoot.querySelector('st-halo');
-        if(foundHalo){
-            this._shadowRoot.removeChild(foundHalo);
-        } else {
-            let newHalo = document.createElement('st-halo');
-            this._shadowRoot.appendChild(newHalo);
-        }
     }
 
     setPropsFromModel(){

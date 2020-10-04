@@ -223,7 +223,6 @@ class WindowView extends PartView {
 
     onGripDown(event){
         this.isGripping = true;
-        console.log(this.getBoundingClientRect());
         document.addEventListener('mousemove', this.onGripMove);
         document.addEventListener('mouseup', this.onGripUp);
     }

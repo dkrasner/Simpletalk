@@ -25,7 +25,7 @@ import WindowView from './views/WindowView';
 import EricFieldView from './views/EricFieldView.js';
 import ContainerView from './views/ContainerView.js';
 
-import Halo from './views/Halo.js';
+import Halo from './views/NewHalo.js';
 
 import ohm from 'ohm-js';
 import Compiler from './compiler.js';
