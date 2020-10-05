@@ -8,6 +8,7 @@
 import {PartView} from '../PartView.js';
 import {PencilTool} from './PencilTool.js';
 import {EraserTool} from './EraserTool.js';
+import {ColorPickerTool} from './ColorPickerTool.js';
 
 const templateString = `
 <style>
@@ -71,6 +72,12 @@ class DrawingView extends PartView {
             if(!eraserChild){
                 let newEraser = document.createElement('eraser-tool');
                 this.append(newEraser);
+            }
+
+            let colorPickerChild = this.querySelector('color-picker-tool');
+            if(!colorPickerChild){
+                let newColorPicker = document.createElement('color-picker-tool');
+                this.append(newColorPicker);
             }
         }
     }

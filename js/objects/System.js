@@ -719,7 +719,7 @@ System._commandHandlers['openToolbox'] = function(targetId){
         let newDrawing = System.newModel('drawing', cardModel.id);
         newDrawing.partProperties.setPropertyNamed(
             newDrawing,
-            name,
+            'name',
             `Drawing ${newDrawing.id}`
         );
     };
