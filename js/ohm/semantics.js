@@ -69,9 +69,12 @@ let simpleTalkSemantics = {
         return msg;
     },
 
-    Command_addModel: function(addLiteral, newObject, toLiteral, targetObject){
+    Command_addModel: function(addLiteral, newObject, toLiteral, thisLiteral, targetObject){
         let args = [];
         args.push(newObject.sourceString);
+        if(thisLiteral.sourceString){
+            args.push(thisLiteral.sourceString);
+        }
 
         let msg = {
             type: "command",

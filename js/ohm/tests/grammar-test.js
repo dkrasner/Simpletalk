@@ -592,6 +592,15 @@ describe("SimpleTalk Grammar", () => {
                     semanticMatchTest(s, "Statement");
                 });
             });
+            it ("Add to 'this'", () => {
+                const direction = ["stack", "background", "card", "button"];
+                direction.forEach((d) => {
+                    const s = `add ${d} to this stack`;
+                    semanticMatchTest(s, "Command");
+                    semanticMatchTest(s, "Command_addModel");
+                    semanticMatchTest(s, "Statement");
+                });
+            });
             it ("Bad add (world)", () => {
                 const s = "add world to card"
                 semanticMatchFailTest(s, "Command_addModel")

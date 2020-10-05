@@ -226,6 +226,23 @@ describe("SimpleTalk Compiler", function () {
                     assert.equal(typeof concreteHandler, "function");
                 })
             });
+            it('messageHandler (no args, "add to this" command)', () => {
+                systemObjects.forEach((d) => {
+                    const handler = `on mouseUp\n add ${d} to this card\nend mouseUp`;
+                    const expectedMessages = [
+                    {
+                        type: "command",
+                        commandName: "newModel",
+                        args: [d, "this"]
+                    }];
+                    compiler.compile(handler, MockObject);
+                    const scriptSemantics = MockObject._scriptSemantics["mouseUp"];
+                    assert.deepEqual(scriptSemantics, expectedMessages);
+                    const concreteHandler = MockObject._commandHandlers["mouseUp"];
+                    assert.isNotNull(concreteHandler);
+                    assert.equal(typeof concreteHandler, "function");
+                })
+            });
             it('messageHandler ("add" invalid object)', () => {
                 invalidObjects.forEach((s) => {
                     const sourceCode = `on customMessage targetArg\n add ${s} to targetArg\nend customMessage`;
