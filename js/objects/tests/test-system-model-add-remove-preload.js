@@ -73,6 +73,19 @@ describe('newModel tests', () => {
         let serializationEl = document.querySelector(`script[data-part-id="${button.id}"]`);
         assert.exists(serializationEl);
     });
+
+    it.skip('Can send newModel message in a context (without ownerId) without error (add button to "this" card)', () => {
+        let msg = {
+            type: 'command',
+            commandName: 'newModel',
+            args: ['button', "", "this"]
+        };
+        let sendFunc = function(){
+            currentCard.sendMessage(msg, currentCard);
+        };
+
+        expect(sendFunc).to.not.throw(Error);
+    });
 });
 
 describe('deleteModel tests', () => {

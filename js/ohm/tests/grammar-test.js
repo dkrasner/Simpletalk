@@ -592,6 +592,15 @@ describe("SimpleTalk Grammar", () => {
                     semanticMatchTest(s, "Statement");
                 });
             });
+            it ("Basic Add (wth id)", () => {
+                const direction = ["stack", "background", "card", "button"];
+                direction.forEach((d) => {
+                    const s = `add ${d} to card 20`;
+                    semanticMatchTest(s, "Command");
+                    semanticMatchTest(s, "Command_addModel");
+                    semanticMatchTest(s, "Statement");
+                });
+            });
             it ("Add to 'this'", () => {
                 const direction = ["stack", "background", "card", "button"];
                 direction.forEach((d) => {

@@ -293,16 +293,23 @@ class Part {
         });
     }
 
-    newModelCmdHandler(modelType, ownerId){
+    newModelCmdHandler(modelType, ownerId, context){
         // if no owner Id is provided and I accept the modelType
         // as a subpart, then add the new model as a subpart
         if (this.acceptsSubpart(modelType) && !ownerId){
-            ownerId = this.id;
+            // Unless "this" is specified the assumptioj is that we are adding
+            // within the current stack
+            if (context === "this"){
+                ownerId = this.id;
+            } else {
+                // TODO is current card the lowest on the chain to send addModel message to?
+                ownerId = window.System.getCurrentCardModel().id;
+            }
         }
         this.delegateMessage({
             type: 'command',
             commandName: 'newModel',
-            args: [modelType, ownerId]
+            args: [modelType, ownerId, context]
         });
     }
     /** Property Subscribers

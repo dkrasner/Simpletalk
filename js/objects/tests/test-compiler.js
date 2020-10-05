@@ -216,7 +216,7 @@ describe("SimpleTalk Compiler", function () {
                     {
                         type: "command",
                         commandName: "newModel",
-                        args: [d]
+                        args: [d, "", ""]
                     }];
                     compiler.compile(handler, MockObject);
                     const scriptSemantics = MockObject._scriptSemantics["mouseUp"];
@@ -233,7 +233,24 @@ describe("SimpleTalk Compiler", function () {
                     {
                         type: "command",
                         commandName: "newModel",
-                        args: [d, "this"]
+                        args: [d, "", "this"]
+                    }];
+                    compiler.compile(handler, MockObject);
+                    const scriptSemantics = MockObject._scriptSemantics["mouseUp"];
+                    assert.deepEqual(scriptSemantics, expectedMessages);
+                    const concreteHandler = MockObject._commandHandlers["mouseUp"];
+                    assert.isNotNull(concreteHandler);
+                    assert.equal(typeof concreteHandler, "function");
+                })
+            });
+            it('messageHandler (no args, "add to" by id command)', () => {
+                systemObjects.forEach((d) => {
+                    const handler = `on mouseUp\n add ${d} to card 20\nend mouseUp`;
+                    const expectedMessages = [
+                    {
+                        type: "command",
+                        commandName: "newModel",
+                        args: [d, "20", ""]
                     }];
                     compiler.compile(handler, MockObject);
                     const scriptSemantics = MockObject._scriptSemantics["mouseUp"];
@@ -251,6 +268,10 @@ describe("SimpleTalk Compiler", function () {
             });
             it('messageHandler ("add" invalid construction)', () => {
                 const sourceCode = `on customMessage idArg\n add idArg\nend customMessage`;
+                expect(() => compiler.compile(sourceCode, MockObject)).to.throw();
+            });
+            it.skip('messageHandler ("add to this [with] targetId" invalid construction)', () => {
+                const sourceCode = `on customMessage idArg\n add button to this card 20 \nend customMessage`;
                 expect(() => compiler.compile(sourceCode, MockObject)).to.throw();
             });
         });
