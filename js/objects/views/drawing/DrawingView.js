@@ -50,16 +50,17 @@ class DrawingView extends PartView {
         this.onMouseUp = this.onMouseUp.bind(this);
         this.afterDrawAction = this.afterDrawAction.bind(this);
         this.restoreImageFromModel = this.restoreImageFromModel.bind(this);
+        this.setPropsFromModel = this.setPropsFromModel.bind(this);
     }
 
     connectedCallback(){
         if(this.isConnected){
-            let canvas = this.shadow.querySelector('canvas');
-            canvas.addEventListener('mouseup', this.onMouseUp);
-            canvas.addEventListener('mousedown', this.onMouseDown);
+            this.canvas = this.shadow.querySelector('canvas');
+            this.canvas.addEventListener('mouseup', this.onMouseUp);
+            this.canvas.addEventListener('mousedown', this.onMouseDown);
 
             // Set and store the drawing context
-            this.drawingContext = canvas.getContext('2d');
+            this.drawingContext = this.canvas.getContext('2d');
 
             // If I don't have the default tools, add
             // them as real dom children now
@@ -79,13 +80,16 @@ class DrawingView extends PartView {
                 let newColorPicker = document.createElement('color-picker-tool');
                 this.append(newColorPicker);
             }
+
+            if(this.model){
+                this.setPropsFromModel();
+            }
         }
     }
 
     disconnectedCallback(){
-        let canvas = this.shadow.querySelector('canvas');
-        canvas.removeEventListener('mouseup', this.onMouseUp);
-        canvas.removeEventListener('mousedown', this.onMouseDown);
+        this.canvas.removeEventListener('mouseup', this.onMouseUp);
+        this.canvas.removeEventListener('mousedown', this.onMouseDown);
     }
 
     onMouseDown(event){
@@ -152,6 +156,39 @@ class DrawingView extends PartView {
                 context.drawImage(img, 0, 0);
             };
             img.src = base64ImageData;
+        }
+    }
+
+    setPropsFromModel(){
+        let canvasChanged = false;
+        let modelWidth = this.model.partProperties.getPropertyNamed(
+            this.model,
+            'width'
+        );
+        let modelHeight = this.model.partProperties.getPropertyNamed(
+            this.model,
+            'height'
+        );
+        if(this.canvas.width != modelWidth){
+            this.canvas.setAttribute('width', modelWidth);
+            canvasChanged = true;
+        }
+        if(this.canvas.height != modelHeight){
+            this.canvas.setAttribute('height', modelHeight);
+            canvasChanged = true;
+        }
+        console.log('Setting props from model');
+        console.log(this.canvas.width, modelWidth, this.canvas.height, modelHeight);
+
+
+        // If the canvas dimensions were adjusted, we need to
+        // redraw the image to the canvas
+        if(canvasChanged){
+            let modelImage = this.model.partProperties.getPropertyNamed(
+                this.model,
+                'image'
+            );
+            this.restoreImageFromModel(modelImage);
         }
     }
 };
