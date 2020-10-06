@@ -1,185 +1,227 @@
 /**
- * Halo
- * -------------------------------------------------
- * I am a webcomponent that wraps another PartView
- * when it is currently in edit mode. I show myself
- * as a halo of options around the target part.
- * Though I appear to 'wrap around' my target part,
- * I am one of its children in DOM terms.
+ * New Halo
  */
+const deleteIcon =`
+<svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-trash" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
+  <line x1="4" y1="7" x2="20" y2="7" />
+  <line x1="10" y1="11" x2="10" y2="17" />
+  <line x1="14" y1="11" x2="14" y2="17" />
+  <path d="M5 7l1 12a2 2 0 0 0 2 2h8a2 2 0 0 0 2 -2l1 -12" />
+  <path d="M9 7v-3a1 1 0 0 1 1 -1h4a1 1 0 0 1 1 1v3" />
+</svg>
+`;
+const editIcon = `
+<svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-edit" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
+  <path d="M9 7h-3a2 2 0 0 0 -2 2v9a2 2 0 0 0 2 2h9a2 2 0 0 0 2 -2v-3" />
+  <path d="M9 15h3l8.5 -8.5a1.5 1.5 0 0 0 -3 -3l-8.5 8.5v3" />
+  <line x1="16" y1="5" x2="19" y2="8" />
+</svg>
+`;
+const growIcon = `
+<svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-arrows-diagonal-2" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
+  <polyline points="16 20 20 20 20 16" />
+  <line x1="14" y1="14" x2="20" y2="20" />
+  <polyline points="8 4 4 4 4 8" />
+  <line x1="4" y1="4" x2="10" y2="10" />
+</svg>
+`;
 
 const templateString = `
-                <style>
-                 @keyFrames onAppear {
-                     0% {
-                         opacity: 0.01;
-                         transform: scale(0.5);
-                     }
+<style>
+ ::slotted(*){
+     box-sizing: border-box;
+ }
 
-                     100% {
-                         opacity: 1.0;
-                         transform: scale(1.0);
-                     }
-                 }
-                 :host {
-                     display: block;
-                     position: absolute;
-                     top: -30px;
-                     left: -30px;
-                     width: calc(100% + 60px);
-                     height: calc(100% + 60px);
-                     border: 1px solid red;
-                     animation: onAppear 0.1s;
-                 }
+ :host {
+     --halo-button-height: 25px;
+     --halo-button-width: 25px;
+     --halo-rim-margin: 10px;
+     --halo-button-width-padded: calc(var(--halo-button-width) + var(--halo-rim-margin));
+     --halo-button-height-padded: calc(var(--halo-button-height) + var(--halo-rim-margin));
+     position: absolute;
+     box-sizing: border-box;
+     top: calc(-1 * var(--halo-button-height-padded));
+     left: calc(-1 * var(--halo-button-width-padded));
+     width: calc(100% + (2 * var(--halo-button-width-padded)));
+     height: calc(100% + (2 * var(--halo-button-height-padded)));
+ }
 
-                 .st-halo-resizer {
-                     display: block;
-                     position: absolute;
-                     left: 100%;
-                     top: 100%;
-                     width: 25px;
-                     height: 25px;
-                     border-radius: 100%;
-                     background-color: red;
-                 }
 
-                 .st-halo-scripter {
-                     display: block;
-                     position: absolute;
-                     left: -25px;
-                     top: 100%;
-                     width: 25px;
-                     height: 25px;
-                     border-radius: 100%;
-                     background-color: blue;
-                 }
-                 .st-halo-deleter {
-                     display: block;
-                     content: "X";
-                     position: absolute;
-                     left: -25px;
-                     top: -25px;
-                     height: 25px;
-                     width: 25px;
-                     border-radius: 100%;
-                     border-color: rgb(150, 150, 150);
-                     background-color: white;
-                }
-                </style>
-                <div class="st-halo-deleter"></div>
-                <div class="st-halo-resizer"></div>
-                <div class="st-halo-scripter"></div>
+ .halo-row,
+ .halo-column {
+     display: flex;
+     position: absolute;
+ }
+
+ .halo-column {
+     flex-direction: column;
+ }
+
+ #halo-top-row,
+ #halo-bottom-row {
+     width: calc(100% - var(--halo-button-width-padded));
+     height: var(--halo-button-height-padded);
+ }
+
+ #halo-top-row {
+     left: 0;
+     top: 0;
+ }
+
+ #halo-bottom-row {
+     right: 0;
+     bottom: 0;
+     flex-direction: row-reverse;
+     align-items: flex-end;
+ }
+
+ #halo-right-column,
+ #halo-left-column {
+     height: calc(100% - var(--halo-button-height-padded));
+     width: var(--halo-button-width-padded);
+ }
+
+ #halo-right-column {
+     right: 0;
+     top: 0;
+     align-items: flex-end;
+ }
+
+ #halo-left-column {
+     left: 0;
+     top: var(--halo-button-height-padded);
+ }
+
+ .halo-button {
+     display: block;
+     border: 1px solid rgba(100, 100, 100, 0.8);
+     width: var(--halo-button-width);
+     height: var(--halo-button-height);
+     background-color: rgb(220, 220, 220);
+ }
+
+ .halo-button:hover {
+     cursor: pointer;
+ }
+
+ .halo-button:active {
+     border: 1px solid black;
+ }
+
+ .halo-button.hidden {
+     display: none;
+ }
+
+</style>
+
+<div id="halo-top-row" class="halo-row">
+    <div id="halo-delete" class="halo-button">
+        ${deleteIcon}
+    </div>
+</div>
+
+<div id="halo-bottom-row" class="halo-row">
+    <div id="halo-resize" class="halo-button">
+        ${growIcon}
+    </div>
+</div>
+
+<div id="halo-left-column" class="halo-column">
+</div>
+
+<div id="halo-right-column" class="halo-column">
+    <div id="halo-script-edit" class="halo-button">
+        ${editIcon}
+    </div>
+</div>
+
 `;
 
 class Halo extends HTMLElement {
     constructor(){
         super();
 
+        // Configure the Shadow DOM and template
         this.template = document.createElement('template');
         this.template.innerHTML = templateString;
-        this._shadowRoot = this.attachShadow({mode: 'open'});
-        this._shadowRoot.appendChild(this.template.content.cloneNode(true));
+        this.shadow = this.attachShadow({mode: 'open'});
+        this.shadow.append(
+            this.template.content.cloneNode(true)
+        );
 
-        // Bound methods
-        this.resizeMouseDown = this.resizeMouseDown.bind(this);
-        this.resizeMouseMove = this.resizeMouseMove.bind(this);
-        this.resizeMouseUp = this.resizeMouseUp.bind(this);
-        this.scripterClick = this.scripterClick.bind(this);
-        this.deleterClick = this.deleterClick.bind(this);
-        this.onClick = this.onClick.bind(this);
+        // Bind component methods
+
+
+        // Bind event listeners
         this.onMouseDown = this.onMouseDown.bind(this);
         this.onMouseUp = this.onMouseUp.bind(this);
         this.onMouseMove = this.onMouseMove.bind(this);
+        this.onResizeMouseDown = this.onResizeMouseDown.bind(this);
+        this.onResizeMouseUp = this.onResizeMouseUp.bind(this);
+        this.onResizeMouseMove = this.onResizeMouseMove.bind(this);
     }
 
     connectedCallback(){
         if(this.isConnected){
-            // Get the current bounding box size of the
-            // parent element, which is the element
-            // we are putting this halo "on"
             this.targetElement = this.getRootNode().host;
-            this.targetElement.style.position = "relative";
             this.targetElement.classList.add('editing');
             this.targetElement.hasOpenHalo = true;
 
-            // Set the Halo button events
-            this.resizer = this._shadowRoot.querySelector('.st-halo-resizer');
-            this.resizer.addEventListener('mousedown', this.resizeMouseDown);
-            this.scripter = this._shadowRoot.querySelector('.st-halo-scripter');
-            this.scripter.addEventListener('click', this.scripterClick);
-            this.deleter = this._shadowRoot.querySelector('.st-halo-deleter');
-            this.deleter.addEventListener('click', this.deleterClick);
-
-            // Bind click events for host (this) element.
-            // IF we prevent propagation, it should disable
-            // all click events on the wrapped element as long
-            // as the halo is present
-            this.addEventListener('click', this.onClick);
-
-            // Add mouseDown listener which will use
-            // basic mouse listeners to implement dragging
-            // the target element.
+            // Add event listeners
             this.addEventListener('mousedown', this.onMouseDown);
+
+            // Resize button
+            this.resizer = this.shadowRoot.getElementById('halo-resize');
+            this.resizer.addEventListener('mousedown', this.onResizeMouseDown);
+            if(!this.targetElement.wantsHaloResize){
+                this.resizer.classList.add('hidden');
+            }
+
+            // Delete button
+            this.deleter = this.shadowRoot.getElementById('halo-delete');
+            this.deleter.addEventListener('click', this.targetElement.onHaloDelete);
+            if(!this.targetElement.wantsHaloDelete){
+                this.deleter.classList.add('hidden');
+            }
+
+            // Edit button
+            this.editor = this.shadowRoot.getElementById('halo-script-edit');
+            this.editor.addEventListener('click', this.targetElement.onHaloOpenEditor);
+            if(!this.targetElement.wantsHaloScriptEdit){
+                this.editor.classList.add('hidden');
+            }
         }
     }
 
     disconnectedCallback(){
-        this.removeEventListener('mousedown', this.onMouseDown);
-        this.resizer.removeEventListener('mousedown', this.resizeMouseDown);
-        this.scripter.removeEventListener('click', this.scripterClick);
-        this.deleter.removeEventListener('click', this.deleterClick);
-        this.removeEventListener('click', this.onClick);
-        this.targetElement.style.position = "";
         this.targetElement.classList.remove('editing');
         this.targetElement.hasOpenHalo = false;
+
+        // Remove event listeners
+        this.removeEventListener('mousedown', this.onMouseDown);
+        this.resizer.removeEventListener('mousedown', this.onResizeMouseDown);
     }
 
-    onClick(event){
-        event.stopPropagation();
-        if(event.button == 0 && event.shiftKey){
-            this.targetElement.closeHalo();
+
+    /* Event Handling */
+    onMouseDown(event){
+        if(event.button == 0 && this.targetElement.wantsHaloMove){
+            document.addEventListener('mousemove', this.onMouseMove);
+            document.addEventListener('mouseup', this.onMouseUp);
         }
     }
 
-    resizeMouseDown(event){
-        document.addEventListener('mousemove', this.resizeMouseMove);
-        document.addEventListener('mouseup', this.resizeMouseUp);
-        event.stopPropagation();
-    }
+    onMouseMove(event){
+        let currentTop = this.targetElement.offsetTop;
+        let currentLeft = this.targetElement.offsetLeft;
+        let newTop = event.movementY + currentTop;
+        let newLeft = event.movementX + currentLeft;
 
-    resizeMouseUp(event){
-        document.removeEventListener('mousemove', this.resizeMouseMove);
-        document.removeEventListener('mouseup', this.resizeMouseUp);
-    }
-
-    resizeMouseMove(event){
-        let oldWidth = parseInt(this.targetElement.style.width);
-        let oldHeight = parseInt(this.targetElement.style.height);
-        let newWidth = oldWidth + event.movementX;
-        let newHeight = oldHeight + event.movementY;
-
-        this.targetElement.style.width = `${newWidth}px`;
-        this.targetElement.style.height = `${newHeight}px`;
-    }
-
-    scripterClick(event){
-        // Send a message to the system to open a
-        // script editor on the wrapped Part
-        let targetId = this.targetElement.model.id;
-        this.targetElement.sendMessage({
-            type: 'command',
-            commandName: 'openScriptEditor',
-            args: [targetId]
-        }, window.System);
-    }
-
-    deleterClick(event){
-        this.targetElement.onHaloDelete();
-    }
-
-    onMouseDown(event){
-        document.addEventListener('mousemove', this.onMouseMove);
-        document.addEventListener('mouseup', this.onMouseUp);
+        this.targetElement.style.top = `${newTop}px`;
+        this.targetElement.style.left = `${newLeft}px`;
     }
 
     onMouseUp(event){
@@ -187,18 +229,27 @@ class Halo extends HTMLElement {
         document.removeEventListener('mouseup', this.onMouseUp);
     }
 
-    onMouseMove(event){
-        let oldTop = parseInt(this.targetElement.style.top);
-        let oldLeft = parseInt(this.targetElement.style.left);
-        let newTop = event.movementY + oldTop;
-        let newLeft = event.movementX + oldLeft;
-
-        this.targetElement.style.top = `${newTop}px`;
-        this.targetElement.style.left = `${newLeft}px`;
+    onResizeMouseDown(event){
+        event.stopPropagation();
+        document.addEventListener('mousemove', this.onResizeMouseMove);
+        document.addEventListener('mouseup', this.onResizeMouseUp);
     }
-}
+
+    onResizeMouseUp(event){
+        document.removeEventListener('mousemove', this.onResizeMouseMove);
+        document.removeEventListener('mouseup', this.onResizeMouseUp);
+    }
+
+    onResizeMouseMove(event){
+        let rect = this.targetElement.getBoundingClientRect();
+        let newWidth = event.movementX + rect.width;
+        let newHeight = event.movementY + rect.height;
+        this.targetElement.style.width = `${newWidth}px`;
+        this.targetElement.style.height = `${newHeight}px`;
+    }
+};
 
 export {
     Halo,
     Halo as default
-}
+};
