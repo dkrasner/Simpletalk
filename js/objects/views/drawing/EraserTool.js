@@ -17,6 +17,11 @@ const eraserSVG = `
 const eraserToolTemplateString = `
 <style>
     :host {
+        display: flex;
+        position: relative;
+        margin-bottom: 6px;
+    }
+    #tool-button {
         --active-color: black;
         --inactive-color: rgb(170, 170, 170);
         --hover-color: rgb(140, 140, 140);
@@ -27,14 +32,45 @@ const eraserToolTemplateString = `
         border-style: solid;
         border-color: var(--inactive-color);
         color: var(--inactive-color);
-        margin-bottom: 6px;
     }
-    :host([active="true"]){
+    :host([active="true"]) > #tool-button {
         border-color: var(--active-color);
         color: var(--active-color);
     }
+    #brushes-container {
+        position: relative;
+        margin-left: 6px;
+        display: none;
+    }
+    #brush-adjuster {
+        position: relative;
+        display: flex;
+        margin-left: 6px;
+        box-sizing: border-box;
+        border-width: 1px;
+        border-style: solid;
+        border-color: var(--active-color);
+    }
+    #brush-slider,
+    #brush-number {
+        box-sizing: border-box;
+    }
+    #brush-number {
+        max-width: 3rem;
+    }
+    :host([active="true"]) > #brushes-container {
+        display: flex;
+    }
 </style>
-${eraserSVG}
+<div id="tool-button">
+  ${eraserSVG}
+</div>
+<div id="brushes-container">
+  <div id="brush-adjuster">
+    <input id="brush-slider" type="range" min="1" max="100" step="1">
+    <input id="brush-number" type="number">
+  </div>
+</div>
 `;
 
 class EraserTool extends HTMLElement {
@@ -62,6 +98,8 @@ class EraserTool extends HTMLElement {
         this.onMove = this.onMove.bind(this);
         this.toggleActive = this.toggleActive.bind(this);
         this.setContextFromAttributes = this.setContextFromAttributes.bind(this);
+        this.handleBrushSliderChange = this.handleBrushSliderChange.bind(this);
+        this.handleBrushNumberInputChange = this.handleBrushNumberInputChange.bind(this);
     }
 
     connectedCallback(){
@@ -83,13 +121,28 @@ class EraserTool extends HTMLElement {
             }
 
             // Attach event listeners
-            this.addEventListener('click', this.toggleActive);
+            this.button = this.shadowRoot.getElementById('tool-button');
+            this.button.addEventListener('click', this.toggleActive);
+            this.brushSlider = this.shadowRoot.getElementById('brush-slider');
+            this.brushSlider.addEventListener('input', this.handleBrushSliderChange);
+            this.brushNumberInput = this.shadowRoot.getElementById('brush-number');
+            this.brushNumberInput.addEventListener('input', this.handleBrushNumberInputChange);
+
+            // If there are is currently a width set,
+            // update the slider and number input accordingly
+            let currentWidth = this.getAttribute('width');
+            if(currentWidth){
+                this.brushSlider.value = parseInt(currentWidth);
+                this.brushNumberInput.value = parseInt(currentWidth);
+            }
         }
     }
 
     disconnectedCallback(){
         this.ctx = null;
-        this.removeEventListener('click', this.toggleActive);
+        this.button.removeEventListener('click', this.toggleActive);
+        this.brushSlider.removeEventListener('input', this.handleBrushSliderChange);
+        this.brushNumberInput.removeEventListener('input', this.handleBrushNumberInputChange);
     }
 
     start(x, y){
@@ -146,6 +199,25 @@ class EraserTool extends HTMLElement {
             'line-join',
             'line-cap'
         ];
+    }
+
+    attributeChangedCallback(name, oldVal, newVal){
+        if(name == 'width'){
+            if(this.brushSlider){
+                this.brushSlider.value = parseInt(newVal);
+            }
+            if(this.brushNumberInput){
+                this.brushNumberInput.value = parseInt(newVal);
+            }
+        }
+    }
+
+    handleBrushSliderChange(event){
+        this.setAttribute('width', event.target.value);
+    }
+
+    handleBrushNumberInputChange(event){
+        this.setAttribute('width', event.target.value);
     }
 
     toggleActive(event){
