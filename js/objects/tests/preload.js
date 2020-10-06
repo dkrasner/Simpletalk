@@ -13,6 +13,8 @@ var jsdom = require('jsdom');
 global.window = new jsdom.JSDOM().window;
 global.document = window.document;
 global.HTMLElement = window.HTMLElement;
+global.fetch = require("node-fetch");
+global.DOMParser = window.DOMParser;
 
 // add the grammar in
 var fs = require('fs');

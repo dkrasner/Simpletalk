@@ -45,6 +45,21 @@ describe('newModel tests', () => {
         expect(sendFunc).to.not.throw(Error);
     });
 
+    it('Can send newModel message without error (add svg to current card)', () => {
+
+        let msg = {
+            type: 'command',
+            commandName: 'newSvg',
+            args: [currentCard.id]
+        };
+
+        let sendFunc = function(){
+            currentCard.sendMessage(msg, System);
+        };
+
+        expect(sendFunc).to.not.throw(Error);
+    });
+
     it('Current card view has a child button view', () => {
         let buttonViews = Array.from(currentCardView.querySelectorAll('st-button'));
         assert.equal(buttonViews.length, 1);
