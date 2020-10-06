@@ -127,6 +127,7 @@ class DrawingView extends PartView {
         if(aMessage.type == 'propertyChanged'){
             switch(aMessage.propertyName){
             case 'image':
+                console.log('Image property changed in view');
                 this.restoreImageFromModel(aMessage.value);
                 break;
             }
