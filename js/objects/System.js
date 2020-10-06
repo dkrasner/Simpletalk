@@ -694,23 +694,6 @@ System._commandHandlers['openToolbox'] = function(targetId){
         System,
         System
     );
-    // Because we can't yet compile the script needed to do this
-    // (scripts don't yet know about "card" in context), we manually
-    // bind the message handler
-    /*
-    addBtnBtn._commandHandlers['mouseUp'] = function(){
-        // Find the current active card in the current
-        // active stack and add a button to it
-        let currentCardView = document.querySelector('.current-stack .current-card');
-        let cardModel = currentCardView.model;
-        let newButton = System.newModel('button', cardModel.id);
-        newButton.partProperties.setPropertyNamed(
-            newButton,
-            'name',
-            `Button ${newButton.id}`
-        );
-    };
-    */
 
     // Add a button to add a new Container
     let addContainerBtn = this.newModel('button', windowCurrentCardModel.id);
@@ -719,16 +702,17 @@ System._commandHandlers['openToolbox'] = function(targetId){
         'name',
         'Add Container to Card'
     );
-    addContainerBtn._commandHandlers['mouseUp'] = function(){
-        let currentCardView = document.querySelector('.current-stack > .current-card');
-        let cardModel = currentCardView.model;
-        let newContainer = System.newModel('container', cardModel.id);
-        newContainer.partProperties.setPropertyNamed(
-            newContainer,
-            'name',
-            `Container ${newContainer.id}`
-        );
-    };
+    let addContainerScript = 'on mouseUp\n    add container to card\nend mouseUp';
+    addContainerBtn.partProperties.setPropertyNamed(
+        addContainerBtn,
+        'script',
+        addContainerScript
+    );
+    System.sendMessage(
+        {type: "compile", codeString: addContainerScript, targetId: addContainerBtn.id},
+        System,
+        System
+    );
 
     let addBtnToStackBtn = this.newModel('button', windowCurrentCardModel.id);
     addBtnToStackBtn.partProperties.setPropertyNamed(
@@ -736,18 +720,17 @@ System._commandHandlers['openToolbox'] = function(targetId){
         'name',
         'Add Button to Stack'
     );
-    addBtnToStackBtn._commandHandlers['mouseUp'] = function(){
-        console.log("add button to stack clicked");
-        // create the new button model but not the new view
-        // the latter should be handled by the stack
-        let newButton = System.newModel('button', targetPart.id, false);
-        newButton.partProperties.setPropertyNamed(
-            newButton,
-            'name',
-            `Button ${newButton.id}`
-        );
-    };
-
+    let addBtnToStackScript = 'on mouseUp\n    add button to stack\nend mouseUp';
+    addBtnToStackBtn.partProperties.setPropertyNamed(
+        addBtnToStackBtn,
+        'script',
+        addBtnToStackScript
+    );
+    System.sendMessage(
+        {type: "compile", codeString: addBtnToStackScript, targetId: addBtnToStackBtn.id},
+        System,
+        System
+    );
 };
 
 System._commandHandlers['openScriptEditor'] = function(targetId){

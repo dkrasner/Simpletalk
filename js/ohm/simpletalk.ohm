@@ -144,7 +144,7 @@
 		| "sizeWindow" | "startUp" | "suspendStack" | "suspend" | "tabKey"
 
 	systemObject (system object such as card, stack etc)
-		= ("b"| "B") "ackground" | ("b" | "B") "utton" | ("c" | "C") "ard" | ("f" | "F") "ield" | ("s" | "S") "tack"
+		= ("c" | "C") "ontainer" | ("b"| "B") "ackground" | ("b" | "B") "utton" | ("c" | "C") "ard" | ("f" | "F") "ield" | ("s" | "S") "tack"
 
 	modifierKeyName (a modifier key name)
 		= "command" | "option" | "control" | "shift"

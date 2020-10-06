@@ -18,7 +18,7 @@ class Button extends Part {
 
         // If we are initializing with a name,
         // set the name part property
-        let myName = name || 'Untitled Button';
+        let myName = name || `Button ${this.id}`;
         this.partProperties.setPropertyNamed(
             this,
             'name',
