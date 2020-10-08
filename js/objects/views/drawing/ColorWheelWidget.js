@@ -107,7 +107,6 @@ class ColorWheelWidget extends HTMLElement {
         this.onWheelMouseMove = this.onWheelMouseMove.bind(this);
         this.onWheelClick = this.onWheelClick.bind(this);
         this.onItemClick = this.onItemClick.bind(this);
-        this.onColorSelect = this.onColorSelect.bind(this);
         this.onBarMouseDown = this.onBarMouseDown.bind(this);
         this.onBarMouseUp = this.onBarMouseUp.bind(this);
         this.onBarMouseMove = this.onBarMouseMove.bind(this);
@@ -125,7 +124,6 @@ class ColorWheelWidget extends HTMLElement {
             this.canvas.addEventListener('click', this.onWheelClick);
             this.canvas.addEventListener('mouseenter', this.onWheelMouseEnter);
             this.bar.addEventListener('mousedown', this.onBarMouseDown);
-            this.addEventListener('color-selected', this.onColorSelect);
             Array.from(this.shadowRoot.querySelectorAll('.recent-color-item')).forEach(el => {
                 el.addEventListener('click', this.onItemClick);
             });
@@ -139,7 +137,6 @@ class ColorWheelWidget extends HTMLElement {
         this.canvas.removeEventListener('click', this.onWheelClick);
         this.canvas.removeEventListener('mouseenter', this.onWheelMouseEnter);
         this.bar.removeEventListener('mousedown', this.onBarMouseDown);
-        this.removeEventListener('color-selected', this.onColorSelect);
         Array.from(this.shadowRoot.querySelector('.recent-color-item')).forEach(el => {
             el.removeEventListener('click', this.onItemClick);
         });
@@ -225,10 +222,6 @@ class ColorWheelWidget extends HTMLElement {
             });
             this.dispatchEvent(newEvent);
         }
-    }
-
-    onColorSelect(event){
-        console.log(event);
     }
 
     onBarMouseDown(event){

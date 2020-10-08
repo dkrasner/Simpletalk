@@ -139,7 +139,6 @@ class ColorPickerTool extends HTMLElement {
     onColorSelected(event){
         let colorInfo = event.detail;
         let colorStr = `rgba(${colorInfo.r}, ${colorInfo.g}, ${colorInfo.b}, ${colorInfo.alpha})`;
-        console.log(colorStr);
         this.ctx.strokeStyle = colorStr;
         this.ctx.fillStyle = colorStr;
     }

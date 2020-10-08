@@ -102,14 +102,6 @@ class PencilTool extends HTMLElement {
         this.setContextFromAttributes = this.setContextFromAttributes.bind(this);
         this.handleBrushSliderChange = this.handleBrushSliderChange.bind(this);
         this.handleBrushNumberInputChange = this.handleBrushNumberInputChange.bind(this);
-
-        // If there are is currently a width set,
-        // update the slider and number input accordingly
-        let currentWidth = this.getAttribute('width');
-        if(currentWidth){
-            this.brushSlider.value = parseInt(currentWidth);
-            this.brushNumberInput.value = parseInt(currentWidth);
-        }
     }
 
     connectedCallback(){
@@ -137,6 +129,14 @@ class PencilTool extends HTMLElement {
             this.brushSlider.addEventListener('input', this.handleBrushSliderChange);
             this.brushNumberInput = this.shadowRoot.getElementById('brush-number');
             this.brushNumberInput.addEventListener('input', this.handleBrushNumberInputChange);
+
+            // If there are is currently a width set,
+            // update the slider and number input accordingly
+            let currentWidth = this.getAttribute('width');
+            if(currentWidth){
+            this.brushSlider.value = parseInt(currentWidth);
+                this.brushNumberInput.value = parseInt(currentWidth);
+            }
         }
     }
 

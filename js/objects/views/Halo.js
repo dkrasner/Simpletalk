@@ -31,10 +31,6 @@ const growIcon = `
 
 const templateString = `
 <style>
- ::slotted(*){
-     box-sizing: border-box;
- }
-
  :host {
      --halo-button-height: 25px;
      --halo-button-width: 25px;
@@ -95,7 +91,8 @@ const templateString = `
      top: var(--halo-button-height-padded);
  }
 
- .halo-button {
+ .halo-button,
+ ::slotted(*) {
      display: block;
      border: 1px solid rgba(100, 100, 100, 0.8);
      width: var(--halo-button-width);
@@ -103,39 +100,46 @@ const templateString = `
      background-color: rgb(220, 220, 220);
  }
 
- .halo-button:hover {
+ .halo-button:hover
+ ::slotted(*).halo-button:hover {
      cursor: pointer;
  }
 
- .halo-button:active {
+ .halo-button:active
+ ::slotted(*).halo-button:active {
      border: 1px solid black;
  }
 
- .halo-button.hidden {
+ .halo-button.hidden
+ ::slotted(*).halo-button.hidden {
      display: none;
  }
 
 </style>
 
 <div id="halo-top-row" class="halo-row">
-    <div id="halo-delete" class="halo-button">
+    <div id="halo-delete" class="halo-button" title="Delete this part">
         ${deleteIcon}
     </div>
+    <slot name="top-row"></slot>
 </div>
 
 <div id="halo-bottom-row" class="halo-row">
-    <div id="halo-resize" class="halo-button">
+    <div id="halo-resize" class="halo-button" title="Resize this part">
         ${growIcon}
     </div>
+    <slot name="bottom-row"></slot>
 </div>
 
 <div id="halo-left-column" class="halo-column">
+    <slot name="left-column"></slot>
 </div>
 
 <div id="halo-right-column" class="halo-column">
-    <div id="halo-script-edit" class="halo-button">
+    <div id="halo-script-edit" class="halo-button" title="Edit this part's script">
         ${editIcon}
     </div>
+    <slot name="right-column"></slot>
 </div>
 
 `;

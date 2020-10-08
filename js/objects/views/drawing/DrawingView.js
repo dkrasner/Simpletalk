@@ -10,6 +10,13 @@ import {PencilTool} from './PencilTool.js';
 import {EraserTool} from './EraserTool.js';
 import {ColorPickerTool} from './ColorPickerTool.js';
 
+const haloButtonSVG = `
+<svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-tool" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
+  <path d="M7 10h3v-3l-3.5 -3.5a6 6 0 0 1 8 8l6 6a2 2 0 0 1 -3 3l-6-6a6 6 0 0 1 -8 -8l3.5 3.5" />
+</svg>
+`;
+
 const templateString = `
 <style>
     :host {
@@ -56,6 +63,8 @@ class DrawingView extends PartView {
         this.onMouseUp = this.onMouseUp.bind(this);
         this.onHaloResize = this.onHaloResize.bind(this);
         this.onClick = this.onClick.bind(this);
+        this.initCustomHaloButton = this.initCustomHaloButton.bind(this);
+        this.toggleMode = this.toggleMode.bind(this);
         this.afterDrawAction = this.afterDrawAction.bind(this);
         this.restoreImageFromModel = this.restoreImageFromModel.bind(this);
         this.setPropsFromModel = this.setPropsFromModel.bind(this);
@@ -90,6 +99,10 @@ class DrawingView extends PartView {
                 this.append(newColorPicker);
             }
 
+            if(!this.haloButton){
+                this.initCustomHaloButton();
+            }
+
             if(this.model){
                 this.setPropsFromModel();
             }
@@ -103,7 +116,7 @@ class DrawingView extends PartView {
     }
 
     onMouseDown(event){
-        if(event.shiftKey){
+        if(event.shiftKey || !this.inDrawingMode){
             return;
         }
         this.activeTool = this.querySelector('[role="tool"][active="true"]');
@@ -116,7 +129,10 @@ class DrawingView extends PartView {
     }
 
     onMouseMove(event){
-        if(this.activeTool){
+        if(event.shiftKey){
+            return;
+        }
+        if(this.activeTool && this.inDrawingMode){
             this.activeTool.onMove(
                 event.offsetX,
                 event.offsetY
@@ -125,7 +141,10 @@ class DrawingView extends PartView {
     }
 
     onMouseUp(event){
-        if(this.activeTool){
+        if(event.shiftKey){
+            return;
+        }
+        if(this.activeTool && this.inDrawingMode){
             this.activeTool.end(event.offsetX, event.offsetY);
             this.afterDrawAction();
         }
@@ -160,8 +179,10 @@ class DrawingView extends PartView {
         if(aMessage.type == 'propertyChanged'){
             switch(aMessage.propertyName){
             case 'image':
-                console.log('Image property changed in view');
                 this.restoreImageFromModel(aMessage.value);
+                break;
+            case 'mode':
+                this.setAttribute('mode', aMessage.value);
                 break;
             }
         }
@@ -229,18 +250,60 @@ class DrawingView extends PartView {
         }
     }
 
+    initCustomHaloButton(){
+        this.haloButton = document.createElement('div');
+        this.haloButton.id = "halo-drawing-toggle-mode";
+        this.haloButton.classList.add('halo-button');
+        this.haloButton.innerHTML = haloButtonSVG;
+        this.haloButton.style.marginRight = "6px";
+        this.haloButton.setAttribute('slot', 'bottom-row');
+        this.haloButton.setAttribute('title', 'Toggle drawing tools');
+        this.haloButton.addEventListener('click', this.toggleMode);
+    }
+
+    openHalo(){
+        // Override default. Here we add a custom button
+        // when showing.
+        let foundHalo = this.shadowRoot.querySelector('st-halo');
+        if(!foundHalo){
+            foundHalo = document.createElement('st-halo');
+            this.shadowRoot.appendChild(foundHalo);
+        }
+        foundHalo.append(this.haloButton);
+    }
+
+    toggleMode(){
+        let currentMode = this.getAttribute('mode');
+        if(currentMode == 'drawing'){
+            this.model.partProperties.setPropertyNamed(
+                this.model,
+                'mode',
+                'viewing'
+            );
+        } else {
+            this.model.partProperties.setPropertyNamed(
+                this.model,
+                'mode',
+                'drawing'
+            );
+        }
+    }
+
     get inDrawingMode(){
         if(!this.model){
             return false;
         }
-        let mode = this.model.partProperties.getPropertyNamed(
-            this.model,
-            'mode'
-        );
+        let mode = this.getAttribute('mode');
         if(mode == 'drawing'){
             return true;
         }
         return false;
+    }
+
+    static get observedAttributes(){
+        return [
+            'mode'
+        ];
     }
 };
 
