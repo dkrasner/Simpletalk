@@ -13,6 +13,10 @@ class Drawing extends Part {
             'image',
             null
         );
+        this.partProperties.newBasicProp(
+            'mode',
+            'drawing'
+        );
 
         // Adjust any properties as needed
         this.partProperties.setPropertyNamed(

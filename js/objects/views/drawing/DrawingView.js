@@ -25,6 +25,12 @@ const templateString = `
         display: flex;
         flex-direction: column;
     }
+    :host([mode="viewing"]) {
+        border: 1px solid transparent;
+    }
+    :host([mode="viewing"]) > #tool-buttons {
+        display: none;
+    }
 </style>
 <canvas width="500" height="300"></canvas >
 <div id="tool-buttons">
@@ -48,6 +54,8 @@ class DrawingView extends PartView {
         this.onMouseDown = this.onMouseDown.bind(this);
         this.onMouseMove = this.onMouseMove.bind(this);
         this.onMouseUp = this.onMouseUp.bind(this);
+        this.onHaloResize = this.onHaloResize.bind(this);
+        this.onClick = this.onClick.bind(this);
         this.afterDrawAction = this.afterDrawAction.bind(this);
         this.restoreImageFromModel = this.restoreImageFromModel.bind(this);
         this.setPropsFromModel = this.setPropsFromModel.bind(this);
@@ -58,6 +66,7 @@ class DrawingView extends PartView {
             this.canvas = this.shadow.querySelector('canvas');
             this.canvas.addEventListener('mouseup', this.onMouseUp);
             this.canvas.addEventListener('mousedown', this.onMouseDown);
+            this.addEventListener('click', this.onClick);
 
             // Set and store the drawing context
             this.drawingContext = this.canvas.getContext('2d');
@@ -90,6 +99,7 @@ class DrawingView extends PartView {
     disconnectedCallback(){
         this.canvas.removeEventListener('mouseup', this.onMouseUp);
         this.canvas.removeEventListener('mousedown', this.onMouseDown);
+        this.removeEventListener('click', this.onClick);
     }
 
     onMouseDown(event){
@@ -121,6 +131,29 @@ class DrawingView extends PartView {
         }
         let canvas = this.shadow.querySelector('canvas');
         canvas.removeEventListener('mousemove', this.onMouseMove);
+    }
+
+    onClick(event){
+        if(event.button == 0 && event.shiftKey){
+            event.preventDefault();
+            event.stopPropagation();
+            if(this.hasOpenHalo){
+                this.closeHalo();
+            } else {
+                this.openHalo();
+            }
+        }
+    }
+
+    onHaloResize(movementX, movementY){
+        let canvas = this.shadowRoot.querySelector('canvas');
+        let currentImage = this.model.partProperties.getPropertyNamed(
+            this.model,
+            'image'
+        );
+        canvas.width = canvas.width + movementX;
+        canvas.height = canvas.height + movementY;
+        this.restoreImageFromModel(currentImage);
     }
 
     receiveMessage(aMessage){
@@ -178,8 +211,11 @@ class DrawingView extends PartView {
             this.canvas.setAttribute('height', modelHeight);
             canvasChanged = true;
         }
-        console.log('Setting props from model');
-        console.log(this.canvas.width, modelWidth, this.canvas.height, modelHeight);
+        let mode = this.model.partProperties.getPropertyNamed(
+            this.model,
+            'mode'
+        );
+        this.setAttribute('mode', mode);
 
 
         // If the canvas dimensions were adjusted, we need to
@@ -191,6 +227,20 @@ class DrawingView extends PartView {
             );
             this.restoreImageFromModel(modelImage);
         }
+    }
+
+    get inDrawingMode(){
+        if(!this.model){
+            return false;
+        }
+        let mode = this.model.partProperties.getPropertyNamed(
+            this.model,
+            'mode'
+        );
+        if(mode == 'drawing'){
+            return true;
+        }
+        return false;
     }
 };
 
