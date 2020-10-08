@@ -92,10 +92,6 @@ class Window extends Part {
         aPart._owner = this;
     }
 
-    delegateMessage(aMessage){
-        this.sendMessage(aMessage, this._owner);
-    }
-
     get type(){
         return 'window';
     }

@@ -29,13 +29,6 @@ class Layout extends Part {
     get type(){
         return 'layout';
     }
-
-    delegateMessage(aMessage){
-        this.sendMessage(
-            aMessage,
-            this._owner
-        );
-    }
 };
 
 export {
