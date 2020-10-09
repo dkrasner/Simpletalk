@@ -51,6 +51,8 @@ class Part {
         this.serialize = this.serialize.bind(this);
         this.setFromDeserialized = this.setFromDeserialized.bind(this);
         this.deleteModelCmdHandler = this.deleteModelCmdHandler.bind(this);
+        this.isSubpartOfCurrentCard = this.isSubpartOfCurrentCard.bind(this);
+        this.isSubpartOfCurrentStack = this.isSubpartOfCurrentStack.bind(this);
 
 
         // Finally, we finish initialization
@@ -203,6 +205,18 @@ class Part {
         }
     }
 
+    /** Checks whether the Part instance is a subpart of the current
+     * Card.
+     */
+    isSubpartOfCurrentCard(){
+    }
+
+    /** Checks whether the Part instance is a subpart of the current
+     * Stack.
+     */
+    isSubpartOfCurrentStack(){
+    }
+
     /** Logging and Reporting **/
     shouldBeImplemented(functionName){
         let msg = `${this.constructor.name} should implement ${functionName}`;
@@ -293,24 +307,35 @@ class Part {
         });
     }
 
-    newModelCmdHandler(modelType, ownerId, context){
+    newModelCmdHandler(modelType, ownerId, targetModelType, context){
+        let message = {
+            type: 'command',
+            commandName: 'newModel',
+            args: [modelType, ownerId, targetModelType, context]
+        };
+        // If the context is explicitely "current" we find the corresponding part
+        // (card or stack) and send the updated message to it
+        // Note: this assumes that the only current parts or cards or stacks
+        if(context === "current"){
+            // we won't need to the context anymore after sending to the corresponding
+            // target part
+            message.args[3] = "";
+            let targetModel;
+            if(targetModelType.toLowerCase() === "card"){
+                targetModel = window.System.getCurrentCardModel();
+            };
+            if(targetModelType.toLowerCase() === "stack"){
+                targetModel = window.System.getCurrentStackModel();
+            };
+            message.args[1] = targetModel.id;
+            return this.sendMessage(message, targetModel);
+        }
         // if no owner Id is provided and I accept the modelType
         // as a subpart, then add the new model as a subpart
         if (this.acceptsSubpart(modelType) && !ownerId){
-            // Unless "this" is specified the assumptioj is that we are adding
-            // within the current stack
-            if (context === "this"){
-                ownerId = this.id;
-            } else {
-                // TODO is current card the lowest on the chain to send addModel message to?
-                ownerId = window.System.getCurrentCardModel().id;
-            }
+            message.args[1] = this.id;
         }
-        this.delegateMessage({
-            type: 'command',
-            commandName: 'newModel',
-            args: [modelType, ownerId, context]
-        });
+        this.delegateMessage(message);
     }
     /** Property Subscribers
         ------------------------

@@ -683,7 +683,7 @@ System._commandHandlers['openToolbox'] = function(targetId){
         'Add Button to Card'
     );
 
-    let addBtnScript = 'on mouseUp\n    add button to card\nend mouseUp';
+    let addBtnScript = 'on mouseUp\n    add button to current card\nend mouseUp';
     addBtnBtn.partProperties.setPropertyNamed(
         addBtnBtn,
         'script',
@@ -702,7 +702,7 @@ System._commandHandlers['openToolbox'] = function(targetId){
         'name',
         'Add Container to Card'
     );
-    let addContainerScript = 'on mouseUp\n    add container to card\nend mouseUp';
+    let addContainerScript = 'on mouseUp\n    add container to current card\nend mouseUp';
     addContainerBtn.partProperties.setPropertyNamed(
         addContainerBtn,
         'script',
@@ -720,7 +720,7 @@ System._commandHandlers['openToolbox'] = function(targetId){
         'name',
         'Add Button to Stack'
     );
-    let addBtnToStackScript = 'on mouseUp\n    add button to stack\nend mouseUp';
+    let addBtnToStackScript = 'on mouseUp\n    add button to current stack\nend mouseUp';
     addBtnToStackBtn.partProperties.setPropertyNamed(
         addBtnToStackBtn,
         'script',
@@ -728,6 +728,24 @@ System._commandHandlers['openToolbox'] = function(targetId){
     );
     System.sendMessage(
         {type: "compile", codeString: addBtnToStackScript, targetId: addBtnToStackBtn.id},
+        System,
+        System
+    );
+
+    let addBtnToToolboxBtn = this.newModel('button', windowCurrentCardModel.id);
+    addBtnToToolboxBtn.partProperties.setPropertyNamed(
+        addBtnToToolboxBtn,
+        'name',
+        'Add Button to Toolbox'
+    );
+    let addBtnToToolboxScript = 'on mouseUp\n    add button to this card\nend mouseUp';
+    addBtnToToolboxBtn.partProperties.setPropertyNamed(
+        addBtnToToolboxBtn,
+        'script',
+        addBtnToToolboxScript
+    );
+    System.sendMessage(
+        {type: "compile", codeString: addBtnToToolboxScript, targetId: addBtnToToolboxBtn.id},
         System,
         System
     );
