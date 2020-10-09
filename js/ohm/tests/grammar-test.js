@@ -610,6 +610,15 @@ describe("SimpleTalk Grammar", () => {
                     semanticMatchTest(s, "Statement");
                 });
             });
+            it ("Add to 'current'", () => {
+                const direction = ["stack", "background", "card", "button"];
+                direction.forEach((d) => {
+                    const s = `add ${d} to current stack`;
+                    semanticMatchTest(s, "Command");
+                    semanticMatchTest(s, "Command_addModel");
+                    semanticMatchTest(s, "Statement");
+                });
+            });
             it ("Bad add (world)", () => {
                 const s = "add world to card"
                 semanticMatchFailTest(s, "Command_addModel")
@@ -617,6 +626,11 @@ describe("SimpleTalk Grammar", () => {
             });
             it ("Bad add (no target)", () => {
                 const s = "add button"
+                semanticMatchFailTest(s, "Command_addModel")
+                semanticMatchFailTest(s, "Command")
+            });
+            it ("Bad add (invalid context)", () => {
+                const s = "add button to new stack"
                 semanticMatchFailTest(s, "Command_addModel")
                 semanticMatchFailTest(s, "Command")
             });

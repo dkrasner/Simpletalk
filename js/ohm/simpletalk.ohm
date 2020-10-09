@@ -63,7 +63,7 @@
    		| "go to" systemObject objectId --goToByReference
 		| "answer" stringLiteral --answer
 		| "delete" "this"? systemObject objectId? --deleteModel
-		| "add" systemObject "to" "this"? systemObject objectId? --addModel
+		| "add" systemObject "to" ("this"|"current")? systemObject objectId? --addModel
 		| command_arbitrary
 
 	command_arbitrary (an arbitrary command)

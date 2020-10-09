@@ -69,13 +69,19 @@ let simpleTalkSemantics = {
         return msg;
     },
 
-    Command_addModel: function(addLiteral, newObject, toLiteral, thisLiteral, targetObjectType, targetObjectId){
+    Command_addModel: function(addLiteral, newObject, toLiteral, context, targetObjectType, targetObjectId){
         // TODO: a command like "add card to this stack 20" does not make sense, since you should either designate
         // the target by context "this" or by id. Here we should throw some sort of uniform error.
         let args = [];
         args.push(newObject.sourceString);
         args.push(targetObjectId.sourceString);
-        args.push(thisLiteral.sourceString);
+        args.push(targetObjectType.sourceString);
+        if(!context.sourceString){
+            // the default context is always "current"
+            args.push("current");
+        } else {
+            args.push(context.sourceString);
+        }
 
         let msg = {
             type: "command",
