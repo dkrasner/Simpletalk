@@ -57,10 +57,13 @@ class DrawingView extends PartView {
             this.template.content.cloneNode(true)
         );
 
+        this.isCurrentlyDrawing = false;
+
         // Bind component methods
         this.onMouseDown = this.onMouseDown.bind(this);
         this.onMouseMove = this.onMouseMove.bind(this);
         this.onMouseUp = this.onMouseUp.bind(this);
+        this.onMouseLeave = this.onMouseLeave.bind(this);
         this.onHaloResize = this.onHaloResize.bind(this);
         this.onClick = this.onClick.bind(this);
         this.initCustomHaloButton = this.initCustomHaloButton.bind(this);
@@ -123,8 +126,10 @@ class DrawingView extends PartView {
         if(!this.activeTool){
             return;
         }
+        this.isCurrentlyDrawing = true;
         let canvas = this.shadow.querySelector('canvas');
         canvas.addEventListener('mousemove', this.onMouseMove);
+        canvas.addEventListener('mouseleave', this.onMouseLeave);
         this.activeTool.start(event.offsetX, event.offsetY);
     }
 
@@ -144,12 +149,29 @@ class DrawingView extends PartView {
         if(event.shiftKey){
             return;
         }
-        if(this.activeTool && this.inDrawingMode){
+        if(this.activeTool && this.inDrawingMode && this.isCurrentlyDrawing){
             this.activeTool.end(event.offsetX, event.offsetY);
             this.afterDrawAction();
         }
+        this.isCurrentlyDrawing = false;
         let canvas = this.shadow.querySelector('canvas');
         canvas.removeEventListener('mousemove', this.onMouseMove);
+        canvas.removeEventListener('mouseleave', this.onMouseLeave);
+    }
+
+
+    onMouseLeave(event){
+        // If this is triggered, we left the area
+        // while drawing. So call the activeTool's
+        // end method
+        this.activeTool.end(
+            event.offsetX,
+            event.offsetY
+        );
+        this.isCurrentlyDrawing = false;
+        this.afterDrawAction();
+        this.canvas.removeEventListener('mouseleave', this.onMouseLeave);
+        this.canvas.removeEventListener('mousemove', this.onMouseMove);
     }
 
     onClick(event){
