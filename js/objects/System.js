@@ -282,7 +282,7 @@ const System = {
         }
     },
 
-    newModel(kind, ownerId, context){
+    newModel(kind, ownerId){
         // Lookup the instance of the model that
         // matches the owner's id
         let ownerPart = this.partsById[ownerId];
@@ -380,30 +380,40 @@ const System = {
             return existingView;
         }
 
-        // Find the parent model id. This will
-        // help us find the parent view element for
-        // appending the new element.
-        let parentId = model._owner.id;
-        let parentElement = this.findViewById(parentId);
-        if(!parentElement){
-            throw new Error(`Could not find parent element for ${partName}[${modelId}] (model owner id: ${model._owner.id})`);
+        let parentIds = [];
+        if(model._owner.name === "Stack" && partName.toLowerCase() === "button"){
+            model._owner.subparts.forEach((sPart) => {
+                if(sPart.name === "Card"){
+                    parentIds.push(sPart.id);
+                }
+            });
+        } else {
+            // Find the parent model id. This will
+            // help us find the parent view element for
+            // appending the new element.
+            parentIds.push( model._owner.id);
         }
+        parentIds.forEach((pId) => {
+            let parentElement = this.findViewById(pId);
+            if(!parentElement){
+                throw new Error(`Could not find parent element for ${partName}[${modelId}] (model owner id: ${model._owner.id})`);
+            }
 
-        // Create the new view instance,
-        // append to parent, and set the model
-        let newView = document.createElement(
-            this.tagNameForViewNamed(partName)
-        );
-        newView.setModel(model);
-        parentElement.appendChild(newView);
+            // Create the new view instance,
+            // append to parent, and set the model
+            let newView = document.createElement(
+                this.tagNameForViewNamed(partName)
+            );
+            newView.setModel(model);
+            parentElement.appendChild(newView);
 
-        // For all subparts of this model, call
-        // the newView method recursively
-        model.subparts.forEach(subpart => {
-            this.newView(subpart.type, subpart.id);
+            // For all subparts of this model, call
+            // the newView method recursively
+            model.subparts.forEach(subpart => {
+                this.newView(subpart.type, subpart.id);
+            });
         });
-
-        return newView;
+        return true;
     },
 
     registerPart: function(name, cls){
