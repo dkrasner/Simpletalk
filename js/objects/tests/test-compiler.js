@@ -216,7 +216,7 @@ describe("SimpleTalk Compiler", function () {
                     {
                         type: "command",
                         commandName: "newModel",
-                        args: [d, "", ""]
+                        args: [d, "", "card", ""]
                     }];
                     compiler.compile(handler, MockObject);
                     const scriptSemantics = MockObject._scriptSemantics["mouseUp"];
@@ -233,7 +233,41 @@ describe("SimpleTalk Compiler", function () {
                     {
                         type: "command",
                         commandName: "newModel",
-                        args: [d, "", "this"]
+                        args: [d, "", "card", "this"]
+                    }];
+                    compiler.compile(handler, MockObject);
+                    const scriptSemantics = MockObject._scriptSemantics["mouseUp"];
+                    assert.deepEqual(scriptSemantics, expectedMessages);
+                    const concreteHandler = MockObject._commandHandlers["mouseUp"];
+                    assert.isNotNull(concreteHandler);
+                    assert.equal(typeof concreteHandler, "function");
+                })
+            });
+            it('messageHandler (no args, "add to current card" command)', () => {
+                systemObjects.forEach((d) => {
+                    const handler = `on mouseUp\n add ${d} to current card\nend mouseUp`;
+                    const expectedMessages = [
+                    {
+                        type: "command",
+                        commandName: "newModel",
+                        args: [d, "", "card", "current"]
+                    }];
+                    compiler.compile(handler, MockObject);
+                    const scriptSemantics = MockObject._scriptSemantics["mouseUp"];
+                    assert.deepEqual(scriptSemantics, expectedMessages);
+                    const concreteHandler = MockObject._commandHandlers["mouseUp"];
+                    assert.isNotNull(concreteHandler);
+                    assert.equal(typeof concreteHandler, "function");
+                })
+            });
+            it('messageHandler (no args, "add to current stack" command)', () => {
+                systemObjects.forEach((d) => {
+                    const handler = `on mouseUp\n add ${d} to current stack\nend mouseUp`;
+                    const expectedMessages = [
+                    {
+                        type: "command",
+                        commandName: "newModel",
+                        args: [d, "", "stack", "current"]
                     }];
                     compiler.compile(handler, MockObject);
                     const scriptSemantics = MockObject._scriptSemantics["mouseUp"];
@@ -250,7 +284,7 @@ describe("SimpleTalk Compiler", function () {
                     {
                         type: "command",
                         commandName: "newModel",
-                        args: [d, "20", ""]
+                        args: [d, "20", "card", ""]
                     }];
                     compiler.compile(handler, MockObject);
                     const scriptSemantics = MockObject._scriptSemantics["mouseUp"];
@@ -270,8 +304,12 @@ describe("SimpleTalk Compiler", function () {
                 const sourceCode = `on customMessage idArg\n add idArg\nend customMessage`;
                 expect(() => compiler.compile(sourceCode, MockObject)).to.throw();
             });
-            it.skip('messageHandler ("add to this [with] targetId" invalid construction)', () => {
+            it('messageHandler ("add to this [with] targetId" invalid construction)', () => {
                 const sourceCode = `on customMessage idArg\n add button to this card 20 \nend customMessage`;
+                expect(() => compiler.compile(sourceCode, MockObject)).to.throw();
+            });
+            it('messageHandler ("add to current" invalid target)', () => {
+                const sourceCode = `on customMessage idArg\n add button to current button \nend customMessage`;
                 expect(() => compiler.compile(sourceCode, MockObject)).to.throw();
             });
         });

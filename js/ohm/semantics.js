@@ -73,15 +73,16 @@ let simpleTalkSemantics = {
         // TODO: a command like "add card to this stack 20" does not make sense, since you should either designate
         // the target by context "this" or by id. Here we should throw some sort of uniform error.
         let args = [];
+        if(context.sourceString && targetObjectId.sourceString){
+            throw "Semantic Error (Add model rule): only one of context or targetObjectId can be provided";
+        }
+        if(context.sourceString === "current" && !["card", "stack"].includes(targetObjectType.sourceString.toLowerCase())){
+            throw "Semantic Error (Add model rule): context 'current' can only apply to 'card' or 'stack' models";
+        }
         args.push(newObject.sourceString);
         args.push(targetObjectId.sourceString);
         args.push(targetObjectType.sourceString);
-        if(!context.sourceString){
-            // the default context is always "current"
-            args.push("current");
-        } else {
-            args.push(context.sourceString);
-        }
+        args.push(context.sourceString);
 
         let msg = {
             type: "command",
