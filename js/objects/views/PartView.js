@@ -33,6 +33,7 @@ class PartView extends HTMLElement {
         this.openToolbox = this.openToolbox.bind(this);
         this.onHaloDelete = this.onHaloDelete.bind(this);
         this.onHaloOpenEditor = this.onHaloOpenEditor.bind(this);
+
     }
 
     modelPropertyChanged(){

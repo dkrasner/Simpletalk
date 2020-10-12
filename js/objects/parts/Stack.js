@@ -11,6 +11,9 @@ import Background from './Background.js';
 import {
     BasicProperty
 } from '../properties/PartProperties.js';
+import {
+    addLayoutProperties
+} from '../properties/LayoutProperties.js';
 
 class Stack extends Part {
     constructor(owner, name, deserializing=false){
@@ -37,6 +40,11 @@ class Stack extends Part {
                 name
             );
         }
+
+        // Stacks have the layout set
+        // of properties, so we add
+        // those
+        addLayoutProperties(this);
 
         // if we are deserializing, we don't need to
         // instantiate any default children
