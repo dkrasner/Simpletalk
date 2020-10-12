@@ -69,7 +69,7 @@ let simpleTalkSemantics = {
         return msg;
     },
 
-    Command_addModel: function(addLiteral, newObject, toLiteral, context, targetObjectType, targetObjectId){
+    Command_addModel: function(addLiteral, newObject, name, toLiteral, context, targetObjectType, targetObjectId){
         // TODO: a command like "add card to this stack 20" does not make sense, since you should either designate
         // the target by context "this" or by id. Here we should throw some sort of uniform error.
         let args = [];
@@ -80,6 +80,11 @@ let simpleTalkSemantics = {
             throw "Semantic Error (Add model rule): context 'current' can only apply to 'card' or 'stack' models";
         }
         args.push(newObject.sourceString);
+        name = name.parse()[0];
+        if (!name){
+            name = "";
+        }
+        args.push(name);
         args.push(targetObjectId.sourceString);
         args.push(targetObjectType.sourceString);
         args.push(context.sourceString);
@@ -90,6 +95,11 @@ let simpleTalkSemantics = {
             args: args
         };
         return msg;
+    },
+
+    SystemObjectNaming: function(namedLiteral, name){
+        // get ride of the quotes
+        return name.sourceString.slice(1, name.sourceString.length - 1);
     },
 
     command_arbitrary: function(name){

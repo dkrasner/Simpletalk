@@ -63,11 +63,17 @@
    		| "go to" systemObject objectId --goToByReference
 		| "answer" stringLiteral --answer
 		| "delete" "this"? systemObject objectId? --deleteModel
-		| "add" systemObject "to" ("this"|"current")? systemObject objectId? --addModel
+		| "add" systemObject SystemObjectNaming? "to" ("this" | "current")? systemObject objectId? --addModel
 		| command_arbitrary
 
 	command_arbitrary (an arbitrary command)
 		= letter+
+
+	systemObject (system object such as card, stack etc)
+		= ("c" | "C") "ontainer" | ("b"| "B") "ackground" | ("b" | "B") "utton" | ("c" | "C") "ard" | ("f" | "F") "ield" | ("s" | "S") "tack" | ("w" | "W") "indow"
+
+    SystemObjectNaming (acceptable name for system object)
+        = "named" stringLiteral
 
 	// Function definition follows the HT convention
 	// """
@@ -142,9 +148,6 @@
 		| "open" systemObject --openObject
 		| "quit" | "resumeStack" | "resume" | "returnInField" | "returnKey" | "show menubar"
 		| "sizeWindow" | "startUp" | "suspendStack" | "suspend" | "tabKey"
-
-	systemObject (system object such as card, stack etc)
-		= ("c" | "C") "ontainer" | ("b"| "B") "ackground" | ("b" | "B") "utton" | ("c" | "C") "ard" | ("f" | "F") "ield" | ("s" | "S") "tack"
 
 	modifierKeyName (a modifier key name)
 		= "command" | "option" | "control" | "shift"
