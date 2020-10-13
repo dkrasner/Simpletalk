@@ -80,14 +80,15 @@ let simpleTalkSemantics = {
             throw "Semantic Error (Add model rule): context 'current' can only apply to 'card' or 'stack' models";
         }
         args.push(newObject.sourceString);
-        name = name.parse()[0];
-        if (!name){
-            name = "";
-        }
-        args.push(name);
         args.push(targetObjectId.sourceString);
         args.push(targetObjectType.sourceString);
         args.push(context.sourceString);
+        name = name.sourceString;
+        // remove the string literal wrapping quotes
+        if (name){
+            name =name.slice(1, name.length - 1);
+        }
+        args.push(name);
 
         let msg = {
             type: "command",
@@ -95,11 +96,6 @@ let simpleTalkSemantics = {
             args: args
         };
         return msg;
-    },
-
-    SystemObjectNaming: function(namedLiteral, name){
-        // get ride of the quotes
-        return name.sourceString.slice(1, name.sourceString.length - 1);
     },
 
     command_arbitrary: function(name){

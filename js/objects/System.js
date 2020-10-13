@@ -282,7 +282,7 @@ const System = {
         }
     },
 
-    newModel(kind, ownerId, context){
+    newModel(kind, ownerId, ownerKind, context, name){
         // Lookup the instance of the model that
         // matches the owner's id
         let ownerPart = this.partsById[ownerId];
@@ -298,6 +298,9 @@ const System = {
             throw new Error(`Cannot create unknown part type: ${kind}`);
         }
         let model = new modelClass(ownerPart);
+        if(name){
+            model.partProperties.setPropertyNamed(model, 'name', name);
+        }
         this.partsById[model.id] = model;
 
         // Any created part might initialize its
@@ -738,7 +741,7 @@ System._commandHandlers['openToolbox'] = function(targetId){
         'name',
         'Add Button to Toolbox'
     );
-    let addBtnToToolboxScript = 'on mouseUp\n    add button to this card\nend mouseUp';
+    let addBtnToToolboxScript = 'on mouseUp\n    add button "New Button" to this card\nend mouseUp';
     addBtnToToolboxBtn.partProperties.setPropertyNamed(
         addBtnToToolboxBtn,
         'script',

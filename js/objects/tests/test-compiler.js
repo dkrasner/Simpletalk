@@ -216,7 +216,7 @@ describe("SimpleTalk Compiler", function () {
                     {
                         type: "command",
                         commandName: "newModel",
-                        args: [d, "", "", "card", ""]
+                        args: [d, "", "card", "", ""]
                     }];
                     compiler.compile(handler, MockObject);
                     const scriptSemantics = MockObject._scriptSemantics["mouseUp"];
@@ -233,7 +233,7 @@ describe("SimpleTalk Compiler", function () {
                     {
                         type: "command",
                         commandName: "newModel",
-                        args: [d, "", "", "card", "this"]
+                        args: [d, "", "card", "this", ""]
                     }];
                     compiler.compile(handler, MockObject);
                     const scriptSemantics = MockObject._scriptSemantics["mouseUp"];
@@ -250,7 +250,7 @@ describe("SimpleTalk Compiler", function () {
                     {
                         type: "command",
                         commandName: "newModel",
-                        args: [d, "", "", "card", "current"]
+                        args: [d, "", "card", "current", ""]
                     }];
                     compiler.compile(handler, MockObject);
                     const scriptSemantics = MockObject._scriptSemantics["mouseUp"];
@@ -267,7 +267,7 @@ describe("SimpleTalk Compiler", function () {
                     {
                         type: "command",
                         commandName: "newModel",
-                        args: [d, "", "", "stack", "current"]
+                        args: [d, "", "stack", "current", ""]
                     }];
                     compiler.compile(handler, MockObject);
                     const scriptSemantics = MockObject._scriptSemantics["mouseUp"];
@@ -284,7 +284,7 @@ describe("SimpleTalk Compiler", function () {
                     {
                         type: "command",
                         commandName: "newModel",
-                        args: [d, "", "20", "card", ""]
+                        args: [d, "20", "card", "", ""]
                     }];
                     compiler.compile(handler, MockObject);
                     const scriptSemantics = MockObject._scriptSemantics["mouseUp"];
@@ -296,12 +296,12 @@ describe("SimpleTalk Compiler", function () {
             });
             it('messageHandler (no args, "add to" with name by id command)', () => {
                 systemObjects.forEach((d) => {
-                    const handler = `on mouseUp\n add ${d} named "New Button" to card 20\nend mouseUp`;
+                    const handler = `on mouseUp\n add ${d} "New Button" to card 20\nend mouseUp`;
                     const expectedMessages = [
                     {
                         type: "command",
                         commandName: "newModel",
-                        args: [d, "New Button", "20", "card", ""]
+                        args: [d, "20", "card", "", "New Button"]
                     }];
                     compiler.compile(handler, MockObject);
                     const scriptSemantics = MockObject._scriptSemantics["mouseUp"];

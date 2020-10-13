@@ -307,11 +307,11 @@ class Part {
         });
     }
 
-    newModelCmdHandler(modelType, ownerId, targetModelType, context){
+    newModelCmdHandler(modelType, ownerId, targetModelType, context, name){
         let message = {
             type: 'command',
             commandName: 'newModel',
-            args: [modelType, ownerId, targetModelType, context]
+            args: [modelType, ownerId, targetModelType, context, name]
         };
         // If the context is explicitely "current" we find the corresponding part
         // (card or stack) and send the updated message to it
