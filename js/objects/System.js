@@ -435,14 +435,24 @@ const System = {
 
     // return the model corresponding to the current stack
     getCurrentStackModel: function(){
-        let partId = document.querySelector('st-stack.current-stack').getAttribute("part-id");
-        return this.partsById[partId];
+        // make sure there is only one current-stack
+        let currentStacks = document.querySelectorAll('st-world > st-stack.current-stack');
+        if(currentStacks.length > 1){
+            throw "Found multiple current stacks in world!";
+        }
+        return currentStacks[0].model;
     },
 
     // return the model corresponding to the current card
     getCurrentCardModel: function(){
-        let partId = document.querySelector('st-card.current-card').getAttribute("part-id");
-        return this.partsById[partId];
+        // there could be multiple current cards (in windows for example) but only one
+        // current-card child of a current-stack
+        let currentStack = document.querySelector('st-world > st-stack.current-stack');
+        let currentCards = currentStack.querySelectorAll(':scope > st-card.current-card');
+        if(currentCards.length > 1){
+            throw "Found multiple current cards in current stack!";
+        }
+        return currentCards[0].model;
     },
 
     /** Serialization / Deserialization **/
