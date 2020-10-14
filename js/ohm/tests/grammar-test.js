@@ -556,6 +556,10 @@ describe("SimpleTalk Grammar", () => {
                 const s = "go to world 42";
                 semanticMatchFailTest(s, "Command")
             });
+            it ("Bad go to: invalid structure", () => {
+                const s = "go to next card 42";
+                semanticMatchFailTest(s, "Command");
+            });
         });
         describe("Remove Model", () => {
             it ("Basic Remove (no id)", () => {
@@ -683,6 +687,32 @@ describe("SimpleTalk Grammar", () => {
                 semanticMatchFailTest(s, "Command")
             });
         });
+        describe("Set", () => {
+            it ("Set background-color with id", () => {
+                const objects = ["background", "card", "container", "field", "button", "stack", "window"];
+                objects.forEach((d) => {
+                    const s = `set background-color to blue in ${d} 10`;
+                    semanticMatchTest(s, "Command");
+                    semanticMatchTest(s, "Command_setProperty");
+                    semanticMatchTest(s, "Statement");
+                });
+            });
+            it ("Set background color in this or current", () => {
+                const objects = ["background", "card", "container", "field", "button", "stack", "window"];
+                ["this", "current"].forEach((context) => {
+                    objects.forEach((d) => {
+                        const s = `set background-color to blue in ${context} ${d}`;
+                        semanticMatchTest(s, "Command");
+                        semanticMatchTest(s, "Command_setProperty");
+                        semanticMatchTest(s, "Statement");
+                    });
+                });
+            });
+            it ("Bad construction", () => {
+                const s = `set background to blue in card 10`;
+                semanticMatchFailTest(s, "Command")
+            });
+        });
         describe("Arbitrary", () => {
             it ("arbitrary command", () => {
                 const s = "anythinggoes"
@@ -693,10 +723,6 @@ describe("SimpleTalk Grammar", () => {
                 const s = "abc def"
                 semanticMatchFailTest(s, "Command")
             });
-        });
-        it ("Bad go to: invalid structure", () => {
-            const s = "go to next card 42";
-            semanticMatchFailTest(s, "Command");
         });
         it ("Bad command (arbitrary with digits)", () => {
             semanticMatchFailTest("1234arrowKe", "Command");

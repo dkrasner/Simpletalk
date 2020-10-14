@@ -98,6 +98,28 @@ let simpleTalkSemantics = {
         return msg;
     },
 
+    Command_setProperty: function(preambleLiteral, color, inLiteral, context, targetObjectType, targetObjectId){
+        let args = [];
+        if(context.sourceString && targetObjectId.sourceString){
+            throw "Semantic Error (Set background rule): only one of context or targetObjectId can be provided";
+        }
+        if(context.sourceString === "current" && !["card", "stack"].includes(targetObjectType.sourceString.toLowerCase())){
+            throw "Semantic Error (Set background rule): context 'current' can only apply to 'card' or 'stack' models";
+        }
+        args.push("background-color"); // TODO these are harcoded for now!
+        args.push(color.sourceString);
+        args.push(targetObjectId.sourceString);
+        args.push(targetObjectType.sourceString);
+        args.push(context.sourceString);
+
+        let msg = {
+            type: "command",
+            commandName: "setProperty",
+            args: args
+        };
+        return msg;
+    },
+
     command_arbitrary: function(name){
         let msg = {
             type: "command",

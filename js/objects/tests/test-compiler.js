@@ -330,5 +330,67 @@ describe("SimpleTalk Compiler", function () {
                 expect(() => compiler.compile(sourceCode, MockObject)).to.throw();
             });
         });
+        describe("Set Property", function () {
+            var systemObjects = ["background", "button", "card", "field", "stack"];
+            systemObjects = systemObjects.concat(systemObjects.map(w => w.charAt(0).toUpperCase() + w.slice(1)));
+            const invalidObjects = ["ackground", "cardd", "world"]
+
+            it('Set background color', () => {
+                systemObjects.forEach((s) => {
+                    const sourceCode = `
+                      on customMessage
+                        set background-color to blue in ${s} 20
+                      end customMessage
+                    `;
+                    const expectedMessages = [
+                    {
+                        type: "command",
+                        commandName: "setProperty",
+                        args: ["background-color", "blue", "20", `${s}`, ""]
+                    }];
+                    compiler.compile(sourceCode, MockObject);
+
+                    const scriptSemantics = MockObject._scriptSemantics["customMessage"];
+                    assert.deepEqual(scriptSemantics, expectedMessages);
+
+                    const concreteHandler = MockObject._commandHandlers["customMessage"];
+                    assert.isNotNull(concreteHandler);
+                    assert.equal(typeof concreteHandler, "function");
+                })
+            });
+            it('Set background color in context', () => {
+                ["this", "current", ""].forEach((context) => {
+                    ["card", "stack"].forEach((s) => {
+                        const sourceCode = `
+                          on customMessage
+                            set background-color to blue in ${context} ${s}
+                          end customMessage
+                        `;
+                        const expectedMessages = [
+                        {
+                            type: "command",
+                            commandName: "setProperty",
+                            args: ["background-color", "blue", "", `${s}`, `${context}`]
+                        }];
+                        compiler.compile(sourceCode, MockObject);
+
+                        const scriptSemantics = MockObject._scriptSemantics["customMessage"];
+                        assert.deepEqual(scriptSemantics, expectedMessages);
+
+                        const concreteHandler = MockObject._commandHandlers["customMessage"];
+                        assert.isNotNull(concreteHandler);
+                        assert.equal(typeof concreteHandler, "function");
+                    });
+                });
+            });
+            it('Set background color (invalid construction)', () => {
+                const sourceCode = `
+                  on customMessage
+                    set background to blue in card 20
+                  end customMessage
+                `;
+                expect(() => compiler.compile(sourceCode, MockObject)).to.throw();
+            })
+        });
     });
 });

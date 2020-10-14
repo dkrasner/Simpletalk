@@ -91,6 +91,17 @@ class CardView extends PartView {
                 'list-column'
             );
         }
+        // background stuff
+        let backgroundColor = this.model.partProperties.getPropertyNamed(
+            this.model,
+            'background-color'
+        );
+        let style = this.getAttribute("style");
+        if(!style){
+            style = "";
+        }
+        style += `background-color: ${backgroundColor}`;
+        this.setAttribute("style", style);
     }
 };
 

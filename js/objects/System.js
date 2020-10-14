@@ -342,6 +342,14 @@ const System = {
         return model;
     },
 
+    setProperty(property, value, ownerId){
+        let ownerPart = this.partsById[ownerId];
+        if(!ownerPart || ownerPart == undefined){
+            throw new Error(`System could not locate owner part with id ${ownerId}`);
+        }
+        ownerPart.partProperties.setPropertyNamed(ownerPart, property, value);
+    },
+
     // Remove the model with the given ID from
     // the System's registry, as well as from the subparts
     // array of any owners
@@ -594,6 +602,7 @@ const System = {
 /** Add Default System Command Handlers **/
 System._commandHandlers['deleteModel'] = System.deleteModel;
 System._commandHandlers['newModel'] = System.newModel;
+System._commandHandlers['setProperty'] = System.setProperty;
 
 System._commandHandlers['answer'] = function(text){
     alert(text);
