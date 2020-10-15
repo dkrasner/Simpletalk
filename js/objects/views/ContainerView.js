@@ -24,15 +24,22 @@ class ContainerView extends PartView {
         );
 
         // Bind component methods
-        this.setPropsFromModel = this.setPropsFromModel.bind(this);
+        this.setupPropHandlers = this.setupPropHandlers.bind(this);
+        this.layoutChanged = this.layoutChanged.bind(this);
         this.onDragEnter = this.onDragEnter.bind(this);
         this.onDragLeave = this.onDragLeave.bind(this);
         this.onDrop = this.onDrop.bind(this);
         this.onClick = this.onClick.bind(this);
+
+        // Setup prop handlers
+        this.setupPropHandlers();
+    }
+
+    setupPropHandlers(){
+        this.onPropChange('layout', this.layoutChanged);
     }
 
     afterConnected(){
-        // Bind events
         this.addEventListener('click', this.onClick);
     }
 
@@ -40,21 +47,8 @@ class ContainerView extends PartView {
         this.removeEventListener('click', this.onClick);
     }
 
-    afterModelSet(){
-        this.setPropsFromModel();
-    }
-
-    receiveMessage(aMessage){
-        if(aMessage.type == 'propertyChanged'){
-            this.setPropsFromModel();
-        }
-    }
-
-    setPropsFromModel(){
-        let layout = this.model.partProperties.getPropertyNamed(
-            this.model,
-            'layout'
-        );
+    layoutChanged(value, partId){
+        let layout = value;
         if(layout == 'list'){
             this.classList.add('list-layout');
         } else {

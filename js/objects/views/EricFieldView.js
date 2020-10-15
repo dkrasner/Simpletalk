@@ -36,7 +36,16 @@ class EricFieldView extends PartView {
 
         // Bind methods
         this.onInput = this.onInput.bind(this);
-        this.handlePropChange = this.handlePropChange.bind(this);
+        this.setupPropHandlers = this.setupPropHandlers.bind(this);
+
+        this.setupPropHandlers();
+    }
+
+    setupPropHandlers(){
+        this.onPropChange('textContent', (value, partId) => {
+            let textArea = this._shadowRoot.querySelector('.eric-field-textarea');
+            textArea.value = value;
+        });
     }
 
     afterConnected(){
@@ -67,20 +76,6 @@ class EricFieldView extends PartView {
             'textContent',
             event.target.value
         );
-    }
-
-    receiveMessage(aMessage){
-        if(aMessage.type == 'propertyChanged'){
-            this.handlePropChange(aMessage);
-        }
-    }
-
-    handlePropChange(changeMessage){
-        switch(changeMessage.propertyName){
-        case 'textContent':
-            let textArea = this._shadowRoot.querySelector('.eric-field-textarea');
-            textArea.value = changeMessage.value;
-        }
     }
 };
 

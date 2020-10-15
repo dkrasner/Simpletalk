@@ -49,14 +49,14 @@ class WorldView extends PartView {
         // Bound methods
         this.updateCurrentStack = this.updateCurrentStack.bind(this);
         this.receiveMessage = this.receiveMessage.bind(this);
-        this.onPropertyChange = this.onPropertyChange.bind(this);
+        this.setupPropHandlers = this.setupPropHandlers.bind(this);
+
+        // Setup prop handlers
+        this.setupPropHandlers();
     }
 
-    connectedCallback(){
-        if(this.isConnected && this.model){
-
-
-        }
+    setupPropHandlers(){
+        this.onPropChange('currentStack', this.updateCurrentStack);
     }
 
     afterConnected(){
@@ -83,29 +83,6 @@ class WorldView extends PartView {
                     firstAvailableStack.id
                 );
             }
-        }
-    }
-
-    receiveMessage(aMessage){
-        switch(aMessage.type){
-        case 'propertyChanged':
-            this.onPropertyChange(
-                aMessage.propertyName,
-                aMessage.value
-            );
-            break;
-        default:
-            break;
-        }
-    }
-
-    onPropertyChange(propName, value){
-        switch(propName){
-        case 'currentStack':
-            this.updateCurrentStack(value);
-            break;
-        default:
-            break;
         }
     }
 

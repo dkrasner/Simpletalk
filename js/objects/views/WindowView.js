@@ -111,6 +111,7 @@ class WindowView extends PartView {
         this.setupClickAndDrag = this.setupClickAndDrag.bind(this);
         this.setupBarButtons = this.setupBarButtons.bind(this);
         this.setupExpanderAreas = this.setupExpanderAreas.bind(this);
+        this.setupPropHandlers = this.setupPropHandlers.bind(this);
         this.onMouseMoveInBar = this.onMouseMoveInBar.bind(this);
         this.onMouseDownInBar = this.onMouseDownInBar.bind(this);
         this.onMouseUpAfterDrag = this.onMouseUpAfterDrag.bind(this);
@@ -120,6 +121,13 @@ class WindowView extends PartView {
         this.onGripDown = this.onGripDown.bind(this);
         this.onGripUp = this.onGripUp.bind(this);
         this.onGripMove = this.onGripMove.bind(this);
+
+        // Setup prop handlers
+        this.setupPropHandlers();
+    }
+
+    setupPropHandlers(){
+        this.onPropChange('title', this.setTitle);
     }
 
     afterConnected(){
@@ -240,28 +248,6 @@ class WindowView extends PartView {
             if(newHeight){
                 view.style.minHeight = `${newHeight}px`;
             }
-        }
-    }
-
-    receiveMessage(aMessage){
-        switch(aMessage.type){
-        case 'propertyChanged':
-            this.onPropertyChanged(
-                aMessage.propertyName,
-                aMessage.value,
-                aMessage.partId
-            );
-            break;
-        default:
-            break;
-        };
-    }
-
-    onPropertyChanged(propName, newVal, partId){
-        switch(propName){
-        case 'title':
-            this.setTitle(newVal);
-            break;
         }
     }
 

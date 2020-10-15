@@ -17,6 +17,8 @@ class PartView extends HTMLElement {
         this.model = null;
         this.isPartView = true;
         this.name = this.constructor.name;
+        this.propChangeHandlers = {};
+        this.setupBasePropHandlers();
 
         // Halo settings. All are on by default
         this.wantsHaloResize = true;
@@ -28,6 +30,14 @@ class PartView extends HTMLElement {
         this.setModel = this.setModel.bind(this);
         this.unsetModel = this.unsetModel.bind(this);
         this.sendMessage = this.sendMessage.bind(this);
+        this.setupBasePropHandlers = this.setupBasePropHandlers.bind(this);
+
+        // Bind property change reaction methods
+        this.primHandlePropChange = this.primHandlePropChange.bind(this);
+        this.onPropChange = this.onPropChange.bind(this);
+        this.scriptChanged = this.scriptChanged.bind(this);
+
+        // Bind Halo related methods
         this.openHalo = this.openHalo.bind(this);
         this.closeHalo = this.closeHalo.bind(this);
         this.openToolbox = this.openToolbox.bind(this);
@@ -67,15 +77,54 @@ class PartView extends HTMLElement {
         this.setAttribute('part-id', "");
     }
 
+    setupBasePropHandlers(){
+        // This is where we should setup any
+        // prop change handlers that are universal
+        // to all PartViews. We would do this via
+        // the #onPropChange method, which registers
+        // a handler function.
+        // Do not override this method
+        // TODO: Implement the universals
+        this.onPropChange('script', this.scriptChanged);
+    }
+
     sendMessage(aMessage, target){
         window.System.sendMessage(aMessage, this, target);
     }
 
     receiveMessage(aMessage){
-        // Do nothing here.
-        // subclasses should implement
-        // their own handling of received
-        // messages
+        switch(aMessage.type){
+        case 'propertyChanged':
+            this.primHandlePropChange(
+                aMessage.propertyName,
+                aMessage.value,
+                aMessage.partId
+            );
+            break;
+        }
+    }
+
+    primHandlePropChange(name, value, partId){
+        // Find the handler for the given named
+        // property. If it does not exist, do nothing
+        let handler = this.propChangeHandlers[name];
+        if(!handler){
+            return null;
+        }
+        handler = handler.bind(this);
+        return handler(value, partId);
+    }
+
+    onPropChange(name, func){
+        this.propChangeHandlers[name] = func;
+    }
+
+    scriptChanged(value, partId){
+        this.model.sendMessage({
+            type: 'compile',
+            codeString: value,
+            targetId: partId
+        }, window.System);
     }
 
     openToolbox(){

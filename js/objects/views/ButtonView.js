@@ -35,7 +35,16 @@ class ButtonView extends PartView {
         this.onMouseUp = this.onMouseUp.bind(this);
         this.onMouseEnter = this.onMouseEnter.bind(this);
         this.onClick = this.onClick.bind(this);
-        this.setPropsFromModel = this.setPropsFromModel.bind(this);
+        this.setupPropHandlers = this.setupPropHandlers.bind(this);
+
+        // Setup prop change handlers
+        this.setupPropHandlers();
+    }
+
+    setupPropHandlers(){
+        this.onPropChange('name', (value, partId) => {
+            this.innerText = value;
+        });
     }
 
     afterConnected(){
@@ -44,10 +53,6 @@ class ButtonView extends PartView {
         this.addEventListener('mouseup', this.onMouseUp);
         this.addEventListener('mouseenter', this.onMouseEnter);
         this.addEventListener('click', this.onClick);
-    }
-
-    afterModelSet(){
-        this.setPropsFromModel();
     }
 
     afterDisconnected(){
@@ -94,28 +99,6 @@ class ButtonView extends PartView {
             args: [],
             shouldIgnore: true
         }, this.model);
-    }
-
-    setPropsFromModel(){
-        this.innerText = this.model.partProperties.getPropertyNamed(
-            this.model,
-            'name'
-        );
-    }
-
-    receiveMessage(aMessage){
-        if(aMessage.type == 'propertyChanged'){
-            // TODO should script property change be handled in the based class?
-            if(aMessage.propertyName == "script"){
-                this.model.sendMessage({
-                    type: 'compile',
-                    codeString: aMessage.value,
-                    targetId: this.model.id
-                }, window.System);
-            } else {
-                this.setPropsFromModel();
-            }
-        }
     }
 };
 
