@@ -238,7 +238,7 @@ class PencilTool extends HTMLElement {
     }
 };
 
-customElements.define('pencil-tool', PencilTool);
+window.customElements.define('pencil-tool', PencilTool);
 
 export {
     PencilTool,

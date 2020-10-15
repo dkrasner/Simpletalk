@@ -240,7 +240,7 @@ class EraserTool extends HTMLElement {
         }
     }
 };
-customElements.define('eraser-tool', EraserTool);
+window.customElements.define('eraser-tool', EraserTool);
 
 export {
     EraserTool,

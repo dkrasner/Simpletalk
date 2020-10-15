@@ -251,7 +251,7 @@ class ColorWheelWidget extends HTMLElement {
     }
 };
 
-customElements.define('color-wheel', ColorWheelWidget);
+window.customElements.define('color-wheel', ColorWheelWidget);
 
 /** Utility Functions **/
 

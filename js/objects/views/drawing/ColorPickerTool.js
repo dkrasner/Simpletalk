@@ -166,7 +166,7 @@ class ColorPickerTool extends HTMLElement {
 
 
 
-customElements.define('color-picker-tool', ColorPickerTool);
+window.customElements.define('color-picker-tool', ColorPickerTool);
 
 export {
     ColorPickerTool,
