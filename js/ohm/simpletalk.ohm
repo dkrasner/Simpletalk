@@ -64,15 +64,12 @@
 		| "answer" stringLiteral --answer
 		| "delete" "this"? systemObject objectId? --deleteModel
 		| "add" systemObject stringLiteral? "to" ("this" | "current")? systemObject objectId? --addModel
-		| "set background-color to" color "in" ("this" | "current")? systemObject objectId? --setProperty
+		| "set" stringLiteral "to" stringLiteral "in" ("this" | "current")? systemObject objectId? --setProperty
 		| command_arbitrary
 
 	command_arbitrary (an arbitrary command)
 		= letter+
 	
-	color (a css color)
-		= "blue" | "red" | "yellow" | "orange" | "green" | "violet" | "black" | "white"
-
 	systemObject (system object such as card, stack etc)
 		= ("c" | "C") "ontainer" | ("b"| "B") "ackground" | ("b" | "B") "utton" | ("c" | "C") "ard" | ("f" | "F") "ield" | ("s" | "S") "tack" | ("w" | "W") "indow"
 

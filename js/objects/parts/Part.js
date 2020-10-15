@@ -151,7 +151,7 @@ class Part {
                 0
             ),
             new BasicProperty(
-                'background-color',
+                'backgroundColor',
                 'white'
             )
         ];

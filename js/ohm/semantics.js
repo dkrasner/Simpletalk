@@ -5,6 +5,11 @@
  * at the corresponding node.
  */
 
+// helpers
+const quoteRemove = function(string){
+    return string.slice(1, string.length-1);
+}
+
 let simpleTalkSemantics = {
     Script: function(scriptParts, _) {
         return scriptParts.parse();
@@ -98,7 +103,7 @@ let simpleTalkSemantics = {
         return msg;
     },
 
-    Command_setProperty: function(preambleLiteral, color, inLiteral, context, targetObjectType, targetObjectId){
+    Command_setProperty: function(setLiteral, propertyName, toLiteral,  propertyValue, inLiteral, context, targetObjectType, targetObjectId){
         let args = [];
         if(context.sourceString && targetObjectId.sourceString){
             throw "Semantic Error (Set background rule): only one of context or targetObjectId can be provided";
@@ -106,8 +111,9 @@ let simpleTalkSemantics = {
         if(context.sourceString === "current" && !["card", "stack"].includes(targetObjectType.sourceString.toLowerCase())){
             throw "Semantic Error (Set background rule): context 'current' can only apply to 'card' or 'stack' models";
         }
-        args.push("background-color"); // TODO these are harcoded for now!
-        args.push(color.sourceString);
+        // remove the quotes from string literals
+        args.push(quoteRemove(propertyName.sourceString));
+        args.push(quoteRemove(propertyValue.sourceString));
         args.push(targetObjectId.sourceString);
         args.push(targetObjectType.sourceString);
         args.push(context.sourceString);

@@ -339,14 +339,14 @@ describe("SimpleTalk Compiler", function () {
                 systemObjects.forEach((s) => {
                     const sourceCode = `
                       on customMessage
-                        set background-color to blue in ${s} 20
+                        set "backgroundColor" to "blue" in ${s} 20
                       end customMessage
                     `;
                     const expectedMessages = [
                     {
                         type: "command",
                         commandName: "setProperty",
-                        args: ["background-color", "blue", "20", `${s}`, ""]
+                        args: ["backgroundColor", "blue", "20", `${s}`, ""]
                     }];
                     compiler.compile(sourceCode, MockObject);
 
@@ -363,14 +363,14 @@ describe("SimpleTalk Compiler", function () {
                     ["card", "stack"].forEach((s) => {
                         const sourceCode = `
                           on customMessage
-                            set background-color to blue in ${context} ${s}
+                            set "backgroundColor" to "blue" in ${context} ${s}
                           end customMessage
                         `;
                         const expectedMessages = [
                         {
                             type: "command",
                             commandName: "setProperty",
-                            args: ["background-color", "blue", "", `${s}`, `${context}`]
+                            args: ["backgroundColor", "blue", "", `${s}`, `${context}`]
                         }];
                         compiler.compile(sourceCode, MockObject);
 

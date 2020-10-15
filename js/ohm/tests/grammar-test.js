@@ -688,10 +688,10 @@ describe("SimpleTalk Grammar", () => {
             });
         });
         describe("Set", () => {
-            it ("Set background-color with id", () => {
+            it ("Set backgroundColor with id", () => {
                 const objects = ["background", "card", "container", "field", "button", "stack", "window"];
                 objects.forEach((d) => {
-                    const s = `set background-color to blue in ${d} 10`;
+                    const s = `set "backgroundColor" to "blue" in ${d} 10`;
                     semanticMatchTest(s, "Command");
                     semanticMatchTest(s, "Command_setProperty");
                     semanticMatchTest(s, "Statement");
@@ -701,15 +701,15 @@ describe("SimpleTalk Grammar", () => {
                 const objects = ["background", "card", "container", "field", "button", "stack", "window"];
                 ["this", "current"].forEach((context) => {
                     objects.forEach((d) => {
-                        const s = `set background-color to blue in ${context} ${d}`;
+                        const s = `set "backgroundColor" to "blue" in ${context} ${d}`;
                         semanticMatchTest(s, "Command");
                         semanticMatchTest(s, "Command_setProperty");
                         semanticMatchTest(s, "Statement");
                     });
                 });
             });
-            it ("Bad construction", () => {
-                const s = `set background to blue in card 10`;
+            it ("Bad construction (no quotes)", () => {
+                const s = `set backgroundColor to "blue" in card 10`;
                 semanticMatchFailTest(s, "Command")
             });
         });

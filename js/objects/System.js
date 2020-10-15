@@ -348,6 +348,17 @@ const System = {
             throw new Error(`System could not locate owner part with id ${ownerId}`);
         }
         ownerPart.partProperties.setPropertyNamed(ownerPart, property, value);
+        // for now stack properties propagate down to their direct card children
+        // TODO this should be refactored within a better lifecycle model and potenitally
+        // use dynamic props. A similar propagation should probably exist for world -> stacks,
+        // window -> subpart etc
+        if(ownerPart.name === "Stack"){
+            ownerPart.subparts.forEach((subpart) => {
+                if(subpart.name === "Card"){
+                    subpart.partProperties.setPropertyNamed(subpart, property, value);
+                }
+            });
+        }
     },
 
     // Remove the model with the given ID from

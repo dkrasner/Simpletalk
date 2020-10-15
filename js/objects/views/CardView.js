@@ -94,14 +94,11 @@ class CardView extends PartView {
         // background stuff
         let backgroundColor = this.model.partProperties.getPropertyNamed(
             this.model,
-            'background-color'
+            'backgroundColor'
         );
-        let style = this.getAttribute("style");
-        if(!style){
-            style = "";
-        }
-        style += `background-color: ${backgroundColor}`;
-        this.setAttribute("style", style);
+        this.style['backgroundColor'] = backgroundColor;
+        // TODO this could bemore propgrammatic. For example
+        // styleProperties((prop) => {this.style[prop.name] = prop.value}) etc
     }
 };
 
