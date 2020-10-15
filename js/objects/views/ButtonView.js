@@ -38,25 +38,19 @@ class ButtonView extends PartView {
         this.setPropsFromModel = this.setPropsFromModel.bind(this);
     }
 
-    connectedCallback(){
-        if(this.isConnected){
-
-            // Setup mouse event handling
-            this.addEventListener('mousedown', this.onMouseDown);
-            this.addEventListener('mouseup', this.onMouseUp);
-            this.addEventListener('mouseenter', this.onMouseEnter);
-            this.addEventListener('click', this.onClick);
-
-            // If there is a bound model, set all
-            // the relevant view properties from
-            // model properties
-            if(this.model){
-                this.setPropsFromModel();
-            }
-        }
+    afterConnected(){
+        // Setup mouse event handling
+        this.addEventListener('mousedown', this.onMouseDown);
+        this.addEventListener('mouseup', this.onMouseUp);
+        this.addEventListener('mouseenter', this.onMouseEnter);
+        this.addEventListener('click', this.onClick);
     }
 
-    disconnectedCallback(){
+    afterModelSet(){
+        this.setPropsFromModel();
+    }
+
+    afterDisconnected(){
         this.removeEventListener('click', this.onClick);
         this.removeEventListener('mouseup', this.onMouseUp);
         this.removeEventListener('mousedown', this.onMouseDown);

@@ -55,29 +55,33 @@ class WorldView extends PartView {
     connectedCallback(){
         if(this.isConnected && this.model){
 
-            // If the model specifies a current stack,
-            // update it.
-            let currStackId = this.model.partProperties.getPropertyNamed(
-                this.model,
-                'currentStack'
-            );
-            if(currStackId >= 0){
-                let found = document.getElementById(currStackId);
-                if(found){
-                    found.classList.add('current-stack');
-                }
-            } else {
-                // Otherwise, attempt to set the first stack
-                // in the world's list of stacks as the current
-                // one.
-                let firstAvailableStack = this.firstElementChild;
-                if(firstAvailableStack){
-                    this.model.partProperties.setPropertyNamed(
-                        this.model,
-                        'currentStack',
-                        firstAvailableStack.id
-                    );
-                }
+
+        }
+    }
+
+    afterConnected(){
+        // If the model specifies a current stack,
+        // update it.
+        let currStackId = this.model.partProperties.getPropertyNamed(
+            this.model,
+            'currentStack'
+        );
+        if(currStackId >= 0){
+            let found = document.getElementById(currStackId);
+            if(found){
+                found.classList.add('current-stack');
+            }
+        } else {
+            // Otherwise, attempt to set the first stack
+            // in the world's list of stacks as the current
+            // one.
+            let firstAvailableStack = this.firstElementChild;
+            if(firstAvailableStack){
+                this.model.partProperties.setPropertyNamed(
+                    this.model,
+                    'currentStack',
+                    firstAvailableStack.id
+                );
             }
         }
     }
@@ -179,7 +183,7 @@ class WorldView extends PartView {
 
     goToStackById(stackId){
         let currentStackView = this.querySelector(':scope > .current-stack');
-        let selectedStackView = this.querySelector(`:scope > [part-id='${stackId}']`)
+        let selectedStackView = this.querySelector(`:scope > [part-id='${stackId}']`);
 
         if (currentStackView !== null) {
             currentStackView.classList.remove('current-stack');
@@ -188,7 +192,7 @@ class WorldView extends PartView {
         if (selectedStackView !== null) {
             selectedStackView.classList.add('current-stack');
         } else {
-            console.log(`The stack id: ${stackId} couldn't be found on this stack`)
+            console.log(`The stack id: ${stackId} couldn't be found on this stack`);
         }
         // Then we might want to send some message through
         // the HC system, letting Parts know that we have

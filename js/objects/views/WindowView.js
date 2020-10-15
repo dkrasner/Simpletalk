@@ -122,14 +122,12 @@ class WindowView extends PartView {
         this.onGripMove = this.onGripMove.bind(this);
     }
 
-    connectedCallback(){
-        if(this.isConnected){
-            this.setupClickAndDrag();
-            this.setupBarButtons();
-            this.setupExpanderAreas();
-            this.style.top = "50px";
-            this.style.left = "50px";
-        }
+    afterConnected(){
+        this.setupClickAndDrag();
+        this.setupBarButtons();
+        this.setupExpanderAreas();
+        this.style.top = "50px";
+        this.style.left = "50px";
     }
 
 

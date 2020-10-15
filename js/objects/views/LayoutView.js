@@ -32,18 +32,16 @@ class LayoutView extends PartView {
         this.setPropsFromModel = this.setPropsFromModel.bind(this);
     }
 
-    connectedCallback(){
-        if(this.isConnected){
-            this.addEventListener('click', this.onClick);
-
-            if(this.model){
-                this.setPropsFromModel();
-            }
-        }
+    afterConnected(){
+        this.addEventListener('click', this.onClick);
     }
 
-    disconnectedCallback(){
+    afterDisconnected(){
         this.removeEventListener('click', this.onClick);
+    }
+
+    afterModelSet(){
+        this.setPropsFromModel();
     }
 
     closeHalo(){

@@ -112,10 +112,47 @@ class DrawingView extends PartView {
         }
     }
 
-    disconnectedCallback(){
+    afterConnected(){
+        this.canvas = this.shadow.querySelector('canvas');
+        this.canvas.addEventListener('mouseup', this.onMouseUp);
+        this.canvas.addEventListener('mousedown', this.onMouseDown);
+        this.addEventListener('click', this.onClick);
+
+        // Set and store the drawing context
+        this.drawingContext = this.canvas.getContext('2d');
+
+        // If I don't have the default tools, add
+        // them as real dom children now
+        let pencilChild = this.querySelector('pencil-tool');
+        if(!pencilChild){
+            let newPencil = document.createElement('pencil-tool');
+            this.append(newPencil);
+        }
+        let eraserChild = this.querySelector('eraser-tool');
+        if(!eraserChild){
+            let newEraser = document.createElement('eraser-tool');
+            this.append(newEraser);
+        }
+
+        let colorPickerChild = this.querySelector('color-picker-tool');
+        if(!colorPickerChild){
+            let newColorPicker = document.createElement('color-picker-tool');
+            this.append(newColorPicker);
+        }
+
+        if(!this.haloButton){
+            this.initCustomHaloButton();
+        }
+    }
+
+    afterDisconnected(){
         this.canvas.removeEventListener('mouseup', this.onMouseUp);
         this.canvas.removeEventListener('mousedown', this.onMouseDown);
         this.removeEventListener('click', this.onClick);
+    }
+
+    afterModelSet(){
+        this.setPropsFromModel();
     }
 
     onMouseDown(event){

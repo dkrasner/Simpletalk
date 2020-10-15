@@ -31,19 +31,17 @@ class ContainerView extends PartView {
         this.onClick = this.onClick.bind(this);
     }
 
-    connectedCallback(){
-        if(this.isConnected){
-            if(this.model){
-                this.setPropsFromModel();
-            }
-        }
-
+    afterConnected(){
         // Bind events
         this.addEventListener('click', this.onClick);
     }
 
-    disconnectedCallback(){
+    afterDisconnected(){
         this.removeEventListener('click', this.onClick);
+    }
+
+    afterModelSet(){
+        this.setPropsFromModel();
     }
 
     receiveMessage(aMessage){

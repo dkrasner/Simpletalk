@@ -34,19 +34,6 @@ class StackView extends PartView {
         );
     }
 
-    connectedCallback(){
-        if(this.isConnected){
-            // For now, do nothing here.
-
-            // Previously, we attempted to set the current-card
-            // class in this callback. This was incorrect, as the
-            // StackView element can be connected before any of its
-            // children are. Instead, CardView checks to see if it is
-            // the only such view in its parent StackView element.
-            // See the #connectedCallback in CardView.
-        }
-    }
-
     goToNextCard(){
         let cardChildren = Array.from(this.querySelectorAll(':scope > st-card'));
         if(cardChildren.length  > 1){
@@ -105,13 +92,13 @@ class StackView extends PartView {
 
     goToCardById(cardId){
         let currentCardView = this.querySelector(':scope > .current-card');
-        let selectedCardView = this.querySelector(`:scope > [part-id='${cardId}']`)
+        let selectedCardView = this.querySelector(`:scope > [part-id='${cardId}']`);
 
         if (selectedCardView !== null) {
             currentCardView.classList.remove('current-card');
             selectedCardView.classList.add('current-card');
         } else {
-            console.log(`The card id: ${cardId} couldn't be found on this stack`)
+            console.log(`The card id: ${cardId} couldn't be found on this stack`);
         }
         // Then we might want to send some message through
         // the HC system, letting Parts know that we have

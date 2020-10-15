@@ -42,20 +42,21 @@ class CardView extends PartView {
         }
     }
 
-    connectedCallback(){
-        if(this.isConnected){
-            // Check to see if the parent StackView has another
-            // current card set. If not, and I am the first card
-            // in the StackView, set myself to be the current card.
-            let currentCard = Array.from(this.parentElement.children).find(childEl => {
-                return childEl.classList.contains('current-card');
-            });
+    afterConnected(){
+        // Check to see if the parent StackView has another
+        // current card set. If not, and I am the first card
+        // in the StackView, set myself to be the current card.
+        let currentCard = Array.from(this.parentElement.children).find(childEl => {
+            return childEl.classList.contains('current-card');
+        });
 
-            if(!currentCard){
-                this.classList.add('current-card');
-            }
-            this.addEventListener('click', this.onClick);
+        if(!currentCard){
+            this.classList.add('current-card');
         }
+    }
+
+    afterModelSet(){
+        this.setPropsFromModel();
     }
 
     receiveMessage(aMessage){

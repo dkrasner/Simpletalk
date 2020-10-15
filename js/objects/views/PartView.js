@@ -34,6 +34,20 @@ class PartView extends HTMLElement {
         this.onHaloDelete = this.onHaloDelete.bind(this);
         this.onHaloOpenEditor = this.onHaloOpenEditor.bind(this);
 
+        // Bind lifecycle methods
+        this.afterModelSet = this.afterModelSet.bind(this);
+        this.afterConnected = this.afterConnected.bind(this);
+        this.afterDisconnected = this.afterDisconnected.bind(this);
+    }
+
+    connectedCallback(){
+        if(this.isConnected){
+            this.afterConnected();
+        }
+    }
+
+    disconnectedCallback(){
+        this.afterDisconnected();
     }
 
     modelPropertyChanged(){
@@ -44,6 +58,7 @@ class PartView extends HTMLElement {
         this.model = aModel;
         aModel.addPropertySubscriber(this);
         this.setAttribute('part-id', aModel.id);
+        this.afterModelSet();
     }
 
     unsetModel(aModel){
@@ -75,7 +90,7 @@ class PartView extends HTMLElement {
             if(titleProperty.getValue() === "Toolbox"){
                 foundToolbox = true;
             };
-        })
+        });
         if(!foundToolbox){
             this.sendMessage({
                 type: 'command',
@@ -84,6 +99,24 @@ class PartView extends HTMLElement {
             }, window.System);
         }
     }
+
+    /* Lifecycle Method Defaults */
+    afterModelSet(){
+        // Does nothing.
+        // Should be implemented in subclasses
+    }
+
+    afterConnected(){
+        // Does nothing by default.
+        // Should be implemented in subclass
+    }
+
+    afterDisconnected(){
+        // Does nothing by default.
+        // Should be implemented in subclass
+    }
+
+    /* Halo Related Methods */
 
     openHalo(){
         // Check to see if there's a halo in
