@@ -311,6 +311,40 @@ describe("SimpleTalk Compiler", function () {
                     assert.equal(typeof concreteHandler, "function");
                 })
             });
+            it('messageHandler (no args, "add" without name or target)', () => {
+                systemObjects.forEach((d) => {
+                    const handler = `on mouseUp\n add ${d}\nend mouseUp`;
+                    const expectedMessages = [
+                    {
+                        type: "command",
+                        commandName: "newModel",
+                        args: [d, "", "", "", ""]
+                    }];
+                    compiler.compile(handler, MockObject);
+                    const scriptSemantics = MockObject._scriptSemantics["mouseUp"];
+                    assert.deepEqual(scriptSemantics, expectedMessages);
+                    const concreteHandler = MockObject._commandHandlers["mouseUp"];
+                    assert.isNotNull(concreteHandler);
+                    assert.equal(typeof concreteHandler, "function");
+                })
+            });
+            it('messageHandler (no args, "add" without target, with name)', () => {
+                systemObjects.forEach((d) => {
+                    const handler = `on mouseUp\n add ${d} "new part"\nend mouseUp`;
+                    const expectedMessages = [
+                    {
+                        type: "command",
+                        commandName: "newModel",
+                        args: [d, "", "", "", "new part"]
+                    }];
+                    compiler.compile(handler, MockObject);
+                    const scriptSemantics = MockObject._scriptSemantics["mouseUp"];
+                    assert.deepEqual(scriptSemantics, expectedMessages);
+                    const concreteHandler = MockObject._commandHandlers["mouseUp"];
+                    assert.isNotNull(concreteHandler);
+                    assert.equal(typeof concreteHandler, "function");
+                })
+            });
             it('messageHandler ("add" invalid object)', () => {
                 invalidObjects.forEach((s) => {
                     const sourceCode = `on customMessage targetArg\n add ${s} to targetArg\nend customMessage`;

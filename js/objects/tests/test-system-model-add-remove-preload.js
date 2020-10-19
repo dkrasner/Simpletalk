@@ -74,17 +74,56 @@ describe('newModel tests', () => {
         assert.exists(serializationEl);
     });
 
-    it.skip('Can send newModel message in a context (without ownerId) without error (add button to "this" card)', () => {
+    it('Can send newModel message in a context (without targetId, current)', () => {
         let msg = {
             type: 'command',
             commandName: 'newModel',
-            args: ['button', "", "this"]
+            args: ['button', "", "card", "current"]
         };
         let sendFunc = function(){
             currentCard.sendMessage(msg, currentCard);
         };
 
         expect(sendFunc).to.not.throw(Error);
+    });
+
+    it('Can send newModel message in a context (without targetId, this)', () => {
+        let msg = {
+            type: 'command',
+            commandName: 'newModel',
+            args: ['button', "", "card", "this"]
+        };
+        let sendFunc = function(){
+            currentCard.sendMessage(msg, currentCard);
+        };
+
+        expect(sendFunc).to.not.throw(Error);
+    });
+
+    it('Can send newModel message in a context (without targetId, targetType nor context)', () => {
+        let msg = {
+            type: 'command',
+            commandName: 'newModel',
+            args: ['button', "", "", ""]
+        };
+        let sendFunc = function(){
+            currentCard.sendMessage(msg, currentCard);
+        };
+
+        expect(sendFunc).to.not.throw(Error);
+    });
+
+    it('Throws error if context and target id are provided', () => {
+        let msg = {
+            type: 'command',
+            commandName: 'newModel',
+            args: ['button', "20", "", "this"]
+        };
+        let sendFunc = function(){
+            currentCard.sendMessage(msg, currentCard);
+        };
+
+        expect(sendFunc).to.throw(Error);
     });
 });
 

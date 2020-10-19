@@ -352,9 +352,9 @@ const System = {
         // TODO this should be refactored within a better lifecycle model and potenitally
         // use dynamic props. A similar propagation should probably exist for world -> stacks,
         // window -> subpart etc
-        if(ownerPart.name === "Stack"){
+        if(ownerPart.type === "stack"){
             ownerPart.subparts.forEach((subpart) => {
-                if(subpart.name === "Card"){
+                if(subpart.type === "card"){
                     subpart.partProperties.setPropertyNamed(subpart, property, value);
                 }
             });

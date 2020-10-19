@@ -659,13 +659,26 @@ describe("SimpleTalk Grammar", () => {
                     semanticMatchTest(s, "Statement");
                 });
             });
+            it ("Add (no target or context)", () => {
+                const objects = ["background", "card", "container", "field", "button", "stack", "window"];
+                objects.forEach((d) => {
+                    const s = `add ${d}`;
+                    semanticMatchTest(s, "Command");
+                    semanticMatchTest(s, "Command_addModel");
+                    semanticMatchTest(s, "Statement");
+                });
+            });
+            it ("Add named (no target or context)", () => {
+                const objects = ["background", "card", "container", "field", "button", "stack", "window"];
+                objects.forEach((d) => {
+                    const s = `add ${d} "newPart123"`;
+                    semanticMatchTest(s, "Command");
+                    semanticMatchTest(s, "Command_addModel");
+                    semanticMatchTest(s, "Statement");
+                });
+            });
             it ("Bad add (world)", () => {
                 const s = "add world to card"
-                semanticMatchFailTest(s, "Command_addModel")
-                semanticMatchFailTest(s, "Command")
-            });
-            it ("Bad add (no target)", () => {
-                const s = "add button"
                 semanticMatchFailTest(s, "Command_addModel")
                 semanticMatchFailTest(s, "Command")
             });
@@ -692,6 +705,15 @@ describe("SimpleTalk Grammar", () => {
                 const objects = ["background", "card", "container", "field", "button", "stack", "window"];
                 objects.forEach((d) => {
                     const s = `set "backgroundColor" to "blue" in ${d} 10`;
+                    semanticMatchTest(s, "Command");
+                    semanticMatchTest(s, "Command_setProperty");
+                    semanticMatchTest(s, "Statement");
+                });
+            });
+            it ("Set backgroundColor (no target)", () => {
+                const objects = ["background", "card", "container", "field", "button", "stack", "window"];
+                objects.forEach((d) => {
+                    const s = `set "backgroundColor" to "blue"`;
                     semanticMatchTest(s, "Command");
                     semanticMatchTest(s, "Command_setProperty");
                     semanticMatchTest(s, "Statement");

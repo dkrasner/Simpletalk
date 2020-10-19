@@ -303,7 +303,7 @@ class Part {
     **/
 
     deleteModelCmdHandler(objectId, modelType){
-        if (modelType && modelType.toLowerCase() === this.name.toLowerCase() && !objectId){
+        if (modelType && modelType.toLowerCase() === this.type && !objectId){
             objectId = this.id
         }
         this.delegateMessage({

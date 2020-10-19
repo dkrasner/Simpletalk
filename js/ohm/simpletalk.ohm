@@ -63,13 +63,13 @@
    		| "go to" systemObject objectId --goToByReference
 		| "answer" stringLiteral --answer
 		| "delete" "this"? systemObject objectId? --deleteModel
-		| "add" systemObject stringLiteral? "to" ("this" | "current")? systemObject objectId? --addModel
-		| "set" stringLiteral "to" stringLiteral "in" ("this" | "current")? systemObject objectId? --setProperty
+		| "add" systemObject stringLiteral? "to"? ("this" | "current")? systemObject? objectId? --addModel
+		| "set" stringLiteral "to" stringLiteral "in"? ("this" | "current")? systemObject? objectId? --setProperty
 		| command_arbitrary
 
 	command_arbitrary (an arbitrary command)
 		= letter+
-	
+
 	systemObject (system object such as card, stack etc)
 		= ("c" | "C") "ontainer" | ("b"| "B") "ackground" | ("b" | "B") "utton" | ("c" | "C") "ard" | ("f" | "F") "ield" | ("s" | "S") "tack" | ("w" | "W") "indow"
 
