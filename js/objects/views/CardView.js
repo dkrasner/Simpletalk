@@ -25,7 +25,6 @@ class CardView extends PartView {
         );
 
         // Bind component methods
-        this.setPropsFromModel = this.setPropsFromModel.bind(this);
         this.onClick = this.onClick.bind(this);
         this.setupPropHandlers = this.setupPropHandlers.bind(this);
         this.layoutChanged = this.layoutChanged.bind(this);

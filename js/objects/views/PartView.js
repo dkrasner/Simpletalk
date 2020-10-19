@@ -52,16 +52,18 @@ class PartView extends HTMLElement {
 
     connectedCallback(){
         if(this.isConnected){
+            // Do some universal PartView configuration
+            // when attached to a parent element, like
+            // registering event listeners etc
+
+            // Call the lifecycle method when done
+            // with the above
             this.afterConnected();
         }
     }
 
     disconnectedCallback(){
         this.afterDisconnected();
-    }
-
-    modelPropertyChanged(){
-        throw new Error(`Should be implemented in subclass!`);
     }
 
     setModel(aModel){
