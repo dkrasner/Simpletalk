@@ -73,6 +73,58 @@ describe('newModel tests', () => {
         let serializationEl = document.querySelector(`script[data-part-id="${button.id}"]`);
         assert.exists(serializationEl);
     });
+
+    it('Can send newModel message in a context (without targetId, current)', () => {
+        let msg = {
+            type: 'command',
+            commandName: 'newModel',
+            args: ['button', "", "card", "current"]
+        };
+        let sendFunc = function(){
+            currentCard.sendMessage(msg, currentCard);
+        };
+
+        expect(sendFunc).to.not.throw(Error);
+    });
+
+    it('Can send newModel message in a context (without targetId, this)', () => {
+        let msg = {
+            type: 'command',
+            commandName: 'newModel',
+            args: ['button', "", "card", "this"]
+        };
+        let sendFunc = function(){
+            currentCard.sendMessage(msg, currentCard);
+        };
+
+        expect(sendFunc).to.not.throw(Error);
+    });
+
+    it('Can send newModel message in a context (without targetId, targetType nor context)', () => {
+        let msg = {
+            type: 'command',
+            commandName: 'newModel',
+            args: ['button', "", "", ""]
+        };
+        let sendFunc = function(){
+            currentCard.sendMessage(msg, currentCard);
+        };
+
+        expect(sendFunc).to.not.throw(Error);
+    });
+
+    it('Throws error if context and target id are provided', () => {
+        let msg = {
+            type: 'command',
+            commandName: 'newModel',
+            args: ['button', "20", "", "this"]
+        };
+        let sendFunc = function(){
+            currentCard.sendMessage(msg, currentCard);
+        };
+
+        expect(sendFunc).to.throw(Error);
+    });
 });
 
 describe('deleteModel tests', () => {

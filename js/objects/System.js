@@ -284,7 +284,7 @@ const System = {
         }
     },
 
-    newModel(kind, ownerId){
+    newModel(kind, ownerId, ownerKind, context, name){
         // Lookup the instance of the model that
         // matches the owner's id
         let ownerPart = this.partsById[ownerId];
@@ -300,6 +300,9 @@ const System = {
             throw new Error(`Cannot create unknown part type: ${kind}`);
         }
         let model = new modelClass(ownerPart);
+        if(name){
+            model.partProperties.setPropertyNamed(model, 'name', name);
+        }
         this.partsById[model.id] = model;
 
         // Any created part might initialize its
@@ -339,6 +342,25 @@ const System = {
         }
 
         return model;
+    },
+
+    setProperty(property, value, ownerId){
+        let ownerPart = this.partsById[ownerId];
+        if(!ownerPart || ownerPart == undefined){
+            throw new Error(`System could not locate owner part with id ${ownerId}`);
+        }
+        ownerPart.partProperties.setPropertyNamed(ownerPart, property, value);
+        // for now stack properties propagate down to their direct card children
+        // TODO this should be refactored within a better lifecycle model and potenitally
+        // use dynamic props. A similar propagation should probably exist for world -> stacks,
+        // window -> subpart etc
+        if(ownerPart.type === "stack"){
+            ownerPart.subparts.forEach((subpart) => {
+                if(subpart.type === "card"){
+                    subpart.partProperties.setPropertyNamed(subpart, property, value);
+                }
+            });
+        }
     },
 
     // Remove the model with the given ID from
@@ -430,6 +452,28 @@ const System = {
     // the given part id
     findViewsById: function(id){
         return document.querySelectorAll(`[part-id="${id}"]`);
+    },
+
+    // return the model corresponding to the current stack
+    getCurrentStackModel: function(){
+        // make sure there is only one current-stack
+        let currentStacks = document.querySelectorAll('st-world > st-stack.current-stack');
+        if(currentStacks.length > 1){
+            throw "Found multiple current stacks in world!";
+        }
+        return currentStacks[0].model;
+    },
+
+    // return the model corresponding to the current card
+    getCurrentCardModel: function(){
+        // there could be multiple current cards (in windows for example) but only one
+        // current-card child of a current-stack
+        let currentStack = document.querySelector('st-world > st-stack.current-stack');
+        let currentCards = currentStack.querySelectorAll(':scope > st-card.current-card');
+        if(currentCards.length > 1){
+            throw "Found multiple current cards in current stack!";
+        }
+        return currentCards[0].model;
     },
 
     /** Serialization / Deserialization **/
@@ -571,6 +615,7 @@ const System = {
 /** Add Default System Command Handlers **/
 System._commandHandlers['deleteModel'] = System.deleteModel;
 System._commandHandlers['newModel'] = System.newModel;
+System._commandHandlers['setProperty'] = System.setProperty;
 
 System._commandHandlers['answer'] = function(text){
     alert(text);
@@ -672,21 +717,18 @@ System._commandHandlers['openToolbox'] = function(targetId){
         'name',
         'Add Button to Card'
     );
-    // Because we can't yet compile the script needed to do this
-    // (scripts don't yet know about "card" in context), we manually
-    // bind the message handler
-    addBtnBtn._commandHandlers['mouseUp'] = function(){
-        // Find the current active card in the current
-        // active stack and add a button to it
-        let currentCardView = document.querySelector('.current-stack .current-card');
-        let cardModel = currentCardView.model;
-        let newButton = System.newModel('button', cardModel.id);
-        newButton.partProperties.setPropertyNamed(
-            newButton,
-            'name',
-            `Button ${newButton.id}`
-        );
-    };
+
+    let addBtnScript = 'on mouseUp\n    add button to current card\nend mouseUp';
+    addBtnBtn.partProperties.setPropertyNamed(
+        addBtnBtn,
+        'script',
+        addBtnScript
+    );
+    System.sendMessage(
+        {type: "compile", codeString: addBtnScript, targetId: addBtnBtn.id},
+        System,
+        System
+    );
 
     // Add a button to add a new Container
     let addContainerBtn = this.newModel('button', windowCurrentCardModel.id);
@@ -695,16 +737,54 @@ System._commandHandlers['openToolbox'] = function(targetId){
         'name',
         'Add Container to Card'
     );
-    addContainerBtn._commandHandlers['mouseUp'] = function(){
-        let currentCardView = document.querySelector('.current-stack > .current-card');
-        let cardModel = currentCardView.model;
-        let newContainer = System.newModel('container', cardModel.id);
-        newContainer.partProperties.setPropertyNamed(
-            newContainer,
-            'name',
-            `Container ${newContainer.id}`
-        );
-    };
+  
+    let addContainerScript = 'on mouseUp\n    add container to current card\nend mouseUp';
+    addContainerBtn.partProperties.setPropertyNamed(
+        addContainerBtn,
+        'script',
+        addContainerScript
+    );
+    System.sendMessage(
+        {type: "compile", codeString: addContainerScript, targetId: addContainerBtn.id},
+        System,
+        System
+    );
+
+    let addBtnToStackBtn = this.newModel('button', windowCurrentCardModel.id);
+    addBtnToStackBtn.partProperties.setPropertyNamed(
+        addBtnToStackBtn,
+        'name',
+        'Add Button to Stack'
+    );
+    let addBtnToStackScript = 'on mouseUp\n    add button to current stack\nend mouseUp';
+    addBtnToStackBtn.partProperties.setPropertyNamed(
+        addBtnToStackBtn,
+        'script',
+        addBtnToStackScript
+    );
+    System.sendMessage(
+        {type: "compile", codeString: addBtnToStackScript, targetId: addBtnToStackBtn.id},
+        System,
+        System
+    );
+
+    let addBtnToToolboxBtn = this.newModel('button', windowCurrentCardModel.id);
+    addBtnToToolboxBtn.partProperties.setPropertyNamed(
+        addBtnToToolboxBtn,
+        'name',
+        'Add Button to Toolbox'
+    );
+    let addBtnToToolboxScript = 'on mouseUp\n    add button "New Button" to this card\nend mouseUp';
+    addBtnToToolboxBtn.partProperties.setPropertyNamed(
+        addBtnToToolboxBtn,
+        'script',
+        addBtnToToolboxScript
+    );
+    System.sendMessage(
+        {type: "compile", codeString: addBtnToToolboxScript, targetId: addBtnToToolboxBtn.id},
+        System,
+        System
+    );
 
     // Add a button to add a Drawing
     let addDrawingBtn = this.newModel('button', windowCurrentCardModel.id);
@@ -723,6 +803,7 @@ System._commandHandlers['openToolbox'] = function(targetId){
             `Drawing ${newDrawing.id}`
         );
     };
+
 };
 
 System._commandHandlers['openScriptEditor'] = function(targetId){

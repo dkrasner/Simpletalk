@@ -22,7 +22,7 @@ class WorldStack extends Part {
 
         // The currentStack is the
         // stack that should be currently displayed.
-        this.currentStack = null;
+        this.currentStack = null; // TODO
 
         this.isWorld = true;
 

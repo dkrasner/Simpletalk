@@ -100,11 +100,6 @@ describe('Subpart Validity Tests', () => {
             let stack = new Stack();
             assert.isTrue(stack.acceptsSubpart(win.type));
         });
-        it('Rejects Button', () => {
-            let button = new Button();
-            let stack = new Stack();
-            assert.isFalse(stack.acceptsSubpart(button.type));
-        });
         it('Rejects EricField', () => {
             let ericField = new EricField();
             let stack = new Stack();

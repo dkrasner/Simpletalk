@@ -30,8 +30,10 @@ class PartView extends HTMLElement {
         this.sendMessage = this.sendMessage.bind(this);
         this.openHalo = this.openHalo.bind(this);
         this.closeHalo = this.closeHalo.bind(this);
+        this.openToolbox = this.openToolbox.bind(this);
         this.onHaloDelete = this.onHaloDelete.bind(this);
         this.onHaloOpenEditor = this.onHaloOpenEditor.bind(this);
+
     }
 
     modelPropertyChanged(){
@@ -59,6 +61,28 @@ class PartView extends HTMLElement {
         // subclasses should implement
         // their own handling of received
         // messages
+    }
+
+    openToolbox(){
+        // Check to see if there's a toolbox in
+        // the component's shadow root already
+        let foundToolbox = false;
+        // TODO this is an awkward way to see if an element is there!
+        document.querySelectorAll('st-window').forEach((stWindow) => {
+            let windowId = stWindow.getAttribute("part-id");
+            let part = window.System.partsById[windowId];
+            let titleProperty = part.partProperties.findPropertyNamed("title");
+            if(titleProperty.getValue() === "Toolbox"){
+                foundToolbox = true;
+            };
+        })
+        if(!foundToolbox){
+            this.sendMessage({
+                type: 'command',
+                commandName: 'openToolbox',
+                args: []
+            }, window.System);
+        }
     }
 
     openHalo(){

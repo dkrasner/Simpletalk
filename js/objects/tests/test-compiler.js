@@ -216,7 +216,126 @@ describe("SimpleTalk Compiler", function () {
                     {
                         type: "command",
                         commandName: "newModel",
-                        args: [d]
+                        args: [d, "", "card", "", ""]
+                    }];
+                    compiler.compile(handler, MockObject);
+                    const scriptSemantics = MockObject._scriptSemantics["mouseUp"];
+                    assert.deepEqual(scriptSemantics, expectedMessages);
+                    const concreteHandler = MockObject._commandHandlers["mouseUp"];
+                    assert.isNotNull(concreteHandler);
+                    assert.equal(typeof concreteHandler, "function");
+                })
+            });
+            it('messageHandler (no args, "add to this" command)', () => {
+                systemObjects.forEach((d) => {
+                    const handler = `on mouseUp\n add ${d} to this card\nend mouseUp`;
+                    const expectedMessages = [
+                    {
+                        type: "command",
+                        commandName: "newModel",
+                        args: [d, "", "card", "this", ""]
+                    }];
+                    compiler.compile(handler, MockObject);
+                    const scriptSemantics = MockObject._scriptSemantics["mouseUp"];
+                    assert.deepEqual(scriptSemantics, expectedMessages);
+                    const concreteHandler = MockObject._commandHandlers["mouseUp"];
+                    assert.isNotNull(concreteHandler);
+                    assert.equal(typeof concreteHandler, "function");
+                })
+            });
+            it('messageHandler (no args, "add to current card" command)', () => {
+                systemObjects.forEach((d) => {
+                    const handler = `on mouseUp\n add ${d} to current card\nend mouseUp`;
+                    const expectedMessages = [
+                    {
+                        type: "command",
+                        commandName: "newModel",
+                        args: [d, "", "card", "current", ""]
+                    }];
+                    compiler.compile(handler, MockObject);
+                    const scriptSemantics = MockObject._scriptSemantics["mouseUp"];
+                    assert.deepEqual(scriptSemantics, expectedMessages);
+                    const concreteHandler = MockObject._commandHandlers["mouseUp"];
+                    assert.isNotNull(concreteHandler);
+                    assert.equal(typeof concreteHandler, "function");
+                })
+            });
+            it('messageHandler (no args, "add to current stack" command)', () => {
+                systemObjects.forEach((d) => {
+                    const handler = `on mouseUp\n add ${d} to current stack\nend mouseUp`;
+                    const expectedMessages = [
+                    {
+                        type: "command",
+                        commandName: "newModel",
+                        args: [d, "", "stack", "current", ""]
+                    }];
+                    compiler.compile(handler, MockObject);
+                    const scriptSemantics = MockObject._scriptSemantics["mouseUp"];
+                    assert.deepEqual(scriptSemantics, expectedMessages);
+                    const concreteHandler = MockObject._commandHandlers["mouseUp"];
+                    assert.isNotNull(concreteHandler);
+                    assert.equal(typeof concreteHandler, "function");
+                })
+            });
+            it('messageHandler (no args, "add to" by id command)', () => {
+                systemObjects.forEach((d) => {
+                    const handler = `on mouseUp\n add ${d} to card 20\nend mouseUp`;
+                    const expectedMessages = [
+                    {
+                        type: "command",
+                        commandName: "newModel",
+                        args: [d, "20", "card", "", ""]
+                    }];
+                    compiler.compile(handler, MockObject);
+                    const scriptSemantics = MockObject._scriptSemantics["mouseUp"];
+                    assert.deepEqual(scriptSemantics, expectedMessages);
+                    const concreteHandler = MockObject._commandHandlers["mouseUp"];
+                    assert.isNotNull(concreteHandler);
+                    assert.equal(typeof concreteHandler, "function");
+                })
+            });
+            it('messageHandler (no args, "add to" with name by id command)', () => {
+                systemObjects.forEach((d) => {
+                    const handler = `on mouseUp\n add ${d} "New Button" to card 20\nend mouseUp`;
+                    const expectedMessages = [
+                    {
+                        type: "command",
+                        commandName: "newModel",
+                        args: [d, "20", "card", "", "New Button"]
+                    }];
+                    compiler.compile(handler, MockObject);
+                    const scriptSemantics = MockObject._scriptSemantics["mouseUp"];
+                    assert.deepEqual(scriptSemantics, expectedMessages);
+                    const concreteHandler = MockObject._commandHandlers["mouseUp"];
+                    assert.isNotNull(concreteHandler);
+                    assert.equal(typeof concreteHandler, "function");
+                })
+            });
+            it('messageHandler (no args, "add" without name or target)', () => {
+                systemObjects.forEach((d) => {
+                    const handler = `on mouseUp\n add ${d}\nend mouseUp`;
+                    const expectedMessages = [
+                    {
+                        type: "command",
+                        commandName: "newModel",
+                        args: [d, "", "", "", ""]
+                    }];
+                    compiler.compile(handler, MockObject);
+                    const scriptSemantics = MockObject._scriptSemantics["mouseUp"];
+                    assert.deepEqual(scriptSemantics, expectedMessages);
+                    const concreteHandler = MockObject._commandHandlers["mouseUp"];
+                    assert.isNotNull(concreteHandler);
+                    assert.equal(typeof concreteHandler, "function");
+                })
+            });
+            it('messageHandler (no args, "add" without target, with name)', () => {
+                systemObjects.forEach((d) => {
+                    const handler = `on mouseUp\n add ${d} "new part"\nend mouseUp`;
+                    const expectedMessages = [
+                    {
+                        type: "command",
+                        commandName: "newModel",
+                        args: [d, "", "", "", "new part"]
                     }];
                     compiler.compile(handler, MockObject);
                     const scriptSemantics = MockObject._scriptSemantics["mouseUp"];
@@ -236,6 +355,76 @@ describe("SimpleTalk Compiler", function () {
                 const sourceCode = `on customMessage idArg\n add idArg\nend customMessage`;
                 expect(() => compiler.compile(sourceCode, MockObject)).to.throw();
             });
+            it('messageHandler ("add to this [with] targetId" invalid construction)', () => {
+                const sourceCode = `on customMessage idArg\n add button to this card 20 \nend customMessage`;
+                expect(() => compiler.compile(sourceCode, MockObject)).to.throw();
+            });
+            it('messageHandler ("add to current" invalid target)', () => {
+                const sourceCode = `on customMessage idArg\n add button to current button \nend customMessage`;
+                expect(() => compiler.compile(sourceCode, MockObject)).to.throw();
+            });
+        });
+        describe("Set Property", function () {
+            var systemObjects = ["background", "button", "card", "field", "stack"];
+            systemObjects = systemObjects.concat(systemObjects.map(w => w.charAt(0).toUpperCase() + w.slice(1)));
+            const invalidObjects = ["ackground", "cardd", "world"]
+
+            it('Set background color', () => {
+                systemObjects.forEach((s) => {
+                    const sourceCode = `
+                      on customMessage
+                        set "backgroundColor" to "blue" in ${s} 20
+                      end customMessage
+                    `;
+                    const expectedMessages = [
+                    {
+                        type: "command",
+                        commandName: "setProperty",
+                        args: ["backgroundColor", "blue", "20", `${s}`, ""]
+                    }];
+                    compiler.compile(sourceCode, MockObject);
+
+                    const scriptSemantics = MockObject._scriptSemantics["customMessage"];
+                    assert.deepEqual(scriptSemantics, expectedMessages);
+
+                    const concreteHandler = MockObject._commandHandlers["customMessage"];
+                    assert.isNotNull(concreteHandler);
+                    assert.equal(typeof concreteHandler, "function");
+                })
+            });
+            it('Set background color in context', () => {
+                ["this", "current", ""].forEach((context) => {
+                    ["card", "stack"].forEach((s) => {
+                        const sourceCode = `
+                          on customMessage
+                            set "backgroundColor" to "blue" in ${context} ${s}
+                          end customMessage
+                        `;
+                        const expectedMessages = [
+                        {
+                            type: "command",
+                            commandName: "setProperty",
+                            args: ["backgroundColor", "blue", "", `${s}`, `${context}`]
+                        }];
+                        compiler.compile(sourceCode, MockObject);
+
+                        const scriptSemantics = MockObject._scriptSemantics["customMessage"];
+                        assert.deepEqual(scriptSemantics, expectedMessages);
+
+                        const concreteHandler = MockObject._commandHandlers["customMessage"];
+                        assert.isNotNull(concreteHandler);
+                        assert.equal(typeof concreteHandler, "function");
+                    });
+                });
+            });
+            it('Set background color (invalid construction)', () => {
+                const sourceCode = `
+                  on customMessage
+                    set background to blue in card 20
+                  end customMessage
+                `;
+                expect(() => compiler.compile(sourceCode, MockObject)).to.throw();
+            })
         });
     });
 });

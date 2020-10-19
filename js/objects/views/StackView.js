@@ -11,7 +11,7 @@
 import PartView from './PartView.js';
 import Stack from '../parts/Stack.js';
 
-// by default, stacks are hidden unless they're 
+// by default, stacks are hidden unless they're
 // the current stack, or else they have the class
 // window-stack (suggesting there's window part
 // who wishes to display it)

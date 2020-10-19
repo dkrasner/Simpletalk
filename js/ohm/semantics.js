@@ -5,6 +5,11 @@
  * at the corresponding node.
  */
 
+// helpers
+const quoteRemove = function(string){
+    return string.slice(1, string.length-1);
+}
+
 let simpleTalkSemantics = {
     Script: function(scriptParts, _) {
         return scriptParts.parse();
@@ -69,13 +74,53 @@ let simpleTalkSemantics = {
         return msg;
     },
 
-    Command_addModel: function(addLiteral, newObject, toLiteral, targetObject){
+    Command_addModel: function(addLiteral, newObject, name, toLiteral, context, targetObjectType, targetObjectId){
+        // TODO: a command like "add card to this stack 20" does not make sense, since you should either designate
+        // the target by context "this" or by id. Here we should throw some sort of uniform error.
         let args = [];
+        if(context.sourceString && targetObjectId.sourceString){
+            throw "Semantic Error (Add model rule): only one of context or targetObjectId can be provided";
+        }
+        if(context.sourceString === "current" && !["card", "stack"].includes(targetObjectType.sourceString.toLowerCase())){
+            throw "Semantic Error (Add model rule): context 'current' can only apply to 'card' or 'stack' models";
+        }
         args.push(newObject.sourceString);
+        args.push(targetObjectId.sourceString);
+        args.push(targetObjectType.sourceString);
+        args.push(context.sourceString);
+        name = name.sourceString;
+        // remove the string literal wrapping quotes
+        if (name){
+            name =name.slice(1, name.length - 1);
+        }
+        args.push(name);
 
         let msg = {
             type: "command",
             commandName: "newModel",
+            args: args
+        };
+        return msg;
+    },
+
+    Command_setProperty: function(setLiteral, propertyName, toLiteral,  propertyValue, inLiteral, context, targetObjectType, targetObjectId){
+        let args = [];
+        if(context.sourceString && targetObjectId.sourceString){
+            throw "Semantic Error (Set background rule): only one of context or targetObjectId can be provided";
+        }
+        if(context.sourceString === "current" && !["card", "stack"].includes(targetObjectType.sourceString.toLowerCase())){
+            throw "Semantic Error (Set background rule): context 'current' can only apply to 'card' or 'stack' models";
+        }
+        // remove the quotes from string literals
+        args.push(quoteRemove(propertyName.sourceString));
+        args.push(quoteRemove(propertyValue.sourceString));
+        args.push(targetObjectId.sourceString);
+        args.push(targetObjectType.sourceString);
+        args.push(context.sourceString);
+
+        let msg = {
+            type: "command",
+            commandName: "setProperty",
             args: args
         };
         return msg;

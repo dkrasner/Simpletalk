@@ -24,6 +24,7 @@
 /* Prerequisites */
 * {
     box-sizing: border-box;
+    z-index: 0;
 }
 
 
@@ -55,6 +56,17 @@ st-world > st-stack {
     display: block;
 }
 
+.current-stack > st-window {
+    z-index: 1;
+}
+
+.current-stack > st-button {
+    z-index: 1;
+}
+
+.current-stack > st-container {
+    z-index: 1;
+}
 /* =Background Styles
  *----------------------------------------------------*/
 st-background {

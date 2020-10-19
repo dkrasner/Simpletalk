@@ -556,6 +556,10 @@ describe("SimpleTalk Grammar", () => {
                 const s = "go to world 42";
                 semanticMatchFailTest(s, "Command")
             });
+            it ("Bad go to: invalid structure", () => {
+                const s = "go to next card 42";
+                semanticMatchFailTest(s, "Command");
+            });
         });
         describe("Remove Model", () => {
             it ("Basic Remove (no id)", () => {
@@ -584,9 +588,90 @@ describe("SimpleTalk Grammar", () => {
         });
         describe("Add Model", () => {
             it ("Basic Add (no id)", () => {
-                const direction = ["stack", "background", "card", "button"];
-                direction.forEach((d) => {
+                const objects = ["background", "card", "container", "field", "button", "stack", "window"];
+                objects.forEach((d) => {
                     const s = `add ${d} to card`;
+                    semanticMatchTest(s, "Command");
+                    semanticMatchTest(s, "Command_addModel");
+                    semanticMatchTest(s, "Statement");
+                });
+            });
+            it ("Basic Add (wth id)", () => {
+                const objects = ["background", "card", "container", "field", "button", "stack", "window"];
+                objects.forEach((d) => {
+                    const s = `add ${d} to card 20`;
+                    semanticMatchTest(s, "Command");
+                    semanticMatchTest(s, "Command_addModel");
+                    semanticMatchTest(s, "Statement");
+                });
+            });
+            it ("Add to 'this'", () => {
+                const objects = ["background", "card", "container", "field", "button", "stack", "window"];
+                objects.forEach((d) => {
+                    const s = `add ${d} to this stack`;
+                    semanticMatchTest(s, "Command");
+                    semanticMatchTest(s, "Command_addModel");
+                    semanticMatchTest(s, "Statement");
+                });
+            });
+            it ("Add to 'current'", () => {
+                const objects = ["background", "card", "container", "field", "button", "stack", "window"];
+                objects.forEach((d) => {
+                    const s = `add ${d} to current stack`;
+                    semanticMatchTest(s, "Command");
+                    semanticMatchTest(s, "Command_addModel");
+                    semanticMatchTest(s, "Statement");
+                });
+            });
+            it ("Basic Add (with name, no id)", () => {
+                const objects = ["background", "card", "container", "field", "button", "stack", "window"];
+                objects.forEach((d) => {
+                    const s = `add ${d} "newPart 123" to card`;
+                    semanticMatchTest(s, "Command");
+                    semanticMatchTest(s, "Command_addModel");
+                    semanticMatchTest(s, "Statement");
+                });
+            });
+            it ("Basic Add (with name, wth id)", () => {
+                const objects = ["background", "card", "container", "field", "button", "stack", "window"];
+                objects.forEach((d) => {
+                    const s = `add ${d} "newPart 123" to card 20`;
+                    semanticMatchTest(s, "Command");
+                    semanticMatchTest(s, "Command_addModel");
+                    semanticMatchTest(s, "Statement");
+                });
+            });
+            it ("Add named to 'this'", () => {
+                const objects = ["background", "card", "container", "field", "button", "stack", "window"];
+                objects.forEach((d) => {
+                    const s = `add ${d} "newPart 123" to this stack`;
+                    semanticMatchTest(s, "Command");
+                    semanticMatchTest(s, "Command_addModel");
+                    semanticMatchTest(s, "Statement");
+                });
+            });
+            it ("Add named to 'current'", () => {
+                const objects = ["background", "card", "container", "field", "button", "stack", "window"];
+                objects.forEach((d) => {
+                    const s = `add ${d} "newPart123" to current stack`;
+                    semanticMatchTest(s, "Command");
+                    semanticMatchTest(s, "Command_addModel");
+                    semanticMatchTest(s, "Statement");
+                });
+            });
+            it ("Add (no target or context)", () => {
+                const objects = ["background", "card", "container", "field", "button", "stack", "window"];
+                objects.forEach((d) => {
+                    const s = `add ${d}`;
+                    semanticMatchTest(s, "Command");
+                    semanticMatchTest(s, "Command_addModel");
+                    semanticMatchTest(s, "Statement");
+                });
+            });
+            it ("Add named (no target or context)", () => {
+                const objects = ["background", "card", "container", "field", "button", "stack", "window"];
+                objects.forEach((d) => {
+                    const s = `add ${d} "newPart123"`;
                     semanticMatchTest(s, "Command");
                     semanticMatchTest(s, "Command_addModel");
                     semanticMatchTest(s, "Statement");
@@ -597,8 +682,8 @@ describe("SimpleTalk Grammar", () => {
                 semanticMatchFailTest(s, "Command_addModel")
                 semanticMatchFailTest(s, "Command")
             });
-            it ("Bad add (no target)", () => {
-                const s = "add button"
+            it ("Bad add (invalid context)", () => {
+                const s = "add button to new stack"
                 semanticMatchFailTest(s, "Command_addModel")
                 semanticMatchFailTest(s, "Command")
             });
@@ -615,6 +700,41 @@ describe("SimpleTalk Grammar", () => {
                 semanticMatchFailTest(s, "Command")
             });
         });
+        describe("Set", () => {
+            it ("Set backgroundColor with id", () => {
+                const objects = ["background", "card", "container", "field", "button", "stack", "window"];
+                objects.forEach((d) => {
+                    const s = `set "backgroundColor" to "blue" in ${d} 10`;
+                    semanticMatchTest(s, "Command");
+                    semanticMatchTest(s, "Command_setProperty");
+                    semanticMatchTest(s, "Statement");
+                });
+            });
+            it ("Set backgroundColor (no target)", () => {
+                const objects = ["background", "card", "container", "field", "button", "stack", "window"];
+                objects.forEach((d) => {
+                    const s = `set "backgroundColor" to "blue"`;
+                    semanticMatchTest(s, "Command");
+                    semanticMatchTest(s, "Command_setProperty");
+                    semanticMatchTest(s, "Statement");
+                });
+            });
+            it ("Set background color in this or current", () => {
+                const objects = ["background", "card", "container", "field", "button", "stack", "window"];
+                ["this", "current"].forEach((context) => {
+                    objects.forEach((d) => {
+                        const s = `set "backgroundColor" to "blue" in ${context} ${d}`;
+                        semanticMatchTest(s, "Command");
+                        semanticMatchTest(s, "Command_setProperty");
+                        semanticMatchTest(s, "Statement");
+                    });
+                });
+            });
+            it ("Bad construction (no quotes)", () => {
+                const s = `set backgroundColor to "blue" in card 10`;
+                semanticMatchFailTest(s, "Command")
+            });
+        });
         describe("Arbitrary", () => {
             it ("arbitrary command", () => {
                 const s = "anythinggoes"
@@ -625,10 +745,6 @@ describe("SimpleTalk Grammar", () => {
                 const s = "abc def"
                 semanticMatchFailTest(s, "Command")
             });
-        });
-        it ("Bad go to: invalid structure", () => {
-            const s = "go to next card 42";
-            semanticMatchFailTest(s, "Command");
         });
         it ("Bad command (arbitrary with digits)", () => {
             semanticMatchFailTest("1234arrowKe", "Command");
