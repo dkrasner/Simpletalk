@@ -14,6 +14,7 @@ import WorldStack from './parts/WorldStack.js';
 import Window from './parts/Window.js';
 import EricField from './parts/EricField.js';
 import Container from './parts/Container.js';
+import Drawing from './parts/Drawing.js';
 
 import WorldView from './views/WorldView.js';
 import StackView from './views/StackView.js';
@@ -24,6 +25,7 @@ import BackgroundView from './views/BackgroundView.js';
 import WindowView from './views/WindowView';
 import EricFieldView from './views/EricFieldView.js';
 import ContainerView from './views/ContainerView.js';
+import DrawingView from './views/drawing/DrawingView.js';
 
 import Halo from './views/Halo.js';
 
@@ -735,6 +737,7 @@ System._commandHandlers['openToolbox'] = function(targetId){
         'name',
         'Add Container to Card'
     );
+  
     let addContainerScript = 'on mouseUp\n    add container to current card\nend mouseUp';
     addContainerBtn.partProperties.setPropertyNamed(
         addContainerBtn,
@@ -782,6 +785,25 @@ System._commandHandlers['openToolbox'] = function(targetId){
         System,
         System
     );
+
+    // Add a button to add a Drawing
+    let addDrawingBtn = this.newModel('button', windowCurrentCardModel.id);
+    addDrawingBtn.partProperties.setPropertyNamed(
+        addDrawingBtn,
+        'name',
+        'Add Drawing to Card'
+    );
+    addDrawingBtn._commandHandlers['mouseUp'] = function(){
+        let currentCardView = document.querySelector('.current-stack > .current-card');
+        let cardModel = currentCardView.model;
+        let newDrawing = System.newModel('drawing', cardModel.id);
+        newDrawing.partProperties.setPropertyNamed(
+            newDrawing,
+            'name',
+            `Drawing ${newDrawing.id}`
+        );
+    };
+
 };
 
 System._commandHandlers['openScriptEditor'] = function(targetId){
@@ -810,7 +832,7 @@ System._commandHandlers['openScriptEditor'] = function(targetId){
     );
     let winView = this.findViewById(winModel.id);
     let winStackModel = this.newModel('stack', winModel.id);
-    let winStackView = this.findViewById(winStackModel.id)
+    let winStackView = this.findViewById(winStackModel.id);
     winStackView.classList.add('window-stack');
     let currentCardView = winView.querySelector('.current-stack .current-card');
     let currentCard = currentCardView.model;
@@ -891,6 +913,7 @@ System.registerPart('world', WorldStack);
 System.registerPart('window', Window);
 System.registerPart('eric-field', EricField);
 System.registerPart('container', Container);
+System.registerPart('drawing', Drawing);
 
 /** Register the initial set of views in the system **/
 System.registerView('button', ButtonView);
@@ -901,6 +924,7 @@ System.registerView('background', BackgroundView);
 System.registerView('window', WindowView);
 System.registerView('eric-field', EricFieldView);
 System.registerView('container', ContainerView);
+System.registerView('drawing', DrawingView);
 
 
 // Convenience method for adding all of the

@@ -20,13 +20,6 @@ class Container extends Part {
         addLayoutProperties(this);
     }
 
-    delegateMessage(aMessage){
-        this.sendMessage(
-            aMessage,
-            this._owner
-        );
-    }
-
     get type(){
         return 'container';
     }
