@@ -25,8 +25,37 @@ class CardView extends PartView {
         );
 
         // Bind component methods
-        this.setPropsFromModel = this.setPropsFromModel.bind(this);
         this.onClick = this.onClick.bind(this);
+        this.setupPropHandlers = this.setupPropHandlers.bind(this);
+        this.layoutChanged = this.layoutChanged.bind(this);
+
+        // Setup prop handlers
+        this.setupPropHandlers();
+    }
+
+    setupPropHandlers(){
+        this.onPropChange('layout', this.layoutChanged);
+    }
+
+    afterConnected(){
+        // Check to see if the parent StackView has another
+        // current card set. If not, and I am the first card
+        // in the StackView, set myself to be the current card.
+        let currentCard = Array.from(this.parentElement.children).find(childEl => {
+            return childEl.classList.contains('current-card');
+        });
+
+        if(!currentCard){
+            this.classList.add('current-card');
+        }
+
+        // Add event listeners
+        this.addEventListener('click', this.onClick);
+    }
+
+    afterDisconnected(){
+        // Remove event listeners
+        this.removeEventListener('click', this.onClick);
     }
 
     onClick(event){
@@ -42,34 +71,9 @@ class CardView extends PartView {
         }
     }
 
-    connectedCallback(){
-        if(this.isConnected){
-            // Check to see if the parent StackView has another
-            // current card set. If not, and I am the first card
-            // in the StackView, set myself to be the current card.
-            let currentCard = Array.from(this.parentElement.children).find(childEl => {
-                return childEl.classList.contains('current-card');
-            });
-
-            if(!currentCard){
-                this.classList.add('current-card');
-            }
-            this.addEventListener('click', this.onClick);
-        }
-    }
-
-    receiveMessage(aMessage){
-        if(aMessage.type == 'propertyChanged'){
-            this.setPropsFromModel();
-        }
-    }
-
-    setPropsFromModel(){
+    layoutChanged(value, partId){
         // Layout stuff
-        let layout = this.model.partProperties.getPropertyNamed(
-            this.model,
-            'layout'
-        );
+        let layout = value;
         if(layout == 'list'){
             this.classList.add('list-layout');
         } else {

@@ -70,49 +70,50 @@ class DrawingView extends PartView {
         this.toggleMode = this.toggleMode.bind(this);
         this.afterDrawAction = this.afterDrawAction.bind(this);
         this.restoreImageFromModel = this.restoreImageFromModel.bind(this);
-        this.setPropsFromModel = this.setPropsFromModel.bind(this);
+        this.setupPropHandlers = this.setupPropHandlers.bind(this);
+
+        // Setup prop handlers
+        this.setupPropHandlers();
     }
 
-    connectedCallback(){
-        if(this.isConnected){
-            this.canvas = this.shadow.querySelector('canvas');
-            this.canvas.addEventListener('mouseup', this.onMouseUp);
-            this.canvas.addEventListener('mousedown', this.onMouseDown);
-            this.addEventListener('click', this.onClick);
+    setupPropHandlers(){
 
-            // Set and store the drawing context
-            this.drawingContext = this.canvas.getContext('2d');
+    }
 
-            // If I don't have the default tools, add
-            // them as real dom children now
-            let pencilChild = this.querySelector('pencil-tool');
-            if(!pencilChild){
-                let newPencil = document.createElement('pencil-tool');
-                this.append(newPencil);
-            }
-            let eraserChild = this.querySelector('eraser-tool');
-            if(!eraserChild){
-                let newEraser = document.createElement('eraser-tool');
-                this.append(newEraser);
-            }
+    afterConnected(){
+        this.canvas = this.shadow.querySelector('canvas');
+        this.canvas.addEventListener('mouseup', this.onMouseUp);
+        this.canvas.addEventListener('mousedown', this.onMouseDown);
+        this.addEventListener('click', this.onClick);
 
-            let colorPickerChild = this.querySelector('color-picker-tool');
-            if(!colorPickerChild){
-                let newColorPicker = document.createElement('color-picker-tool');
-                this.append(newColorPicker);
-            }
+        // Set and store the drawing context
+        this.drawingContext = this.canvas.getContext('2d');
 
-            if(!this.haloButton){
-                this.initCustomHaloButton();
-            }
+        // If I don't have the default tools, add
+        // them as real dom children now
+        let pencilChild = this.querySelector('pencil-tool');
+        if(!pencilChild){
+            let newPencil = document.createElement('pencil-tool');
+            this.append(newPencil);
+        }
+        let eraserChild = this.querySelector('eraser-tool');
+        if(!eraserChild){
+            let newEraser = document.createElement('eraser-tool');
+            this.append(newEraser);
+        }
 
-            if(this.model){
-                this.setPropsFromModel();
-            }
+        let colorPickerChild = this.querySelector('color-picker-tool');
+        if(!colorPickerChild){
+            let newColorPicker = document.createElement('color-picker-tool');
+            this.append(newColorPicker);
+        }
+
+        if(!this.haloButton){
+            this.initCustomHaloButton();
         }
     }
 
-    disconnectedCallback(){
+    afterDisconnected(){
         this.canvas.removeEventListener('mouseup', this.onMouseUp);
         this.canvas.removeEventListener('mousedown', this.onMouseDown);
         this.removeEventListener('click', this.onClick);
@@ -197,19 +198,6 @@ class DrawingView extends PartView {
         this.restoreImageFromModel(currentImage);
     }
 
-    receiveMessage(aMessage){
-        if(aMessage.type == 'propertyChanged'){
-            switch(aMessage.propertyName){
-            case 'image':
-                this.restoreImageFromModel(aMessage.value);
-                break;
-            case 'mode':
-                this.setAttribute('mode', aMessage.value);
-                break;
-            }
-        }
-    }
-
     afterDrawAction(){
         // Encode canvas contents as base64 png
         // and set to model's image property
@@ -236,34 +224,26 @@ class DrawingView extends PartView {
         }
     }
 
-    setPropsFromModel(){
-        let canvasChanged = false;
-        let modelWidth = this.model.partProperties.getPropertyNamed(
-            this.model,
-            'width'
-        );
-        let modelHeight = this.model.partProperties.getPropertyNamed(
-            this.model,
-            'height'
-        );
-        if(this.canvas.width != modelWidth){
-            this.canvas.setAttribute('width', modelWidth);
-            canvasChanged = true;
-        }
-        if(this.canvas.height != modelHeight){
-            this.canvas.setAttribute('height', modelHeight);
-            canvasChanged = true;
-        }
-        let mode = this.model.partProperties.getPropertyNamed(
-            this.model,
-            'mode'
-        );
-        this.setAttribute('mode', mode);
+    widthChanged(value, partId){
+        if(this.canvas.width != value){
+            this.canvas.setAttribute('width', value);
 
+            // Because we resized, we need to redraw the
+            // underlying image cached in the model
+            let modelImage = this.model.partProperties.getPropertyNamed(
+                this.model,
+                'image'
+            );
+            this.restoreImageFromModel(modelImage);
+        }
+    }
 
-        // If the canvas dimensions were adjusted, we need to
-        // redraw the image to the canvas
-        if(canvasChanged){
+    heightChanged(value, partId){
+        if(this.canvas.height != value){
+            this.canvas.setAttribute('height', value);
+
+            // Because we resized, we need to redraw the
+            // underlying image cached in the model
             let modelImage = this.model.partProperties.getPropertyNamed(
                 this.model,
                 'image'

@@ -24,39 +24,31 @@ class ContainerView extends PartView {
         );
 
         // Bind component methods
-        this.setPropsFromModel = this.setPropsFromModel.bind(this);
+        this.setupPropHandlers = this.setupPropHandlers.bind(this);
+        this.layoutChanged = this.layoutChanged.bind(this);
         this.onDragEnter = this.onDragEnter.bind(this);
         this.onDragLeave = this.onDragLeave.bind(this);
         this.onDrop = this.onDrop.bind(this);
         this.onClick = this.onClick.bind(this);
+
+        // Setup prop handlers
+        this.setupPropHandlers();
     }
 
-    connectedCallback(){
-        if(this.isConnected){
-            if(this.model){
-                this.setPropsFromModel();
-            }
-        }
+    setupPropHandlers(){
+        this.onPropChange('layout', this.layoutChanged);
+    }
 
-        // Bind events
+    afterConnected(){
         this.addEventListener('click', this.onClick);
     }
 
-    disconnectedCallback(){
+    afterDisconnected(){
         this.removeEventListener('click', this.onClick);
     }
 
-    receiveMessage(aMessage){
-        if(aMessage.type == 'propertyChanged'){
-            this.setPropsFromModel();
-        }
-    }
-
-    setPropsFromModel(){
-        let layout = this.model.partProperties.getPropertyNamed(
-            this.model,
-            'layout'
-        );
+    layoutChanged(value, partId){
+        let layout = value;
         if(layout == 'list'){
             this.classList.add('list-layout');
         } else {

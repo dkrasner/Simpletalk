@@ -35,28 +35,27 @@ class ButtonView extends PartView {
         this.onMouseUp = this.onMouseUp.bind(this);
         this.onMouseEnter = this.onMouseEnter.bind(this);
         this.onClick = this.onClick.bind(this);
-        this.setPropsFromModel = this.setPropsFromModel.bind(this);
+        this.setupPropHandlers = this.setupPropHandlers.bind(this);
+
+        // Setup prop change handlers
+        this.setupPropHandlers();
     }
 
-    connectedCallback(){
-        if(this.isConnected){
-
-            // Setup mouse event handling
-            this.addEventListener('mousedown', this.onMouseDown);
-            this.addEventListener('mouseup', this.onMouseUp);
-            this.addEventListener('mouseenter', this.onMouseEnter);
-            this.addEventListener('click', this.onClick);
-
-            // If there is a bound model, set all
-            // the relevant view properties from
-            // model properties
-            if(this.model){
-                this.setPropsFromModel();
-            }
-        }
+    setupPropHandlers(){
+        this.onPropChange('name', (value, partId) => {
+            this.innerText = value;
+        });
     }
 
-    disconnectedCallback(){
+    afterConnected(){
+        // Setup mouse event handling
+        this.addEventListener('mousedown', this.onMouseDown);
+        this.addEventListener('mouseup', this.onMouseUp);
+        this.addEventListener('mouseenter', this.onMouseEnter);
+        this.addEventListener('click', this.onClick);
+    }
+
+    afterDisconnected(){
         this.removeEventListener('click', this.onClick);
         this.removeEventListener('mouseup', this.onMouseUp);
         this.removeEventListener('mousedown', this.onMouseDown);
@@ -100,28 +99,6 @@ class ButtonView extends PartView {
             args: [],
             shouldIgnore: true
         }, this.model);
-    }
-
-    setPropsFromModel(){
-        this.innerText = this.model.partProperties.getPropertyNamed(
-            this.model,
-            'name'
-        );
-    }
-
-    receiveMessage(aMessage){
-        if(aMessage.type == 'propertyChanged'){
-            // TODO should script property change be handled in the based class?
-            if(aMessage.propertyName == "script"){
-                this.model.sendMessage({
-                    type: 'compile',
-                    codeString: aMessage.value,
-                    targetId: this.model.id
-                }, window.System);
-            } else {
-                this.setPropsFromModel();
-            }
-        }
     }
 };
 

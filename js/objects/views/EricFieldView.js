@@ -36,26 +36,36 @@ class EricFieldView extends PartView {
 
         // Bind methods
         this.onInput = this.onInput.bind(this);
-        this.handlePropChange = this.handlePropChange.bind(this);
+        this.setupPropHandlers = this.setupPropHandlers.bind(this);
+
+        this.setupPropHandlers();
     }
 
-    connectedCallback(){
+    setupPropHandlers(){
+        this.onPropChange('textContent', (value, partId) => {
+            let textArea = this._shadowRoot.querySelector('.eric-field-textarea');
+            textArea.value = value;
+        });
+    }
+
+    afterConnected(){
         let textarea = this._shadowRoot.querySelector('.eric-field-textarea');
         textarea.addEventListener('input', this.onInput);
+    }
 
+    afterDisconnected(){
+        let textarea = this._shadowRoot.querySelector('.eric-field-textarea');
+        textarea.removeEventListener('input', this.onInput);
+    }
+
+    afterModelSet(){
         // If we have a model, set the value of the textarea
         // to the current text of the field model
-        if(this.model){
-            textarea.value = this.model.partProperties.getPropertyNamed(
-                this.model,
-                'textContent'
-            );
-        }
-    }
-
-    disconnectedCallback(){
         let textarea = this._shadowRoot.querySelector('.eric-field-textarea');
-        textarea.addEventListener('input', this.onInput);
+        textarea.value = this.model.partProperties.getPropertyNamed(
+            this.model,
+            'textContent'
+        );
     }
 
     onInput(event){
@@ -66,20 +76,6 @@ class EricFieldView extends PartView {
             'textContent',
             event.target.value
         );
-    }
-
-    receiveMessage(aMessage){
-        if(aMessage.type == 'propertyChanged'){
-            this.handlePropChange(aMessage);
-        }
-    }
-
-    handlePropChange(changeMessage){
-        switch(changeMessage.propertyName){
-        case 'textContent':
-            let textArea = this._shadowRoot.querySelector('.eric-field-textarea');
-            textArea.value = changeMessage.value;
-        }
     }
 };
 
