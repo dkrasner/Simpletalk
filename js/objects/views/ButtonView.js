@@ -53,6 +53,11 @@ class ButtonView extends PartView {
         this.addEventListener('mouseup', this.onMouseUp);
         this.addEventListener('mouseenter', this.onMouseEnter);
         this.addEventListener('click', this.onClick);
+
+        let buttonName = this.model.partProperties.getPropertyNamed(this, "name");
+        if(buttonName){
+            this.innerText = buttonName;
+        };
     }
 
     afterDisconnected(){
