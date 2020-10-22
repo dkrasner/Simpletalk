@@ -176,13 +176,19 @@ class DrawingView extends PartView {
     }
 
     onClick(event){
-        if(event.button == 0 && event.shiftKey){
-            event.preventDefault();
-            event.stopPropagation();
-            if(this.hasOpenHalo){
-                this.closeHalo();
+        if(event.button == 0){
+            // if the shift key is pressed we toggle the halo
+            // else we set the drawing mode to true
+            if(event.shiftKey){
+                event.preventDefault();
+                event.stopPropagation();
+                if(this.hasOpenHalo){
+                    this.closeHalo();
+                } else {
+                    this.openHalo();
+                }
             } else {
-                this.openHalo();
+                this.setAttribute("mode", "drawing");
             }
         }
     }
@@ -207,6 +213,7 @@ class DrawingView extends PartView {
             'image',
             canvas.toDataURL()
         );
+        this.setAttribute("mode", "");
     }
 
     restoreImageFromModel(base64ImageData){
