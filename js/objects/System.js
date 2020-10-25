@@ -46,6 +46,12 @@ const System = {
     _commandHandlers: {},
     _functionHandlers: {},
 
+    // a list of "current" toolbox elements
+    // these can be added or remove from the World Catalog
+    // TODO: we might want toolbox to be tied to context, example:
+    // world or stack , account or some notion of project context
+    toolbox: [],
+
     // A dictionary mapping part types like
     // 'button' to their classes (Button)
     availableParts: {},
@@ -322,6 +328,12 @@ const System = {
     },
 
     newModel(kind, ownerId, ownerKind, context, name){
+        // TODO This is an exception to the general newModel
+        // message and method structure; potentially should be
+        // reworked
+        if (!ownerId && ownerKind === "toolbox"){
+            this.addToToolbox(kind, context, name);
+        }
         // Lookup the instance of the model that
         // matches the owner's id
         let ownerPart = this.partsById[ownerId];
@@ -416,6 +428,9 @@ const System = {
 
         delete this.partsById[modelId];
         this.removeViews(modelId);
+        // in case the model/partView was in the toolbox
+        // remove the id reference
+        this.removeFromToolbox(modelId);
         return true;
     },
 
@@ -465,6 +480,35 @@ const System = {
         });
 
         return newView;
+    },
+
+    addToToolbox(kind, context, name){
+        let toolboxModel = this.findToolbox();
+        let model = this.newModel(kind, toolboxModel.id, "", context, name);
+        this.toolbox.push(model.id);
+    },
+
+    removeFromToolbox(partId){
+        let index = this.toolbox.indexOf(partId);
+        if (index > -1){
+            this.toolbox.splice(index, 1);
+        }
+    },
+
+    findToolbox(){
+        // TODO this is an awkward way to see if an element is there!
+        let toolboxCardModel = null;
+        document.querySelectorAll('st-window').forEach((stWindow) => {
+            let windowId = stWindow.getAttribute("part-id");
+            let part = window.System.partsById[windowId];
+            let titleProperty = part.partProperties.findPropertyNamed("title");
+            if(titleProperty.getValue() === "Toolbox"){
+               // Note: we return the toolbox card not window since this is where
+               // toolbox subparts are attached.
+               toolboxCardModel = stWindow.querySelector("st-card").model;
+            };
+        });
+        return toolboxCardModel;
     },
 
     registerPart: function(name, cls){
@@ -743,6 +787,11 @@ System._commandHandlers['openToolbox'] = function(targetId){
         'layout',
         'list'
     );
+    windowCurrentCardModel.partProperties.setPropertyNamed(
+        windowCurrentCardModel,
+        'listDirection',
+        'row' //TODO sort out this bug!
+    );
 
     // Do more toolbox configuration here
     // like making the buttons with their
@@ -774,7 +823,6 @@ System._commandHandlers['openToolbox'] = function(targetId){
         'name',
         'Add Container to Card'
     );
-  
     let addContainerScript = 'on click\n    add container to current card\nend click';
     addContainerBtn.partProperties.setPropertyNamed(
         addContainerBtn,
@@ -881,6 +929,70 @@ System._commandHandlers['newSvg'] = function(cardModelId){
         "https://thomasnyberg.com/TsxxJJ9/translate.svg"
     );
 }
+
+System._commandHandlers['openWorldCatalog'] = function(targetId){
+    let targetPart;
+    if(!targetId){
+        targetId = Object.keys(this.partsById).find(key => {
+            return this.partsById[key].type == 'stack';
+        });
+        targetPart = this.partsById[targetId];
+    } else {
+        targetPart = this.partsById[targetId];
+    }
+
+    if(!targetPart || targetPart == undefined){
+        throw new Error(`Could not locate current Stack or Part with id ${targetId}`);
+    }
+
+    let windowModel = this.newModel('window', targetPart.id);
+    let windowStack = this.newModel('stack', windowModel.id);
+    windowModel.partProperties.setPropertyNamed(
+        windowModel,
+        'title',
+        'World Catalog'
+    );
+
+    // Get the current card on the window stack etc
+    let windowStackView = this.findViewById(windowStack.id);
+    let windowCurrentCardModel = windowStackView.querySelector('.current-card').model;
+
+    // Set the current card of the window to have a list layout,
+    // which defaults to a column listDirection
+    windowCurrentCardModel.partProperties.setPropertyNamed(
+        windowCurrentCardModel,
+        'layout',
+        'list'
+    );
+    windowCurrentCardModel.partProperties.setPropertyNamed(
+        windowCurrentCardModel,
+        'listDirection',
+        'row'
+    );
+
+    // Do more toolbox configuration here
+    // like making the buttons with their
+    // scripts, etc
+    windowStackView.classList.add('window-stack');
+    let addBtnBtn = this.newModel('button', windowCurrentCardModel.id);
+    addBtnBtn.partProperties.setPropertyNamed(
+        addBtnBtn,
+        'name',
+        'Button'
+    );
+
+    let addBtnScript = 'on mouseUp\n    add button "Button" to toolbox \nend mouseUp';
+    addBtnBtn.partProperties.setPropertyNamed(
+        addBtnBtn,
+        'script',
+        addBtnScript
+    );
+    System.sendMessage(
+        {type: "compile", codeString: addBtnScript, targetId: addBtnBtn.id},
+        System,
+        System
+    );
+};
 
 System._commandHandlers['openScriptEditor'] = function(targetId){
     let targetPart = this.partsById[targetId];

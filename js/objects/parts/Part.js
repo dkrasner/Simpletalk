@@ -336,10 +336,19 @@ class Part {
             message.args[1] = targetModel.id;
             return this.sendMessage(message, targetModel);
         }
-        // if no owner Id is provided and I accept the modelType
+        // if no owner Id and no targetModelTyope are provided
+        // and I accept the modelType
         // as a subpart, then add the new model as a subpart
+        // if targetModelType is provided then I check to make sure
+        // my type matches targetModelType
         if (this.acceptsSubpart(modelType) && !ownerId){
-            message.args[1] = this.id;
+            if(targetModelType){
+                if(this.type === targetModelType){
+                    message.args[1] = this.id;
+                };
+            } else {
+                message.args[1] = this.id;
+            }
         }
         this.delegateMessage(message);
     }

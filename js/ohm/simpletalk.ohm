@@ -62,7 +62,7 @@
 		= letter+
 
 	systemObject (system object such as card, stack etc)
-		= ("c" | "C") "ontainer" | ("b"| "B") "ackground" | ("b" | "B") "utton" | ("c" | "C") "ard" | ("f" | "F") "ield" | ("s" | "S") "tack" | ("w" | "W") "indow"
+		= ("c" | "C") "ontainer" | ("b"| "B") "ackground" | ("b" | "B") "utton" | ("c" | "C") "ard" | ("f" | "F") "ield" | ("s" | "S") "tack" | ("w" | "W") "indow" | ("t"| "T") "oolbox"
 
 	// TODO do we want to restrict message names (start with lowercase etc)?
 	// Note: we prevent keyword overloading

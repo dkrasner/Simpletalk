@@ -63,9 +63,10 @@ class CardView extends PartView {
             event.preventDefault();
             event.stopPropagation();
             // TODO
-            // At the moment we close the toolbox in the UI natively
-            // but in the future this should probably be a message
-            if(!this.hasOpenToolbox){
+            // in the future this should probably be a message
+            if (event.ctrlKey){
+                this.openWorldCatalog();
+            } else {
                 this.openToolbox();
             }
         }
