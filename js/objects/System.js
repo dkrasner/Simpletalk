@@ -15,6 +15,7 @@ import Window from './parts/Window.js';
 import EricField from './parts/EricField.js';
 import Container from './parts/Container.js';
 import Drawing from './parts/Drawing.js';
+import Svg from './parts/Svg.js';
 
 import WorldView from './views/WorldView.js';
 import StackView from './views/StackView.js';
@@ -26,6 +27,7 @@ import WindowView from './views/WindowView';
 import EricFieldView from './views/EricFieldView.js';
 import ContainerView from './views/ContainerView.js';
 import DrawingView from './views/drawing/DrawingView.js';
+import SvgView from './views/SvgView.js';
 
 import Halo from './views/Halo.js';
 
@@ -804,7 +806,37 @@ System._commandHandlers['openToolbox'] = function(targetId){
         );
     };
 
+    // Add a button to add a Svg
+    let addSvgBtn = this.newModel('button', windowCurrentCardModel.id);
+    addSvgBtn.partProperties.setPropertyNamed(
+        addSvgBtn,
+        'name',
+        'Add Svg to Card'
+    );
+    addSvgBtn._commandHandlers['mouseUp'] = function(){
+        let currentCardView = document.querySelector('.current-stack > .current-card');
+        let cardModel = currentCardView.model;
+        this.sendMessage({
+            type: 'command',
+            commandName: 'newSvg',
+            args: [cardModel.id]
+        }, cardModel);
+    };
 };
+
+System._commandHandlers['newSvg'] = function(cardModelId){
+    let newSvg = System.newModel('svg', cardModelId);
+    newSvg.partProperties.setPropertyNamed(
+        newSvg,
+        'name',
+        `Svg ${newSvg.id}`
+    );
+    newSvg.partProperties.setPropertyNamed(
+        newSvg,
+        "src",
+        "https://thomasnyberg.com/TsxxJJ9/translate.svg"
+    );
+}
 
 System._commandHandlers['openScriptEditor'] = function(targetId){
     let targetPart = this.partsById[targetId];
@@ -914,6 +946,7 @@ System.registerPart('window', Window);
 System.registerPart('eric-field', EricField);
 System.registerPart('container', Container);
 System.registerPart('drawing', Drawing);
+System.registerPart('svg', Svg);
 
 /** Register the initial set of views in the system **/
 System.registerView('button', ButtonView);
@@ -925,6 +958,7 @@ System.registerView('window', WindowView);
 System.registerView('eric-field', EricFieldView);
 System.registerView('container', ContainerView);
 System.registerView('drawing', DrawingView);
+System.registerView('svg', SvgView);
 
 
 // Convenience method for adding all of the
