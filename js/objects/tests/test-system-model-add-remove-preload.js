@@ -46,15 +46,58 @@ describe('newModel tests', () => {
     });
 
     it('Can send newModel message without error (add svg to current card)', () => {
-
         let msg = {
             type: 'command',
-            commandName: 'newSvg',
-            args: [currentCard.id]
+            commandName: 'newModel',
+            args: ['svg', currentCard.id, "", "", "https://thomasnyberg.com/TsxxJJ9/translate.svg"]
         };
 
         let sendFunc = function(){
             currentCard.sendMessage(msg, System);
+        };
+
+        expect(sendFunc).to.not.throw(Error);
+    });
+
+    it.skip('Can send newModel message without error (add default svg)', () => {
+        // TODO: figure out how to deal with relative paths (default svg icon) in
+        // tests or get rid of them all together
+        let msg = {
+            type: 'command',
+            commandName: 'newModel',
+            args: ['svg']
+        };
+
+        let sendFunc = function(){
+            currentCard.sendMessage(msg, currentCard);
+        };
+
+        expect(sendFunc).to.not.throw(Error);
+    });
+
+    it('Can send newModel message without error (add svg to current card without id)', () => {
+        let msg = {
+            type: 'command',
+            commandName: 'newModel',
+            args: ['svg', "", "", "", "https://thomasnyberg.com/TsxxJJ9/translate.svg"]
+        };
+
+        let sendFunc = function(){
+            currentCard.sendMessage(msg, currentCard);
+        };
+
+        expect(sendFunc).to.not.throw(Error);
+    });
+
+    it('Can send newModel message without error (add svg to current card, in context)', () => {
+        let msg = {
+            type: 'command',
+            commandName: 'newModel',
+            args: ['svg', "", "card", "current", "https://thomasnyberg.com/TsxxJJ9/translate.svg"]
+        };
+
+        let sendFunc = function(){
+            currentCard.sendMessage(msg, currentCard);
         };
 
         expect(sendFunc).to.not.throw(Error);

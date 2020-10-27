@@ -62,7 +62,7 @@
 		= letter+
 
 	systemObject (system object such as card, stack etc)
-		= ("c" | "C") "ontainer" | ("b"| "B") "ackground" | ("b" | "B") "utton" | ("c" | "C") "ard" | ("f" | "F") "ield" | ("s" | "S") "tack" | ("w" | "W") "indow" | ("t"| "T") "oolbox"
+		= ("c" | "C") "ontainer" | ("b"| "B") "ackground" | ("b" | "B") "utton" | ("c" | "C") "ard" | ("f" | "F") "ield" | ("s" | "S") "tack" | ("w" | "W") "indow" | ("t"| "T") "oolbox" | ("d" | "D") "rawing" | ("s" | "S") "vg"
 
 	// TODO do we want to restrict message names (start with lowercase etc)?
 	// Note: we prevent keyword overloading
@@ -109,6 +109,8 @@
 
 	quoteMark = "\""
 
+  punctuation = (":" | ";" | "." | "," | "?" | "!" | "-")
+
 	// Basic whitespace and line termination handling.
 	// Note that we override the default Ohm definition
 	// of `space` to only be spaces or tabs, and NOT
@@ -124,5 +126,5 @@
 
 	unicodeSpaceSeparator = "\u2000".."\u200B" | "\u3000"
 	lineTerminator = "\n" | "\r" | "\u2028" | "\u2029" | "\r\n"
-	nonLineTerminator = ~lineTerminator (alnum | whitespace)
+	nonLineTerminator = ~lineTerminator (alnum | whitespace | punctuation | "/" | "_")
 }

@@ -333,6 +333,7 @@ const System = {
         // reworked
         if (!ownerId && ownerKind === "toolbox"){
             this.addToToolbox(kind, context, name);
+            return true;
         }
         // Lookup the instance of the model that
         // matches the owner's id
@@ -350,7 +351,13 @@ const System = {
         }
         let model = new modelClass(ownerPart);
         if(name){
-            model.partProperties.setPropertyNamed(model, 'name', name);
+            // TODO! this is a total hack, shold we update the grammar?
+            // find a better way to pass args?
+            if (kind === "svg"){
+                model.partProperties.setPropertyNamed(model, "src", name);
+            } else {
+                model.partProperties.setPropertyNamed(model, 'name', name);
+            }
         }
         this.partsById[model.id] = model;
 
@@ -690,7 +697,6 @@ const System = {
         }
         return currentStackView.goToCardById(cardId);
     }
-
 };
 
 /** Add Default System Command Handlers **/
@@ -905,30 +911,18 @@ System._commandHandlers['openToolbox'] = function(targetId){
         'name',
         'Add Svg to Card'
     );
-    addSvgBtn._commandHandlers['click'] = function(){
-        let currentCardView = document.querySelector('.current-stack > .current-card');
-        let cardModel = currentCardView.model;
-        this.sendMessage({
-            type: 'command',
-            commandName: 'newSvg',
-            args: [cardModel.id]
-        }, cardModel);
-    };
+    let addSvgBtnScript = 'on click\n    add svg to current card\nend click';
+    addSvgBtn.partProperties.setPropertyNamed(
+        addSvgBtn,
+        'script',
+        addSvgBtnScript
+    );
+    System.sendMessage(
+        {type: "compile", codeString: addSvgBtnScript, targetId: addSvgBtn.id},
+        System,
+        System
+    );
 };
-
-System._commandHandlers['newSvg'] = function(cardModelId){
-    let newSvg = System.newModel('svg', cardModelId);
-    newSvg.partProperties.setPropertyNamed(
-        newSvg,
-        'name',
-        `Svg ${newSvg.id}`
-    );
-    newSvg.partProperties.setPropertyNamed(
-        newSvg,
-        "src",
-        "https://thomasnyberg.com/TsxxJJ9/translate.svg"
-    );
-}
 
 System._commandHandlers['openWorldCatalog'] = function(targetId){
     let targetPart;
@@ -970,28 +964,37 @@ System._commandHandlers['openWorldCatalog'] = function(targetId){
         'row'
     );
 
-    // Do more toolbox configuration here
-    // like making the buttons with their
-    // scripts, etc
     windowStackView.classList.add('window-stack');
-    let addBtnBtn = this.newModel('button', windowCurrentCardModel.id);
-    addBtnBtn.partProperties.setPropertyNamed(
-        addBtnBtn,
-        'name',
-        'Button'
-    );
+    //TODO this should be updated as parts, views mature
+    const ignoreParts = ["field", "eric-field", "background", "world"];
+    Object.keys(System.availableParts).forEach((partName) => {
+        if (ignoreParts.indexOf(partName) === -1){
+            let context = "current card";
+            if (partName === "card" || partName === "window"){
+                context = "current stack";
+            } else if(partName === "stack"){
+                context = "world";
+            }
+            let addBtnBtn = this.newModel("button", windowCurrentCardModel.id);
+            addBtnBtn.partProperties.setPropertyNamed(
+                addBtnBtn,
+                'name',
+                partName
+            );
 
-    let addBtnScript = 'on mouseUp\n    add button "Button" to toolbox \nend mouseUp';
-    addBtnBtn.partProperties.setPropertyNamed(
-        addBtnBtn,
-        'script',
-        addBtnScript
-    );
-    System.sendMessage(
-        {type: "compile", codeString: addBtnScript, targetId: addBtnBtn.id},
-        System,
-        System
-    );
+            let addBtnScript = `on mouseUp\n    add ${partName} "new ${partName}" to ${context} \nend mouseUp`;
+            addBtnBtn.partProperties.setPropertyNamed(
+                addBtnBtn,
+                'script',
+                addBtnScript
+            );
+            System.sendMessage(
+                {type: "compile", codeString: addBtnScript, targetId: addBtnBtn.id},
+                System,
+                System
+            );
+        }
+    });
 };
 
 System._commandHandlers['openScriptEditor'] = function(targetId){
