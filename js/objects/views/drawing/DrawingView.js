@@ -35,7 +35,7 @@ const templateString = `
     :host([mode="viewing"]) {
         border: 1px solid transparent;
     }
-    :host([mode="viewing"]) > #tool-buttons {
+    :host(:not([mode="drawing"])) > #tool-buttons {
         display: none;
     }
 </style>
@@ -71,13 +71,18 @@ class DrawingView extends PartView {
         this.afterDrawAction = this.afterDrawAction.bind(this);
         this.restoreImageFromModel = this.restoreImageFromModel.bind(this);
         this.setupPropHandlers = this.setupPropHandlers.bind(this);
+        this.modeChanged = this.modeChanged.bind(this);
 
         // Setup prop handlers
         this.setupPropHandlers();
     }
 
     setupPropHandlers(){
+        this.onPropChange('mode', this.modeChanged);
+    }
 
+    modeChanged(value){
+        this.setAttribute('mode', value);
     }
 
     afterConnected(){
@@ -178,7 +183,6 @@ class DrawingView extends PartView {
     onClick(event){
         if(event.button == 0){
             // if the shift key is pressed we toggle the halo
-            // else we set the drawing mode to true
             if(event.shiftKey){
                 event.preventDefault();
                 event.stopPropagation();
@@ -187,8 +191,6 @@ class DrawingView extends PartView {
                 } else {
                     this.openHalo();
                 }
-            } else {
-                this.setAttribute("mode", "drawing");
             }
         }
     }
@@ -213,7 +215,7 @@ class DrawingView extends PartView {
             'image',
             canvas.toDataURL()
         );
-        this.setAttribute("mode", "");
+        //this.setAttribute("mode", "");
     }
 
     restoreImageFromModel(base64ImageData){
@@ -231,7 +233,7 @@ class DrawingView extends PartView {
         }
     }
 
-    widthChanged(value, partId){
+    widthChanged(value, _){
         if(this.canvas.width != value){
             this.canvas.setAttribute('width', value);
 
@@ -283,19 +285,16 @@ class DrawingView extends PartView {
 
     toggleMode(){
         let currentMode = this.getAttribute('mode');
-        if(currentMode == 'drawing'){
-            this.model.partProperties.setPropertyNamed(
-                this.model,
-                'mode',
-                'viewing'
-            );
-        } else {
-            this.model.partProperties.setPropertyNamed(
-                this.model,
-                'mode',
-                'drawing'
-            );
+        let nextMode = 'viewing'; // By default, set to viewing
+        let isEmpty = (!currentMode || currentMode == undefined || currentMode == "");
+        if(currentMode == 'viewing' || isEmpty){
+            nextMode = 'drawing';
         }
+        this.model.partProperties.setPropertyNamed(
+            this.model,
+            'mode',
+            nextMode
+        );
     }
 
     get inDrawingMode(){
@@ -309,11 +308,15 @@ class DrawingView extends PartView {
         return false;
     }
 
-    static get observedAttributes(){
-        return [
-            'mode'
-        ];
-    }
+    // attributeChangedCallback(name, oldVal, newVal){
+    //     if(name == 'mode'){
+    //         debugger;
+    //     }
+    // }
+
+    // static get observedAttributes(){
+    //     return [ 'mode' ];
+    // }
 };
 
 export {

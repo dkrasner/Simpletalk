@@ -804,6 +804,15 @@ System._commandHandlers['openToolbox'] = function(targetId){
             'name',
             `Drawing ${newDrawing.id}`
         );
+
+        // By default, we open the drawing in
+        // drawing mode, so user can immediately
+        // begin to paint
+        newDrawing.partProperties.setPropertyNamed(
+            newDrawing,
+            'mode',
+            'drawing'
+        );
     };
 
     // Add a button to add a Svg
