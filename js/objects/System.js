@@ -953,15 +953,17 @@ System._commandHandlers['openWorldCatalog'] = function(targetId){
 
     // Set the current card of the window to have a list layout,
     // which defaults to a column listDirection
-    windowCurrentCardModel.partProperties.setPropertyNamed(
-        windowCurrentCardModel,
-        'layout',
-        'list'
-    );
+    // NOTE!!! listDirection is not subscribed to, so it must come before layout
+    // TODO!!!
     windowCurrentCardModel.partProperties.setPropertyNamed(
         windowCurrentCardModel,
         'listDirection',
         'row'
+    );
+    windowCurrentCardModel.partProperties.setPropertyNamed(
+        windowCurrentCardModel,
+        'layout',
+        'list'
     );
 
     windowStackView.classList.add('window-stack');
@@ -975,7 +977,7 @@ System._commandHandlers['openWorldCatalog'] = function(targetId){
             } else if(partName === "stack"){
                 context = "world";
             }
-            let addBtnBtn = this.newModel("button", windowCurrentCardModel.id);
+            let addBtnBtn = this.newModel("svg", windowCurrentCardModel.id);
             addBtnBtn.partProperties.setPropertyNamed(
                 addBtnBtn,
                 'name',

@@ -1,13 +1,16 @@
 import PartView from './PartView.js';
 
 const templateString = `
-    <svg width="160" height="160" viewbox="0 0 320 320" xmlns="http://www.w3.org/2000/svg">
+    <svg xmlns="http://www.w3.org/2000/svg">
     </svg>
 `;
 
 class SvgView extends PartView {
     constructor(){
         super();
+        this.defaultWidth = "100px";
+        this.defaultHeight = "100px";
+
         this.template = document.createElement('template');
         this.template.innerHTML = templateString;
         this._shadowRoot = this.attachShadow({mode: 'open'});
@@ -18,6 +21,8 @@ class SvgView extends PartView {
         };
         // Click stuff
         this.onClick = this.onClick.bind(this);
+        this.onMouseDown = this.onMouseDown.bind(this);
+        this.onMouseUp = this.onMouseUp.bind(this);
         this.onHaloResize = this.onHaloResize.bind(this);
         this.updateSrc = this.updateSrc.bind(this);
     }
@@ -30,12 +35,16 @@ class SvgView extends PartView {
 
     connectedCallback(){
         this.addEventListener('click', this.onClick);
+        this.addEventListener('mousedown', this.onMouseDown);
+        this.addEventListener('mouseup', this.onMouseUp);
         // add the svg data into the custom element
         this.updateSrc(this.model.partProperties.getPropertyNamed(this, "src"));
     }
 
     disconnectedCallback(){
         this.removeEventListener('click', this.onClick);
+        this.removeEventListener('mouseup', this.onMouseUp);
+        this.removeEventListener('mousedown', this.onMouseDown);
     }
 
     onClick(event){
@@ -43,6 +52,25 @@ class SvgView extends PartView {
             this.openHalo();
         }
     }
+
+    onMouseDown(event){
+        if(event.shiftKey){
+            event.preventDefault();
+        }
+    }
+
+    onMouseUp(event){
+        if(!this.hasOpenHalo){
+            // Send the mouseUp command message to self
+            this.model.sendMessage({
+                type: 'command',
+                commandName: 'mouseUp',
+                args: [],
+                shouldIgnore: true // Should ignore if System DNU
+            }, this.model);
+        }
+    }
+
 
     openHalo(){
         // Compute the appropriate width and height from
@@ -94,6 +122,8 @@ class SvgView extends PartView {
             let xmlDocument = parser.parseFromString(text, 'application/xml');
             let newSvgEl = xmlDocument.documentElement;
             let currentSvgEl = this._shadowRoot.querySelector('svg');
+            newSvgEl.style.width = this.defaultWidth;
+            newSvgEl.style.height = this.defaultHeight;
             currentSvgEl.remove();
             this._shadowRoot.appendChild(newSvgEl);
         })

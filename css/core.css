@@ -199,11 +199,6 @@ st-svg {
     /* border: 1px solid rgb(150, 150, 150);*/
 }
 
-st-svg:empty {
-    min-height: 100px;
-    min-width: 100px;
-}
-
 /* =Layout Class Styles
  * --------------------------------------------------------*/
 .list-layout {

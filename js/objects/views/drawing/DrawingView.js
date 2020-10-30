@@ -125,8 +125,17 @@ class DrawingView extends PartView {
     }
 
     onMouseDown(event){
-        if(event.shiftKey || !this.inDrawingMode){
+        if(event.shiftKey){
             return;
+        } else if(!this.inDrawingMode) {
+            // Send the mouseUp command message to self
+            this.model.sendMessage({
+                type: 'command',
+                commandName: 'mouseUp',
+                args: [],
+                shouldIgnore: true // Should ignore if System DNU
+            }, this.model);
+
         }
         this.activeTool = this.querySelector('[role="tool"][active="true"]');
         if(!this.activeTool){

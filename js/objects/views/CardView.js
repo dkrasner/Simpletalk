@@ -64,7 +64,7 @@ class CardView extends PartView {
             event.stopPropagation();
             // TODO
             // in the future this should probably be a message
-            if (event.ctrlKey){
+            if (event.altKey){
                 this.openWorldCatalog();
             } else {
                 this.openToolbox();
@@ -84,17 +84,14 @@ class CardView extends PartView {
             this.model,
             'listDirection'
         );
+        this.classList.remove(
+            'list-row',
+            'list-column'
+        );
         if(layout && listDirection == 'row'){
             this.classList.add('list-row');
-            this.classList.remove('list-column');
         } else if(layout && listDirection){
-            this.classList.remove('list-row');
             this.classList.add('list-column');
-        } else {
-            this.classList.remove(
-                'list-row',
-                'list-column'
-            );
         }
         // background stuff
         let backgroundColor = this.model.partProperties.getPropertyNamed(
