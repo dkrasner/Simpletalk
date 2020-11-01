@@ -7,7 +7,6 @@
  */
 import Card from './parts/Card.js';
 import Stack from './parts/Stack.js';
-import Background from './parts/Background.js';
 import Button from './parts/Button.js';
 import Field from './parts/Field.js';
 import WorldStack from './parts/WorldStack.js';
@@ -22,7 +21,6 @@ import StackView from './views/StackView.js';
 import ButtonView from './views/ButtonView.js';
 import PartView from './views/PartView.js';
 import CardView from './views/CardView.js';
-import BackgroundView from './views/BackgroundView.js';
 import WindowView from './views/WindowView';
 import EricFieldView from './views/EricFieldView.js';
 import ContainerView from './views/ContainerView.js';
@@ -1099,7 +1097,6 @@ System._commandHandlers['saveHTML'] = function(){
 /** Register the initial set of parts in the system **/
 System.registerPart('card', Card);
 System.registerPart('stack', Stack);
-System.registerPart('background', Background);
 System.registerPart('field', Field);
 System.registerPart('button', Button);
 System.registerPart('world', WorldStack);
@@ -1114,7 +1111,6 @@ System.registerView('button', ButtonView);
 System.registerView('stack', StackView);
 System.registerView('world', WorldView);
 System.registerView('card', CardView);
-System.registerView('background', BackgroundView);
 System.registerView('window', WindowView);
 System.registerView('eric-field', EricFieldView);
 System.registerView('container', ContainerView);

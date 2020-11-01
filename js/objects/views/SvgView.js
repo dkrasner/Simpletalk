@@ -127,9 +127,6 @@ class SvgView extends PartView {
             currentSvgEl.remove();
             this._shadowRoot.appendChild(newSvgEl);
         })
-        .then(() => {
-            this.setAttribute("src", svgUri);
-        })
         .catch(error => {
             console.error(error);
         });

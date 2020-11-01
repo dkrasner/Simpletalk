@@ -7,7 +7,6 @@
  */
 import Part from './Part.js';
 import Card from './Card.js';
-import Background from './Background.js';
 import {
     BasicProperty
 } from '../properties/PartProperties.js';
@@ -49,12 +48,6 @@ class Stack extends Part {
         // if we are deserializing, we don't need to
         // instantiate any default children
         if (!deserializing) {
-            // We construct with an initial
-            // Background part, since there needs
-            // to be at least one
-            let initBackground = new Background(this);
-            this.addPart(initBackground);
-
             // We construct with an initial Card part,
             // since there needs to be at least one
             let initCard = new Card(this);

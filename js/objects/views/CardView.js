@@ -28,6 +28,7 @@ class CardView extends PartView {
         this.onClick = this.onClick.bind(this);
         this.setupPropHandlers = this.setupPropHandlers.bind(this);
         this.layoutChanged = this.layoutChanged.bind(this);
+        this.bgColorChanged = this.bgColorChanged.bind(this);
 
         // Setup prop handlers
         this.setupPropHandlers();
@@ -35,6 +36,7 @@ class CardView extends PartView {
 
     setupPropHandlers(){
         this.onPropChange('layout', this.layoutChanged);
+        this.onPropChange('backgroundColor', this.bgColorChanged);
     }
 
     afterConnected(){
@@ -101,6 +103,11 @@ class CardView extends PartView {
         this.style['backgroundColor'] = backgroundColor;
         // TODO this could bemore propgrammatic. For example
         // styleProperties((prop) => {this.style[prop.name] = prop.value}) etc
+    }
+
+    // TODO: this shold be a more general prop change handler
+    bgColorChanged(value){
+        this.style['backgroundColor'] = value;
     }
 };
 
