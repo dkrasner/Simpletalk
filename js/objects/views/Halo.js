@@ -181,21 +181,21 @@ class Halo extends HTMLElement {
             this.resizer = this.shadowRoot.getElementById('halo-resize');
             this.resizer.addEventListener('mousedown', this.onResizeMouseDown);
             if(!this.targetElement.wantsHaloResize){
-                this.resizer.classList.add('hidden');
+                this.resizer.style.visibility = 'hidden';
             }
 
             // Delete button
             this.deleter = this.shadowRoot.getElementById('halo-delete');
             this.deleter.addEventListener('click', this.targetElement.onHaloDelete);
             if(!this.targetElement.wantsHaloDelete){
-                this.deleter.classList.add('hidden');
+                this.deleter.style.visibility = 'hidden';
             }
 
             // Edit button
             this.editor = this.shadowRoot.getElementById('halo-script-edit');
             this.editor.addEventListener('click', this.targetElement.onHaloOpenEditor);
             if(!this.targetElement.wantsHaloScriptEdit){
-                this.editor.classList.add('hidden');
+                this.editor.style.visibility = 'hidden';
             }
         }
     }

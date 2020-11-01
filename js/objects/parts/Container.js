@@ -18,6 +18,9 @@ class Container extends Part {
     constructor(owner, name){
         super(owner);
         addLayoutProperties(this);
+
+        // accept all subparts
+        this.acceptedSubpartTypes = ["*"];
     }
 
     get type(){

@@ -176,6 +176,9 @@ class Part {
      * and throw an approprite error if the subpart type is invalid.
      */
     acceptsSubpart(aPartType){
+        if (this.acceptedSubpartTypes[0] === "*"){
+            return true;
+        }
         return this.acceptedSubpartTypes.includes(aPartType.toLowerCase());
     }
 

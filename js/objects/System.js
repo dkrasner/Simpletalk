@@ -925,10 +925,7 @@ System._commandHandlers['openToolbox'] = function(targetId){
 System._commandHandlers['openWorldCatalog'] = function(targetId){
     let targetPart;
     if(!targetId){
-        targetId = Object.keys(this.partsById).find(key => {
-            return this.partsById[key].type == 'stack';
-        });
-        targetPart = this.partsById[targetId];
+        targetPart = this.getCurrentStackModel();
     } else {
         targetPart = this.partsById[targetId];
     }
@@ -976,6 +973,8 @@ System._commandHandlers['openWorldCatalog'] = function(targetId){
                 context = "world";
             }
             let addBtnBtn = this.newModel("svg", windowCurrentCardModel.id);
+            let view = this.findViewById(addBtnBtn.id);
+            view.wantsHaloResize = false;
             addBtnBtn.partProperties.setPropertyNamed(
                 addBtnBtn,
                 'name',

@@ -49,7 +49,11 @@ class SvgView extends PartView {
 
     onClick(event){
         if(event.button == 0 && event.shiftKey){
-            this.openHalo();
+            if(this.hasOpenHalo){
+                this.closeHalo();
+            } else {
+                this.openHalo();
+            }
         }
     }
 
@@ -68,31 +72,6 @@ class SvgView extends PartView {
                 args: [],
                 shouldIgnore: true // Should ignore if System DNU
             }, this.model);
-        }
-    }
-
-
-    openHalo(){
-        // Compute the appropriate width and height from
-        // current rect
-        let rect = this.getBoundingClientRect();
-        this.style.width = `${Math.floor(rect.width)}px`;
-        this.style.height = `${Math.floor(rect.height)}px`;
-        this.style.top = `${Math.floor(rect.top)}px`;
-        this.style.left = `${Math.floor(rect.left)}px`;
-        let foundHalo = this._shadowRoot.querySelector('st-halo');
-        if(foundHalo){
-            this._shadowRoot.removeChild(foundHalo);
-        } else {
-            let newHalo = document.createElement('st-halo');
-            this._shadowRoot.appendChild(newHalo);
-        }
-    }
-
-    closeHalo(){
-        let foundHalo = this._shadowRoot.querySelector('st-halo');
-        if(foundHalo){
-            this._shadowRoot.removeChild(foundHalo);
         }
     }
 

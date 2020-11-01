@@ -186,7 +186,6 @@ st-window > st-stack > .current-card > st-layout {
 /* =Container Styles
  *---------------------------------------------------------*/
 st-container {
-    display: block;
     position: absolute;
     border: 1px solid rgb(150, 150, 150);
 }
