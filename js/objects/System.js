@@ -966,29 +966,75 @@ System._commandHandlers['openWorldCatalog'] = function(targetId){
     const ignoreParts = ["field", "eric-field", "background", "world"];
     Object.keys(System.availableParts).forEach((partName) => {
         if (ignoreParts.indexOf(partName) === -1){
-            let context = "current card";
-            if (partName === "card" || partName === "window"){
-                context = "current stack";
-            } else if(partName === "stack"){
-                context = "world";
+            let partModel;
+            let script;
+            if (partName === "stack"){
+                script = 'on mouseUp\n    add  stack "new stack" to world \nend mouseUp';
+                partModel = this.newModel(
+                    "svg",
+                    windowCurrentCardModel.id,
+                    "",
+                    "",
+                    '../../../images/stack.svg'
+                );
+            } else if (partName === "card"){
+                script = 'on mouseUp\n    add card "new card" to current stack \nend mouseUp';
+                partModel = this.newModel(
+                    "svg",
+                    windowCurrentCardModel.id,
+                    "",
+                    "",
+                    '../../../images/card.svg'
+                );
+            } else if (partName === "window"){
+                script = 'on mouseUp\n    add window "new window" to current stack \nend mouseUp';
+                partModel = this.newModel(
+                    "svg",
+                    windowCurrentCardModel.id,
+                    "",
+                    "",
+                    '../../../images/window.svg'
+                );
+            } else if (partName === "container"){
+                script = 'on mouseUp\n    add container "new container" to current card \nend mouseUp';
+                partModel = this.newModel(
+                    "svg",
+                    windowCurrentCardModel.id,
+                    "",
+                    "",
+                    '../../../images/container.svg'
+                );
+            } else if (partName === "button"){
+                script = 'on mouseUp\n    add button "new button" to current card \nend mouseUp';
+                partModel = this.newModel(partName, windowCurrentCardModel.id);
+            } else if (partName === "drawing"){
+                script = 'on mouseUp\n    add drawing "new drawing" to current card \nend mouseUp';
+                partModel = this.newModel(
+                    "svg",
+                    windowCurrentCardModel.id,
+                    "",
+                    "",
+                    '../../../images/drawing.svg'
+                );
+            } else if (partName === "svg"){
+                script = 'on mouseUp\n    add svg to current card \nend mouseUp';
+                partModel = this.newModel("svg", windowCurrentCardModel.id);
             }
-            let addBtnBtn = this.newModel("svg", windowCurrentCardModel.id);
-            let view = this.findViewById(addBtnBtn.id);
+
+            let view = this.findViewById(partModel.id);
             view.wantsHaloResize = false;
-            addBtnBtn.partProperties.setPropertyNamed(
-                addBtnBtn,
+            partModel.partProperties.setPropertyNamed(
+                partModel,
                 'name',
                 partName
             );
-
-            let addBtnScript = `on mouseUp\n    add ${partName} "new ${partName}" to ${context} \nend mouseUp`;
-            addBtnBtn.partProperties.setPropertyNamed(
-                addBtnBtn,
+            partModel.partProperties.setPropertyNamed(
+                partModel,
                 'script',
-                addBtnScript
+                script
             );
             System.sendMessage(
-                {type: "compile", codeString: addBtnScript, targetId: addBtnBtn.id},
+                {type: "compile", codeString: script, targetId: partModel.id},
                 System,
                 System
             );

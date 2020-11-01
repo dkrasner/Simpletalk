@@ -202,6 +202,11 @@ st-svg {
     position: absolute;
     /* border: 1px solid rgb(150, 150, 150);*/
 }
+/* =Drawing Styles
+ *----------------------------------------------------*/
+st-drawing {
+    background-color: white;
+}
 
 /* =Layout Class Styles
  * --------------------------------------------------------*/
