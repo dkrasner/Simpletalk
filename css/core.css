@@ -32,6 +32,10 @@
     z-index: 0;
 }
 
+.active {
+    background-color: black;
+    color: white;
+}
 
 /* =World Styles
  *----------------------------------------------------*/
@@ -127,11 +131,6 @@ st-button:not(.editing):hover {
     cursor: pointer;
 }
 
-st-button:not(.editing):active {
-    background-color: black;
-    color: white;
-}
-
 
 /* =Layout Styles
  *----------------------------------------------------*/
@@ -202,6 +201,7 @@ st-svg {
     position: absolute;
     /* border: 1px solid rgb(150, 150, 150);*/
 }
+
 /* =Drawing Styles
  *----------------------------------------------------*/
 st-drawing {

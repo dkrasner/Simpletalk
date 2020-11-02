@@ -24,21 +24,21 @@ describe('Button System Command Tests', () => {
             assert.exists(foundEl);
             assert.exists(foundEl.model);
         });
-        it('Can locate the (only) card in the stack', () => {
-            let foundEl = document.querySelector('st-card');
+        it('Can locate the (only) current card in the stack', () => {
+            let foundEl = document.querySelector('st-card.current-card');
             assert.exists(foundEl);
             assert.exists(foundEl.model);
         });
         it('Can get card view by its id', () => {
-            let cardEl = document.querySelector('st-card');
+            let cardEl = document.querySelector('st-card.current-card');
             let id = cardEl.getAttribute('part-id');
             let found = document.querySelector(`[part-id="${id}"]`);
-            assert.equal(id, "3");
+            assert.equal(id, "2");
             assert.exists(found);
         });
     });
 
-    describe.skip('Adding the button that will be tested', () => {
+    describe('Adding the button that will be tested', () => {
         var buttonModel;
         it('Can add the button via System message', () => {
             let stackEl = document.querySelector('.current-stack');
@@ -46,10 +46,10 @@ describe('Button System Command Tests', () => {
             let msg = {
                 type: "command",
                 commandName: "newModel",
-                args: ["button", card.model.id]
+                args: ["button", cardEl.model.id]
             };
             System.receiveMessage(msg);
-            let btnEl = document.querySelector('st-button');
+            let btnEl = cardEl.querySelector('st-button');
             assert.exists(btnEl);
             buttonModel = btnEl.model;
             assert.exists(buttonModel);
@@ -73,6 +73,30 @@ describe('Button System Command Tests', () => {
                 let buttomModel = buttonView.model;
                 buttonModel._commandHandlers['mouseEnter'] = handler;
                 let event = new window.MouseEvent('mouseenter');
+                buttonView.dispatchEvent(event);
+
+                assert.equal(1, result);
+            });
+        });
+        describe('#mouseUp', () => {
+            it('Triggering mouseUp on the ButtonView element sends the mouseEnter msg to System', () => {
+                let buttonView = document.querySelector('st-button');
+                let event = new window.MouseEvent('mouseup');
+                assert.doesNotThrow(
+                    buttonView.dispatchEvent.bind(buttonView, event),
+                    Error
+                );
+            });
+
+            it('Button can capture the mouseUp message', () => {
+                let result = 0;
+                let handler = function(){
+                    result = 1;
+                };
+                let buttonView = document.querySelector('st-button');
+                let buttomModel = buttonView.model;
+                buttonModel._commandHandlers['mouseUp'] = handler;
+                let event = new window.MouseEvent('mouseup');
                 buttonView.dispatchEvent(event);
 
                 assert.equal(1, result);

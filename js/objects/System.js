@@ -448,23 +448,30 @@ const System = {
         });
     },
 
-    newView: function(partName, modelId){
+    newView: function(partName, modelId, parentId){
         let model = this.partsById[modelId];
         if(!model || model == undefined){
             throw new Error(`System does not know part ${partName}[${modelId}]`);
         }
+        if(!partName){
+            partName = model.type;
+        }
 
         // If there is alreay a view for this model,
         // simply return the instance of that view object
+        /*
         let existingView = this.findViewById(modelId);
         if(existingView){
             return existingView;
         }
+        */
 
         // Find the parent model id. This will
         // help us find the parent view element for
         // appending the new element.
-        let parentId = model._owner.id;
+        if (!parentId){
+            parentId = model._owner.id;
+        }
         let parentElement = this.findViewById(parentId);
         if(!parentElement){
             throw new Error(`Could not find parent element for ${partName}[${modelId}] (model owner id: ${model._owner.id})`);
@@ -700,6 +707,7 @@ const System = {
 /** Add Default System Command Handlers **/
 System._commandHandlers['deleteModel'] = System.deleteModel;
 System._commandHandlers['newModel'] = System.newModel;
+System._commandHandlers['newView'] = System.newView;
 System._commandHandlers['setProperty'] = System.setProperty;
 
 System._commandHandlers['answer'] = function(text){

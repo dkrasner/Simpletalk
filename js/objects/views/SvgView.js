@@ -1,7 +1,7 @@
 import PartView from './PartView.js';
 
 const templateString = `
-    <svg xmlns="http://www.w3.org/2000/svg">
+    <svg draggable=true xmlns="http://www.w3.org/2000/svg">
     </svg>
 `;
 
@@ -23,25 +23,34 @@ class SvgView extends PartView {
         this.onClick = this.onClick.bind(this);
         this.onMouseDown = this.onMouseDown.bind(this);
         this.onMouseUp = this.onMouseUp.bind(this);
+        this.onDragstart = this.onDragstart.bind(this);
         this.onHaloResize = this.onHaloResize.bind(this);
         this.updateSrc = this.updateSrc.bind(this);
     }
 
     afterModelSet() {
+        // prop changes
         this.onPropChange("src", (svgUri) => {
             this.updateSrc(svgUri);
         });
+        this.onPropChange("draggable", (value) => {
+            this.setAttribute('draggable', value);
+        });
     }
 
-    connectedCallback(){
+    afterConnected(){
+        //Atributes
+        this.setAttribute('draggable', true);
+        // Events
         this.addEventListener('click', this.onClick);
         this.addEventListener('mousedown', this.onMouseDown);
         this.addEventListener('mouseup', this.onMouseUp);
+        this.addEventListener('dragstart', this.onDragstart);
         // add the svg data into the custom element
         this.updateSrc(this.model.partProperties.getPropertyNamed(this, "src"));
     }
 
-    disconnectedCallback(){
+    afterDisconnected(){
         this.removeEventListener('click', this.onClick);
         this.removeEventListener('mouseup', this.onMouseUp);
         this.removeEventListener('mousedown', this.onMouseDown);
@@ -64,7 +73,9 @@ class SvgView extends PartView {
     }
 
     onMouseUp(event){
-        if(!this.hasOpenHalo){
+        if(event.shiftKey){
+            event.preventDefault();
+        } else if(!this.hasOpenHalo){
             // Send the mouseUp command message to self
             this.model.sendMessage({
                 type: 'command',
@@ -74,6 +85,20 @@ class SvgView extends PartView {
             }, this.model);
         }
     }
+
+    onDragstart(event){
+        if(this.hasOpenHalo){
+            event.stopPropagation();
+            event.preventDefault();
+        }
+        // TODO this is janky; should we convert the svg to
+        // image/png? or have a png copy of every svg
+        let img = new Image()
+        img.src = '../../../images/svg.png';
+        event.dataTransfer.setDragImage(img, 10, 10);
+        event.dataTransfer.setData("text/plain", this.model.id);
+        event.dataTransfer.dropEffect = "copy";
+    };
 
     onHaloResize(movementX, movementY){
         let svg = this.shadowRoot.children[0];

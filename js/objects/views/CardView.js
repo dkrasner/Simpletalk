@@ -26,6 +26,7 @@ class CardView extends PartView {
 
         // Bind component methods
         this.onClick = this.onClick.bind(this);
+        this.onDrop = this.onDrop.bind(this);
         this.setupPropHandlers = this.setupPropHandlers.bind(this);
         this.layoutChanged = this.layoutChanged.bind(this);
         this.bgColorChanged = this.bgColorChanged.bind(this);
@@ -53,6 +54,12 @@ class CardView extends PartView {
 
         // Add event listeners
         this.addEventListener('click', this.onClick);
+        // this.addEventListener('dragenter', (event) => {event.preventDefault()});
+        this.addEventListener('dragover', (event) => {
+            event.preventDefault()
+            event.dataTransfer.dropEffect = "copy";
+        });
+        this.addEventListener('drop', this.onDrop);
     }
 
     afterDisconnected(){
@@ -72,6 +79,17 @@ class CardView extends PartView {
                 this.openToolbox();
             }
         }
+    }
+
+    onDrop(event){
+        event.preventDefault();
+        let sourceModelId = event.dataTransfer.getData("text/plain");
+        let msg = {
+            type: "command",
+            commandName : "newView",
+            args: ["", sourceModelId, this.model.id]
+        }
+        this.sendMessage(msg, window.System);
     }
 
     layoutChanged(value, partId){

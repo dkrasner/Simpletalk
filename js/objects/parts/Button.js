@@ -73,6 +73,10 @@ class Button extends Part {
             'showName',
             true
         );
+        this.partProperties.newBasicProp(
+            'draggable',
+            true
+        );
     }
 
     get type(){

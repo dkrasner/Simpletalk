@@ -18,6 +18,10 @@ class Svg extends Part {
             'name',
             myName
         );
+        this.partProperties.newBasicProp(
+            'draggable',
+            true
+        );
 
     }
 
