@@ -23,7 +23,7 @@ describe('newModel tests', () => {
         assert.exists(currentCard);
 
         let buttonSubparts = currentCard.subparts.filter(item => {
-            return item.type = 'button';
+            return item.type === 'button';
         });
 
         assert.equal(buttonSubparts.length, 0);
@@ -183,6 +183,46 @@ describe('newModel tests', () => {
 
         expect(sendFunc).to.throw(Error);
     });
+});
+
+describe('copyModel tests', () => {
+    it('Can send copyModel message ', () => {
+        let cards = document.querySelectorAll('st-card');
+        assert.isAtLeast(cards.length, 2);
+        let card1 = cards[0];
+        let card2 = cards[1];
+
+        let card1Buttons = card1.model.subparts.filter(item => {
+            return item.type === 'button';
+        });
+        assert.isAtLeast(card1Buttons.length, 1);
+
+        let card2ButtonsBefore = card2.model.subparts.filter(item => {
+            return item.type === 'button';
+        });
+
+        let button = card1Buttons[0];
+
+        // add a copy of the card1 button to card2
+        let msg = {
+            type: 'command',
+            commandName: 'copyModel',
+            args: [button.id, card2.model.id]
+        };
+        let sendFunc = function(){
+            currentCard.sendMessage(msg, currentCard);
+        };
+        expect(sendFunc).to.not.throw(Error);
+
+
+        let card2ButtonsAfter = card2.model.subparts.filter(item => {
+            return item.type === 'button';
+        });
+
+        assert.equal(card2ButtonsAfter.length, card2ButtonsBefore.length + 1);
+
+    });
+
 });
 
 describe('deleteModel tests', () => {

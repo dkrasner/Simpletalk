@@ -54,7 +54,9 @@ class CardView extends PartView {
 
         // Add event listeners
         this.addEventListener('click', this.onClick);
-        // this.addEventListener('dragenter', (event) => {event.preventDefault()});
+        this.addEventListener('dragenter', (event) => {
+            event.preventDefault()
+        });
         this.addEventListener('dragover', (event) => {
             event.preventDefault()
             event.dataTransfer.dropEffect = "copy";
@@ -84,12 +86,16 @@ class CardView extends PartView {
     onDrop(event){
         event.preventDefault();
         let sourceModelId = event.dataTransfer.getData("text/plain");
-        let msg = {
-            type: "command",
-            commandName : "newView",
-            args: ["", sourceModelId, this.model.id]
+        let sourceModel = window.System.partsById[sourceModelId];
+        if(sourceModel._owner.id !== this.model.id){
+            let msg = {
+                type: "command",
+                commandName : "copyModel",
+                args: [sourceModelId, this.model.id],
+                shouldIgnore: true
+            }
+            this.sendMessage(msg, sourceModel);
         }
-        this.sendMessage(msg, window.System);
     }
 
     layoutChanged(value, partId){

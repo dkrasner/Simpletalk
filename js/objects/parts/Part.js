@@ -34,6 +34,7 @@ class Part {
         this.isPart = true;
 
         // Bind methods
+        this.copy = this.copy.bind(this);
         this.setupProperties = this.setupProperties.bind(this);
 
         this.addPart = this.addPart.bind(this);
@@ -73,6 +74,41 @@ class Part {
 
     set id(val){
         return this.partProperties.setPropertyNamed(this, 'id', val);
+    }
+
+    // perform a deep copy of myself (and all my suparts)
+    // assigning new ids
+    copy(ownerPart){
+        let modelClass = window.System.availableParts[this.type];
+        let model = new modelClass(ownerPart);
+        // cache the model id so it does not get overwritten by
+        // copying partProperties
+        let modelId = model.id;
+        // TODO: we cannot just copy of over neither property subscribers
+        // nor handlers, since these will be incorrectly bound. There is no
+        // native way to clone a js function, although we could implement a
+        // strategy to do so. At the moment any subscribers and handlers that
+        // are not part of the model class natively will be missing from the copy.
+        this.partProperties._properties.forEach((prop) => {
+            model.partProperties.setPropertyNamed(model, prop.name, prop._value);
+        });
+        model.id = modelId;
+        // add the model to the system parts
+        window.System.partsById[model.id] = model;
+        // if there is a script attached to the part we need to compile it
+        let script = model.partProperties.getPropertyNamed(model, "script");
+        if(script){
+            this.sendMessage({
+                type: 'compile',
+                codeString: script,
+                targetId: modelId
+            }, window.System);
+        }
+        // recursively copy each subpart, setting model as its owner
+        model.subparts.forEach((subpart) => {
+            subpart.copy(model);
+        });
+        return model;
     }
 
     // Configures the specific properties that the
@@ -161,6 +197,7 @@ class Part {
 
         this.partProperties.newDynamicProp(
             'number',
+
             null, // No setter; readOnly
             function(propOwner, propObject){
                 return propOwner.subparts.indexOf(this);

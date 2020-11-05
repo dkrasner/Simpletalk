@@ -398,6 +398,46 @@ const System = {
         return model;
     },
 
+    // "Deep" copy an existing model, including all it's partProperties
+    // (id excluded and owner excluded)
+    copyModel(modelId, ownerId){
+        // Lookup the instance of the model that
+        // matches the owner's id
+        let ownerPart = this.partsById[ownerId];
+        if(!ownerPart || ownerPart == undefined){
+            throw new Error(`System could not locate owner part with id ${ownerId}`);
+        }
+
+        let templateModel = this.partsById[modelId];
+        let model = templateModel.copy(ownerPart);
+
+        // add the new model to the owner's
+        // subparts list
+        ownerPart.addPart(model);
+        this.updateSerialization(ownerPart.id);
+
+        // Add the System as a property subscriber to
+        // the new model. This will send a message to
+        // this System object whenever any of this model's
+        // properties have changed
+        model.addPropertySubscriber(this);
+
+        // Serialize the new model into the page
+        this.updateSerialization(model.id);
+        model.subparts.forEach(subpart => {
+            this.updateSerialization(subpart.id);
+        });
+
+        // See if there is already a view for the model.
+        // If not, create and attach it.
+        let viewForModel = this.findViewById(model.id);
+        if(!viewForModel){
+            this.newView(model.type, model.id);
+        }
+
+        return model;
+    },
+
     setProperty(property, value, ownerId){
         let ownerPart = this.partsById[ownerId];
         if(!ownerPart || ownerPart == undefined){
@@ -484,6 +524,9 @@ const System = {
         );
         newView.setModel(model);
         parentElement.appendChild(newView);
+
+        // TODO do we want to allow the possibiliy of a view on an
+        // element but no subpart of that view on the element?
 
         // For all subparts of this model, call
         // the newView method recursively
@@ -707,6 +750,7 @@ const System = {
 /** Add Default System Command Handlers **/
 System._commandHandlers['deleteModel'] = System.deleteModel;
 System._commandHandlers['newModel'] = System.newModel;
+System._commandHandlers['copyModel'] = System.copyModel;
 System._commandHandlers['newView'] = System.newView;
 System._commandHandlers['setProperty'] = System.setProperty;
 
@@ -977,7 +1021,7 @@ System._commandHandlers['openWorldCatalog'] = function(targetId){
             let partModel;
             let script;
             if (partName === "stack"){
-                script = 'on mouseUp\n    add  stack "new stack" to world \nend mouseUp';
+                script = 'on click\n    add  stack "new stack" to world \nend click';
                 partModel = this.newModel(
                     "svg",
                     windowCurrentCardModel.id,
@@ -986,7 +1030,7 @@ System._commandHandlers['openWorldCatalog'] = function(targetId){
                     '../../../images/stack.svg'
                 );
             } else if (partName === "card"){
-                script = 'on mouseUp\n    add card "new card" to current stack \nend mouseUp';
+                script = 'on click\n    add card "new card" to current stack \nend click';
                 partModel = this.newModel(
                     "svg",
                     windowCurrentCardModel.id,
@@ -995,7 +1039,7 @@ System._commandHandlers['openWorldCatalog'] = function(targetId){
                     '../../../images/card.svg'
                 );
             } else if (partName === "window"){
-                script = 'on mouseUp\n    add window "new window" to current stack \nend mouseUp';
+                script = 'on click\n    add window "new window" to current stack \nend click';
                 partModel = this.newModel(
                     "svg",
                     windowCurrentCardModel.id,
@@ -1004,7 +1048,7 @@ System._commandHandlers['openWorldCatalog'] = function(targetId){
                     '../../../images/window.svg'
                 );
             } else if (partName === "container"){
-                script = 'on mouseUp\n    add container "new container" to current card \nend mouseUp';
+                script = 'on click\n    add container "new container" to current card \nend click';
                 partModel = this.newModel(
                     "svg",
                     windowCurrentCardModel.id,
@@ -1013,10 +1057,10 @@ System._commandHandlers['openWorldCatalog'] = function(targetId){
                     '../../../images/container.svg'
                 );
             } else if (partName === "button"){
-                script = 'on mouseUp\n    add button "new button" to current card \nend mouseUp';
+                script = 'on click\n    add button "new button" to current card \nend click';
                 partModel = this.newModel(partName, windowCurrentCardModel.id);
             } else if (partName === "drawing"){
-                script = 'on mouseUp\n    add drawing "new drawing" to current card \nend mouseUp';
+                script = 'on click\n    add drawing "new drawing" to current card \nend click';
                 partModel = this.newModel(
                     "svg",
                     windowCurrentCardModel.id,
@@ -1025,7 +1069,7 @@ System._commandHandlers['openWorldCatalog'] = function(targetId){
                     '../../../images/drawing.svg'
                 );
             } else if (partName === "svg"){
-                script = 'on mouseUp\n    add svg to current card \nend mouseUp';
+                script = 'on click\n    add svg to current card \nend click';
                 partModel = this.newModel("svg", windowCurrentCardModel.id);
             }
 

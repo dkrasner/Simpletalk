@@ -76,21 +76,24 @@ class ButtonView extends PartView {
     }
 
     onClick(event){
-        if(event.button == 0 && event.shiftKey){
-            event.preventDefault();
-            event.stopPropagation();
-            if(this.hasOpenHalo){
-                this.closeHalo();
-            } else {
-                this.openHalo();
+        if(event.button == 0){
+            if(event.shiftKey){
+                // prevent triggering the on click message
+                event.preventDefault();
+                if(this.hasOpenHalo){
+                    this.closeHalo();
+                } else {
+                    this.openHalo();
+                }
+            } else if(!this.hasOpenHalo){
+                // Send the click command message to self
+                this.model.sendMessage({
+                    type: 'command',
+                    commandName: 'click',
+                    args: [],
+                    shouldIgnore: true // Should ignore if System DNU
+                }, this.model);
             }
-        } else if(event.button == 0){
-            this.model.sendMessage({
-                type: 'command',
-                commandName: 'click',
-                args: [],
-                shouldIgnore: true
-            }, this.model);
         }
     }
 
@@ -135,12 +138,15 @@ class ButtonView extends PartView {
     }
 
     onDragstart(event){
+        if(this.hasOpenHalo){
+            event.stopPropagation();
+            event.preventDefault();
+        }
         event.dataTransfer.setData("text/plain", this.model.id);
         event.dataTransfer.dropEffect = "copy";
     };
 
     onDragend(event){
-        console.log(event);
         this.classList.remove('active');
     };
 };

@@ -205,7 +205,7 @@ st-svg {
 /* =Drawing Styles
  *----------------------------------------------------*/
 st-drawing {
-    background-color: white;
+    background-color: #1fe0; /* transparent */
 }
 
 /* =Layout Class Styles

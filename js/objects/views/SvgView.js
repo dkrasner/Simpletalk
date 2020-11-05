@@ -21,8 +21,7 @@ class SvgView extends PartView {
         };
         // Click stuff
         this.onClick = this.onClick.bind(this);
-        this.onMouseDown = this.onMouseDown.bind(this);
-        this.onMouseUp = this.onMouseUp.bind(this);
+        this.onDragstart = this.onDragstart.bind(this);
         this.onDragstart = this.onDragstart.bind(this);
         this.onHaloResize = this.onHaloResize.bind(this);
         this.updateSrc = this.updateSrc.bind(this);
@@ -43,8 +42,6 @@ class SvgView extends PartView {
         this.setAttribute('draggable', true);
         // Events
         this.addEventListener('click', this.onClick);
-        this.addEventListener('mousedown', this.onMouseDown);
-        this.addEventListener('mouseup', this.onMouseUp);
         this.addEventListener('dragstart', this.onDragstart);
         // add the svg data into the custom element
         this.updateSrc(this.model.partProperties.getPropertyNamed(this, "src"));
@@ -52,37 +49,27 @@ class SvgView extends PartView {
 
     afterDisconnected(){
         this.removeEventListener('click', this.onClick);
-        this.removeEventListener('mouseup', this.onMouseUp);
-        this.removeEventListener('mousedown', this.onMouseDown);
     }
 
     onClick(event){
-        if(event.button == 0 && event.shiftKey){
-            if(this.hasOpenHalo){
-                this.closeHalo();
-            } else {
-                this.openHalo();
+        if(event.button == 0){
+            if(event.shiftKey){
+                // prevent triggering the on click message
+                event.preventDefault();
+                if(this.hasOpenHalo){
+                    this.closeHalo();
+                } else {
+                    this.openHalo();
+                }
+            } else if(!this.hasOpenHalo){
+                // Send the click command message to self
+                this.model.sendMessage({
+                    type: 'command',
+                    commandName: 'click',
+                    args: [],
+                    shouldIgnore: true // Should ignore if System DNU
+                }, this.model);
             }
-        }
-    }
-
-    onMouseDown(event){
-        if(event.shiftKey){
-            event.preventDefault();
-        }
-    }
-
-    onMouseUp(event){
-        if(event.shiftKey){
-            event.preventDefault();
-        } else if(!this.hasOpenHalo){
-            // Send the mouseUp command message to self
-            this.model.sendMessage({
-                type: 'command',
-                commandName: 'mouseUp',
-                args: [],
-                shouldIgnore: true // Should ignore if System DNU
-            }, this.model);
         }
     }
 
