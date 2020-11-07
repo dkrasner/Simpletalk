@@ -30,8 +30,10 @@ var table = new Tabulator("#tabulator-table", {
     columns:[
         {title:"Time", field:"time", width:150},
         {title:"Message", field:"message", headerFilter:true, formatter:"textarea"},
+        {title:"Original Sender", field:"originalSender", headerFilter:true, formatter:"textarea", cellClick: idClick},
         {title:"Sender", field:"sender", headerFilter:true, formatter:"textarea", cellClick: idClick},
         {title:"Receiver", field:"receiver", headerFilter:true, formatter:"textarea", cellClick: idClick} ,
+        {title:"Tree", field:"tree", formatter:"textarea"} ,
     ],
     // by default, this library doesn't apply existing filters to new rows, so here we manually reset
     // those column filters when a new row shows up
@@ -46,24 +48,41 @@ var table = new Tabulator("#tabulator-table", {
 
 clearButton.onclick = function() {
     console.log("clearing data")
-    while (tablulatordata.length > 0) {
-        tablulatordata.shift()
-    }
+    tablulatordata = [];
+    table.setData(tablulatordata);
 }
 
+// recursively produce a stringified version of
+// the tree, using a tabbed display of underscores
+// to represent the node-to-child relationship
+function tabularizeTree(node, tabCount) {
+    var s = "__".repeat(tabCount);
+    s += node.type + `(id=${node.id})` + "\n";
+    node.children.forEach(child => {
+        s += tabularizeTree(child, tabCount + 1)
+    })
+    return s;
+}
+
+function formatNode(node) {
+   return `${node.name} (id=${node.id})`
+}
 
 function handleMessageFromBackground(msg) {
     console.log("getting message from background");
-    if (msg.length !== 3){
-        console.log("message is not length 3!: " + msg);
+    if (!msg.msg || !msg.source || !msg.target || !msg.tree) {
+        console.log(`invalid message: ${msg}`)
         return;
     }
+
     let now = new Date();
     var j = {
         time: now.toLocaleTimeString([], {hour12: false}) + `.${now.getMilliseconds()}`,
-        message: JSON.stringify(msg[0], null, '\t'),
-        sender: `${msg[1][0]} (id=${msg[1][1]})`,
-        receiver: `${msg[2][0]} (id=${msg[2][1]})`,
+        message: JSON.stringify(msg.msg, null, '\t'),
+        sender: formatNode(msg.source),
+        receiver: formatNode(msg.target),
+        tree: tabularizeTree(msg.tree, 0),
+        originalSender: formatNode(msg.msg.senders[0])
     }
     tablulatordata.push(j)
 }
