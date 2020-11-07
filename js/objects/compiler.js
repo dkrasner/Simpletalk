@@ -38,7 +38,7 @@ class Compiler {
             switch(messageType){
                 case "command":
                     // The "concrete handler" is the actual javascript function
-                    // that handles a command called "mouseUp" on the given
+                    // that handles a command called "click" on the given
                     // Part instance. The semantic compiler should have created
                     // a basic function wrapping the recursive calling of the
                     // Part's script messages and set the command name key

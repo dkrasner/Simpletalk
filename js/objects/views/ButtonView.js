@@ -75,6 +75,13 @@ class ButtonView extends PartView {
             } else {
                 this.openHalo();
             }
+        } else if(event.button == 0){
+            this.model.sendMessage({
+                type: 'command',
+                commandName: 'click',
+                args: [],
+                shouldIgnore: true
+            }, this.model);
         }
     }
 
@@ -82,6 +89,13 @@ class ButtonView extends PartView {
         if(event.shiftKey){
             event.preventDefault();
         }
+
+        this.model.sendMessage({
+            type: 'command',
+            commandName: 'mouseDown',
+            args: [],
+            shouldIgnore: true
+        }, this.model);
     }
 
     onMouseUp(event){

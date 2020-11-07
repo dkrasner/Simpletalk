@@ -2,7 +2,7 @@
  * Button System Command Tests
  * -----------------------------------------------
  * Integration test of command message sending for
- * built-in Button commands, like mouseUp, mouseEnter, etc.
+ * built-in Button commands, like click, mouseEnter, etc.
  * Note that we test the integratio of the System, Button, and
  * ButtonView objects, all of which must work together for
  * proper handling of mouse events

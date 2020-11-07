@@ -18,7 +18,7 @@ const expect = chai.expect;
 // on the Card that we test. That way, we can see if
 // the ScriptEditor opens with existing correct script
 // text
-let originalScript = `on mouseUp\n\tanswer "hello"\nend mouseUp`;
+let originalScript = `on click\n\tanswer "hello"\nend click`;
 
 
 describe('Opening a Script Editor', () => {
@@ -130,15 +130,15 @@ describe('ScriptEditor Functionality', () => {
         );
 
         console.log(
-            saveButtonModel._commandHandlers['mouseUp']
+            saveButtonModel._commandHandlers['click']
         );
 
-        // Send mouseUp on the button,
+        // Send click on the button,
         // which should itself send a message
         // to set the script of the card
         saveButtonModel.sendMessage({
             type: 'command',
-            commandName: 'mouseUp',
+            commandName: 'click',
             args: []
         }, saveButtonModel);
 

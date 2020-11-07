@@ -720,7 +720,7 @@ System._commandHandlers['openToolbox'] = function(targetId){
         'Add Button to Card'
     );
 
-    let addBtnScript = 'on mouseUp\n    add button to current card\nend mouseUp';
+    let addBtnScript = 'on click\n    add button to current card\nend click';
     addBtnBtn.partProperties.setPropertyNamed(
         addBtnBtn,
         'script',
@@ -740,7 +740,7 @@ System._commandHandlers['openToolbox'] = function(targetId){
         'Add Container to Card'
     );
   
-    let addContainerScript = 'on mouseUp\n    add container to current card\nend mouseUp';
+    let addContainerScript = 'on click\n    add container to current card\nend click';
     addContainerBtn.partProperties.setPropertyNamed(
         addContainerBtn,
         'script',
@@ -758,7 +758,7 @@ System._commandHandlers['openToolbox'] = function(targetId){
         'name',
         'Add Button to Stack'
     );
-    let addBtnToStackScript = 'on mouseUp\n    add button to current stack\nend mouseUp';
+    let addBtnToStackScript = 'on click\n    add button to current stack\nend click';
     addBtnToStackBtn.partProperties.setPropertyNamed(
         addBtnToStackBtn,
         'script',
@@ -776,7 +776,7 @@ System._commandHandlers['openToolbox'] = function(targetId){
         'name',
         'Add Button to Toolbox'
     );
-    let addBtnToToolboxScript = 'on mouseUp\n    add button "New Button" to this card\nend mouseUp';
+    let addBtnToToolboxScript = 'on click\n    add button "New Button" to this card\nend click';
     addBtnToToolboxBtn.partProperties.setPropertyNamed(
         addBtnToToolboxBtn,
         'script',
@@ -795,7 +795,7 @@ System._commandHandlers['openToolbox'] = function(targetId){
         'name',
         'Add Drawing to Card'
     );
-    addDrawingBtn._commandHandlers['mouseUp'] = function(){
+    addDrawingBtn._commandHandlers['click'] = function(){
         let currentCardView = document.querySelector('.current-stack > .current-card');
         let cardModel = currentCardView.model;
         let newDrawing = System.newModel('drawing', cardModel.id);
@@ -822,7 +822,7 @@ System._commandHandlers['openToolbox'] = function(targetId){
         'name',
         'Add Svg to Card'
     );
-    addSvgBtn._commandHandlers['mouseUp'] = function(){
+    addSvgBtn._commandHandlers['click'] = function(){
         let currentCardView = document.querySelector('.current-stack > .current-card');
         let cardModel = currentCardView.model;
         this.sendMessage({
@@ -912,7 +912,7 @@ System._commandHandlers['openScriptEditor'] = function(targetId){
 
     // Set the save button's action to be to save the script
     // on the part
-    saveBtnModel._commandHandlers['mouseUp'] = function(){
+    saveBtnModel._commandHandlers['click'] = function(){
         let editedText = fieldModel.partProperties.getPropertyNamed(
             fieldModel,
             'textContent'

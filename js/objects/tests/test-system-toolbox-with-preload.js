@@ -106,9 +106,8 @@ describe('Toolbox functionality', () => {
             assert.exists(addButtonButtonView);
 
             // Click twice
-            let event = new window.Event('mouseup'); // click doesn't work
-            addButtonButtonView.dispatchEvent(event);
-            addButtonButtonView.dispatchEvent(event);
+            addButtonButtonView.click();
+            addButtonButtonView.click();
 
             // Check models
             let cardModel = currentCardView.model;
