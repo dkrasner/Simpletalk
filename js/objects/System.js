@@ -258,7 +258,7 @@ const System = {
         aMessage.senders.push({
             name: source.name,
             id: source.id,
-        })
+        });
 
         this.passDevToolMessage(aMessage, source, target);
         target.receiveMessage(aMessage);
@@ -319,7 +319,7 @@ const System = {
         let handler = this._commandHandlers[aMessage.commandName];
         if(handler){
             let boundHandler = handler.bind(this);
-            return boundHandler(...aMessage.args);
+            return boundHandler(...aMessage.args, aMessage.senders);
         } else {
             return this.doesNotUnderstand(aMessage);
         }
@@ -754,8 +754,18 @@ System._commandHandlers['copyModel'] = System.copyModel;
 System._commandHandlers['newView'] = System.newView;
 System._commandHandlers['setProperty'] = System.setProperty;
 
-System._commandHandlers['answer'] = function(text){
-    alert(text);
+System._commandHandlers['putInto'] = function(value, variableName, senders){
+    let originalSender = this.partsById[senders[0].id];
+    if(!originalSender._executionContext){
+        originalSender._executionContext = {};
+    }
+    originalSender._executionContext[variableName] = value;
+    console.log(originalSender);
+    console.log(originalSender._executionContext);
+};
+
+System._commandHandlers['answer'] = function(value){
+    alert(value.toString());
 };
 
 System._commandHandlers['go to direction'] = function(directive, objectName){

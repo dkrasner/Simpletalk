@@ -52,7 +52,7 @@
 	Command (a command statement)
    		= "go to" ("next" | "previous") systemObject --goToDirection
    		| "go to" systemObject objectId --goToByReference
-		| "answer" stringLiteral --answer
+		| "answer" (stringLiteral | variableName) --answer
 		| "delete" "this"? systemObject objectId? --deleteModel
 		| "add" systemObject stringLiteral? "to"? ("this" | "current")? systemObject? objectId? --addModel
 		| "set" stringLiteral "to" stringLiteral "in"? ("this" | "current")? systemObject? objectId? --setProperty

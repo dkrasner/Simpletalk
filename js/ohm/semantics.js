@@ -74,6 +74,21 @@ let simpleTalkSemantics = {
         return msg;
     },
 
+    Command_putVariable: function(putLiteral, value, intoLiteral, variableName){
+
+        let args = [
+            value.parse(),
+            variableName.parse().name
+        ];
+        let msg = {
+            type: "command",
+            commandName: 'putInto',
+            args
+        };
+        return msg;
+        
+    },
+
     Command_addModel: function(addLiteral, newObject, name, toLiteral, context, targetObjectType, targetObjectId){
         // TODO: a command like "add card to this stack 20" does not make sense, since you should either designate
         // the target by context "this" or by id. Here we should throw some sort of uniform error.
@@ -164,6 +179,37 @@ let simpleTalkSemantics = {
 
     stringLiteral: function(openQuote, text, closeQuote){
         return text.sourceString;
+    },
+
+    integerLiteral: function(negativeSign, integer){
+        let int = parseInt(integer.sourceString);
+        let hasNegative = (negativeSign.sourceString == "-");
+        if(hasNegative){
+            return -1 * int;
+        }
+        return int;
+    },
+
+    anyLiteral: function(theLiteral){
+        return theLiteral.parse();
+    },
+
+    floatLiteral: function(negativeSign, onesPlace, decimal, restPlace){
+        let floatString = `${onesPlace.sourceString}.${restPlace.sourceString}`;
+        let hasNegative = (negativeSign.sourceString == "-");
+        let result = parseFloat(floatString);
+        if(hasNegative){
+            return -1 * result;
+        }
+        return result;
+    },
+
+    variableName: function(text){
+        let result = {
+            isVariable: true,
+            name: text.sourceString
+        };
+        return result;
     }
 }
 
