@@ -36,20 +36,48 @@ describe("SimpleTalk Grammar", () => {
             semanticMatchFailTest(crStr, 'space');
         });
         it("simple comment", () => {
-            const s = "--mycomment"
-            matchAndsemanticMatchTest(s, 'comment')
+            const s = "--mycomment";
+            matchAndsemanticMatchTest(s, 'comment');
         });
         it("simple comment with spaces", () => {
-            const s = "-- mycomment part2"
-            matchAndsemanticMatchTest(s, 'comment')
+            const s = "-- mycomment part2";
+            matchAndsemanticMatchTest(s, 'comment');
         });
         it("comment with weird chars doesn't count", () => {
-            const s = "-- mycomment $"
-            semanticMatchFailTest(s, 'comment')
-            const t = "-- mycomment \n"
-            semanticMatchFailTest(s, 'comment')
+            const s = "-- mycomment $";
+            semanticMatchFailTest(s, 'comment');
+            const t = "-- mycomment \n";
+            semanticMatchFailTest(s, 'comment');
+        });
+        it("positive integer", () =>{
+            const s = "24";
+            semanticMatchTest(s, 'integerLiteral');
+        });
+        it("negative integer", () => {
+            const s = "-24";
+            semanticMatchTest(s, 'integerLiteral');
+            semanticMatchTest(s, 'anyLiteral');
+        });
+        it("positive float", () => {
+            const s = "0.002";
+            semanticMatchTest(s, 'floatLiteral');
+            semanticMatchTest(s, 'anyLiteral');
+        });
+        it("negative float", () => {
+            const s = "-0.011";
+            semanticMatchTest(s, 'floatLiteral');
+            semanticMatchTest(s, 'anyLiteral');
+        });
+        it('variable name (correct)', () => {
+            const s = "myCustomVariable";
+            semanticMatchTest(s, 'variableName');
+        });
+        it('variable name (incorrect)', () => {
+            const s = "my-custom-variable";
+            semanticMatchFailTest(s, 'variableName');
         });
     });
+
     // TODO add more tests for handlers, comments, end etc
     describe("Messages", () => {
         it ("Message name", () => {
@@ -467,6 +495,21 @@ describe("SimpleTalk Grammar", () => {
         });
         it ("Bad command (arbitrary with space)", () => {
             semanticMatchFailTest("aCommand another", "Command");
+        });
+    });
+
+    describe("Variable assignment", () => {
+        it("Can parse put assignment command (string literal)", () => {
+            const s = `put "hello" into myCustomVariable`;
+            semanticMatchTest(s, 'Command_putVariable');
+        });
+        it("Can parse put assignment command (integer literal)", () => {
+            const s = `put 22 into myCustomVariable`;
+            semanticMatchTest(s, 'Command_putVariable');
+        });
+        it("Can parse put assignment command (float literal)", () => {
+            const s = `put -0.12 into myCustomVariable`;
+            semanticMatchTest(s, 'Command_putVariable');
         });
     });
 });
