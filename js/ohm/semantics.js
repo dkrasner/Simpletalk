@@ -4,11 +4,8 @@
  * function that takes as it's argument the string values
  * at the corresponding node.
  */
+import {STVariable} from './descriptors.js';
 
-// helpers
-const quoteRemove = function(string){
-    return string.slice(1, string.length-1);
-}
 
 let simpleTalkSemantics = {
     Script: function(scriptParts, _) {
@@ -205,10 +202,9 @@ let simpleTalkSemantics = {
     },
 
     variableName: function(text){
-        let result = {
-            isVariable: true,
+        let result = Object.assign({}, STVariable, {
             name: text.sourceString
-        };
+        });
         return result;
     }
 }
