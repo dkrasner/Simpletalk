@@ -6,6 +6,10 @@
  */
 import {STVariable} from './descriptors.js';
 
+// helpers
+const quoteRemove = function(string){
+    return string.slice(1, string.length-1);
+}
 
 let simpleTalkSemantics = {
     Script: function(scriptParts, _) {
@@ -115,21 +119,62 @@ let simpleTalkSemantics = {
         return msg;
     },
 
-    Command_setProperty: function(setLiteral, propertyName, toLiteral,  propertyValue, inLiteral, context, targetObjectType, targetObjectId){
-        let args = [];
-        if(context.sourceString && targetObjectId.sourceString){
-            throw "Semantic Error (Set background rule): only one of context or targetObjectId can be provided";
-        }
-        if(context.sourceString === "current" && !["card", "stack"].includes(targetObjectType.sourceString.toLowerCase())){
+    ObjectSpecifier_thisSystemObject: function(thisLiteral, systemObject){
+        return {
+            context: 'this',
+            objectType: systemObject.sourceString
+        };
+    },
+
+    ObjectSpecifier_currentSystemObject: function(currentLiteral, systemObject){
+        let targetKind = systemObject.sourceString;
+        if(!['card', 'stack'].includes(targetKind)){
             throw "Semantic Error (Set background rule): context 'current' can only apply to 'card' or 'stack' models";
         }
-        // remove the quotes from string literals
-        args.push(quoteRemove(propertyName.sourceString));
-        args.push(quoteRemove(propertyValue.sourceString));
-        args.push(targetObjectId.sourceString);
-        args.push(targetObjectType.sourceString);
-        args.push(context.sourceString);
+        return {
+            context: 'current',
+            objectType: targetKind
+        };
+    },
 
+    ObjectSpecifier_partById: function(partLiteral, identifier){
+        return {
+            objectType: 'part',
+            objectId: identifier.sourceString
+        };
+    },
+
+    ObjectSpecifier_partByName: function(systemObject, nameLiteral){
+        let name = nameLiteral.parse();
+        let kind = systemObject.sourceString;
+        return {
+            objectType: kind,
+            name: name // NOTE: Setting by name not yet implemented TODO.
+        };
+    },
+
+    InClause: function(inLiteral, objectSpecifier){
+        return objectSpecifier.parse();
+    },
+
+    Command_setProperty: function(setLiteral, propNameAsLiteral, toLiteral, literalOrVarName, inClause){
+        //let args = [];
+        
+        // remove the quotes from string literals
+        // args.push(propertyNameAsLiteral.parse());
+        // args.push(literalOrVarName.parse());
+        // args.push(targetObjectId.sourceString);
+        // args.push(targetObjectType.sourceString);
+        // args.push(context.sourceString);
+        let clause = inClause.parse();
+        let args = [
+            propNameAsLiteral.parse(), // The property name
+            literalOrVarName.parse(), // The value or a var representing the value
+            clause.objectId,
+            clause.objectType,
+            clause.context
+        ];
+        
         let msg = {
             type: "command",
             commandName: "setProperty",

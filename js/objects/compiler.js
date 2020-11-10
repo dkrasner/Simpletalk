@@ -97,21 +97,40 @@ class Compiler {
             }
         }
     }
+
+    static evaluate(object, context){
+        if(object == undefined || object == null){
+            return object;
+        }
+        
+        if(object.isVariable){
+            if(!context._executionContext){
+                throw new Error(`Could not find execution context for ${context.type}${context.id}`);
+            }
+            return context._executionContext[object.name];
+        }
+        
+        return object;
+    }
 }
+
 
 let recursivelySendMessages = function(messageList, target, context){
     // This is just an example. It will be
     // more complex since messages can be
     // nested etc
     messageList.forEach(message => {
-        if(message.args){
-            let evaluatedArgs = message.args.map(arg => {
-                return evaluate(arg, context);
-            });
-            message.args = evaluatedArgs;
-        }
+        // if(message.args){
+        //     let evaluatedArgs = message.args.map(arg => {
+        //         return evaluate(arg, context);
+        //     });
+        //     message.args = evaluatedArgs;
+        // }
         target.sendMessage(message, target);
     });
 };
 
-export {Compiler, Compiler as default}
+export {
+    Compiler,
+    Compiler as default
+};

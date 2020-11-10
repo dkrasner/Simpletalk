@@ -319,7 +319,14 @@ const System = {
         let handler = this._commandHandlers[aMessage.commandName];
         if(handler){
             let boundHandler = handler.bind(this);
-            return boundHandler(...aMessage.args, aMessage.senders);
+            let originalSender;
+            if(aMessage.senders){
+                originalSender = this.partsById[aMessage.senders[0].id];
+            }
+            let evaluatedArgs = aMessage.args.map(arg => {
+                return Compiler.evaluate(arg, originalSender);
+            });
+            return boundHandler(...evaluatedArgs, aMessage.senders);
         } else {
             return this.doesNotUnderstand(aMessage);
         }
@@ -760,8 +767,6 @@ System._commandHandlers['putInto'] = function(value, variableName, senders){
         originalSender._executionContext = {};
     }
     originalSender._executionContext[variableName] = value;
-    console.log(originalSender);
-    console.log(originalSender._executionContext);
 };
 
 System._commandHandlers['answer'] = function(value){

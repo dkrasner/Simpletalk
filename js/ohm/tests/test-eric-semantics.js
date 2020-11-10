@@ -67,3 +67,106 @@ describe("Variable Naming Semantics", () => {
         assert.isTrue(result.isVariable);
     });
 });
+
+describe("Object Specifier Semantics", () => {
+    describe("thisSystemObject ('this card' etc)", () => {
+        let sourceString = "this card";
+        it('Can parse correctly', () => {
+            let match = grammar.match(sourceString, "ObjectSpecifier_thisSystemObject");
+            assert.isTrue(match.succeeded());
+        });
+        it('Can apply semantics correctly', () => {
+            let match = grammar.match(sourceString, "ObjectSpecifier_thisSystemObject");
+            let result = languageSemantics(match).parse();
+            assert.exists(result);
+            assert.equal(result.context, 'this');
+            assert.equal(result.objectType, 'card');
+        });
+    });
+    describe("currentSystemObject ('current stack' etc)", () => {
+        let sourceString = "current stack";
+        it('Can parse correctly', () => {
+            let match = grammar.match(sourceString, "ObjectSpecifier_currentSystemObject");
+            assert.isTrue(match.succeeded());
+        });
+        it('Can apply semantics correctly', () => {
+            let match = grammar.match(sourceString, "ObjectSpecifier_currentSystemObject");
+            let result = languageSemantics(match).parse();
+            assert.exists(result);
+            assert.equal(result.context, 'current');
+            assert.equal(result.objectType, 'stack');
+        });
+    });
+    describe("partById ('part 22' etc)", () => {
+        let sourceString = "part 22";
+        it('Can parse correctly', () => {
+            let match = grammar.match(sourceString, "ObjectSpecifier_partById");
+            assert.isTrue(match.succeeded());
+        });
+        it('Can apply semantics correctly', () => {
+            let match = grammar.match(sourceString, "ObjectSpecifier_partById");
+            let result = languageSemantics(match).parse();
+            assert.exists(result);
+            assert.equal(result.objectType, 'part');
+            assert.equal(result.objectId, '22');
+        });
+    });
+    describe(`partByName ('part "thisNamedPart"' etc)`, () => {
+        let sourceString = `stack "thisNamedPart"`;
+        it('Can parse correctly', () => {
+            let match = grammar.match(sourceString, "ObjectSpecifier_partByName");
+            assert.isTrue(match.succeeded());
+        });
+        it('Can apply semantics correctly', () => {
+            let match = grammar.match(sourceString, "ObjectSpecifier_partByName");
+            let result = languageSemantics(match).parse();
+            assert.exists(result);
+            assert.equal(result.objectType, 'stack');
+            assert.equal(result.name, "thisNamedPart");
+        });
+    });
+});
+
+describe("Command setProperty Semantics", () => {
+    describe("Basic without inClause", () => {
+        it('Can parse when setting a string literal', () => {
+            let source = `set "name" to "some literal"`;
+            let match = grammar.match(source, 'Command_setProperty');
+            assert.isTrue(match.succeeded());
+        });
+        it('Can apply semantics when setting a string literal', () => {
+            let source = `set "name" to "some literal"`;
+            let match = grammar.match(source, "Command_setProperty");
+            let result = languageSemantics(match).parse();
+            assert.exists(result);
+            assert.equal(
+                result.args[0],
+                "name"
+            );
+            assert.equal(
+                result.args[1],
+                "some literal"
+            );
+        });
+        it('Can parse when setting to a variable name', () => {
+            let source = `set "name" to myVariable`;
+            let match = grammar.match(source, 'Command_setProperty');
+            assert.isTrue(match.succeeded());
+        });
+        it('Can apply semantics when setting to variable', () => {
+            let source = `set "name" to myVariable`;
+            let match = grammar.match(source, "Command_setProperty");
+            let result = languageSemantics(match).parse();
+            assert.exists(result);
+            assert.equal(
+                result.args[0],
+                "name"
+            );
+            assert.isTrue(result.args[1].isVariable);
+            assert.equal(
+                result.args[1].name,
+                'myVariable'
+            );
+        });
+    });
+});
