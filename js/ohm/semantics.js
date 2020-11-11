@@ -4,7 +4,7 @@
  * function that takes as it's argument the string values
  * at the corresponding node.
  */
-import {STVariable} from './descriptors.js';
+import {STVariable, STPartReference} from './descriptors.js';
 
 // helpers
 const quoteRemove = function(string){
@@ -120,10 +120,10 @@ let simpleTalkSemantics = {
     },
 
     ObjectSpecifier_thisSystemObject: function(thisLiteral, systemObject){
-        return {
+        return Object.assign({}, STPartReference, {
             context: 'this',
             objectType: systemObject.sourceString
-        };
+        });
     },
 
     ObjectSpecifier_currentSystemObject: function(currentLiteral, systemObject){
@@ -131,26 +131,26 @@ let simpleTalkSemantics = {
         if(!['card', 'stack'].includes(targetKind)){
             throw "Semantic Error (Set background rule): context 'current' can only apply to 'card' or 'stack' models";
         }
-        return {
+        return Object.assign({}, STPartReference, {
             context: 'current',
             objectType: targetKind
-        };
+        });
     },
 
     ObjectSpecifier_partById: function(partLiteral, identifier){
-        return {
+        return Object.assign({}, STPartReference, {
             objectType: 'part',
             objectId: identifier.sourceString
-        };
+        });
     },
 
     ObjectSpecifier_partByName: function(systemObject, nameLiteral){
         let name = nameLiteral.parse();
         let kind = systemObject.sourceString;
-        return {
+        return Object.assign({}, STPartReference, {
             objectType: kind,
             name: name // NOTE: Setting by name not yet implemented TODO.
-        };
+        });
     },
 
     InClause: function(inLiteral, objectSpecifier){

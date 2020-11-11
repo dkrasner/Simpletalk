@@ -15,8 +15,10 @@ const STVariable = {
 
 const STPartReference = {
     isPartReference: true,
-    type: undefined,
-    id: undefined
+    objectType: undefined,
+    objectId: undefined,
+    name: undefined,
+    context: 'this'
 };
 
 export {
