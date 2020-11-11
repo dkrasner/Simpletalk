@@ -54,7 +54,6 @@ class Part {
         this.serialize = this.serialize.bind(this);
         this.setFromDeserialized = this.setFromDeserialized.bind(this);
         this.deleteModelCmdHandler = this.deleteModelCmdHandler.bind(this);
-        //this.setPropertyCmdHandler = this.setPropertyCmdHandler.bind(this);
         this.isSubpartOfCurrentCard = this.isSubpartOfCurrentCard.bind(this);
         this.isSubpartOfCurrentStack = this.isSubpartOfCurrentStack.bind(this);
 
@@ -65,7 +64,6 @@ class Part {
         // command handlers
         this.setCmdHandler("deleteModel", this.deleteModelCmdHandler);
         this.setCmdHandler("newModel", this.newModelCmdHandler);
-        //this.setCmdHandler("setProperty", this.setPropertyCmdHandler);
     }
 
     // Convenience getter to get the id
@@ -315,7 +313,7 @@ class Part {
             let evaluatedArgs = aMessage.args.map(arg => {
                 return Compiler.evaluate(arg, originalSender);
             });
-            boundHandler(...aMessage.args, originalSender);
+            boundHandler(...evaluatedArgs, aMessage.senders);
         } else {
             // Otherwise, we have no handler for
             // it, so we delegate along the
@@ -353,7 +351,7 @@ class Part {
 
     deleteModelCmdHandler(objectId, modelType){
         if (modelType && modelType.toLowerCase() === this.type && !objectId){
-            objectId = this.id
+            objectId = this.id;
         }
         this.delegateMessage({
             type: 'command',

@@ -104,12 +104,12 @@ let simpleTalkSemantics = {
         args.push(targetObjectId.sourceString);
         args.push(targetObjectType.sourceString);
         args.push(context.sourceString);
-        name = name.sourceString;
+        name = name.sourceString || "";
         // remove the string literal wrapping quotes
         if (name){
             name =name.slice(1, name.length - 1);
         }
-        args.push(name);
+        args.push(name);;
 
         let msg = {
             type: "command",
@@ -157,8 +157,8 @@ let simpleTalkSemantics = {
         return objectSpecifier.parse();
     },
 
-    Command_setProperty: function(setLiteral, propNameAsLiteral, toLiteral, literalOrVarName, inClause){
-        let clause = inClause.parse()[0] || {}; // Parsing inClause returns an array of 1 object
+    Command_setProperty: function(setLiteral, propNameAsLiteral, toLiteral, literalOrVarName, optionalInClause){
+        let clause = optionalInClause.parse()[0] || {};
         let args = [
             propNameAsLiteral.parse(), // The property name
             literalOrVarName.parse(), // The value or a var representing the value
