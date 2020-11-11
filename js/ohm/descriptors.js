@@ -18,7 +18,7 @@ const STPartReference = {
     objectType: undefined,
     objectId: undefined,
     name: undefined,
-    context: 'this'
+    context: undefined
 };
 
 export {

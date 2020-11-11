@@ -158,15 +158,7 @@ let simpleTalkSemantics = {
     },
 
     Command_setProperty: function(setLiteral, propNameAsLiteral, toLiteral, literalOrVarName, inClause){
-        //let args = [];
-        
-        // remove the quotes from string literals
-        // args.push(propertyNameAsLiteral.parse());
-        // args.push(literalOrVarName.parse());
-        // args.push(targetObjectId.sourceString);
-        // args.push(targetObjectType.sourceString);
-        // args.push(context.sourceString);
-        let clause = inClause.parse();
+        let clause = inClause.parse()[0] || {}; // Parsing inClause returns an array of 1 object
         let args = [
             propNameAsLiteral.parse(), // The property name
             literalOrVarName.parse(), // The value or a var representing the value

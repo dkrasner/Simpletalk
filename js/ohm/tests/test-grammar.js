@@ -445,7 +445,7 @@ describe("SimpleTalk Grammar", () => {
             });
         });
         describe("Set", () => {
-            it ("Set backgroundColor with id", () => {
+            it.skip ("Set backgroundColor with id", () => {
                 const objects = ["background", "card", "container", "field", "button", "stack", "window"];
                 objects.forEach((d) => {
                     const s = `set "backgroundColor" to "blue" in ${d} 10`;

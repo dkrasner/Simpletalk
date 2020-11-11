@@ -80,7 +80,6 @@ describe('Can set property based on local variable', () => {
         // Clear the variable context on the existing
         // buttonModel, just to be safe.
         buttonModel._executionContext = null;
-        console.log(buttonModel.id);
     });
     
     it('Can compile variable setting and property setting without error', () => {

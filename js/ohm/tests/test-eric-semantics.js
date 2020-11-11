@@ -169,4 +169,35 @@ describe("Command setProperty Semantics", () => {
             );
         });
     });
+    describe('With inClause', () => {
+        describe('by part id', () => {
+            it('Can parse when setting a string literal to specific part id', () => {
+                let source = `set "name" to "hello" in part 22`;
+                let match = grammar.match(source, 'Command_setProperty');
+                assert.isTrue(match.succeeded());
+            });
+            it('Can apply semantics correctly when setting string literal by part id', () => {
+                let source = `set "name" to "hello" in part 22`;
+                let match = grammar.match(source, 'Command_setProperty');
+                let result = languageSemantics(match).parse();
+                assert.exists(result);
+                assert.equal(
+                    result.args[0],
+                    "name"
+                );
+                assert.equal(
+                    result.args[1],
+                    "hello"
+                );
+                assert.equal(
+                    result.args[2],
+                    '22'
+                );
+                assert.equal(
+                    result.args[3],
+                    'part'
+                );
+            });
+        });
+    });
 });

@@ -370,7 +370,7 @@ describe("SimpleTalk Compiler", function () {
             const invalidObjects = ["ackground", "cardd", "world"];
 
             it('Set background color', () => {
-                systemObjects.forEach((s) => {
+                ["part"].forEach((s) => {
                     const sourceCode = `
                       on customMessage
                         set "backgroundColor" to "blue" in ${s} 20
@@ -380,7 +380,7 @@ describe("SimpleTalk Compiler", function () {
                     {
                         type: "command",
                         commandName: "setProperty",
-                        args: ["backgroundColor", "blue", "20", `${s}`, ""]
+                        args: ["backgroundColor", "blue", "20", `${s}`, undefined]
                     }];
                     compiler.compile(sourceCode, MockObject);
 
@@ -393,7 +393,7 @@ describe("SimpleTalk Compiler", function () {
                 });
             });
             it('Set background color in context', () => {
-                ["this", "current", ""].forEach((context) => {
+                ["this", "current"].forEach((context) => {
                     ["card", "stack"].forEach((s) => {
                         const sourceCode = `
                           on customMessage
@@ -404,7 +404,7 @@ describe("SimpleTalk Compiler", function () {
                         {
                             type: "command",
                             commandName: "setProperty",
-                            args: ["backgroundColor", "blue", "", `${s}`, `${context}`]
+                            args: ["backgroundColor", "blue", undefined, `${s}`, `${context}`]
                         }];
                         compiler.compile(sourceCode, MockObject);
 
