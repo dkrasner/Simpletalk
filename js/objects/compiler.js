@@ -22,7 +22,27 @@ class Compiler {
      */
     compile(string, target){
         let match = this.grammar.match(string);
-        let parsedMatch = this.semantics(match).parse();
+        if (match.failed()) {
+            let msg = {
+                type: "error",
+                name: "GrammarMatchError",
+                message: match.message,
+            };
+            target.sendMessage(msg, target);
+            return
+        }
+        var parsedMatch;
+        try {
+            parsedMatch = this.semantics(match).parse();
+        } catch (error) {
+            let msg = {
+                type: "error",
+                name: "SemanticsMatchError",
+                message: error.message,
+            };
+            target.sendMessage(msg, target);
+            return
+        }
         for (var i = 0; i < parsedMatch.length; i++) {
             if (typeof parsedMatch[i] == 'undefined') {
                 continue;
