@@ -112,7 +112,7 @@ describe('newModel tests', () => {
         let msg = {
             type: 'command',
             commandName: 'newModel',
-            args: ['button']
+            args: ['button', '', '', '', '']
         };
         let sendFunc = function(){
             currentCard.sendMessage(msg, currentCard);
@@ -282,7 +282,7 @@ describe('deleteModel tests', () => {
         let msg = {
             type: 'command',
             commandName: 'deleteModel',
-            args: [targetButton.id]
+            args: [targetButton.id, '']
         };
 
         currentCard.sendMessage(msg, targetButton);

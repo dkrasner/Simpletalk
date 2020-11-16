@@ -8,6 +8,18 @@
  *  and return runnable code.
  */
 
+const evaluate = function(object, context){
+    if(object == undefined || object == null){
+        return object;
+    }
+
+    if(object.isVariable){
+        return context._executionContext[object.name];
+    }
+    
+    return object;
+};
+
 class Compiler {
     constructor(grammar, semantics){
         this.grammar = grammar;
@@ -17,7 +29,7 @@ class Compiler {
     /**
      * I parse the given string into a grammar tree,
      * apply the grammatical semantics, i.e. compile
-     * (transpaile) into a runnnable/executable function,
+     * (transpile) into a runnnable/executable function,
      * and attach said function to target object message store.
      */
     compile(string, target){
@@ -66,9 +78,11 @@ class Compiler {
                     // TODO figure out how to pass the args to the outer func
                     // from the handler itself
                     target._commandHandlers[messageName] = function(...messageParameters){
+                        this._executionContext = {};
                         recursivelySendMessages(
                             target._scriptSemantics[messageName],
-                            target
+                            target,
+                            this // the context
                         );
                     };
                     break;
@@ -83,15 +97,40 @@ class Compiler {
             }
         }
     }
+
+    static evaluate(object, context){
+        if(object == undefined || object == null){
+            return object;
+        }
+        
+        if(object.isVariable){
+            if(!context._executionContext){
+                throw new Error(`Could not find execution context for ${context.type}${context.id}`);
+            }
+            return context._executionContext[object.name];
+        }
+        
+        return object;
+    }
 }
 
-let recursivelySendMessages = function(messageList, target){
+
+let recursivelySendMessages = function(messageList, target, context){
     // This is just an example. It will be
     // more complex since messages can be
     // nested etc
     messageList.forEach(message => {
+        // if(message.args){
+        //     let evaluatedArgs = message.args.map(arg => {
+        //         return evaluate(arg, context);
+        //     });
+        //     message.args = evaluatedArgs;
+        // }
         target.sendMessage(message, target);
     });
 };
 
-export {Compiler, Compiler as default}
+export {
+    Compiler,
+    Compiler as default
+};

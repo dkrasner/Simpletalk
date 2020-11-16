@@ -258,7 +258,7 @@ const System = {
         aMessage.senders.push({
             name: source.name,
             id: source.id,
-        })
+        });
 
         this.passDevToolMessage(aMessage, source, target);
         target.receiveMessage(aMessage);
@@ -319,7 +319,14 @@ const System = {
         let handler = this._commandHandlers[aMessage.commandName];
         if(handler){
             let boundHandler = handler.bind(this);
-            return boundHandler(...aMessage.args);
+            let originalSender;
+            if(aMessage.senders){
+                originalSender = this.partsById[aMessage.senders[0].id];
+            }
+            let evaluatedArgs = aMessage.args.map(arg => {
+                return Compiler.evaluate(arg, originalSender);
+            });
+            return boundHandler(...evaluatedArgs, aMessage.senders);
         } else {
             return this.doesNotUnderstand(aMessage);
         }
@@ -438,21 +445,70 @@ const System = {
         return model;
     },
 
-    setProperty(property, value, ownerId){
-        let ownerPart = this.partsById[ownerId];
-        if(!ownerPart || ownerPart == undefined){
-            throw new Error(`System could not locate owner part with id ${ownerId}`);
+    // setProperty(property, value, ownerId){
+    //     let ownerPart = this.partsById[ownerId];
+    //     if(!ownerPart || ownerPart == undefined){
+    //         throw new Error(`System could not locate owner part with id ${ownerId}`);
+    //     }
+    //     ownerPart.partProperties.setPropertyNamed(ownerPart, property, value);
+    //     // for now stack properties propagate down to their direct card children
+    //     // TODO this should be refactored within a better lifecycle model and potenitally
+    //     // use dynamic props. A similar propagation should probably exist for world -> stacks,
+    //     // window -> subpart etc
+    //     if(ownerPart.type === "stack"){
+    //         ownerPart.subparts.forEach((subpart) => {
+    //             if(subpart.type === "card"){
+    //                 subpart.partProperties.setPropertyNamed(subpart, property, value);
+    //             }
+    //         });
+    //     }
+    // },
+
+    setProperty(propName, value, objectId, objectType, context, senders){
+        let target;
+        let originalSender = senders[0].id;
+
+        if(context == 'current'){
+            // If the context is 'current', this means we want
+            // to set some property on the current card or stack
+            if(objectType == 'card'){
+                target = this.getCurrentCardModel();
+            } else if(objectType == 'stack'){
+                target = this.getCurrentStackModel();
+            }
+        } else if(objectId){
+            // Otherwise, if there is an objectId, we are
+            // setting the property of a specific part by
+            // id
+            target = this.partsById[objectId];
+        } else {
+            // Otherwise we are setting the property on the part
+            // that originally sent the message
+            target = this.partsById[originalSender];
         }
-        ownerPart.partProperties.setPropertyNamed(ownerPart, property, value);
-        // for now stack properties propagate down to their direct card children
-        // TODO this should be refactored within a better lifecycle model and potenitally
-        // use dynamic props. A similar propagation should probably exist for world -> stacks,
-        // window -> subpart etc
-        if(ownerPart.type === "stack"){
-            ownerPart.subparts.forEach((subpart) => {
-                if(subpart.type === "card"){
-                    subpart.partProperties.setPropertyNamed(subpart, property, value);
-                }
+
+        if(!target){
+            throw new Error(`Could not find setProperty target!`);
+        }
+
+        target.partProperties.setPropertyNamed(
+            target,
+            propName,
+            value
+        );
+
+        // If the target part is a Stack, we also
+        // set this property on all of its Card
+        // subparts
+        if(target.type == 'stack'){
+            target.subparts.filter(subpart => {
+                return subpart.type == 'card';
+            }).forEach(card => {
+                card.partProperties.setPropertyNamed(
+                    card,
+                    propName,
+                    value
+                );
             });
         }
     },
@@ -754,8 +810,16 @@ System._commandHandlers['copyModel'] = System.copyModel;
 System._commandHandlers['newView'] = System.newView;
 System._commandHandlers['setProperty'] = System.setProperty;
 
-System._commandHandlers['answer'] = function(text){
-    alert(text);
+System._commandHandlers['putInto'] = function(value, variableName, senders){
+    let originalSender = this.partsById[senders[0].id];
+    if(!originalSender._executionContext){
+        originalSender._executionContext = {};
+    }
+    originalSender._executionContext[variableName] = value;
+};
+
+System._commandHandlers['answer'] = function(value){
+    alert(value.toString());
 };
 
 System._commandHandlers['go to direction'] = function(directive, objectName){

@@ -9,3 +9,5 @@ do
         ./node_modules/mocha/bin/mocha $file --require esm
     fi
 done
+
+./node_modules/mocha/bin/mocha --require esm ./js/ohm/tests/*

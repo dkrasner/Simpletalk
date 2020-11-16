@@ -49,13 +49,23 @@
 	Statement (a statement)
 		= ~"end" Command
 
+        ObjectSpecifier (a object specifier)
+                = "this" systemObject --thisSystemObject
+                | "current" systemObject --currentSystemObject
+                | "part" objectId --partById
+                | systemObject stringLiteral --partByName
+
+        InClause (a in clause)
+                = "in" ObjectSpecifier
+
 	Command (a command statement)
    		= "go to" ("next" | "previous") systemObject --goToDirection
    		| "go to" systemObject objectId --goToByReference
-		| "answer" stringLiteral --answer
+		| "answer" (stringLiteral | variableName) --answer
 		| "delete" "this"? systemObject objectId? --deleteModel
 		| "add" systemObject stringLiteral? "to"? ("this" | "current")? systemObject? objectId? --addModel
-		| "set" stringLiteral "to" stringLiteral "in"? ("this" | "current")? systemObject? objectId? --setProperty
+		| "set" stringLiteral "to" (stringLiteral | variableName) InClause? --setProperty
+                | "put" anyLiteral "into" variableName --putVariable
 		| command_arbitrary
 
 	command_arbitrary (an arbitrary command)
@@ -95,6 +105,16 @@
 	// Accounts for singular and plural word (i.e. with and without 's')
 	singPlu<x> = x "s"?
 
+        // User defined variables
+        variableName
+                = letter+
+
+        // Numbers
+        integerLiteral
+                = "-"? digit+
+
+        floatLiteral
+                = "-"? digit+ "." digit+
 
 	// TODO
 	comment
@@ -110,6 +130,10 @@
 	quoteMark = "\""
 
   punctuation = (":" | ";" | "." | "," | "?" | "!" | "-")
+        // The "any" literal is any string or numerical
+        // literal
+        anyLiteral
+                = (stringLiteral | floatLiteral | integerLiteral)
 
 	// Basic whitespace and line termination handling.
 	// Note that we override the default Ohm definition

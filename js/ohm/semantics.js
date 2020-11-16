@@ -4,6 +4,7 @@
  * function that takes as it's argument the string values
  * at the corresponding node.
  */
+import {STVariable, STPartReference} from './descriptors.js';
 
 // helpers
 const quoteRemove = function(string){
@@ -74,6 +75,21 @@ let simpleTalkSemantics = {
         return msg;
     },
 
+    Command_putVariable: function(putLiteral, value, intoLiteral, variableName){
+
+        let args = [
+            value.parse(),
+            variableName.parse().name
+        ];
+        let msg = {
+            type: "command",
+            commandName: 'putInto',
+            args
+        };
+        return msg;
+        
+    },
+
     Command_addModel: function(addLiteral, newObject, name, toLiteral, context, targetObjectType, targetObjectId){
         // TODO: a command like "add card to this stack 20" does not make sense, since you should either designate
         // the target by context "this" or by id. Here we should throw some sort of uniform error.
@@ -88,12 +104,12 @@ let simpleTalkSemantics = {
         args.push(targetObjectId.sourceString);
         args.push(targetObjectType.sourceString);
         args.push(context.sourceString);
-        name = name.sourceString;
+        name = name.sourceString || "";
         // remove the string literal wrapping quotes
         if (name){
             name =name.slice(1, name.length - 1);
         }
-        args.push(name);
+        args.push(name);;
 
         let msg = {
             type: "command",
@@ -103,21 +119,54 @@ let simpleTalkSemantics = {
         return msg;
     },
 
-    Command_setProperty: function(setLiteral, propertyName, toLiteral,  propertyValue, inLiteral, context, targetObjectType, targetObjectId){
-        let args = [];
-        if(context.sourceString && targetObjectId.sourceString){
-            throw "Semantic Error (Set background rule): only one of context or targetObjectId can be provided";
-        }
-        if(context.sourceString === "current" && !["card", "stack"].includes(targetObjectType.sourceString.toLowerCase())){
+    ObjectSpecifier_thisSystemObject: function(thisLiteral, systemObject){
+        return Object.assign({}, STPartReference, {
+            context: 'this',
+            objectType: systemObject.sourceString
+        });
+    },
+
+    ObjectSpecifier_currentSystemObject: function(currentLiteral, systemObject){
+        let targetKind = systemObject.sourceString;
+        if(!['card', 'stack'].includes(targetKind)){
             throw "Semantic Error (Set background rule): context 'current' can only apply to 'card' or 'stack' models";
         }
-        // remove the quotes from string literals
-        args.push(quoteRemove(propertyName.sourceString));
-        args.push(quoteRemove(propertyValue.sourceString));
-        args.push(targetObjectId.sourceString);
-        args.push(targetObjectType.sourceString);
-        args.push(context.sourceString);
+        return Object.assign({}, STPartReference, {
+            context: 'current',
+            objectType: targetKind
+        });
+    },
 
+    ObjectSpecifier_partById: function(partLiteral, identifier){
+        return Object.assign({}, STPartReference, {
+            objectType: 'part',
+            objectId: identifier.sourceString
+        });
+    },
+
+    ObjectSpecifier_partByName: function(systemObject, nameLiteral){
+        let name = nameLiteral.parse();
+        let kind = systemObject.sourceString;
+        return Object.assign({}, STPartReference, {
+            objectType: kind,
+            name: name // NOTE: Setting by name not yet implemented TODO.
+        });
+    },
+
+    InClause: function(inLiteral, objectSpecifier){
+        return objectSpecifier.parse();
+    },
+
+    Command_setProperty: function(setLiteral, propNameAsLiteral, toLiteral, literalOrVarName, optionalInClause){
+        let clause = optionalInClause.parse()[0] || {};
+        let args = [
+            propNameAsLiteral.parse(), // The property name
+            literalOrVarName.parse(), // The value or a var representing the value
+            clause.objectId,
+            clause.objectType,
+            clause.context
+        ];
+        
         let msg = {
             type: "command",
             commandName: "setProperty",
@@ -164,6 +213,36 @@ let simpleTalkSemantics = {
 
     stringLiteral: function(openQuote, text, closeQuote){
         return text.sourceString;
+    },
+
+    integerLiteral: function(negativeSign, integer){
+        let int = parseInt(integer.sourceString);
+        let hasNegative = (negativeSign.sourceString == "-");
+        if(hasNegative){
+            return -1 * int;
+        }
+        return int;
+    },
+
+    anyLiteral: function(theLiteral){
+        return theLiteral.parse();
+    },
+
+    floatLiteral: function(negativeSign, onesPlace, decimal, restPlace){
+        let floatString = `${onesPlace.sourceString}.${restPlace.sourceString}`;
+        let hasNegative = (negativeSign.sourceString == "-");
+        let result = parseFloat(floatString);
+        if(hasNegative){
+            return -1 * result;
+        }
+        return result;
+    },
+
+    variableName: function(text){
+        let result = Object.assign({}, STVariable, {
+            name: text.sourceString
+        });
+        return result;
     }
 }
 

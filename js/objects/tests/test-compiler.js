@@ -18,7 +18,7 @@ describe("SimpleTalk Compiler", function () {
     beforeEach(function() {
         MockObject._commandHandlers = {};
         MockObject._scriptSemantics = {};
-    })
+    });
 
     let semantics = g.createSemantics().addOperation('parse', simpleTalkSemantics);
     let compiler = new Compiler(g, semantics);
@@ -49,7 +49,7 @@ describe("SimpleTalk Compiler", function () {
             const directions = ['next', 'previous'];
             var systemObjects = ["background", "button", "card", "field", "stack"];
             systemObjects = systemObjects.concat(systemObjects.map(w => w.charAt(0).toUpperCase() + w.slice(1)));
-            const invalidObjects = ["ackground", "cardd"]
+            const invalidObjects = ["ackground", "cardd"];
 
             it('messageHandler (args, "go to" command)', () => {
                 systemObjects.forEach((s) => {
@@ -68,13 +68,13 @@ describe("SimpleTalk Compiler", function () {
                     const concreteHandler = MockObject._commandHandlers["customMessage"];
                     assert.isNotNull(concreteHandler);
                     assert.equal(typeof concreteHandler, "function");
-                })
+                });
             });
             it('messageHandler ("go to" invalid object)', () => {
                 invalidObjects.forEach((s) => {
                     const sourceCode = `on customMessage arg1\n go to ${s} arg1\nend customMessage`;
                     expect(() => compiler.compile(sourceCode, MockObject)).to.throw();
-                })
+                });
             });
             it('messageHandler ("go to" invalid construction)', () => {
                 const sourceCode = `on customMessage arg1\n go to next card arg1\nend customMessage`;
@@ -85,7 +85,7 @@ describe("SimpleTalk Compiler", function () {
                     const handler = `on click\n go to ${d}\nend click`;
                     expect(() => compiler.compile(sourceCode, MockObject)).to.throw();
                 })
-            });
+            });;
         });
         it('messageHandler (no args, multiple statements/commands)', () => {
             let handler = `on click\n answer "hello"\n go to next card\nend click`;
@@ -138,7 +138,7 @@ describe("SimpleTalk Compiler", function () {
         describe("Remove Model Commands", function () {
             var systemObjects = ["background", "button", "card", "field", "stack"];
             systemObjects = systemObjects.concat(systemObjects.map(w => w.charAt(0).toUpperCase() + w.slice(1)));
-            const invalidObjects = ["ackground", "cardd", "world"]
+            const invalidObjects = ["ackground", "cardd", "world"];
 
             it('messageHandler (args, "delete" command)', () => {
                 systemObjects.forEach((s) => {
@@ -157,7 +157,7 @@ describe("SimpleTalk Compiler", function () {
                     const concreteHandler = MockObject._commandHandlers["customMessage"];
                     assert.isNotNull(concreteHandler);
                     assert.equal(typeof concreteHandler, "function");
-                })
+                });
             });
             it('messageHandler (no args, no id, "delete" command)', () => {
                 systemObjects.forEach((d) => {
@@ -174,7 +174,7 @@ describe("SimpleTalk Compiler", function () {
                     const concreteHandler = MockObject._commandHandlers["click"];
                     assert.isNotNull(concreteHandler);
                     assert.equal(typeof concreteHandler, "function");
-                })
+                });
             });
             it('messageHandler (no args, no id, "delete this" command)', () => {
                 systemObjects.forEach((d) => {
@@ -191,13 +191,13 @@ describe("SimpleTalk Compiler", function () {
                     const concreteHandler = MockObject._commandHandlers["click"];
                     assert.isNotNull(concreteHandler);
                     assert.equal(typeof concreteHandler, "function");
-                })
+                });
             });
             it('messageHandler ("delete" invalid object)', () => {
                 invalidObjects.forEach((s) => {
                     const sourceCode = `on customMessage idArg\n delete model ${s} idArg\nend customMessage`;
                     expect(() => compiler.compile(sourceCode, MockObject)).to.throw();
-                })
+                });
             });
             it('messageHandler ("delete" invalid construction)', () => {
                 const sourceCode = `on customMessage idArg\n delete idArg\nend customMessage`;
@@ -207,7 +207,7 @@ describe("SimpleTalk Compiler", function () {
         describe("Add Model Commands", function () {
             var systemObjects = ["background", "button", "card", "field", "stack"];
             systemObjects = systemObjects.concat(systemObjects.map(w => w.charAt(0).toUpperCase() + w.slice(1)));
-            const invalidObjects = ["ackground", "cardd", "world"]
+            const invalidObjects = ["ackground", "cardd", "world"];
 
             it('messageHandler (no args, "add" command)', () => {
                 systemObjects.forEach((d) => {
@@ -224,7 +224,7 @@ describe("SimpleTalk Compiler", function () {
                     const concreteHandler = MockObject._commandHandlers["click"];
                     assert.isNotNull(concreteHandler);
                     assert.equal(typeof concreteHandler, "function");
-                })
+                });
             });
             it('messageHandler (no args, "add to this" command)', () => {
                 systemObjects.forEach((d) => {
@@ -241,7 +241,7 @@ describe("SimpleTalk Compiler", function () {
                     const concreteHandler = MockObject._commandHandlers["click"];
                     assert.isNotNull(concreteHandler);
                     assert.equal(typeof concreteHandler, "function");
-                })
+                });
             });
             it('messageHandler (no args, "add to current card" command)', () => {
                 systemObjects.forEach((d) => {
@@ -258,7 +258,7 @@ describe("SimpleTalk Compiler", function () {
                     const concreteHandler = MockObject._commandHandlers["click"];
                     assert.isNotNull(concreteHandler);
                     assert.equal(typeof concreteHandler, "function");
-                })
+                });
             });
             it('messageHandler (no args, "add to current stack" command)', () => {
                 systemObjects.forEach((d) => {
@@ -275,7 +275,7 @@ describe("SimpleTalk Compiler", function () {
                     const concreteHandler = MockObject._commandHandlers["click"];
                     assert.isNotNull(concreteHandler);
                     assert.equal(typeof concreteHandler, "function");
-                })
+                });
             });
             it('messageHandler (no args, "add to" by id command)', () => {
                 systemObjects.forEach((d) => {
@@ -292,7 +292,7 @@ describe("SimpleTalk Compiler", function () {
                     const concreteHandler = MockObject._commandHandlers["click"];
                     assert.isNotNull(concreteHandler);
                     assert.equal(typeof concreteHandler, "function");
-                })
+                });
             });
             it('messageHandler (no args, "add to" with name by id command)', () => {
                 systemObjects.forEach((d) => {
@@ -309,7 +309,7 @@ describe("SimpleTalk Compiler", function () {
                     const concreteHandler = MockObject._commandHandlers["click"];
                     assert.isNotNull(concreteHandler);
                     assert.equal(typeof concreteHandler, "function");
-                })
+                });
             });
             it('messageHandler (no args, "add" without name or target)', () => {
                 systemObjects.forEach((d) => {
@@ -326,7 +326,7 @@ describe("SimpleTalk Compiler", function () {
                     const concreteHandler = MockObject._commandHandlers["click"];
                     assert.isNotNull(concreteHandler);
                     assert.equal(typeof concreteHandler, "function");
-                })
+                });
             });
             it('messageHandler (no args, "add" without target, with name)', () => {
                 systemObjects.forEach((d) => {
@@ -343,13 +343,13 @@ describe("SimpleTalk Compiler", function () {
                     const concreteHandler = MockObject._commandHandlers["click"];
                     assert.isNotNull(concreteHandler);
                     assert.equal(typeof concreteHandler, "function");
-                })
+                });
             });
             it('messageHandler ("add" invalid object)', () => {
                 invalidObjects.forEach((s) => {
                     const sourceCode = `on customMessage targetArg\n add ${s} to targetArg\nend customMessage`;
                     expect(() => compiler.compile(sourceCode, MockObject)).to.throw();
-                })
+                });
             });
             it('messageHandler ("add" invalid construction)', () => {
                 const sourceCode = `on customMessage idArg\n add idArg\nend customMessage`;
@@ -367,10 +367,10 @@ describe("SimpleTalk Compiler", function () {
         describe("Set Property", function () {
             var systemObjects = ["background", "button", "card", "field", "stack"];
             systemObjects = systemObjects.concat(systemObjects.map(w => w.charAt(0).toUpperCase() + w.slice(1)));
-            const invalidObjects = ["ackground", "cardd", "world"]
+            const invalidObjects = ["ackground", "cardd", "world"];
 
             it('Set background color', () => {
-                systemObjects.forEach((s) => {
+                ["part"].forEach((s) => {
                     const sourceCode = `
                       on customMessage
                         set "backgroundColor" to "blue" in ${s} 20
@@ -380,7 +380,7 @@ describe("SimpleTalk Compiler", function () {
                     {
                         type: "command",
                         commandName: "setProperty",
-                        args: ["backgroundColor", "blue", "20", `${s}`, ""]
+                        args: ["backgroundColor", "blue", "20", `${s}`, undefined]
                     }];
                     compiler.compile(sourceCode, MockObject);
 
@@ -390,10 +390,10 @@ describe("SimpleTalk Compiler", function () {
                     const concreteHandler = MockObject._commandHandlers["customMessage"];
                     assert.isNotNull(concreteHandler);
                     assert.equal(typeof concreteHandler, "function");
-                })
+                });
             });
             it('Set background color in context', () => {
-                ["this", "current", ""].forEach((context) => {
+                ["this", "current"].forEach((context) => {
                     ["card", "stack"].forEach((s) => {
                         const sourceCode = `
                           on customMessage
@@ -404,7 +404,7 @@ describe("SimpleTalk Compiler", function () {
                         {
                             type: "command",
                             commandName: "setProperty",
-                            args: ["backgroundColor", "blue", "", `${s}`, `${context}`]
+                            args: ["backgroundColor", "blue", undefined, `${s}`, `${context}`]
                         }];
                         compiler.compile(sourceCode, MockObject);
 
@@ -424,7 +424,7 @@ describe("SimpleTalk Compiler", function () {
                   end customMessage
                 `;
                 expect(() => compiler.compile(sourceCode, MockObject)).to.throw();
-            })
+            });
         });
     });
 });

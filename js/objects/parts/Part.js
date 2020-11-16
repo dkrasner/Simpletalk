@@ -11,6 +11,8 @@ import {
     DynamicProperty
 } from '../properties/PartProperties.js';
 
+import Compiler from '../compiler.js';
+
 
 class Part {
     constructor(anOwnerPart){
@@ -52,7 +54,6 @@ class Part {
         this.serialize = this.serialize.bind(this);
         this.setFromDeserialized = this.setFromDeserialized.bind(this);
         this.deleteModelCmdHandler = this.deleteModelCmdHandler.bind(this);
-        this.setPropertyCmdHandler = this.setPropertyCmdHandler.bind(this);
         this.isSubpartOfCurrentCard = this.isSubpartOfCurrentCard.bind(this);
         this.isSubpartOfCurrentStack = this.isSubpartOfCurrentStack.bind(this);
 
@@ -63,7 +64,6 @@ class Part {
         // command handlers
         this.setCmdHandler("deleteModel", this.deleteModelCmdHandler);
         this.setCmdHandler("newModel", this.newModelCmdHandler);
-        this.setCmdHandler("setProperty", this.setPropertyCmdHandler);
     }
 
     // Convenience getter to get the id
@@ -306,7 +306,14 @@ class Part {
             // instance as the 'this' context for
             // the handler
             let boundHandler = handler.bind(this);
-            boundHandler(...aMessage.args);
+            let originalSender;
+            if(aMessage.senders){
+                originalSender = window.System.partsById[aMessage.senders[0].id];
+            }
+            let evaluatedArgs = aMessage.args.map(arg => {
+                return Compiler.evaluate(arg, originalSender);
+            });
+            boundHandler(...evaluatedArgs, aMessage.senders);
         } else {
             // Otherwise, we have no handler for
             // it, so we delegate along the
@@ -344,7 +351,7 @@ class Part {
 
     deleteModelCmdHandler(objectId, modelType){
         if (modelType && modelType.toLowerCase() === this.type && !objectId){
-            objectId = this.id
+            objectId = this.id;
         }
         this.delegateMessage({
             type: 'command',
@@ -390,36 +397,6 @@ class Part {
                 message.args[1] = this.id;
             }
         }
-        this.delegateMessage(message);
-    }
-
-    setPropertyCmdHandler(property, value, ownerId, targetModelType, context){
-        let message = {
-            type: 'command',
-            commandName: 'setProperty',
-            args: [property, value, ownerId, targetModelType, context]
-        };
-        // If the context is explicitely "current" we find the corresponding part
-        // (card or stack) and send the updated message to it
-        // Note: this assumes that the only current parts or cards or stacks
-        if(context === "current"){
-            // we won't need to the context anymore after sending to the corresponding
-            // target part
-            message.args[4] = "";
-            let targetModel;
-            if(targetModelType.toLowerCase() === "card"){
-                targetModel = window.System.getCurrentCardModel();
-            };
-            if(targetModelType.toLowerCase() === "stack"){
-                targetModel = window.System.getCurrentStackModel();
-            };
-            message.args[2] = targetModel.id;
-            return this.sendMessage(message, targetModel);
-        }
-        // otherwise "this" is the default context if no owner id is provided
-        if(!ownerId){
-            message.args[2] = this.id;
-        };
         this.delegateMessage(message);
     }
 
