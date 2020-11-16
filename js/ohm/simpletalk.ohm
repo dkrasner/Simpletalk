@@ -150,5 +150,5 @@
 
 	unicodeSpaceSeparator = "\u2000".."\u200B" | "\u3000"
 	lineTerminator = "\n" | "\r" | "\u2028" | "\u2029" | "\r\n"
-	nonLineTerminator = ~lineTerminator (alnum | whitespace)
+	nonLineTerminator = ~lineTerminator (alnum | whitespace | punctuation | "/" | "_")
 }
