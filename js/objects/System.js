@@ -291,8 +291,8 @@ const System = {
         if(aMessage.shouldIgnore){
             return;
         }
-        throw new Error(`System does not understand message ${aMessage.type}`);
         console.error(aMessage);
+        throw new Error(`System does not understand message ${aMessage.type}`);
     },
 
     compile: function(aMessage){
