@@ -15,6 +15,8 @@ class Field extends Part {
     constructor(owner, name){
         super(owner);
 
+        this.isField = true;
+
         if(name){
             this.partProperties.setPropertyNamed(
                 this,
@@ -23,10 +25,12 @@ class Field extends Part {
             );
         }
 
-        this.isField = true;
-
         // Set the Field-specific
         // Part Properties
+        this.partProperties.newBasicProp(
+            'textContent',
+            ''
+        );
         this.partProperties.newBasicProp(
             'autoSelect',
             false,
@@ -65,6 +69,9 @@ class Field extends Part {
         );
     }
 
+    get type(){
+        return 'field';
+    }
 };
 
 export {

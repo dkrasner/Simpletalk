@@ -1,7 +1,7 @@
 /**
- * EricFieldView
+ * FieldView
  * ---------------------------------
- * I am the view of an EricField part.
+ * I am the view of an Field part.
  * I am an "interim" view intended to display
  * and edit plain text on a Card.
  * I should be replaced with a more comprehensive
@@ -21,9 +21,9 @@ const templateString = `
     outline: none;
 }
 </style>
-<textarea class="eric-field-textarea" resize="false"></textarea>`;
+<textarea class="field-textarea" resize="false"></textarea>`;
 
-class EricFieldView extends PartView {
+class FieldView extends PartView {
     constructor(){
         super();
 
@@ -43,25 +43,25 @@ class EricFieldView extends PartView {
 
     setupPropHandlers(){
         this.onPropChange('textContent', (value, partId) => {
-            let textArea = this._shadowRoot.querySelector('.eric-field-textarea');
+            let textArea = this._shadowRoot.querySelector('.field-textarea');
             textArea.value = value;
         });
     }
 
     afterConnected(){
-        let textarea = this._shadowRoot.querySelector('.eric-field-textarea');
+        let textarea = this._shadowRoot.querySelector('.field-textarea');
         textarea.addEventListener('input', this.onInput);
     }
 
     afterDisconnected(){
-        let textarea = this._shadowRoot.querySelector('.eric-field-textarea');
+        let textarea = this._shadowRoot.querySelector('.field-textarea');
         textarea.removeEventListener('input', this.onInput);
     }
 
     afterModelSet(){
         // If we have a model, set the value of the textarea
         // to the current text of the field model
-        let textarea = this._shadowRoot.querySelector('.eric-field-textarea');
+        let textarea = this._shadowRoot.querySelector('.field-textarea');
         textarea.value = this.model.partProperties.getPropertyNamed(
             this.model,
             'textContent'
@@ -80,6 +80,6 @@ class EricFieldView extends PartView {
 };
 
 export {
-    EricFieldView,
-    EricFieldView as default
+    FieldView,
+    FieldView as default
 };

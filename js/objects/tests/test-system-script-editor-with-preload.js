@@ -94,7 +94,7 @@ describe('ScriptEditor Functionality', () => {
     before(() => {
         editorCurrentCardView = document.querySelector('st-window > st-stack > .current-card');
         editorSaveButtonView = editorCurrentCardView.querySelector('st-button');
-        editorFieldView = editorCurrentCardView.querySelector('st-eric-field');
+        editorFieldView = editorCurrentCardView.querySelector('st-field');
     });
 
     it('Has all appropriate views', () => {

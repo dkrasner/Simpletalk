@@ -1,7 +1,7 @@
 /**
- * Tests for the EricField Part and View
+ * Tests for the Field Part and View
  * -------------------------------------------
- * These are simple tests to make sure the EricField
+ * These are simple tests to make sure the Field
  * Part and corresponding View work correctly and together
  * as expected.
  * NOTE: These classes are designed to be replaced with
@@ -10,18 +10,18 @@
 import chai from 'chai';
 const assert = chai.assert;
 
-import EricField from '../parts/EricField.js';
-//import EricFieldView from '../views/EricFieldView.js';
-const EricFieldView = System.availableViews['eric-field'];
+import Field from '../parts/Field.js';
+//import FieldView from '../views/FieldView.js';
+const FieldView = System.availableViews['field'];
 
-//window.customElements.define('st-eric-field', EricFieldView);
+//window.customElements.define('st-field', FieldView);
 
 let ericFieldModel;
-describe('EricField Part/Model Tests', () =>{
+describe('Field Part/Model Tests', () =>{
     it('Can initialize the part', () => {
-        ericFieldModel = new EricField();
+        ericFieldModel = new Field();
         assert.exists(ericFieldModel);
-        assert.equal(ericFieldModel.type, 'eric-field');
+        assert.equal(ericFieldModel.type, 'field');
     });
     it('Can set the textContent property', () => {
         let textToSet = `Hello there!`;
@@ -41,9 +41,9 @@ describe('EricField Part/Model Tests', () =>{
 });
 
 let ericFieldView;
-describe('EricFieldView tests', () => {
+describe('FieldView tests', () => {
     it('Can create a view element', () => {
-        ericFieldView = document.createElement('st-eric-field');
+        ericFieldView = document.createElement('st-field');
         assert.exists(ericFieldView);
     });
     it('Can set the view model', () => {
@@ -56,7 +56,7 @@ describe('EricFieldView tests', () => {
     });
     it('Can connect to the DOM without issue', () => {
         document.body.append(ericFieldView);
-        let found = document.querySelector('st-eric-field');
+        let found = document.querySelector('st-field');
         assert.equal(ericFieldView, found);
     });
     it('Mounted shadow textarea has current model value', () => {
