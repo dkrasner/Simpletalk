@@ -208,6 +208,13 @@ st-drawing {
     background-color: #1fe0; /* transparent */
 }
 
+/* =Field Styles
+ *----------------------------------------------------*/
+st-field {
+    min-width: 100px;
+    min-height: 50px;
+}
+
 /* =Layout Class Styles
  * --------------------------------------------------------*/
 .list-layout {

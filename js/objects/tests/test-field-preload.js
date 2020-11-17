@@ -16,23 +16,23 @@ const FieldView = System.availableViews['field'];
 
 //window.customElements.define('st-field', FieldView);
 
-let ericFieldModel;
+let fieldModel;
 describe('Field Part/Model Tests', () =>{
     it('Can initialize the part', () => {
-        ericFieldModel = new Field();
-        assert.exists(ericFieldModel);
-        assert.equal(ericFieldModel.type, 'field');
+        fieldModel = new Field();
+        assert.exists(fieldModel);
+        assert.equal(fieldModel.type, 'field');
     });
     it('Can set the textContent property', () => {
         let textToSet = `Hello there!`;
-        ericFieldModel.partProperties.setPropertyNamed(
-            ericFieldModel,
+        fieldModel.partProperties.setPropertyNamed(
+            fieldModel,
             'textContent',
             textToSet
         );
 
-        let accessedValue = ericFieldModel.partProperties.getPropertyNamed(
-            ericFieldModel,
+        let accessedValue = fieldModel.partProperties.getPropertyNamed(
+            fieldModel,
             'textContent'
         );
 
@@ -40,48 +40,63 @@ describe('Field Part/Model Tests', () =>{
     });
 });
 
-let ericFieldView;
+let fieldView;
 describe('FieldView tests', () => {
     it('Can create a view element', () => {
-        ericFieldView = document.createElement('st-field');
-        assert.exists(ericFieldView);
+        fieldView = document.createElement('st-field');
+        assert.exists(fieldView);
     });
     it('Can set the view model', () => {
-        ericFieldView.setModel(ericFieldModel);
-        assert.equal(ericFieldView.model, ericFieldModel);
+        fieldView.setModel(fieldModel);
+        assert.equal(fieldView.model, fieldModel);
     });
     it('Has valid shadowDOM textarea', () => {
-        let textArea = ericFieldView._shadowRoot.querySelector('textarea');
+        let textArea = fieldView._shadowRoot.querySelector('.field-textarea');
         assert.exists(textArea);
     });
     it('Can connect to the DOM without issue', () => {
-        document.body.append(ericFieldView);
+        document.body.append(fieldView);
         let found = document.querySelector('st-field');
-        assert.equal(ericFieldView, found);
+        assert.equal(fieldView, found);
     });
     it('Mounted shadow textarea has current model value', () => {
-        let textArea = ericFieldView._shadowRoot.querySelector('textarea');
-        let modelValue = ericFieldModel.partProperties.getPropertyNamed(
-            ericFieldModel,
+        let textArea = fieldView._shadowRoot.querySelector('.field-textarea');
+        let modelValue = fieldModel.partProperties.getPropertyNamed(
+            fieldModel,
             'textContent'
         );
 
-        assert.equal(textArea.value, modelValue);
+        assert.equal(textArea.textContent, modelValue);
     });
+    it('textToHtml and htmlToText are idempotent', () => {
+        let fieldView = document.querySelector('st-field');
+        let textContainer = document.createElement("div");
+        let newContentHtml = "<div>on message</div><div>   some command</div><div>end message</div>";
+        textContainer.innerHTML = newContentHtml;
+
+        let newContentText = `on message\n   some command\nend message`;
+
+        assert.equal(newContentText, fieldView.htmlToText(textContainer));
+    });
+
     it('Entering text into the shadow textarea changes the model textcontent prop', () => {
-        let textArea = ericFieldView._shadowRoot.querySelector('textarea');
-        let expectedContent = `this is the new text!`;
+        let textArea = fieldView._shadowRoot.querySelector('.field-textarea');
+        let newContentHtml = "<div>on message</div><div>   some command</div><div>end message</div>";
+
+        let expectedContent = `on message\n   some command\nend message`;
 
         // Simulate typing the input events
         let event = new window.Event('input');
-        textArea.value = expectedContent;
+        textArea.innerHTML = newContentHtml;
         textArea.dispatchEvent(event);
 
-        let foundContent = ericFieldModel.partProperties.getPropertyNamed(
-            ericFieldModel,
+        let foundContent = fieldModel.partProperties.getPropertyNamed(
+            fieldModel,
             'textContent'
         );
 
         assert.equal(expectedContent, foundContent);
     });
+
+
 });
