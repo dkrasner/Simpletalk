@@ -1200,10 +1200,11 @@ System._commandHandlers['openScriptEditor'] = function(senders, targetId){
 
     let winModel = this.newModel('window', insertStack.id);
     winModel.setTarget(targetPart);
-    let winTitle = `Script: ${targetPart.type}[${targetId}]`;
+    let targetName = targetPart.partProperties.getPropertyNamed(targetPart, "name");
+    let winTitle = `Script: ${targetName}(${targetPart.type}[${targetId}])`;
     winModel.partProperties.setPropertyNamed(
         winModel,
-        'name',
+        'title',
         winTitle
     );
     let winView = this.findViewById(winModel.id);

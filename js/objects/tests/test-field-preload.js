@@ -20,6 +20,7 @@ let fieldModel;
 describe('Field Part/Model Tests', () =>{
     it('Can initialize the part', () => {
         fieldModel = new Field();
+        'AAAAA'.replace("A", "B");
         assert.exists(fieldModel);
         assert.equal(fieldModel.type, 'field');
     });
@@ -81,7 +82,7 @@ describe('FieldView tests', () => {
     });
     it('Entering text into the shadow textarea changes the model textcontent prop', () => {
         let textArea = fieldView._shadowRoot.querySelector('.field-textarea');
-        let newContentHtml = "<div>on message</div><div>   some command</div><div>end message</div>";
+        let newContentHtml = "on message<br>   some command<br>end message";
 
         let expectedContent = `on message\n   some command\nend message`;
 
