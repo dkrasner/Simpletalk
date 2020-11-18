@@ -68,17 +68,17 @@ describe('FieldView tests', () => {
 
         assert.equal(textArea.textContent, modelValue);
     });
-    it('textToHtml and htmlToText are idempotent', () => {
+    it('textToHtml and htmlToText are idempotent 1', () => {
         let fieldView = document.querySelector('st-field');
         let textContainer = document.createElement("div");
-        let newContentHtml = "<div>on message</div><div>   some command</div><div>end message</div>";
+        let newContentHtml = "on message<br>   some command<br>end message";
         textContainer.innerHTML = newContentHtml;
 
         let newContentText = `on message\n   some command\nend message`;
 
         assert.equal(newContentText, fieldView.htmlToText(textContainer));
+        assert.equal(newContentHtml, fieldView.textToHtml(newContentText));
     });
-
     it('Entering text into the shadow textarea changes the model textcontent prop', () => {
         let textArea = fieldView._shadowRoot.querySelector('.field-textarea');
         let newContentHtml = "<div>on message</div><div>   some command</div><div>end message</div>";

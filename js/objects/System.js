@@ -333,7 +333,7 @@ const System = {
         }
     },
 
-    newModel(kind, ownerId, ownerKind, context, name){
+    newModel(kind, ownerId, ownerKind, context, name, buildView=true){
         // TODO This is an exception to the general newModel
         // message and method structure; potentially should be
         // reworked
@@ -397,11 +397,13 @@ const System = {
             this.updateSerialization(subpart.id);
         });
 
-        // See if there is already a view for the model.
-        // If not, create and attach it.
-        let viewForModel = this.findViewById(model.id);
-        if(!viewForModel){
-            this.newView(model.type, model.id);
+        if(buildView){
+            // See if there is already a view for the model.
+            // If not, create and attach it.
+            let viewForModel = this.findViewById(model.id);
+            if(!viewForModel){
+                this.newView(model.type, model.id);
+            }
         }
 
         return model;
@@ -1220,17 +1222,7 @@ System._commandHandlers['openScriptEditor'] = function(senders, targetId){
 
     // Create the Field model and attach to current card
     // of the new window.
-    let fieldModel = this.newModel('field', currentCard.id);
-    let saveBtnModel = this.newModel('button', currentCard.id);
-    saveBtnModel.partProperties.setPropertyNamed(
-        saveBtnModel,
-        'name',
-        'Save Script'
-    );
-
-    let fieldView = this.findViewById(fieldModel.id);
-    let saveBtnView = this.findViewById(saveBtnModel.id);
-
+    let fieldModel = this.newModel('field', currentCard.id, "", "", "", false);
     // Set the field's textContent to be the script of the given
     // target part.
     let currentScript = targetPart.partProperties.getPropertyNamed(
@@ -1242,6 +1234,17 @@ System._commandHandlers['openScriptEditor'] = function(senders, targetId){
         'textContent',
         currentScript
     );
+
+    this.newView("field", fieldModel.id, currentCard.id);
+
+    let saveBtnModel = this.newModel('button', currentCard.id);
+    saveBtnModel.partProperties.setPropertyNamed(
+        saveBtnModel,
+        'name',
+        'Save Script'
+    );
+
+    let saveBtnView = this.findViewById(saveBtnModel.id);
 
     // Set the save button's action to be to save the script
     // on the part
@@ -1256,9 +1259,6 @@ System._commandHandlers['openScriptEditor'] = function(senders, targetId){
             editedText
         );
     };
-    // Manually set the style attributes for this stuff. Since we don't
-    // have layout parts yet we need to do it here to make it look nice
-    fieldView.style.flex = "1";
 };
 
 System._commandHandlers['saveHTML'] = function(senders){

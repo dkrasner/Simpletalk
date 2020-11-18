@@ -47,54 +47,79 @@ class FieldView extends PartView {
     }
 
     setupPropHandlers(){
+        /*
         this.onPropChange('textContent', (value, partId) => {
             let textArea = this._shadowRoot.querySelector('.field-textarea');
-            // textArea.innerHTML = this.textToHtml(value);
+            textArea.innerHTML = this.textToHtml(value);
         });
+        */
     }
 
     afterConnected(){
-        let textarea = this._shadowRoot.querySelector('.field-textarea');
-        textarea.addEventListener('input', this.onInput);
+        let textArea = this._shadowRoot.querySelector('.field-textarea');
+        textArea.addEventListener('input', this.onInput);
+        document.execCommand("defaultParagraphSeparator", false, "br");
     }
 
     afterDisconnected(){
-        let textarea = this._shadowRoot.querySelector('.field-textarea');
-        textarea.removeEventListener('input', this.onInput);
+        let textArea = this._shadowRoot.querySelector('.field-textarea');
+        textArea.removeEventListener('input', this.onInput);
     }
 
     afterModelSet(){
-        // If we have a model, set the value of the textarea
+        // If we have a model, set the value of the textArea
         // to the current text of the field model
-        let textarea = this._shadowRoot.querySelector('.field-textarea');
-        textarea.textContent = this.model.partProperties.getPropertyNamed(
+        let textArea = this._shadowRoot.querySelector('.field-textarea');
+        let textContent = this.model.partProperties.getPropertyNamed(
             this.model,
             'textContent'
         );
+        textArea.innerHTML = this.textToHtml(textContent);
     }
 
     textToHtml(text){
         // split on newline characters
-        text = text.split("\n");
+        // text = text.split("\n");
         // wrap each line in a div
         // NOTE: <div> is the default element in contenteditable elements
         // for most browsers
+        /*
         let html = "";
         text.forEach((line) => {
-            html += `<div>${line}</div>`;
+            if (!line){
+                html += "<br>";
+            } else {
+                html += `<div>${line}</div>`;
+            }
         });
         return html;
+        */
+        if(text){
+            console.log(text);
+            return text.replaceAll("\n", "<br>");
+        } else {
+            return "";
+        }
     }
 
     htmlToText(html){
         // TODO this is very naive and ignores most possible structure
+        if(html.innerHTML){
+            return html.innerHTML.replaceAll("<br>", "\n");
+        } else {
+            return "";
+        }
+        /*
         let text = "";
-        for (let i=0; i < html.childNodes.length - 1; i++){
-            let node = html.childNodes[i];
-            text = text + node.textContent + "\n";
-        };
-        text += html.childNodes[html.childNodes.length - 1].textContent;
+        if (html.childNodes.length){
+            for (let i=0; i < html.childNodes.length - 1; i++){
+                let node = html.childNodes[i];
+                text = text + node.textContent + "\n";
+            };
+            text += html.childNodes[html.childNodes.length - 1].textContent;
+        }
         return text;
+        */
     }
 
     onInput(event){
