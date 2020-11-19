@@ -19,7 +19,7 @@ import Svg from './parts/Svg.js';
 import WorldView from './views/WorldView.js';
 import StackView from './views/StackView.js';
 import ButtonView from './views/ButtonView.js';
-import PartView from './views/PartView.js';
+
 import CardView from './views/CardView.js';
 import WindowView from './views/WindowView';
 import EricFieldView from './views/EricFieldView.js';
@@ -31,6 +31,7 @@ import Halo from './views/Halo.js';
 
 import ohm from 'ohm-js';
 import Compiler from './compiler.js';
+import Interpreter from './Interpreter.js';
 import semantics from '../ohm/semantics.js';
 // import grammar from '../ohm/grammar.js';
 
@@ -324,7 +325,7 @@ const System = {
                 originalSender = this.partsById[aMessage.senders[0].id];
             }
             let evaluatedArgs = aMessage.args.map(arg => {
-                return Compiler.evaluate(arg, originalSender);
+                return this.interpreter.interpret(arg, originalSender);
             });
             return boundHandler(...evaluatedArgs, aMessage.senders);
         } else {
@@ -1302,6 +1303,10 @@ if (window.grammar){
 }
 let languageSemantics = languageGrammar.createSemantics().addOperation('parse', semantics);
 System.compiler = new Compiler(languageGrammar, languageSemantics);
+
+// Initialize an interpreter instance
+// on the System
+System.interpreter = new Interpreter(System);
 
 document.addEventListener('DOMContentLoaded', () => {
     // Add the System object to window so

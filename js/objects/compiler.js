@@ -8,18 +8,6 @@
  *  and return runnable code.
  */
 
-const evaluate = function(object, context){
-    if(object == undefined || object == null){
-        return object;
-    }
-
-    if(object.isVariable){
-        return context._executionContext[object.name];
-    }
-    
-    return object;
-};
-
 class Compiler {
     constructor(grammar, semantics){
         this.grammar = grammar;
@@ -120,12 +108,6 @@ let recursivelySendMessages = function(messageList, target, context){
     // more complex since messages can be
     // nested etc
     messageList.forEach(message => {
-        // if(message.args){
-        //     let evaluatedArgs = message.args.map(arg => {
-        //         return evaluate(arg, context);
-        //     });
-        //     message.args = evaluatedArgs;
-        // }
         target.sendMessage(message, target);
     });
 };
