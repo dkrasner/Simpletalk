@@ -85,21 +85,6 @@ class Compiler {
             }
         }
     }
-
-    static evaluate(object, context){
-        if(object == undefined || object == null){
-            return object;
-        }
-        
-        if(object.isVariable){
-            if(!context._executionContext){
-                throw new Error(`Could not find execution context for ${context.type}${context.id}`);
-            }
-            return context._executionContext[object.name];
-        }
-        
-        return object;
-    }
 }
 
 

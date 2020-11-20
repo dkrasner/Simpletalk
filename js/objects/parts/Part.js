@@ -311,7 +311,7 @@ class Part {
                 originalSender = window.System.partsById[aMessage.senders[0].id];
             }
             let evaluatedArgs = aMessage.args.map(arg => {
-                return Compiler.evaluate(arg, originalSender);
+                return window.System.interpreter.interpret(arg, originalSender);
             });
             boundHandler(...evaluatedArgs, aMessage.senders);
         } else {
