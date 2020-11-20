@@ -28,7 +28,7 @@ class Field extends Part {
         // Set the Field-specific
         // Part Properties
         this.partProperties.newBasicProp(
-            'textContent',
+            'htmlContent',
             ''
         );
         this.partProperties.newBasicProp(

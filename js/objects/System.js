@@ -1223,20 +1223,26 @@ System._commandHandlers['openScriptEditor'] = function(senders, targetId){
 
     // Create the Field model and attach to current card
     // of the new window.
-    let fieldModel = this.newModel('field', currentCard.id, "", "", "", false);
-    // Set the field's textContent to be the script of the given
-    // target part.
+    let fieldModel = this.newModel('field', currentCard.id);
+    let fieldView = this.findViewById(fieldModel.id);
+    // Set the field's htmlContent to be the textToHtml converted
+    // script of the given target part.
     let currentScript = targetPart.partProperties.getPropertyNamed(
         targetPart,
         'script'
     );
+
+    let htmlContent = fieldView.textToHtml(currentScript)
     fieldModel.partProperties.setPropertyNamed(
         fieldModel,
-        'textContent',
-        currentScript
+        'htmlContent',
+        htmlContent
     );
-
-    this.newView("field", fieldModel.id, currentCard.id);
+    // set the inner html of the textarea with the proper htmlContent
+    // NOTE: at the moment fieldView does not subscribe to htmlContent
+    // change due to cursor focus and other issues
+    let textArea = fieldView._shadowRoot.querySelector(".field-textarea");
+    textArea.innerHTML = htmlContent;
 
     let saveBtnModel = this.newModel('button', currentCard.id);
     saveBtnModel.partProperties.setPropertyNamed(
@@ -1250,14 +1256,14 @@ System._commandHandlers['openScriptEditor'] = function(senders, targetId){
     // Set the save button's action to be to save the script
     // on the part
     saveBtnModel._commandHandlers['click'] = function(){
-        let editedText = fieldModel.partProperties.getPropertyNamed(
+        let editedHTML = fieldModel.partProperties.getPropertyNamed(
             fieldModel,
-            'textContent'
+            'htmlContent'
         );
         targetPart.partProperties.setPropertyNamed(
             targetPart,
             'script',
-            editedText
+           fieldView.htmlToText(editedHTML)
         );
     };
 };
