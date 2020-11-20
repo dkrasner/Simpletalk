@@ -181,6 +181,16 @@ let simpleTalkSemantics = {
         return msg;
     },
 
+    Command_ask: function(askLiteral, question){
+        return {
+            type: "command",
+            commandName: "ask",
+            args: [
+                question.parse()
+            ]
+        };
+    },
+
     command_arbitrary: function(name){
         let msg = {
             type: "command",
