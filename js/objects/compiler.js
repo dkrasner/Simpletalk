@@ -93,7 +93,17 @@ let recursivelySendMessages = function(messageList, target, context){
     // more complex since messages can be
     // nested etc
     messageList.forEach(message => {
-        target.sendMessage(message, target);
+        // If a given message is a command type
+        // we stash its return value.
+        // We then set the implicit "it" variable on
+        // the current executionContext to map to that
+        // return value
+        if(message.type == 'command'){
+            let result = target.sendMessage(message, target);
+            target._executionContext['it'] = result;
+        } else {
+            target.sendMessage(message, target);
+        }
     });
 };
 
