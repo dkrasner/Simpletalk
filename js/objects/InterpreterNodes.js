@@ -27,34 +27,6 @@ class InterpreterNode {
 };
 
 
-class MessageINode extends InterpreterNode {
-    constructor(...args){
-        super(...args);
-        this.message = null;
-
-        this.isMessageINode = true;
-
-        // Bind methods
-        this.eval = this.eval.bind(this);
-    }
-
-    eval(context){
-        if(!this.message){
-            throw new Error(`MessageINode failed to evaluate: message is null`);
-        }
-
-        // The evaluation is to simply
-        // send the wrapped message from
-        // the provided context object
-        // to itself
-        context.sendMessage(
-            this.message,
-            context
-        );
-    }
-};
-
-
 class VariableINode extends InterpreterNode {
     constructor(configDict){
         super(configDict);
@@ -88,7 +60,6 @@ class PartRefINode extends InterpreterNode {
 };
 
 export {
-    MessageINode,
     VariableINode,
     PartRefINode
 };
