@@ -102,7 +102,7 @@ class SvgView extends PartView {
         // Replacing image with another
         fetch(svgUri).then(response => {
             let contentType = response.headers.get('content-type');
-            if(contentType = 'image/svg+xml'){
+            if(contentType == 'image/svg+xml'){
                 return response.text();
             } else {
                 throw new Error(`SVGView cannot load file of type ${contentType}`);

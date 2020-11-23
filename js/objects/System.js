@@ -327,7 +327,8 @@ const System = {
             let evaluatedArgs = aMessage.args.map(arg => {
                 return this.interpreter.interpret(arg, originalSender);
             });
-            return boundHandler(...evaluatedArgs, aMessage.senders);
+            //return boundHandler(...evaluatedArgs, aMessage.senders);
+            return boundHandler(aMessage.senders, ...evaluatedArgs);
         } else {
             return this.doesNotUnderstand(aMessage);
         }
@@ -345,7 +346,8 @@ const System = {
         // matches the owner's id
         let ownerPart = this.partsById[ownerId];
         if(!ownerPart || ownerPart == undefined){
-            throw new Error(`System could not locate owner part with id ${ownerId}`);
+            let inner = `kind(${kind}), ownerId(${ownerId}), ownerKind(${ownerKind}), context(${context}), name(${name})`;
+            throw new Error(`System could not locate owner part with id ${ownerId} -- ${inner}`);
         }
 
         // Find the class constructor for the kind of
@@ -465,7 +467,7 @@ const System = {
     //     }
     // },
 
-    setProperty(propName, value, objectId, objectType, context, senders){
+    setProperty(senders, propName, value, objectId, objectType, context){
         let target;
         let originalSender = senders[0].id;
 
@@ -805,13 +807,25 @@ const System = {
 };
 
 /** Add Default System Command Handlers **/
-System._commandHandlers['deleteModel'] = System.deleteModel;
-System._commandHandlers['newModel'] = System.newModel;
-System._commandHandlers['copyModel'] = System.copyModel;
-System._commandHandlers['newView'] = System.newView;
+//System._commandHandlers['deleteModel'] = System.deleteModel;
+System._commandHandlers['deleteModel'] = function(senders, ...rest){
+    System.deleteModel(...rest);
+};
+//System._commandHandlers['newModel'] = System.newModel;
+System._commandHandlers['newModel'] = function(senders, ...rest){
+    System.newModel(...rest);
+};
+//System._commandHandlers['copyModel'] = System.copyModel;
+System._commandHandlers['copyModel'] = function(senders, ...rest){
+    System.copyModel(...rest);
+};
+//System._commandHandlers['newView'] = System.newView;
+System._commandHandlers['newView'] = function(senders, ...rest){
+    System.newView(...rest);
+};
 System._commandHandlers['setProperty'] = System.setProperty;
 
-System._commandHandlers['ask'] = function(question, senders){
+System._commandHandlers['ask'] = function(senders, question){
     // Use the native JS prompt function to ask the question
     // and return its value.
     // By returning here, we expect the implicit variable
@@ -819,7 +833,7 @@ System._commandHandlers['ask'] = function(question, senders){
     return prompt(question);
 };
 
-System._commandHandlers['putInto'] = function(value, variableName, senders){
+System._commandHandlers['putInto'] = function(senders, value, variableName){
     let originalSender = this.partsById[senders[0].id];
     if(!originalSender._executionContext){
         originalSender._executionContext = {};
@@ -827,11 +841,11 @@ System._commandHandlers['putInto'] = function(value, variableName, senders){
     originalSender._executionContext[variableName] = value;
 };
 
-System._commandHandlers['answer'] = function(value, senders){
+System._commandHandlers['answer'] = function(senders, value){
     alert(value.toString());
 };
 
-System._commandHandlers['go to direction'] = function(directive, objectName, senders){
+System._commandHandlers['go to direction'] = function(senders, directive, objectName){
     switch(objectName) {
         case 'card':
             switch(directive){
@@ -863,7 +877,7 @@ System._commandHandlers['go to direction'] = function(directive, objectName, sen
     }
 };
 
-System._commandHandlers['go to reference'] = function(objectName, referenceId){
+System._commandHandlers['go to reference'] = function(senders, objectName, referenceId){
     switch(objectName) {
         case 'card':
             this.goToCardById(referenceId);
@@ -882,7 +896,7 @@ System._commandHandlers['go to reference'] = function(objectName, referenceId){
 // Opens a basic tool window on the Part of the given
 // id. If no ID is given, we assume the tool window
 // is for the current stack.
-System._commandHandlers['openToolbox'] = function(targetId, senders){
+System._commandHandlers['openToolbox'] = function(senders, targetId){
     let targetPart;
     if(!targetId){
         targetId = Object.keys(this.partsById).find(key => {
@@ -1047,7 +1061,7 @@ System._commandHandlers['openToolbox'] = function(targetId, senders){
     );
 };
 
-System._commandHandlers['openWorldCatalog'] = function(targetId){
+System._commandHandlers['openWorldCatalog'] = function(senders, targetId){
     let targetPart;
     if(!targetId){
         targetPart = this.getCurrentStackModel();
@@ -1100,7 +1114,7 @@ System._commandHandlers['openWorldCatalog'] = function(targetId){
                     windowCurrentCardModel.id,
                     "",
                     "",
-                    '../../../images/stack.svg'
+                    '/images/stack.svg'
                 );
             } else if (partName === "card"){
                 script = 'on click\n    add card "new card" to current stack \nend click';
@@ -1109,7 +1123,7 @@ System._commandHandlers['openWorldCatalog'] = function(targetId){
                     windowCurrentCardModel.id,
                     "",
                     "",
-                    '../../../images/card.svg'
+                    '/images/card.svg'
                 );
             } else if (partName === "window"){
                 script = 'on click\n    add window "new window" to current stack \nend click';
@@ -1118,7 +1132,7 @@ System._commandHandlers['openWorldCatalog'] = function(targetId){
                     windowCurrentCardModel.id,
                     "",
                     "",
-                    '../../../images/window.svg'
+                    '/images/window.svg'
                 );
             } else if (partName === "container"){
                 script = 'on click\n    add container "new container" to current card \nend click';
@@ -1127,7 +1141,7 @@ System._commandHandlers['openWorldCatalog'] = function(targetId){
                     windowCurrentCardModel.id,
                     "",
                     "",
-                    '../../../images/container.svg'
+                    '/images/container.svg'
                 );
             } else if (partName === "button"){
                 script = 'on click\n    add button "new button" to current card \nend click';
@@ -1139,7 +1153,7 @@ System._commandHandlers['openWorldCatalog'] = function(targetId){
                     windowCurrentCardModel.id,
                     "",
                     "",
-                    '../../../images/drawing.svg'
+                    '/images/drawing.svg'
                 );
             } else if (partName === "svg"){
                 script = 'on click\n    add svg to current card \nend click';
@@ -1167,7 +1181,7 @@ System._commandHandlers['openWorldCatalog'] = function(targetId){
     });
 };
 
-System._commandHandlers['openScriptEditor'] = function(targetId, senders){
+System._commandHandlers['openScriptEditor'] = function(senders, targetId){
     let targetPart = this.partsById[targetId];
     if(!targetPart){
         throw new Error(`No such part with id ${targetId}!`);

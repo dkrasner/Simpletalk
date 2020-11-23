@@ -5,13 +5,13 @@ class Svg extends Part {
         super(owner);
 
         // Properties
-        this.partProperties.newBasicProp("src", null)
-        let mySrc = src || "../../../images/noun_svg_placeholder.svg";
+        this.partProperties.newBasicProp("src", null);
+        let mySrc = src || "/images/noun_svg_placeholder.svg";
         this.partProperties.setPropertyNamed(
             this,
             'src',
             mySrc
-        )
+        );
         let myName = name || `Svg ${this.id}`;
         this.partProperties.setPropertyNamed(
             this,

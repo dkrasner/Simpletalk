@@ -41,7 +41,7 @@ class Compiler {
                 message: error.message,
             };
             target.sendMessage(msg, target);
-            return
+            return;
         }
         for (var i = 0; i < parsedMatch.length; i++) {
             if (typeof parsedMatch[i] == 'undefined') {
@@ -65,7 +65,7 @@ class Compiler {
                     // to that function.
                     // TODO figure out how to pass the args to the outer func
                     // from the handler itself
-                    target._commandHandlers[messageName] = function(...messageParameters){
+                target._commandHandlers[messageName] = function(senders, ...messageParameters){
                         this._executionContext = {};
                         recursivelySendMessages(
                             target._scriptSemantics[messageName],

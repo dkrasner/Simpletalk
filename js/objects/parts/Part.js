@@ -313,7 +313,7 @@ class Part {
             let evaluatedArgs = aMessage.args.map(arg => {
                 return window.System.interpreter.interpret(arg, originalSender);
             });
-            return boundHandler(...evaluatedArgs, aMessage.senders);
+            return boundHandler(aMessage.senders, ...evaluatedArgs);
         } else {
             // Otherwise, we have no handler for
             // it, so we delegate along the
@@ -349,7 +349,7 @@ class Part {
         which are not immediately delegaed to the Part._owner
     **/
 
-    deleteModelCmdHandler(objectId, modelType){
+    deleteModelCmdHandler(senders, objectId, modelType){
         if (modelType && modelType.toLowerCase() === this.type && !objectId){
             objectId = this.id;
         }
@@ -360,7 +360,7 @@ class Part {
         });
     }
 
-    newModelCmdHandler(modelType, ownerId, targetModelType, context, name){
+    newModelCmdHandler(senders, modelType, ownerId, targetModelType, context, name){
         let message = {
             type: 'command',
             commandName: 'newModel',

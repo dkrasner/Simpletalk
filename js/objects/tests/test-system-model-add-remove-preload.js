@@ -79,7 +79,7 @@ describe('newModel tests', () => {
         let msg = {
             type: 'command',
             commandName: 'newModel',
-            args: ['svg', "", "", "", "https://thomasnyberg.com/TsxxJJ9/translate.svg"]
+            args: ['svg', undefined, "", "", "https://thomasnyberg.com/TsxxJJ9/translate.svg"]
         };
 
         let sendFunc = function(){
