@@ -96,14 +96,12 @@ describe('ScriptEditor Functionality', () => {
         editorSaveButtonView = editorCurrentCardView.querySelector('st-button');
         editorFieldView = editorCurrentCardView.querySelector('st-field');
     });
-
     it('Has all appropriate views', () => {
         assert.exists(editorCurrentCardView);
         assert.exists(editorSaveButtonView);
         assert.exists(editorFieldView);
     });
-
-    it('Editor has the current script for the Card in its field', () => {
+    it('Editor has the current script html for the Card in its field', () => {
         let textArea = editorFieldView._shadowRoot.querySelector('.field-textarea');
         assert.exists(textArea);
         let displayedScriptHTML = textArea.innerHTML;
@@ -116,7 +114,21 @@ describe('ScriptEditor Functionality', () => {
 
         assert.equal(editorFieldView.htmlToText(textArea), cardScript);
     });
+    it('Editor has the current script text for the Card in its field', () => {
+        let fieldModel = editorFieldView.model;
+        let textArea = editorFieldView._shadowRoot.querySelector('.field-textarea');
+        assert.exists(textArea);
+        let textContent = fieldModel.partProperties.getPropertyNamed(
+            fieldModel,
+            'textContent'
+        );
 
+        let cardModel = document.querySelector('.current-stack > .current-card').model;
+        let cardScript = cardModel.partProperties.getPropertyNamed(
+            cardModel,
+            'script'
+        );
+    });
     it('Can set a new script for the Card by changing field value and triggering button', () => {
         let newScript = `on foo\n\tanswer "foo"\n end foo`;
         let cardModel = document.querySelector('.current-stack > .current-card').model;
@@ -126,12 +138,12 @@ describe('ScriptEditor Functionality', () => {
         // TODO at the moment field does not respond to html content updates!
         let newScriptHTML = editorFieldView.textToHtml(newScript);
         let textArea = editorFieldView._shadowRoot.querySelector('.field-textarea');
+        textArea.innerHTML = newScriptHTML;
         fieldModel.partProperties.setPropertyNamed(
             fieldModel,
             'htmlContent',
             newScriptHTML
         );
-        textArea.innerHTML = newScriptHTML;
 
         // Send click on the button,
         // which should itself send a message

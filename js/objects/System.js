@@ -1233,16 +1233,16 @@ System._commandHandlers['openScriptEditor'] = function(senders, targetId){
     );
 
     let htmlContent = fieldView.textToHtml(currentScript)
-    fieldModel.partProperties.setPropertyNamed(
-        fieldModel,
-        'htmlContent',
-        htmlContent
-    );
     // set the inner html of the textarea with the proper htmlContent
     // NOTE: at the moment fieldView does not subscribe to htmlContent
     // change due to cursor focus and other issues
     let textArea = fieldView._shadowRoot.querySelector(".field-textarea");
     textArea.innerHTML = htmlContent;
+    fieldModel.partProperties.setPropertyNamed(
+        fieldModel,
+        'htmlContent',
+        htmlContent
+    );
 
     let saveBtnModel = this.newModel('button', currentCard.id);
     saveBtnModel.partProperties.setPropertyNamed(
@@ -1256,10 +1256,14 @@ System._commandHandlers['openScriptEditor'] = function(senders, targetId){
     // Set the save button's action to be to save the script
     // on the part
     saveBtnModel._commandHandlers['click'] = function(){
+        let textContent = fieldModel.partProperties.getPropertyNamed(
+            fieldModel,
+            'textContent'
+        );
         targetPart.partProperties.setPropertyNamed(
             targetPart,
             'script',
-           fieldView.htmlToText(textArea)
+            textContent
         );
     };
 };

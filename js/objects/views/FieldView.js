@@ -95,12 +95,17 @@ class FieldView extends PartView {
     }
 
     setupPropHandlers(){
-        /*
-        this.onPropChange('htmlContent', (value, partId) => {
+        // When the htmlContent changes I update the textContent property
+        // this way anything that depends on the underlying content can
+        // access it directly
+        this.onPropChange('htmlContent', (value, id) => {
             let textArea = this._shadowRoot.querySelector('.field-textarea');
-            textArea.innerHTML = value;
+            this.model.partProperties.setPropertyNamed(
+                this.model,
+                'textContent',
+                this.htmlToText(textArea)
+            );
         });
-        */
     }
 
     afterConnected(){
@@ -125,6 +130,12 @@ class FieldView extends PartView {
             'htmlContent'
         );
         textArea.innerHTML = htmlContent;
+        // set the textContent propoery
+        this.model.partProperties.setPropertyNamed(
+            this.model,
+            'textContent',
+            this.htmlToText(textArea)
+        );
     }
 
     setUpToolbar(){

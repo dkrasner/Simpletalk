@@ -32,6 +32,10 @@ class Field extends Part {
             ''
         );
         this.partProperties.newBasicProp(
+            'textContent',
+            ''
+        );
+        this.partProperties.newBasicProp(
             'autoSelect',
             false,
         );

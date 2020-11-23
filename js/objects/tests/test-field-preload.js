@@ -25,7 +25,7 @@ describe('Field Part/Model Tests', () =>{
         assert.equal(fieldModel.type, 'field');
     });
     it('Can set the htmlContent property', () => {
-        let htmlToSet = `Hello there!`;
+        let htmlToSet = "<div>on message</div><div>   some command</div><div>end message<br></div>";
         fieldModel.partProperties.setPropertyNamed(
             fieldModel,
             'htmlContent',
@@ -48,6 +48,10 @@ describe('FieldView tests', () => {
         assert.exists(fieldView);
     });
     it('Can set the view model', () => {
+        let accessedValue = fieldModel.partProperties.getPropertyNamed(
+            fieldModel,
+            'htmlContent'
+        );
         fieldView.setModel(fieldModel);
         assert.equal(fieldView.model, fieldModel);
     });
@@ -68,6 +72,15 @@ describe('FieldView tests', () => {
         );
 
         assert.equal(textArea.innerHTML, modelValue);
+    });
+    it('textContent property is updated after the model is set', () => {
+        let textContent = `on message\n   some command\nend message`;
+        let accessedValue = fieldModel.partProperties.getPropertyNamed(
+            fieldModel,
+            'textContent'
+        );
+
+        assert.equal(accessedValue, textContent);
     });
     it('textToHtml and htmlToText are idempotent 1 (empty)', () => {
         let fieldView = document.querySelector('st-field');
@@ -102,22 +115,26 @@ describe('FieldView tests', () => {
         assert.equal(newContentText, fieldView.htmlToText(textContainer));
         // assert.equal(newContentHtml, fieldView.textToHtml(newContentText));
     });
-    it('Entering text into the shadow textarea changes the model textcontent prop', () => {
+    it('Entering text into the shadow textarea changes the model htmlContent and textContent prop', () => {
         let textArea = fieldView._shadowRoot.querySelector('.field-textarea');
-        let newContent = "some new stuff";
+        let newHTMLContent = "<div>on message</div><div>   something new</div><div>end message<br></div>";
+        let newTextContent = `on message\n   something new\nend message`;
 
         // Simulate typing the input events
         let event = new window.Event('input');
-        textArea.innerHTML = newContent;
+        textArea.innerHTML = newHTMLContent;
         textArea.dispatchEvent(event);
 
-        let foundContent = fieldModel.partProperties.getPropertyNamed(
+        let foundHTMLContent = fieldModel.partProperties.getPropertyNamed(
             fieldModel,
             'htmlContent'
         );
+        assert.equal(newHTMLContent, foundHTMLContent);
 
-        assert.equal(newContent, foundContent);
+        let foundTextContent = fieldModel.partProperties.getPropertyNamed(
+            fieldModel,
+            'textContent'
+        );
+        assert.equal(newTextContent, foundTextContent);
     });
-
-
 });
