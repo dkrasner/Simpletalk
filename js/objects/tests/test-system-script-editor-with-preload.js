@@ -104,9 +104,9 @@ describe('ScriptEditor Functionality', () => {
     });
 
     it('Editor has the current script for the Card in its field', () => {
-        let textArea = editorFieldView._shadowRoot.querySelector('textarea');
+        let textArea = editorFieldView._shadowRoot.querySelector('.field-textarea');
         assert.exists(textArea);
-        let displayedScript = textArea.value;
+        let displayedScriptHTML = textArea.innerHTML;
 
         let cardModel = document.querySelector('.current-stack > .current-card').model;
         let cardScript = cardModel.partProperties.getPropertyNamed(
@@ -114,7 +114,7 @@ describe('ScriptEditor Functionality', () => {
             'script'
         );
 
-        assert.equal(displayedScript, cardScript);
+        assert.equal(editorFieldView.htmlToText(textArea), cardScript);
     });
 
     it('Can set a new script for the Card by changing field value and triggering button', () => {
@@ -123,15 +123,15 @@ describe('ScriptEditor Functionality', () => {
         let fieldModel = editorFieldView.model;
         let saveButtonModel = editorSaveButtonView.model;
 
+        // TODO at the moment field does not respond to html content updates!
+        let newScriptHTML = editorFieldView.textToHtml(newScript);
+        let textArea = editorFieldView._shadowRoot.querySelector('.field-textarea');
         fieldModel.partProperties.setPropertyNamed(
             fieldModel,
-            'textContent',
-            newScript
+            'htmlContent',
+            newScriptHTML
         );
-
-        console.log(
-            saveButtonModel._commandHandlers['click']
-        );
+        textArea.innerHTML = newScriptHTML;
 
         // Send click on the button,
         // which should itself send a message

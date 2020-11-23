@@ -1256,14 +1256,10 @@ System._commandHandlers['openScriptEditor'] = function(senders, targetId){
     // Set the save button's action to be to save the script
     // on the part
     saveBtnModel._commandHandlers['click'] = function(){
-        let editedHTML = fieldModel.partProperties.getPropertyNamed(
-            fieldModel,
-            'htmlContent'
-        );
         targetPart.partProperties.setPropertyNamed(
             targetPart,
             'script',
-           fieldView.htmlToText(editedHTML)
+           fieldView.htmlToText(textArea)
         );
     };
 };
