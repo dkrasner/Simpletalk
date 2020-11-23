@@ -64,7 +64,7 @@ describe("Variable Naming Semantics", () => {
     it("Can identify variable as a variable object", () => {
         let match = grammar.match("myCustomVariable", "variableName");
         let result = languageSemantics(match).parse();
-        assert.isTrue(result.isVariable);
+        assert.isTrue(result.isVariableINode);
     });
 });
 
@@ -79,7 +79,7 @@ describe("Object Specifier Semantics", () => {
             let match = grammar.match(sourceString, "ObjectSpecifier_thisSystemObject");
             let result = languageSemantics(match).parse();
             assert.exists(result);
-            assert.equal(result.context, 'this');
+            assert.equal(result.thisOrCurrent, 'this');
             assert.equal(result.objectType, 'card');
         });
     });
@@ -93,7 +93,7 @@ describe("Object Specifier Semantics", () => {
             let match = grammar.match(sourceString, "ObjectSpecifier_currentSystemObject");
             let result = languageSemantics(match).parse();
             assert.exists(result);
-            assert.equal(result.context, 'current');
+            assert.equal(result.thisOrCurrent, 'current');
             assert.equal(result.objectType, 'stack');
         });
     });
@@ -162,7 +162,7 @@ describe("Command setProperty Semantics", () => {
                 result.args[0],
                 "name"
             );
-            assert.isTrue(result.args[1].isVariable);
+            assert.isTrue(result.args[1].isVariableINode);
             assert.equal(
                 result.args[1].name,
                 'myVariable'

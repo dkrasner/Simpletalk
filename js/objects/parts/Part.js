@@ -271,14 +271,14 @@ class Part {
 
     /** Message Handling and Delegation **/
     delegateMessage(aMessage){
-        this.sendMessage(
+        return this.sendMessage(
             aMessage,
             this._owner
         );
     }
 
     sendMessage(aMessage, target){
-        window.System.sendMessage(aMessage, this, target);
+        return window.System.sendMessage(aMessage, this, target);
     }
 
     receiveMessage(aMessage){
@@ -286,13 +286,13 @@ class Part {
         // messages of type 'command' and 'function'
         switch(aMessage.type){
             case 'command':
-                this.receiveCmd(aMessage);
-                break;
+                return this.receiveCmd(aMessage);
+                //break;
             case 'function':
-                this.receiveFunc(aMessage);
-                break;
+                return this.receiveFunc(aMessage);
+                //break;
             default:
-                this.delegateMessage(aMessage);
+                return this.delegateMessage(aMessage);
         }
     }
 
@@ -311,16 +311,16 @@ class Part {
                 originalSender = window.System.partsById[aMessage.senders[0].id];
             }
             let evaluatedArgs = aMessage.args.map(arg => {
-                return Compiler.evaluate(arg, originalSender);
+                return window.System.interpreter.interpret(arg, originalSender);
             });
-            boundHandler(...evaluatedArgs, aMessage.senders);
+            return boundHandler(...evaluatedArgs, aMessage.senders);
         } else {
             // Otherwise, we have no handler for
             // it, so we delegate along the
             // message delegation chain. It is up
             // to Parts to properly implement delegation
             // for themselves!
-            this.delegateMessage(aMessage);
+            return this.delegateMessage(aMessage);
         }
     }
 
@@ -329,9 +329,9 @@ class Part {
 
         if(handler){
             let boundHandler = handler.bind(this);
-            boundHandler();
+            return boundHandler();
         } else {
-            this.delegateMessage(aMessage);
+            return this.delegateMessage(aMessage);
         }
     }
 

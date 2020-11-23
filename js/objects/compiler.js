@@ -8,18 +8,6 @@
  *  and return runnable code.
  */
 
-const evaluate = function(object, context){
-    if(object == undefined || object == null){
-        return object;
-    }
-
-    if(object.isVariable){
-        return context._executionContext[object.name];
-    }
-    
-    return object;
-};
-
 class Compiler {
     constructor(grammar, semantics){
         this.grammar = grammar;
@@ -97,21 +85,6 @@ class Compiler {
             }
         }
     }
-
-    static evaluate(object, context){
-        if(object == undefined || object == null){
-            return object;
-        }
-        
-        if(object.isVariable){
-            if(!context._executionContext){
-                throw new Error(`Could not find execution context for ${context.type}${context.id}`);
-            }
-            return context._executionContext[object.name];
-        }
-        
-        return object;
-    }
 }
 
 
@@ -120,13 +93,17 @@ let recursivelySendMessages = function(messageList, target, context){
     // more complex since messages can be
     // nested etc
     messageList.forEach(message => {
-        // if(message.args){
-        //     let evaluatedArgs = message.args.map(arg => {
-        //         return evaluate(arg, context);
-        //     });
-        //     message.args = evaluatedArgs;
-        // }
-        target.sendMessage(message, target);
+        // If a given message is a command type
+        // we stash its return value.
+        // We then set the implicit "it" variable on
+        // the current executionContext to map to that
+        // return value
+        if(message.type == 'command'){
+            let result = target.sendMessage(message, target);
+            target._executionContext['it'] = result;
+        } else {
+            target.sendMessage(message, target);
+        }
     });
 };
 

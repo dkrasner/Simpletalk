@@ -86,7 +86,7 @@ class WorldStack extends Part {
     // to the global System object, which has any
     // 'handlers of last resort'
     delegateMessage(aMessage){
-        this.sendMessage(aMessage, window.System);
+        return this.sendMessage(aMessage, window.System);
     }
 };
 

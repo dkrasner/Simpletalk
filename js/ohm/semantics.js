@@ -4,7 +4,12 @@
  * function that takes as it's argument the string values
  * at the corresponding node.
  */
-import {STVariable, STPartReference} from './descriptors.js';
+//import {STVariable, STPartReference} from './descriptors.js';
+import {
+    PartRefINode,
+    VariableINode
+} from '../objects/InterpreterNodes.js'
+
 
 // helpers
 const quoteRemove = function(string){
@@ -120,8 +125,8 @@ let simpleTalkSemantics = {
     },
 
     ObjectSpecifier_thisSystemObject: function(thisLiteral, systemObject){
-        return Object.assign({}, STPartReference, {
-            context: 'this',
+        return new PartRefINode({
+            thisOrCurrent: 'this',
             objectType: systemObject.sourceString
         });
     },
@@ -131,14 +136,14 @@ let simpleTalkSemantics = {
         if(!['card', 'stack'].includes(targetKind)){
             throw "Semantic Error (Set background rule): context 'current' can only apply to 'card' or 'stack' models";
         }
-        return Object.assign({}, STPartReference, {
-            context: 'current',
+        return new PartRefINode({
+            thisOrCurrent: 'current',
             objectType: targetKind
         });
     },
 
     ObjectSpecifier_partById: function(partLiteral, identifier){
-        return Object.assign({}, STPartReference, {
+        return new PartRefINode({
             objectType: 'part',
             objectId: identifier.sourceString
         });
@@ -147,9 +152,10 @@ let simpleTalkSemantics = {
     ObjectSpecifier_partByName: function(systemObject, nameLiteral){
         let name = nameLiteral.parse();
         let kind = systemObject.sourceString;
-        return Object.assign({}, STPartReference, {
+
+        return new PartRefINode({
             objectType: kind,
-            name: name // NOTE: Setting by name not yet implemented TODO.
+            name: name // NOTE: Setting by name not yet implemented
         });
     },
 
@@ -164,7 +170,7 @@ let simpleTalkSemantics = {
             literalOrVarName.parse(), // The value or a var representing the value
             clause.objectId,
             clause.objectType,
-            clause.context
+            clause.thisOrCurrent
         ];
         
         let msg = {
@@ -173,6 +179,16 @@ let simpleTalkSemantics = {
             args: args
         };
         return msg;
+    },
+
+    Command_ask: function(askLiteral, question){
+        return {
+            type: "command",
+            commandName: "ask",
+            args: [
+                question.parse()
+            ]
+        };
     },
 
     command_arbitrary: function(name){
@@ -239,10 +255,9 @@ let simpleTalkSemantics = {
     },
 
     variableName: function(text){
-        let result = Object.assign({}, STVariable, {
+        return new VariableINode({
             name: text.sourceString
         });
-        return result;
     }
 }
 

@@ -19,7 +19,7 @@ import Svg from './parts/Svg.js';
 import WorldView from './views/WorldView.js';
 import StackView from './views/StackView.js';
 import ButtonView from './views/ButtonView.js';
-import PartView from './views/PartView.js';
+
 import CardView from './views/CardView.js';
 import WindowView from './views/WindowView';
 import EricFieldView from './views/EricFieldView.js';
@@ -31,6 +31,7 @@ import Halo from './views/Halo.js';
 
 import ohm from 'ohm-js';
 import Compiler from './compiler.js';
+import Interpreter from './Interpreter.js';
 import semantics from '../ohm/semantics.js';
 // import grammar from '../ohm/grammar.js';
 
@@ -261,7 +262,7 @@ const System = {
         });
 
         this.passDevToolMessage(aMessage, source, target);
-        target.receiveMessage(aMessage);
+        return target.receiveMessage(aMessage);
     },
 
     receiveMessage: function(aMessage){
@@ -324,7 +325,7 @@ const System = {
                 originalSender = this.partsById[aMessage.senders[0].id];
             }
             let evaluatedArgs = aMessage.args.map(arg => {
-                return Compiler.evaluate(arg, originalSender);
+                return this.interpreter.interpret(arg, originalSender);
             });
             return boundHandler(...evaluatedArgs, aMessage.senders);
         } else {
@@ -810,6 +811,14 @@ System._commandHandlers['copyModel'] = System.copyModel;
 System._commandHandlers['newView'] = System.newView;
 System._commandHandlers['setProperty'] = System.setProperty;
 
+System._commandHandlers['ask'] = function(question, senders){
+    // Use the native JS prompt function to ask the question
+    // and return its value.
+    // By returning here, we expect the implicit variable
+    // "it" to be set inside any calling script
+    return prompt(question);
+};
+
 System._commandHandlers['putInto'] = function(value, variableName, senders){
     let originalSender = this.partsById[senders[0].id];
     if(!originalSender._executionContext){
@@ -818,11 +827,11 @@ System._commandHandlers['putInto'] = function(value, variableName, senders){
     originalSender._executionContext[variableName] = value;
 };
 
-System._commandHandlers['answer'] = function(value){
+System._commandHandlers['answer'] = function(value, senders){
     alert(value.toString());
 };
 
-System._commandHandlers['go to direction'] = function(directive, objectName){
+System._commandHandlers['go to direction'] = function(directive, objectName, senders){
     switch(objectName) {
         case 'card':
             switch(directive){
@@ -873,7 +882,7 @@ System._commandHandlers['go to reference'] = function(objectName, referenceId){
 // Opens a basic tool window on the Part of the given
 // id. If no ID is given, we assume the tool window
 // is for the current stack.
-System._commandHandlers['openToolbox'] = function(targetId){
+System._commandHandlers['openToolbox'] = function(targetId, senders){
     let targetPart;
     if(!targetId){
         targetId = Object.keys(this.partsById).find(key => {
@@ -1158,7 +1167,7 @@ System._commandHandlers['openWorldCatalog'] = function(targetId){
     });
 };
 
-System._commandHandlers['openScriptEditor'] = function(targetId){
+System._commandHandlers['openScriptEditor'] = function(targetId, senders){
     let targetPart = this.partsById[targetId];
     if(!targetPart){
         throw new Error(`No such part with id ${targetId}!`);
@@ -1239,7 +1248,7 @@ System._commandHandlers['openScriptEditor'] = function(targetId){
     fieldView.style.flex = "1";
 };
 
-System._commandHandlers['saveHTML'] = function(){
+System._commandHandlers['saveHTML'] = function(senders){
     let anchor = document.createElement('a');
     anchor.style.display = "none";
     document.body.append(anchor);
@@ -1302,6 +1311,10 @@ if (window.grammar){
 }
 let languageSemantics = languageGrammar.createSemantics().addOperation('parse', semantics);
 System.compiler = new Compiler(languageGrammar, languageSemantics);
+
+// Initialize an interpreter instance
+// on the System
+System.interpreter = new Interpreter(System);
 
 document.addEventListener('DOMContentLoaded', () => {
     // Add the System object to window so
