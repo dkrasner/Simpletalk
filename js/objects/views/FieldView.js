@@ -74,12 +74,11 @@ const templateString = `
         <img title="Bold" id="field-bold" src="data:image/gif;base64,R0lGODlhFgAWAID/AMDAwAAAACH5BAEAAAAALAAAAAAWABYAQAInhI+pa+H9mJy0LhdgtrxzDG5WGFVk6aXqyk6Y9kXvKKNuLbb6zgMFADs=" />
         <img title="Italic" id="field-italic" src="data:image/gif;base64,R0lGODlhFgAWAKEDAAAAAF9vj5WIbf///yH5BAEAAAMALAAAAAAWABYAAAIjnI+py+0Po5x0gXvruEKHrF2BB1YiCWgbMFIYpsbyTNd2UwAAOw==" />
         <img title="Underline" id="field-underline" src="data:image/gif;base64,R0lGODlhFgAWAKECAAAAAF9vj////////yH5BAEAAAIALAAAAAAWABYAAAIrlI+py+0Po5zUgAsEzvEeL4Ea15EiJJ5PSqJmuwKBEKgxVuXWtun+DwxCCgA7" />
-        <img title="Left align" id="field-justifyleft" src="data:image/gif;base64,R0lGODlhFgAWAID/AMDAwAAAACH5BAEAAAAALAAAAAAWABYAQAIghI+py+0Po5y02ouz3jL4D4JMGELkGYxo+qzl4nKyXAAAOw==" />
-        <img title="Center align" id="field-justifycenter" src="data:image/gif;base64,R0lGODlhFgAWAID/AMDAwAAAACH5BAEAAAAALAAAAAAWABYAQAIfhI+py+0Po5y02ouz3jL4D4JOGI7kaZ5Bqn4sycVbAQA7" />
-        <img title="Right align" id="field-justifyright" src="data:image/gif;base64,R0lGODlhFgAWAID/AMDAwAAAACH5BAEAAAAALAAAAAAWABYAQAIghI+py+0Po5y02ouz3jL4D4JQGDLkGYxouqzl43JyVgAAOw==" />
-        <img title="Numbered list" id="field-insertorderedlist" src="data:image/gif;base64,R0lGODlhFgAWAMIGAAAAADljwliE35GjuaezxtHa7P///////yH5BAEAAAcALAAAAAAWABYAAAM2eLrc/jDKSespwjoRFvggCBUBoTFBeq6QIAysQnRHaEOzyaZ07Lu9lUBnC0UGQU1K52s6n5oEADs=" />
-        <img title="Dotted list" id="field-insertunorderedlist" src="data:image/gif;base64,R0lGODlhFgAWAMIGAAAAAB1ChF9vj1iE33mOrqezxv///////yH5BAEAAAcALAAAAAAWABYAAAMyeLrc/jDKSesppNhGRlBAKIZRERBbqm6YtnbfMY7lud64UwiuKnigGQliQuWOyKQykgAAOw==" />
-        <img title="Quote" id="field-formatblock-blockquote" src="data:image/gif;base64,R0lGODlhFgAWAIQXAC1NqjFRjkBgmT9nqUJnsk9xrFJ7u2R9qmKBt1iGzHmOrm6Sz4OXw3Odz4Cl2ZSnw6KxyqO306K63bG70bTB0rDI3bvI4P///////////////////////////////////yH5BAEKAB8ALAAAAAAWABYAAAVP4CeOZGmeaKqubEs2CekkErvEI1zZuOgYFlakECEZFi0GgTGKEBATFmJAVXweVOoKEQgABB9IQDCmrLpjETrQQlhHjINrTq/b7/i8fp8PAQA7" />
+        <img title="Left align" id="field-justifyleft" style="display:none" src="data:image/gif;base64,R0lGODlhFgAWAID/AMDAwAAAACH5BAEAAAAALAAAAAAWABYAQAIghI+py+0Po5y02ouz3jL4D4JMGELkGYxo+qzl4nKyXAAAOw==" />
+        <img title="Center align" id="field-justifycenter" style="display:none" src="data:image/gif;base64,R0lGODlhFgAWAID/AMDAwAAAACH5BAEAAAAALAAAAAAWABYAQAIfhI+py+0Po5y02ouz3jL4D4JOGI7kaZ5Bqn4sycVbAQA7" />
+        <img title="Right align" id="field-justifyright" style="display:none" src="data:image/gif;base64,R0lGODlhFgAWAID/AMDAwAAAACH5BAEAAAAALAAAAAAWABYAQAIghI+py+0Po5y02ouz3jL4D4JQGDLkGYxouqzl43JyVgAAOw==" />
+        <img title="Numbered list" id="field-insertorderedlist" style="display:none" src="data:image/gif;base64,R0lGODlhFgAWAMIGAAAAADljwliE35GjuaezxtHa7P///////yH5BAEAAAcALAAAAAAWABYAAAM2eLrc/jDKSespwjoRFvggCBUBoTFBeq6QIAysQnRHaEOzyaZ07Lu9lUBnC0UGQU1K52s6n5oEADs=" />
+        <img title="Dotted list" id="field-insertunorderedlist" style="display:none" src="data:image/gif;base64,R0lGODlhFgAWAMIGAAAAAB1ChF9vj1iE33mOrqezxv///////yH5BAEAAAcALAAAAAAWABYAAAMyeLrc/jDKSesppNhGRlBAKIZRERBbqm6YtnbfMY7lud64UwiuKnigGQliQuWOyKQykgAAOw==" />
         <img title="Delete indentation" id="field-outdent" src="data:image/gif;base64,R0lGODlhFgAWAMIHAAAAADljwliE35GjuaezxtDV3NHa7P///yH5BAEAAAcALAAAAAAWABYAAAM2eLrc/jDKCQG9F2i7u8agQgyK1z2EIBil+TWqEMxhMczsYVJ3e4ahk+sFnAgtxSQDqWw6n5cEADs=" />
         <img title="Add indentation" id="field-indent" src="data:image/gif;base64,R0lGODlhFgAWAOMIAAAAADljwl9vj1iE35GjuaezxtDV3NHa7P///////////////////////////////yH5BAEAAAgALAAAAAAWABYAAAQ7EMlJq704650B/x8gemMpgugwHJNZXodKsO5oqUOgo5KhBwWESyMQsCRDHu9VOyk5TM9zSpFSr9gsJwIAOw==" />
         <!--<img title="Hyperlink" onclick="var sLnk=prompt('Write the URL here','http:\/\/');if(sLnk&&sLnk!=''&&sLnk!='http://'){formatDoc('createlink',sLnk)}" src="data:image/gif;base64,R0lGODlhFgAWAOMKAB1ChDRLY19vj3mOrpGjuaezxrCztb/I19Ha7Pv8/f///////////////////////yH5BAEKAA8ALAAAAAAWABYAAARY8MlJq7046827/2BYIQVhHg9pEgVGIklyDEUBy/RlE4FQF4dCj2AQXAiJQDCWQCAEBwIioEMQBgSAFhDAGghGi9XgHAhMNoSZgJkJei33UESv2+/4vD4TAQA7" />-->
@@ -98,6 +97,8 @@ class FieldView extends PartView {
     constructor(){
         super();
 
+        this.editorCompleter = this.simpleTalkCompleter;
+
         this.template = document.createElement('template');
         this.template.innerHTML = templateString;
         this._shadowRoot = this.attachShadow({mode: 'open'});
@@ -112,6 +113,7 @@ class FieldView extends PartView {
         this.setUpToolbar = this.setUpToolbar.bind(this);
         this._toolbarHandler = this._toolbarHandler.bind(this);
         this.setEditorMode = this.setEditorMode.bind(this);
+        this.simpleTalkCompleter = this.simpleTalkCompleter.bind(this);
 
         this.setupPropHandlers();
     }
@@ -200,8 +202,26 @@ class FieldView extends PartView {
         textArea.focus();
     }
 
+    // I set the selected editor mode, removing or adding corresponding
+    // toolbard elements, as well as adding editor helpers/utilities.
     setEditorMode(mode){
-        console.log(mode);
+        let toolbarElementNames = ["insertorderedlist", "insertunorderedlist", "justifyleft", "justifycenter", "justifyright"];
+        let display = "inherit";
+        this.editorCompleter = undefined;
+        if(mode === "SimpleTalk"){
+            display = "none";
+            this.editorCompleter = this.simpleTalkCompleter;
+        }
+        toolbarElementNames.forEach((name) => {
+            let idSelector = "#field-" + name;
+            let element = this._shadowRoot.querySelector(idSelector);
+            element.style.display = display;
+        });
+    }
+
+    simpleTalkCompleter(element){
+        element.style.color = "red";
+        return element;
     }
 
     /*
@@ -246,10 +266,16 @@ class FieldView extends PartView {
         event.stopPropagation();
         event.preventDefault();
 
+        let innerHTML = event.target.innerHTML;
+
+        if(this.editorCompleter){
+            innerHTML = this.editorCompleter(event.target);
+        }
+
         this.model.partProperties.setPropertyNamed(
             this.model,
             'htmlContent',
-            event.target.innerHTML
+            innerHTML
         );
     }
 };
