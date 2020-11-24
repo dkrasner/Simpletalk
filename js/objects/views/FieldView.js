@@ -220,8 +220,16 @@ class FieldView extends PartView {
     }
 
     simpleTalkCompleter(element){
-        element.style.color = "red";
-        return element;
+        let textContent = element.textContent;
+        let startOfHandlerRegex = /^on\s(\w+)\s$/;
+        let match = textContent.match(startOfHandlerRegex);
+        if(match){
+            let messageName = match[1];
+            textContent = `${textContent}\n\t\nend ${messageName}`;
+            let htmlContent = this.textToHtml(textContent);
+            element.innerHTML = htmlContent;
+        }
+        return element.innerHTML;
     }
 
     /*
