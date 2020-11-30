@@ -200,15 +200,6 @@ let simpleTalkSemantics = {
         return msg;
     },
 
-    command_arbitrary: function(name){
-        let msg = {
-            type: "command",
-            commandName: name.sourceString,
-            args: []
-        };
-        return msg;
-    },
-
     CommandArgumentList: function(list){
         return list.asIteration().parse();
     },
