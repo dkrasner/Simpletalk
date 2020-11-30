@@ -485,16 +485,9 @@ describe("SimpleTalk Grammar", () => {
                 semanticMatchTest(s, "Command");
                 semanticMatchTest(s, "Statement");
             });
-            it ("bad arbitrary", () => {
-                const s = "abc def"
-                semanticMatchFailTest(s, "Command")
-            });
         });
         it ("Bad command (arbitrary with digits)", () => {
             semanticMatchFailTest("1234arrowKe", "Command");
-        });
-        it ("Bad command (arbitrary with space)", () => {
-            semanticMatchFailTest("aCommand another", "Command");
         });
     });
 

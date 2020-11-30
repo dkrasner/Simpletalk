@@ -199,7 +199,7 @@ describe("SimpleTalk Compiler", function () {
                     expect(() => compiler.compile(sourceCode, MockObject)).to.throw();
                 });
             });
-            it('messageHandler ("delete" invalid construction)', () => {
+            it.skip('messageHandler ("delete" invalid construction)', () => {
                 const sourceCode = `on customMessage idArg\n delete idArg\nend customMessage`;
                 expect(() => compiler.compile(sourceCode, MockObject)).to.throw();
             });
@@ -351,7 +351,7 @@ describe("SimpleTalk Compiler", function () {
                     expect(() => compiler.compile(sourceCode, MockObject)).to.throw();
                 });
             });
-            it('messageHandler ("add" invalid construction)', () => {
+            it.skip('messageHandler ("add" invalid construction)', () => {
                 const sourceCode = `on customMessage idArg\n add idArg\nend customMessage`;
                 expect(() => compiler.compile(sourceCode, MockObject)).to.throw();
             });

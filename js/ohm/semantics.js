@@ -8,13 +8,13 @@
 import {
     PartRefINode,
     VariableINode
-} from '../objects/InterpreterNodes.js'
+} from '../objects/InterpreterNodes.js';
 
 
 // helpers
 const quoteRemove = function(string){
     return string.slice(1, string.length-1);
-}
+};
 
 let simpleTalkSemantics = {
     Script: function(scriptParts, _) {
@@ -191,6 +191,15 @@ let simpleTalkSemantics = {
         };
     },
 
+    Command_arbitraryCommand: function(commandName, argumentList){
+        let msg = {
+            type: "command",
+            commandName: commandName.sourceString,
+            args: argumentList.parse()
+        };
+        return msg;
+    },
+
     command_arbitrary: function(name){
         let msg = {
             type: "command",
@@ -198,6 +207,10 @@ let simpleTalkSemantics = {
             args: []
         };
         return msg;
+    },
+
+    CommandArgumentList: function(list){
+        return list.asIteration().parse();
     },
 
     MessageHandlerOpen: function(literalOn, messageName, parameterList, newLine){

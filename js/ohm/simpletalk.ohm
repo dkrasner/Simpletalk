@@ -38,6 +38,7 @@
 	ParameterList (parameter list)
 		// TODO do we need to prevent keyword overload?
 		= NonemptyListOf<#(letter | digit)+, ", ">
+                | variableName 
 
 	StatementList (a statement list, comments included)
 		= StatementLine+
@@ -48,6 +49,36 @@
 	// Note we explicitly exclude keywords, i.e. control
 	Statement (a statement)
 		= ~"end" Command
+
+        // The HT manual describes a Factor as being:
+        // "a single element of value in an expression".
+        // The following are examples:
+        // * a simple source of value
+        // * an expression enclosed in parentheses
+        // * an expression with the word 'not' in front
+        //   of it that evaluates to true or false
+        Factor (a factor)
+               = "(" Expression ")" --parenFactor
+               | "not" Expression --notFactor
+               | anyLiteral
+               | variableName
+
+        // For now, expressions are just the
+        // value of a given factor.
+        // In the future, it should be that or
+        // any two expressions with an operator
+        // between them
+        Expression
+               = Expression "+" Expression --addExpr
+               | Expression "*" Expression --timesExpr
+               | Factor
+
+        // Expression lists are those that are passed
+        // to any commands that are invoked inline.
+        // These expressions can form the arguments passed
+        // to a given command handler
+        CommandArgumentList
+                = NonemptyListOf<Expression, ",">
 
         ObjectSpecifier (a object specifier)
                 = "this" systemObject --thisSystemObject
@@ -67,10 +98,7 @@
 		| "set" stringLiteral "to" (stringLiteral | variableName) InClause? --setProperty
                 | "put" anyLiteral "into" variableName --putVariable
                 | "ask" anyLiteral --ask
-		| command_arbitrary
-
-	command_arbitrary (an arbitrary command)
-		= letter+
+		| messageName CommandArgumentList? --arbitraryCommand
 
 	systemObject (system object such as card, stack etc)
 		= ("c" | "C") "ontainer" | ("b"| "B") "ackground" | ("b" | "B") "utton" | ("c" | "C") "ard" | ("f" | "F") "ield" | ("s" | "S") "tack" | ("w" | "W") "indow" | ("t"| "T") "oolbox" | ("d" | "D") "rawing" | ("s" | "S") "vg"
