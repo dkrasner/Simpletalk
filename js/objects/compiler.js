@@ -29,7 +29,7 @@ class Compiler {
                 message: match.message,
             };
             target.sendMessage(msg, target);
-            return
+            return;
         }
         var parsedMatch;
         try {
@@ -65,8 +65,11 @@ class Compiler {
                     // to that function.
                     // TODO figure out how to pass the args to the outer func
                     // from the handler itself
-                target._commandHandlers[messageName] = function(senders, ...messageParameters){
-                        this._executionContext = {};
+                target._commandHandlers[messageName] = function(senders, ...args){
+                    this._executionContext = {
+                        _messageParams: args
+                    };
+                    
                         recursivelySendMessages(
                             target._scriptSemantics[messageName],
                             target,

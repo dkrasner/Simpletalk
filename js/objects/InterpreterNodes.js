@@ -42,6 +42,28 @@ class VariableINode extends InterpreterNode {
     }
 };
 
+class DefinitionVariableINode extends InterpreterNode {
+    constructor(configDict){
+        super(configDict);
+        this.isDefinitionVariableINode = true;
+        this.name = configDict.name || undefined;
+        this.index = configDict.index || undefined;
+    }
+
+    eval(context){
+        if(!context._executionContext){
+            throw new Error(`Could not find execution context for ${context.type} ${context.id}`);
+        }
+        // The compiler should have inserted any incoming
+        // concrete JS function handler arguments as _messageParams
+        // on the execution context object. The definition variable is mapped
+        // to one of these values by its corresponding index. We then simply
+        // set this as a local variable
+        let params = context._executionContext._messageParams;
+        let concreteParam = params[this.index];
+        this.context._executionContext[this.name] = concreteParam;
+    }
+}
 
 class PartRefINode extends InterpreterNode {
     constructor(configDict){
@@ -59,7 +81,38 @@ class PartRefINode extends InterpreterNode {
     }
 };
 
+class ArithmeticINode extends InterpreterNode {
+    constructor(configDict){
+        super(configDict);
+        this.values = configDict.values;
+        this.operation = configDict.operation;
+    }
+
+    eval(context){
+        if(!context._executionContext){
+            throw new Error(`Could not find execution context for ${context.type} ${context.id}`);
+        }
+        let resolvedValues = this.values.map(rawValue => {
+            if(rawValue.isInterpreterNode){
+                return rawValue.eval(context);
+            } else {
+                return rawValue;
+            }
+        });
+
+        switch(this.operation){
+        case '+':
+            return resolvedValues[0] + resolvedValues[1];
+        case '*':
+            return resolvedValues[0] * resolvedValues[1];
+        }
+
+        throw new Error(`Unknown arithmetic operation: ${this.operation}`);
+    }
+}
+
 export {
     VariableINode,
-    PartRefINode
+    PartRefINode,
+    ArithmeticINode
 };

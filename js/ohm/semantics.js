@@ -7,7 +7,8 @@
 //import {STVariable, STPartReference} from './descriptors.js';
 import {
     PartRefINode,
-    VariableINode
+    VariableINode,
+    ArithmeticINode
 } from '../objects/InterpreterNodes.js';
 
 
@@ -205,13 +206,13 @@ let simpleTalkSemantics = {
     },
 
     MessageHandlerOpen: function(literalOn, messageName, parameterList, newLine){
-        return [messageName.sourceString, parameterList];
+        return [messageName.sourceString, parameterList.parse()];
     },
 
     MessageHandler: function(handlerOpen, statementList, handlerClose){
         let open = handlerOpen.parse();
         let handlerName = open[0];
-        let paramList = open[1].parse();
+        let paramList = open[1];
         // let parsedParams = paramList.parse();
         // TODO: do we want messageHandler a la HT to be of type 'command'
         return ["command", handlerName, paramList, statementList.parse()[0]];
@@ -226,9 +227,28 @@ let simpleTalkSemantics = {
     },
 
     ParameterList: function(paramString){
-        // TODO is the ohm way of doing this? or should we
-        // walk the tree?
-        return paramString.sourceString.split(",")[0];
+        return paramString.asIteration().parse();
+    },
+
+    Expression_addExpr: function(firstExpression, operation, secondExpression){
+        let firstPart = firstExpression.parse();
+        let secondPart = secondExpression.parse();
+        return new ArithmeticINode({
+            values: [firstPart, secondPart],
+            operation: operation.sourceString
+        });
+    },
+    Expression_timesExpr: function(firstExpression, operation, secondExpression){
+        let firstPart = firstExpression.parse();
+        let secondPart = secondExpression.parse();
+        return new ArithmeticINode({
+            values: [firstPart, secondPart],
+            operation: operation.sourceString
+        });
+    },
+
+    Factor_parenFactor: function(leftParen, expression, rightParen){
+        return expression.parse();
     },
 
     stringLiteral: function(openQuote, text, closeQuote){
