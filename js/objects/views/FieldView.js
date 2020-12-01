@@ -220,12 +220,19 @@ class FieldView extends PartView {
     }
 
     simpleTalkCompleter(element){
-        let textContent = element.textContent;
-        let startOfHandlerRegex = /^on\s(\w+)\s$/;
+        let textContent = this.htmlToText(element);
+        let startOfHandlerRegex = /^on\s(\w+)(\s|\n)+$/;
         let match = textContent.match(startOfHandlerRegex);
         if(match){
             let messageName = match[1];
-            textContent = `${textContent}\n\t\nend ${messageName}`;
+            // if input break is a space add a new line
+            // if it is a newline then no need to add another
+            let addedBreak = "";
+            if(match[2] === " "){
+                addedBreak = "\n";
+            }
+            console.log(match[2]);
+            textContent = `${textContent}${addedBreak}\t\nend ${messageName}`;
             let htmlContent = this.textToHtml(textContent);
             element.innerHTML = htmlContent;
         }
@@ -254,11 +261,11 @@ class FieldView extends PartView {
         }
     }
 
-    htmlToText(html){
+    htmlToText(element){
         // TODO this is very naive and ignores most possible structure
-        if(html.innerHTML){
+        if(element.innerHTML){
             // first replace all the "</div><div>" with line breaks
-            let cleanHTML =  html.innerHTML.replace(/<\/div><div>/g, "\n");
+            let cleanHTML =  element.innerHTML.replace(/<\/div><div>/g, "\n");
             // then remove all html
             let tempElement = document.createElement("div");
             tempElement.innerHTML = cleanHTML;

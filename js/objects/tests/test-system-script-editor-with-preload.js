@@ -161,4 +161,44 @@ describe('ScriptEditor Functionality', () => {
 
         assert.equal(cardScript, newScript);
     });
+    describe('Simpletalk Completer', () => {
+        before(() => {
+            // make sure that the simpleTalkCompleter is set
+            editorFieldView.editorCompleter = editorFieldView.simpleTalkCompleter;
+        });
+        it('Will complete "on messageName{SPACE}" with template', () => {
+            let fieldModel = editorFieldView.model;
+            let textArea = editorFieldView._shadowRoot.querySelector('.field-textarea');
+            let newHTMLContent = "on message ";
+            let completedHTMLContent = editorFieldView.textToHtml("on message \n\t\nend message");
+
+            // Simulate typing the input events
+            let event = new window.Event('input');
+            textArea.innerHTML = newHTMLContent;
+            textArea.dispatchEvent(event);
+
+            let foundHTMLContent = fieldModel.partProperties.getPropertyNamed(
+                fieldModel,
+                'htmlContent'
+            );
+            assert.equal(completedHTMLContent, foundHTMLContent);
+        });
+        it('Will complete "on messageName{NEWLINE}" with template', () => {
+            let fieldModel = editorFieldView.model;
+            let textArea = editorFieldView._shadowRoot.querySelector('.field-textarea');
+            let newHTMLContent = "on message\n";
+            let completedHTMLContent = editorFieldView.textToHtml("on message\n\t\nend message");
+
+            // Simulate typing the input events
+            let event = new window.Event('input');
+            textArea.innerHTML = newHTMLContent;
+            textArea.dispatchEvent(event);
+
+            let foundHTMLContent = fieldModel.partProperties.getPropertyNamed(
+                fieldModel,
+                'htmlContent'
+            );
+            assert.equal(completedHTMLContent, foundHTMLContent);
+        });
+    });
 });
