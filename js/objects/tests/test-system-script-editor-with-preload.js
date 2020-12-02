@@ -170,7 +170,7 @@ describe('ScriptEditor Functionality', () => {
             let fieldModel = editorFieldView.model;
             let textArea = editorFieldView._shadowRoot.querySelector('.field-textarea');
             let newHTMLContent = "on message ";
-            let completedHTMLContent = editorFieldView.textToHtml("on message \n\t\nend message");
+            let completedHTMLContent = "on message <div>\t</div><div>end message<br></div>";
 
             // Simulate typing the input events
             let event = new window.Event('input');
@@ -181,13 +181,13 @@ describe('ScriptEditor Functionality', () => {
                 fieldModel,
                 'htmlContent'
             );
-            assert.equal(completedHTMLContent, foundHTMLContent);
+            assert.equal(foundHTMLContent, completedHTMLContent);
         });
         it('Will complete "on messageName{NEWLINE}" with template', () => {
             let fieldModel = editorFieldView.model;
             let textArea = editorFieldView._shadowRoot.querySelector('.field-textarea');
             let newHTMLContent = "on message\n";
-            let completedHTMLContent = editorFieldView.textToHtml("on message\n\t\nend message");
+            let completedHTMLContent = "on message\nend message";
 
             // Simulate typing the input events
             let event = new window.Event('input');
@@ -198,7 +198,7 @@ describe('ScriptEditor Functionality', () => {
                 fieldModel,
                 'htmlContent'
             );
-            assert.equal(completedHTMLContent, foundHTMLContent);
+            assert.equal(foundHTMLContent, completedHTMLContent);
         });
     });
 });

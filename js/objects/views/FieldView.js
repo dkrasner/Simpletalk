@@ -85,7 +85,7 @@ const templateString = `
         <!--<img title="Hyperlink" onclick="var sLnk=prompt('Write the URL here','http:\/\/');if(sLnk&&sLnk!=''&&sLnk!='http://'){formatDoc('createlink',sLnk)}" src="data:image/gif;base64,R0lGODlhFgAWAOMKAB1ChDRLY19vj3mOrpGjuaezxrCztb/I19Ha7Pv8/f///////////////////////yH5BAEKAA8ALAAAAAAWABYAAARY8MlJq7046827/2BYIQVhHg9pEgVGIklyDEUBy/RlE4FQF4dCj2AQXAiJQDCWQCAEBwIioEMQBgSAFhDAGghGi9XgHAhMNoSZgJkJei33UESv2+/4vD4TAQA7" />-->
         <img title="Cut" id="field-cut" src="data:image/gif;base64,R0lGODlhFgAWAIQSAB1ChBFNsRJTySJYwjljwkxwl19vj1dusYODhl6MnHmOrpqbmpGjuaezxrCztcDCxL/I18rL1P///////////////////////////////////////////////////////yH5BAEAAB8ALAAAAAAWABYAAAVu4CeOZGmeaKqubDs6TNnEbGNApNG0kbGMi5trwcA9GArXh+FAfBAw5UexUDAQESkRsfhJPwaH4YsEGAAJGisRGAQY7UCC9ZAXBB+74LGCRxIEHwAHdWooDgGJcwpxDisQBQRjIgkDCVlfmZqbmiEAOw==" />
    </div>
-  <div class="field-textarea" contenteditable>
+  <div class="field-textarea" contenteditable spellcheck="false">
   </div>
 </div>`;
 
@@ -216,9 +216,13 @@ class FieldView extends PartView {
         let toolbarElementNames = ["insertorderedlist", "insertunorderedlist", "justifyleft", "justifycenter", "justifyright"];
         let display = "inherit";
         this.editorCompleter = undefined;
+        // spellcheck
+        let textArea = this._shadowRoot.querySelector('.field-textarea');
+        textArea.setAttribute("spellcheck", "true");
         if(mode === "SimpleTalk"){
             display = "none";
             this.editorCompleter = this.simpleTalkCompleter;
+            textArea.setAttribute("spellcheck", "false");
         }
         toolbarElementNames.forEach((name) => {
             let idSelector = "#field-" + name;
@@ -233,16 +237,15 @@ class FieldView extends PartView {
         let match = textContent.match(startOfHandlerRegex);
         if(match){
             let messageName = match[1];
-            // if input break is a space add a new line
-            // if it is a newline then no need to add another
-            let addedBreak = "";
-            if(match[2] === " "){
-                addedBreak = "\n";
+            // if input break is a new line then an extra
+            // <div></br></div> has beed added into the elemen alreadyt
+            let tabLine = "\t\n";
+            if(match[2] === "\n"){
+                tabLine= "";
             }
-            console.log(match[2]);
-            textContent = `${textContent}${addedBreak}\t\nend ${messageName}`;
+            textContent = `${tabLine}end ${messageName}`;
             let htmlContent = this.textToHtml(textContent);
-            element.innerHTML = htmlContent;
+            element.insertAdjacentHTML("beforeend", htmlContent);
         }
         return element.innerHTML;
     }
