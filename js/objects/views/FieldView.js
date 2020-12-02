@@ -52,7 +52,8 @@ const templateString = `
       </select>
       <select title="Font Name" id="field-fontname">
         <option class="heading" selected>- font -</option>
-        <option value="Times" selected>Times</option>
+        <option value="Monospace" selected>Monospace</option>
+        <option value="Times">Times</option>
         <option value="cursive">cursive</option>
         <option value="math">math</option>
       </select>
@@ -138,6 +139,13 @@ class FieldView extends PartView {
         textArea.focus();
         // document.execCommand("defaultParagraphSeparator", false, "br");
         this.setUpToolbar();
+        // prevent the default tab key to leave focus on the field
+        this.addEventListener("keydown", (event) => {
+            if(event.key==="Tab"){
+                event.preventDefault();
+                document.execCommand('insertHTML', false, '&#x9');
+            };
+        });
     }
 
     afterDisconnected(){
@@ -154,7 +162,7 @@ class FieldView extends PartView {
             'htmlContent'
         );
         textArea.innerHTML = htmlContent;
-        // set the textContent propoery
+        // set the textContent property
         this.model.partProperties.setPropertyNamed(
             this.model,
             'textContent',
