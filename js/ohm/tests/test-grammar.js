@@ -101,8 +101,8 @@ describe("SimpleTalk Grammar", () => {
             matchAndsemanticMatchTest(s, 'MessageHandler')
         });
         it ("Message handler (args, no statements)", () => {
-            const s = `on myNewMessage arg1, arg2\nend myNewMessage`
-            matchAndsemanticMatchTest(s, 'MessageHandler')
+            const s = `on myNewMessage arg1, arg2\nend myNewMessage`;
+            matchAndsemanticMatchTest(s, 'MessageHandler');
         });
         it ("Built in message syntax", () => {
             const strings = [
@@ -113,13 +113,31 @@ describe("SimpleTalk Grammar", () => {
                 semanticMatchTest(s, 'Message_system');
             });
         });
-        it ("Authored in message syntax", () => {
-            const strings = [
-                "myNewMessage", "myNewMessage arg1", "myNewMessage arg1, arg2", "myNewMessage 50"
-            ];
-            strings.forEach((s) => {
-                semanticMatchTest(s, 'Message');
-                semanticMatchTest(s, 'Message_authoredMessage');
+        describe("Authored in message syntax", () => {
+            it('Understands message with no arguments', () => {
+                let str = "myNewMessage";
+                semanticMatchTest(str, 'Message');
+                semanticMatchTest(str, 'Message_authoredMessage');
+            });
+            it('Understands message with one (variableName) argument', () => {
+                let str = "myNewMessage arg1";
+                semanticMatchTest(str, 'Message');
+                semanticMatchTest(str, 'Message_authoredMessage');
+            });
+            it('Understands message with two (variableName) arguments', () => {
+                let str = "myNewMessage arg1, arg2";
+                semanticMatchTest(str, "Message");
+                semanticMatchTest(str, "Message_authoredMessage");
+            });
+            it('Understands message with three (variableName) arguments', () => {
+                let str = "myNewMessage arg1, arg2, arg3";
+                semanticMatchTest(str, 'Message');
+                semanticMatchTest(str, 'Message_authoredMessage');
+            });
+            it('Underastands message with one (integer literal) argument', () => {
+                let str = "myNewMessage 50";
+                semanticMatchTest(str, 'Message');
+                semanticMatchTest(str, 'Message_authoredMessage');
             });
         });
         describe("Built in system messages", () => {

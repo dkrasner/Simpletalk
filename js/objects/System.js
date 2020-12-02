@@ -30,11 +30,7 @@ import SvgView from './views/SvgView.js';
 import Halo from './views/Halo.js';
 
 import ohm from 'ohm-js';
-//import Compiler from './compiler.js';
 import interpreterSemantics from '../ohm/interpreter-semantics.js';
-//import Interpreter from './Interpreter.js';
-//import semantics from '../ohm/semantics.js';
-// import grammar from '../ohm/grammar.js';
 
 
 const System = {
@@ -847,7 +843,6 @@ System._commandHandlers['putInto'] = function(senders, value, variableName){
 };
 
 System._commandHandlers['answer'] = function(senders, value){
-    console.log(`Calling answer with ${value}`);
     alert(value.toString());
 };
 
