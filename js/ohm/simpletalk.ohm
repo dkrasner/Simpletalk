@@ -37,8 +37,8 @@
 	// definition
 	ParameterList (parameter list)
 		// TODO do we need to prevent keyword overload?
-		= NonemptyListOf<#(letter | digit)+, ", ">
-                | variableName 
+		= NonemptyListOf<Expression, ", ">
+                //| variableName 
 
 	StatementList (a statement list, comments included)
 		= StatementLine+
@@ -136,7 +136,7 @@
 
         // User defined variables
         variableName
-                = letter+
+                = letter+ (digit+)?
 
         // Numbers
         integerLiteral

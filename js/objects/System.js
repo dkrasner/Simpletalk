@@ -30,9 +30,10 @@ import SvgView from './views/SvgView.js';
 import Halo from './views/Halo.js';
 
 import ohm from 'ohm-js';
-import Compiler from './compiler.js';
-import Interpreter from './Interpreter.js';
-import semantics from '../ohm/semantics.js';
+//import Compiler from './compiler.js';
+import interpreterSemantics from '../ohm/interpreter-semantics.js';
+//import Interpreter from './Interpreter.js';
+//import semantics from '../ohm/semantics.js';
 // import grammar from '../ohm/grammar.js';
 
 
@@ -41,7 +42,6 @@ const System = {
     id: -1,
     isLoaded: false,
     partsById: {},
-    compiler: null,
     _commandHandlers: {},
     _functionHandlers: {},
 
@@ -305,10 +305,19 @@ const System = {
         if(!targetObject || targetObject == undefined){
             throw new Error(`System could not compile target object ${aMessage.targetId}`);
         }
-        this.compiler.compile(
-            aMessage.codeString,
-            targetObject
+        // Create a semantics object whose partContext
+        // attribute is set to be the target object.
+        System.semantics = System.grammar.createSemantics();
+        System.semantics.addOperation(
+            'interpret',
+            interpreterSemantics(targetObject, this)
         );
+
+        // Interpret the incoming script string.
+        let parsedScript = System.grammar.match(aMessage.codeString);
+        System.semantics(parsedScript).interpret();
+        
+        
         // Be sure to then update the
         // serialization for the target
         // part, thus adding the script to
@@ -324,11 +333,7 @@ const System = {
             if(aMessage.senders){
                 originalSender = this.partsById[aMessage.senders[0].id];
             }
-            let evaluatedArgs = aMessage.args.map(arg => {
-                return this.interpreter.interpret(arg, originalSender);
-            });
-            //return boundHandler(...evaluatedArgs, aMessage.senders);
-            return boundHandler(aMessage.senders, ...evaluatedArgs);
+            return boundHandler(aMessage.senders, ...aMessage.args);
         } else {
             return this.doesNotUnderstand(aMessage);
         }
@@ -842,6 +847,7 @@ System._commandHandlers['putInto'] = function(senders, value, variableName){
 };
 
 System._commandHandlers['answer'] = function(senders, value){
+    console.log(`Calling answer with ${value}`);
     alert(value.toString());
 };
 
@@ -1323,12 +1329,8 @@ if (window.grammar){
 } else {
     languageGrammar = ohm.grammarFromScriptElement();
 }
-let languageSemantics = languageGrammar.createSemantics().addOperation('parse', semantics);
-System.compiler = new Compiler(languageGrammar, languageSemantics);
 
-// Initialize an interpreter instance
-// on the System
-System.interpreter = new Interpreter(System);
+System.grammar = languageGrammar;
 
 document.addEventListener('DOMContentLoaded', () => {
     // Add the System object to window so

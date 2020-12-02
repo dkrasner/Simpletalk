@@ -19,6 +19,7 @@ const quoteRemove = function(string){
 
 let simpleTalkSemantics = {
     Script: function(scriptParts, _) {
+        console.log(this);
         return scriptParts.parse();
     },
 
