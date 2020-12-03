@@ -106,7 +106,7 @@
 	// TODO do we want to restrict message names (start with lowercase etc)?
 	// Note: we prevent keyword overloading
 	messageName (message name)
-		= ~(keyword end) letter+
+		= ~(keyword " " | keyword end) letter+
 
 	systemMessage (system message)
 		= "systemEvent" | "arrowKey"
@@ -127,7 +127,7 @@
 		= "do" | "next" | "else" | "on" | "end" | "pass" | "exit" | "repeat" | "function" | "return" | "global" | "send" | "if" | "then"
 
 	objectId (an identifier of an object, string, numeric or mixed)
-		= ~systemObject (letter | digit)*
+		= ~systemObject (letter | digit)+
 
 
 	// Helper utilities

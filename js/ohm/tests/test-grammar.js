@@ -92,6 +92,18 @@ describe("SimpleTalk Grammar", () => {
             let match = g.match(script);
             assert.isFalse(match.succeeded());
         });
+        it("Fails to match on script with top-level invalid handler def", () => {
+            let script = [
+                'on doMyThing what',
+                '\tanswer what',
+                'on doMyThing',
+                '\n',
+                'on click',
+                '\tdoMyThing "doing it"',
+                'end click'
+            ].join('\n');
+            assert.isTrue(g.match(script).failed());
+        });
     });
 
     // TODO add more tests for handlers, comments, end etc
@@ -111,6 +123,10 @@ describe("SimpleTalk Grammar", () => {
             strings.forEach((s) => {
                 semanticMatchFailTest(s, 'messageName');
             });
+        });
+        it ("Can parse message names beginning with 'do'", () => {
+            let str = "doSomething";
+            semanticMatchTest(str, 'messageName');
         });
         it ("Message handler (no args, no statements)", () => {
             const s = `on myMessage\nend myMessage`;
