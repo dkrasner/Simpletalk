@@ -4,12 +4,10 @@ const createInterpreterSemantics = (partContext, systemContext) => {
             return scriptParts.interpret();
         },
         MessageHandler: function(handlerOpen, optionalStatementList, handlerClose){
-            let {messageName, parameterNames} = handlerOpen.interpret();
-            let context = partContext;
-            let system = systemContext;
+            let {messageName, parameters} = handlerOpen.interpret();
             let handlerFunction = function(senders, ...args){
                 this._executionContext = {
-                    _argVariableNames: parameterNames
+                    _argVariableNames: parameters // these are string representing the param names
                 };
                 
                 // Map each arg in order to any variable names given
