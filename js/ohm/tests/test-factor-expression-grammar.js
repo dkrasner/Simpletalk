@@ -66,6 +66,10 @@ describe('String Literals', () => {
         let str = '"This is my ... / string literal"';
         semanticMatchTest(str, "Expression");
     });
+    it('Can parse a string literal that looks like other expression', () => {
+        let str = `"5 + 5"`;
+        semanticMatchTest(str, 'stringLiteral');
+    });
 });
 
 describe('Integer Literals', () => {

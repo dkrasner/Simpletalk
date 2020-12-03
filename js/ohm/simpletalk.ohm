@@ -154,7 +154,7 @@
 	// without line terminators wrapped in open and
 	// closing quotes
 	stringLiteral
-		= quoteMark nonLineTerminator+ quoteMark
+		= quoteMark (~lineTerminator ~quoteMark any)* quoteMark
 
 	quoteMark = "\""
 
