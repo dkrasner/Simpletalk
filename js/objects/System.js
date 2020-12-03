@@ -301,17 +301,31 @@ const System = {
         if(!targetObject || targetObject == undefined){
             throw new Error(`System could not compile target object ${aMessage.targetId}`);
         }
-        // Create a semantics object whose partContext
-        // attribute is set to be the target object.
-        System.semantics = System.grammar.createSemantics();
-        System.semantics.addOperation(
-            'interpret',
-            interpreterSemantics(targetObject, this)
-        );
+        
 
-        // Interpret the incoming script string.
-        let parsedScript = System.grammar.match(aMessage.codeString);
-        System.semantics(parsedScript).interpret();
+        // Attempt to parse the incoming SimpleTalk script string.
+        // If there are grammatical errors, report them and bail.
+        // Otherwise, create a new semantics on the targetPart, add
+        // the required semantic operations, and interpret the top
+        // level of the script, which will create the JS handler functions
+        let parsedScript = languageGrammar.match(aMessage.codeString);
+        if(parsedScript.failed()){
+            let msg = {
+                type: "error",
+                name: "GrammarMatchError",
+                message: parsedScript.message,
+            };
+            targetObject.sendMessage(msg, targetObject);
+        } else {
+            // Create a semantics object whose partContext
+            // attribute is set to be the target object.
+            targetObject._semantics = languageGrammar.createSemantics();
+            targetObject._semantics.addOperation(
+                'interpret',
+                interpreterSemantics(targetObject, this)
+            );
+            targetObject._semantics(parsedScript).interpret();
+        }
         
         
         // Be sure to then update the
