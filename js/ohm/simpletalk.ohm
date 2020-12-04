@@ -38,13 +38,13 @@
 	ParameterList (parameter list)
 		// TODO do we need to prevent keyword overload?
 		= NonemptyListOf<Expression, ", ">
-                //| variableName 
 
 	StatementList (a statement list, comments included)
 		= StatementLine+
 
 	StatementLine (a statement line)
-		= Statement lineTerminator+
+                = comment lineTerminator+
+		| Statement lineTerminator+
 
 	// Note we explicitly exclude keywords, i.e. control
 	Statement (a statement)
@@ -100,11 +100,8 @@
                 | "ask" anyLiteral --ask
 		| messageName CommandArgumentList? --arbitraryCommand
 
-        CommentLine (a whole line comment)
-                = comment lineTerminator
-
         CommentLines
-                = CommentLine+
+                = (comment lineTerminator)+
 
 	systemObject (system object such as card, stack etc)
 		= ("c" | "C") "ontainer" | ("b"| "B") "ackground" | ("b" | "B") "utton" | ("c" | "C") "ard" | ("f" | "F") "ield" | ("s" | "S") "tack" | ("w" | "W") "indow" | ("t"| "T") "oolbox" | ("d" | "D") "rawing" | ("s" | "S") "vg"

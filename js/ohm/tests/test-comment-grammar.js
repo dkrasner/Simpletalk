@@ -49,7 +49,7 @@ describe("Comment Grammar Tests", () => {
     describe("Full line comments", () => {
         it("Can parse a single line comment", () => {
             let str = "-- this is a comment that takes up a whole line\n";
-            semanticMatchTest(str, "CommentLine");
+            semanticMatchTest(str, "StatementLine");
         });
         it("Can match a block of comment lines", () => {
             let str = [
