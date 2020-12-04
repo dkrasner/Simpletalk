@@ -78,6 +78,34 @@ describe("SimpleTalk Grammar", () => {
         });
     });
 
+    describe("Invalid overall scripts", () => {
+        it("Cannot match a script with invalid handler open/close", () => {
+            let script = [
+                'on click',
+                '\t myMessage',
+                'end click',
+                '\n',
+                'on myMessage',
+                '\tsnswer "hello"',
+                'on myMessage'
+            ].join('\n');
+            let match = g.match(script);
+            assert.isFalse(match.succeeded());
+        });
+        it("Fails to match on script with top-level invalid handler def", () => {
+            let script = [
+                'on doMyThing what',
+                '\tanswer what',
+                'on doMyThing',
+                '\n',
+                'on click',
+                '\tdoMyThing "doing it"',
+                'end click'
+            ].join('\n');
+            assert.isTrue(g.match(script).failed());
+        });
+    });
+
     // TODO add more tests for handlers, comments, end etc
     describe("Messages", () => {
         it ("Message name", () => {
@@ -85,7 +113,7 @@ describe("SimpleTalk Grammar", () => {
                 "f", "F", "amessage", "aMessage", "aMessage"
             ];
             strings.forEach((s) => {
-                semanticMatchTest(s, 'messageName')
+                semanticMatchTest(s, 'messageName');
             });
         });
         it ("Bad message name", () => {
@@ -93,16 +121,29 @@ describe("SimpleTalk Grammar", () => {
                 "1", "1m", "1M", "m1", "M1", " message", "then", "on", "end"
             ];
             strings.forEach((s) => {
-                semanticMatchFailTest(s, 'messageName')
+                semanticMatchFailTest(s, 'messageName');
             });
         });
+        it ("Can parse message names beginning with 'do'", () => {
+            let str = "doSomething";
+            semanticMatchTest(str, 'messageName');
+        });
         it ("Message handler (no args, no statements)", () => {
-            const s = `on myMessage\nend myMessage`
-            matchAndsemanticMatchTest(s, 'MessageHandler')
+            const s = `on myMessage\nend myMessage`;
+            matchAndsemanticMatchTest(s, 'MessageHandler');
         });
         it ("Message handler (args, no statements)", () => {
-            const s = `on myNewMessage arg1, arg2\nend myNewMessage`
-            matchAndsemanticMatchTest(s, 'MessageHandler')
+            const s = `on myNewMessage arg1, arg2\nend myNewMessage`;
+            matchAndsemanticMatchTest(s, 'MessageHandler');
+        });
+        it('Does not match a message that has two handlerOpens', () => {
+            let invalidStr = [
+                'on myMessage',
+                '\tsomeOtherMessage',
+                'on myMessage'
+            ].join('\n');
+            let match = g.match(invalidStr);
+            assert.isFalse(match.succeeded());
         });
         it ("Built in message syntax", () => {
             const strings = [
@@ -113,13 +154,31 @@ describe("SimpleTalk Grammar", () => {
                 semanticMatchTest(s, 'Message_system');
             });
         });
-        it ("Authored in message syntax", () => {
-            const strings = [
-                "myNewMessage", "myNewMessage arg1", "myNewMessage arg1, arg2", "myNewMessage 50"
-            ];
-            strings.forEach((s) => {
-                semanticMatchTest(s, 'Message');
-                semanticMatchTest(s, 'Message_authoredMessage');
+        describe("Authored in message syntax", () => {
+            it('Understands message with no arguments', () => {
+                let str = "myNewMessage";
+                semanticMatchTest(str, 'Message');
+                semanticMatchTest(str, 'Message_authoredMessage');
+            });
+            it('Understands message with one (variableName) argument', () => {
+                let str = "myNewMessage arg1";
+                semanticMatchTest(str, 'Message');
+                semanticMatchTest(str, 'Message_authoredMessage');
+            });
+            it('Understands message with two (variableName) arguments', () => {
+                let str = "myNewMessage arg1, arg2";
+                semanticMatchTest(str, "Message");
+                semanticMatchTest(str, "Message_authoredMessage");
+            });
+            it('Understands message with three (variableName) arguments', () => {
+                let str = "myNewMessage arg1, arg2, arg3";
+                semanticMatchTest(str, 'Message');
+                semanticMatchTest(str, 'Message_authoredMessage');
+            });
+            it('Underastands message with one (integer literal) argument', () => {
+                let str = "myNewMessage 50";
+                semanticMatchTest(str, 'Message');
+                semanticMatchTest(str, 'Message_authoredMessage');
             });
         });
         describe("Built in system messages", () => {
@@ -159,19 +218,19 @@ describe("SimpleTalk Grammar", () => {
                 ],
                 skipSpecific: true,
                 name: "Other System Messages"},
-            ]
+            ];
             tests.forEach( (test) => {
                 it(`${test.name}`, () => {
-                    const cl = test.name.replace(" ", "").unCapitalize()
+                    const cl = test.name.replace(" ", "").unCapitalize();
                     test.strings.forEach((s) => {
                         semanticMatchTest(s, 'Message');
                         semanticMatchTest(s, 'systemMessage');
                         if (!test.skipSpecific) {
                             semanticMatchTest(s, `systemMessage_${cl}`);
                         }
-                    })
-                })
-            })
+                    });
+                });
+            });
         });
     });
     describe("stringLiteral", () => {
@@ -193,6 +252,10 @@ describe("SimpleTalk Grammar", () => {
         });
         it('Can deal with whitespace', () => {
             const s = '" \t   hi \t  \s  "';
+            semanticMatchTest(s, 'stringLiteral');
+        });
+        it('Can deal with characters that look like operators', () => {
+            const s = `"hello ** this / is ^ a stringLiteral +"`;
             semanticMatchTest(s, 'stringLiteral');
         });
         it('Does not match if newline is present', () => {
@@ -248,13 +311,13 @@ describe("SimpleTalk Grammar", () => {
                 const direction = ["next", "previous"];
                 direction.forEach((d) => {
                     const s = `go to ${d}`;
-                    semanticMatchFailTest(s, "Command")
+                    semanticMatchFailTest(s, "Command");
                 });
             });
             it ("go to with object", () => {
                 const direction = ["next", "previous"];
                 direction.forEach((d) => {
-                    const s = `go to ${d} card`
+                    const s = `go to ${d} card`;
                     semanticMatchTest(s, "Command");
                     semanticMatchTest(s, "Command_goToDirection");
                     semanticMatchTest(s, "Statement");
@@ -268,7 +331,7 @@ describe("SimpleTalk Grammar", () => {
             });
             it ("Bad go to: invalid object", () => {
                 const s = "go to world 42";
-                semanticMatchFailTest(s, "Command")
+                semanticMatchFailTest(s, "Command");
             });
             it ("Bad go to: invalid structure", () => {
                 const s = "go to next card 42";
@@ -295,9 +358,9 @@ describe("SimpleTalk Grammar", () => {
                 });
             });
             it ("Bad delete (world)", () => {
-                const s = "delete this world"
-                semanticMatchFailTest(s, "Command_deleteModel")
-                semanticMatchFailTest(s, "Command")
+                const s = "delete this world";
+                semanticMatchFailTest(s, "Command_deleteModel");
+                semanticMatchFailTest(s, "Command");
             });
         });
         describe("Add Model", () => {
@@ -422,26 +485,26 @@ describe("SimpleTalk Grammar", () => {
                 });
             });
             it ("Bad add (world)", () => {
-                const s = "add world to card"
-                semanticMatchFailTest(s, "Command_addModel")
-                semanticMatchFailTest(s, "Command")
+                const s = "add world to card";
+                semanticMatchFailTest(s, "Command_addModel");
+                semanticMatchFailTest(s, "Command");
             });
             it ("Bad add (invalid context)", () => {
-                const s = "add button to new stack"
-                semanticMatchFailTest(s, "Command_addModel")
-                semanticMatchFailTest(s, "Command")
+                const s = "add button to new stack";
+                semanticMatchFailTest(s, "Command_addModel");
+                semanticMatchFailTest(s, "Command");
             });
         });
         describe("Answer", () => {
             it ("simple answer", () => {
-                const s = "answer \"42\""
+                const s = "answer \"42\"";
                 semanticMatchTest(s, "Command");
                 semanticMatchTest(s, "Command_answer");
                 semanticMatchTest(s, "Statement");
             });
             it ("bad answer", () => {
-                const s = "answer \"42\" \"42\""
-                semanticMatchFailTest(s, "Command")
+                const s = "answer \"42\" \"42\"";
+                semanticMatchFailTest(s, "Command");
             });
         });
         describe("Set", () => {
@@ -476,25 +539,18 @@ describe("SimpleTalk Grammar", () => {
             });
             it ("Bad construction (no quotes)", () => {
                 const s = `set backgroundColor to "blue" in card 10`;
-                semanticMatchFailTest(s, "Command")
+                semanticMatchFailTest(s, "Command");
             });
         });
         describe("Arbitrary", () => {
             it ("arbitrary command", () => {
-                const s = "anythinggoes"
+                const s = "anythinggoes";
                 semanticMatchTest(s, "Command");
                 semanticMatchTest(s, "Statement");
-            });
-            it ("bad arbitrary", () => {
-                const s = "abc def"
-                semanticMatchFailTest(s, "Command")
             });
         });
         it ("Bad command (arbitrary with digits)", () => {
             semanticMatchFailTest("1234arrowKe", "Command");
-        });
-        it ("Bad command (arbitrary with space)", () => {
-            semanticMatchFailTest("aCommand another", "Command");
         });
     });
 

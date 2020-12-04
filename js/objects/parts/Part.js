@@ -11,8 +11,6 @@ import {
     DynamicProperty
 } from '../properties/PartProperties.js';
 
-import Compiler from '../compiler.js';
-
 
 class Part {
     constructor(anOwnerPart){
@@ -310,10 +308,7 @@ class Part {
             if(aMessage.senders){
                 originalSender = window.System.partsById[aMessage.senders[0].id];
             }
-            let evaluatedArgs = aMessage.args.map(arg => {
-                return window.System.interpreter.interpret(arg, originalSender);
-            });
-            return boundHandler(aMessage.senders, ...evaluatedArgs);
+            return boundHandler(aMessage.senders, ...aMessage.args);
         } else {
             // Otherwise, we have no handler for
             // it, so we delegate along the

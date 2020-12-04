@@ -29,10 +29,7 @@ import SvgView from './views/SvgView.js';
 import Halo from './views/Halo.js';
 
 import ohm from 'ohm-js';
-import Compiler from './compiler.js';
-import Interpreter from './Interpreter.js';
-import semantics from '../ohm/semantics.js';
-// import grammar from '../ohm/grammar.js';
+import interpreterSemantics from '../ohm/interpreter-semantics.js';
 
 
 const System = {
@@ -40,7 +37,6 @@ const System = {
     id: -1,
     isLoaded: false,
     partsById: {},
-    compiler: null,
     _commandHandlers: {},
     _functionHandlers: {},
 
@@ -304,10 +300,33 @@ const System = {
         if(!targetObject || targetObject == undefined){
             throw new Error(`System could not compile target object ${aMessage.targetId}`);
         }
-        this.compiler.compile(
-            aMessage.codeString,
-            targetObject
-        );
+        
+
+        // Attempt to parse the incoming SimpleTalk script string.
+        // If there are grammatical errors, report them and bail.
+        // Otherwise, create a new semantics on the targetPart, add
+        // the required semantic operations, and interpret the top
+        // level of the script, which will create the JS handler functions
+        let parsedScript = languageGrammar.match(aMessage.codeString);
+        if(parsedScript.failed()){
+            let msg = {
+                type: "error",
+                name: "GrammarMatchError",
+                message: parsedScript.message,
+            };
+            targetObject.sendMessage(msg, targetObject);
+        } else {
+            // Create a semantics object whose partContext
+            // attribute is set to be the target object.
+            targetObject._semantics = languageGrammar.createSemantics();
+            targetObject._semantics.addOperation(
+                'interpret',
+                interpreterSemantics(targetObject, this)
+            );
+            targetObject._semantics(parsedScript).interpret();
+        }
+        
+        
         // Be sure to then update the
         // serialization for the target
         // part, thus adding the script to
@@ -323,11 +342,7 @@ const System = {
             if(aMessage.senders){
                 originalSender = this.partsById[aMessage.senders[0].id];
             }
-            let evaluatedArgs = aMessage.args.map(arg => {
-                return this.interpreter.interpret(arg, originalSender);
-            });
-            //return boundHandler(...evaluatedArgs, aMessage.senders);
-            return boundHandler(aMessage.senders, ...evaluatedArgs);
+            return boundHandler(aMessage.senders, ...aMessage.args);
         } else {
             return this.doesNotUnderstand(aMessage);
         }
@@ -1329,12 +1344,8 @@ if (window.grammar){
 } else {
     languageGrammar = ohm.grammarFromScriptElement();
 }
-let languageSemantics = languageGrammar.createSemantics().addOperation('parse', semantics);
-System.compiler = new Compiler(languageGrammar, languageSemantics);
 
-// Initialize an interpreter instance
-// on the System
-System.interpreter = new Interpreter(System);
+System.grammar = languageGrammar;
 
 document.addEventListener('DOMContentLoaded', () => {
     // Add the System object to window so
