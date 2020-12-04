@@ -94,19 +94,17 @@ describe('ScriptEditor Functionality', () => {
     before(() => {
         editorCurrentCardView = document.querySelector('st-window > st-stack > .current-card');
         editorSaveButtonView = editorCurrentCardView.querySelector('st-button');
-        editorFieldView = editorCurrentCardView.querySelector('st-eric-field');
+        editorFieldView = editorCurrentCardView.querySelector('st-field');
     });
-
     it('Has all appropriate views', () => {
         assert.exists(editorCurrentCardView);
         assert.exists(editorSaveButtonView);
         assert.exists(editorFieldView);
     });
-
-    it('Editor has the current script for the Card in its field', () => {
-        let textArea = editorFieldView._shadowRoot.querySelector('textarea');
+    it('Editor has the current script html for the Card in its field', () => {
+        let textArea = editorFieldView._shadowRoot.querySelector('.field-textarea');
         assert.exists(textArea);
-        let displayedScript = textArea.value;
+        let displayedScriptHTML = textArea.innerHTML;
 
         let cardModel = document.querySelector('.current-stack > .current-card').model;
         let cardScript = cardModel.partProperties.getPropertyNamed(
@@ -114,23 +112,37 @@ describe('ScriptEditor Functionality', () => {
             'script'
         );
 
-        assert.equal(displayedScript, cardScript);
+        assert.equal(editorFieldView.htmlToText(textArea), cardScript);
     });
+    it('Editor has the current script text for the Card in its field', () => {
+        let fieldModel = editorFieldView.model;
+        let textArea = editorFieldView._shadowRoot.querySelector('.field-textarea');
+        assert.exists(textArea);
+        let textContent = fieldModel.partProperties.getPropertyNamed(
+            fieldModel,
+            'textContent'
+        );
 
+        let cardModel = document.querySelector('.current-stack > .current-card').model;
+        let cardScript = cardModel.partProperties.getPropertyNamed(
+            cardModel,
+            'script'
+        );
+    });
     it('Can set a new script for the Card by changing field value and triggering button', () => {
         let newScript = `on foo\n\tanswer "foo"\n end foo`;
         let cardModel = document.querySelector('.current-stack > .current-card').model;
         let fieldModel = editorFieldView.model;
         let saveButtonModel = editorSaveButtonView.model;
 
+        // TODO at the moment field does not respond to html content updates!
+        let newScriptHTML = editorFieldView.textToHtml(newScript);
+        let textArea = editorFieldView._shadowRoot.querySelector('.field-textarea');
+        textArea.innerHTML = newScriptHTML;
         fieldModel.partProperties.setPropertyNamed(
             fieldModel,
-            'textContent',
-            newScript
-        );
-
-        console.log(
-            saveButtonModel._commandHandlers['click']
+            'htmlContent',
+            newScriptHTML
         );
 
         // Send click on the button,
@@ -148,5 +160,45 @@ describe('ScriptEditor Functionality', () => {
         );
 
         assert.equal(cardScript, newScript);
+    });
+    describe('Simpletalk Completer', () => {
+        before(() => {
+            // make sure that the simpleTalkCompleter is set
+            editorFieldView.editorCompleter = editorFieldView.simpleTalkCompleter;
+        });
+        it('Will complete "on messageName{SPACE}" with template', () => {
+            let fieldModel = editorFieldView.model;
+            let textArea = editorFieldView._shadowRoot.querySelector('.field-textarea');
+            let newHTMLContent = "on message ";
+            let completedHTMLContent = "on message <div>\t</div><div>end message<br></div>";
+
+            // Simulate typing the input events
+            let event = new window.Event('input');
+            textArea.innerHTML = newHTMLContent;
+            textArea.dispatchEvent(event);
+
+            let foundHTMLContent = fieldModel.partProperties.getPropertyNamed(
+                fieldModel,
+                'htmlContent'
+            );
+            assert.equal(foundHTMLContent, completedHTMLContent);
+        });
+        it('Will complete "on messageName{NEWLINE}" with template', () => {
+            let fieldModel = editorFieldView.model;
+            let textArea = editorFieldView._shadowRoot.querySelector('.field-textarea');
+            let newHTMLContent = "on message\n";
+            let completedHTMLContent = "on message\nend message";
+
+            // Simulate typing the input events
+            let event = new window.Event('input');
+            textArea.innerHTML = newHTMLContent;
+            textArea.dispatchEvent(event);
+
+            let foundHTMLContent = fieldModel.partProperties.getPropertyNamed(
+                fieldModel,
+                'htmlContent'
+            );
+            assert.equal(foundHTMLContent, completedHTMLContent);
+        });
     });
 });

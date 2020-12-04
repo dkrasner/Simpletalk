@@ -11,7 +11,6 @@ import Button from './parts/Button.js';
 import Field from './parts/Field.js';
 import WorldStack from './parts/WorldStack.js';
 import Window from './parts/Window.js';
-import EricField from './parts/EricField.js';
 import Container from './parts/Container.js';
 import Drawing from './parts/Drawing.js';
 import Svg from './parts/Svg.js';
@@ -22,7 +21,7 @@ import ButtonView from './views/ButtonView.js';
 
 import CardView from './views/CardView.js';
 import WindowView from './views/WindowView';
-import EricFieldView from './views/EricFieldView.js';
+import FieldView from './views/FieldView.js';
 import ContainerView from './views/ContainerView.js';
 import DrawingView from './views/drawing/DrawingView.js';
 import SvgView from './views/SvgView.js';
@@ -349,7 +348,7 @@ const System = {
         }
     },
 
-    newModel(kind, ownerId, ownerKind, context, name){
+    newModel(kind, ownerId, ownerKind, context, name, buildView=true){
         // TODO This is an exception to the general newModel
         // message and method structure; potentially should be
         // reworked
@@ -413,11 +412,13 @@ const System = {
             this.updateSerialization(subpart.id);
         });
 
-        // See if there is already a view for the model.
-        // If not, create and attach it.
-        let viewForModel = this.findViewById(model.id);
-        if(!viewForModel){
-            this.newView(model.type, model.id);
+        if(buildView){
+            // See if there is already a view for the model.
+            // If not, create and attach it.
+            let viewForModel = this.findViewById(model.id);
+            if(!viewForModel){
+                this.newView(model.type, model.id);
+            }
         }
 
         return model;
@@ -1117,7 +1118,7 @@ System._commandHandlers['openWorldCatalog'] = function(senders, targetId){
 
     windowStackView.classList.add('window-stack');
     //TODO this should be updated as parts, views mature
-    const ignoreParts = ["field", "eric-field", "background", "world"];
+    const ignoreParts = ["field", "field", "background", "world"];
     Object.keys(System.availableParts).forEach((partName) => {
         if (ignoreParts.indexOf(partName) === -1){
             let partModel;
@@ -1214,10 +1215,11 @@ System._commandHandlers['openScriptEditor'] = function(senders, targetId){
 
     let winModel = this.newModel('window', insertStack.id);
     winModel.setTarget(targetPart);
-    let winTitle = `Script: ${targetPart.type}[${targetId}]`;
+    let targetName = targetPart.partProperties.getPropertyNamed(targetPart, "name");
+    let winTitle = `Script: ${targetName}(${targetPart.type}[${targetId}])`;
     winModel.partProperties.setPropertyNamed(
         winModel,
-        'name',
+        'title',
         winTitle
     );
     let winView = this.findViewById(winModel.id);
@@ -1234,9 +1236,29 @@ System._commandHandlers['openScriptEditor'] = function(senders, targetId){
         'list'
     );
 
-    // Create the EricField model and attach to current card
+    // Create the Field model and attach to current card
     // of the new window.
-    let fieldModel = this.newModel('eric-field', currentCard.id);
+    let fieldModel = this.newModel('field', currentCard.id);
+    let fieldView = this.findViewById(fieldModel.id);
+    // Set the field's htmlContent to be the textToHtml converted
+    // script of the given target part.
+    let currentScript = targetPart.partProperties.getPropertyNamed(
+        targetPart,
+        'script'
+    );
+
+    let htmlContent = fieldView.textToHtml(currentScript)
+    // set the inner html of the textarea with the proper htmlContent
+    // NOTE: at the moment fieldView does not subscribe to htmlContent
+    // change due to cursor focus and other issues
+    let textArea = fieldView._shadowRoot.querySelector(".field-textarea");
+    textArea.innerHTML = htmlContent;
+    fieldModel.partProperties.setPropertyNamed(
+        fieldModel,
+        'htmlContent',
+        htmlContent
+    );
+
     let saveBtnModel = this.newModel('button', currentCard.id);
     saveBtnModel.partProperties.setPropertyNamed(
         saveBtnModel,
@@ -1244,37 +1266,21 @@ System._commandHandlers['openScriptEditor'] = function(senders, targetId){
         'Save Script'
     );
 
-    let fieldView = this.findViewById(fieldModel.id);
     let saveBtnView = this.findViewById(saveBtnModel.id);
-
-    // Set the field's textContent to be the script of the given
-    // target part.
-    let currentScript = targetPart.partProperties.getPropertyNamed(
-        targetPart,
-        'script'
-    );
-    fieldModel.partProperties.setPropertyNamed(
-        fieldModel,
-        'textContent',
-        currentScript
-    );
 
     // Set the save button's action to be to save the script
     // on the part
     saveBtnModel._commandHandlers['click'] = function(){
-        let editedText = fieldModel.partProperties.getPropertyNamed(
+        let textContent = fieldModel.partProperties.getPropertyNamed(
             fieldModel,
             'textContent'
         );
         targetPart.partProperties.setPropertyNamed(
             targetPart,
             'script',
-            editedText
+            textContent
         );
     };
-    // Manually set the style attributes for this stuff. Since we don't
-    // have layout parts yet we need to do it here to make it look nice
-    fieldView.style.flex = "1";
 };
 
 System._commandHandlers['saveHTML'] = function(senders){
@@ -1300,7 +1306,7 @@ System.registerPart('field', Field);
 System.registerPart('button', Button);
 System.registerPart('world', WorldStack);
 System.registerPart('window', Window);
-System.registerPart('eric-field', EricField);
+System.registerPart('field', Field);
 System.registerPart('container', Container);
 System.registerPart('drawing', Drawing);
 System.registerPart('svg', Svg);
@@ -1311,7 +1317,7 @@ System.registerView('stack', StackView);
 System.registerView('world', WorldView);
 System.registerView('card', CardView);
 System.registerView('window', WindowView);
-System.registerView('eric-field', EricFieldView);
+System.registerView('field', FieldView);
 System.registerView('container', ContainerView);
 System.registerView('drawing', DrawingView);
 System.registerView('svg', SvgView);

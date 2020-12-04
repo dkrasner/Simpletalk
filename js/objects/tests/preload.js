@@ -15,6 +15,7 @@ global.document = window.document;
 global.HTMLElement = window.HTMLElement;
 global.fetch = require("node-fetch");
 global.DOMParser = window.DOMParser;
+document.execCommand = function execCommandMock() { };
 
 // add the grammar in
 var fs = require('fs');
