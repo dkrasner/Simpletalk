@@ -43,12 +43,6 @@ describe("SimpleTalk Grammar", () => {
             const s = "-- mycomment part2";
             matchAndsemanticMatchTest(s, 'comment');
         });
-        it("comment with weird chars doesn't count", () => {
-            const s = "-- mycomment $";
-            semanticMatchFailTest(s, 'comment');
-            const t = "-- mycomment \n";
-            semanticMatchFailTest(s, 'comment');
-        });
         it("positive integer", () =>{
             const s = "24";
             semanticMatchTest(s, 'integerLiteral');

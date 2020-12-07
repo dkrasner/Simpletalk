@@ -66,4 +66,33 @@ describe("Comment Grammar Tests", () => {
             semanticMatchTest(str, "Statement");
         });
     });
+
+    describe("Comprehensive Tests", () => {
+        it("Can handle comments between message handlers", () => {
+            let str = [
+                'on myMessageOne',
+                '\tdoSomething',
+                'end myMessageOne',
+                '\n',
+                '-- This is a block of comment',
+                '-- between handlers#$%$',
+                '\n',
+                'on doSomething',
+                'answer "hello"',
+                'end doSomething'
+            ].join('\n');
+            matchTest(str, 'Script');
+        });
+
+        it("Can handle comments at the inside top of a handler", () => {
+            let str = [
+                'on myCustomHandler foo1, foo2',
+                '-- this is a comment that documents the',
+                '-- handler @#$$&^',
+                'doSomethingElse',
+                'end myCustomHandler'
+            ].join("\n");
+            semanticMatchTest(str, 'MessageHandler');
+        });
+    });
 });

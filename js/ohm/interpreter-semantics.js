@@ -258,15 +258,12 @@ const createInterpreterSemantics = (partContext, systemContext) => {
             return list.asIteration().interpret();
         },
 
-        // StatementList: function(list){
-        //     let result = list.children.map(statement => {
-        //         return statement.interpret();
-        //     });
-        //     return result;
-        // },
-
         StatementLine: function(statement, newline){
             return statement.interpret();
+        },
+
+        Statement: function(command, optionalComment){
+            return command.interpret();
         },
 
         Expression_addExpr: function(firstExpression, operation, secondExpression){
