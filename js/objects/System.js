@@ -1075,6 +1075,26 @@ System._commandHandlers['openToolbox'] = function(senders, targetId){
         System,
         System
     );
+
+    // Add a button to add a Field
+    let addFieldBtn = this.newModel('button', windowCurrentCardModel.id);
+    addFieldBtn.partProperties.setPropertyNamed(
+        addFieldBtn,
+        'name',
+        'Add Field to Card'
+    );
+    let addFieldBtnScript = 'on click\n    add field to current card\nend click';
+    addFieldBtn.partProperties.setPropertyNamed(
+        addFieldBtn,
+        'script',
+        addFieldBtnScript
+    );
+    System.sendMessage(
+        {type: "compile", codeString: addFieldBtnScript, targetId: addFieldBtn.id},
+        System,
+        System
+    );
+
 };
 
 System._commandHandlers['openWorldCatalog'] = function(senders, targetId){

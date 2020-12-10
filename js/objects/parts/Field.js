@@ -24,9 +24,15 @@ class Field extends Part {
                 name
             );
         }
+        // some bs
 
         // Set the Field-specific
         // Part Properties
+        this.partProperties.newBasicProp(
+            'mode',
+            'editing'
+        );
+
         this.partProperties.newBasicProp(
             'htmlContent',
             ''

@@ -8,19 +8,60 @@
  * implementation of Field/FieldView in the future.
  */
 import PartView from './PartView.js';
+import ColorWheelWidget from './drawing/ColorWheelWidget.js';
+
+const haloModeButtonSVG = `
+<svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-tools" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
+  <path d="M3 21h4l13 -13a1.5 1.5 0 0 0 -4 -4l-13 13v4" />
+  <line x1="14.5" y1="5.5" x2="18.5" y2="9.5" />
+  <polyline points="12 8 7 3 3 7 8 12" />
+  <line x1="7" y1="8" x2="5.5" y2="9.5" />
+  <polyline points="16 12 21 17 17 21 12 16" />
+  <line x1="16" y1="17" x2="14.5" y2="18.5" />
+</svg>
+`;
 
 const templateString = `
 <style>
+.field {
+    display: flex;
+    align-items: center;
+    flex-direction: column;
+    max-height: 100%important;
+    height: 100%;
+    width: 100%;
+    overflow-y: auto;
+    overflow-x: hidden;
+}
+
+.field color-wheel {
+    position: absolute;
+}
+
+.field-textarea-wrapper {
+    width: 100%;
+    height: 90%;
+    background-color: var(--palette-cornsik);
+}
+
 .field-textarea {
+    width: calc(100% - 5px);
+    font-family: monospace;
+    height: 100%;
     white-space: pre-wrap;
-    padding: 5px;
+    overflow-wrap: anywhere;
 }
 
 .field-toolbar {
     display: flex;
     justify-content: center;
-    padding:5px;
-    border-bottom: 1px solid;
+    width: 100%;
+    background-color: var(--palette-red);
+    padding-top: 5px;
+    padding-bottom: 5px;
+    opacity: 1;
+    transition: opacity .5s, transform 1s;
 }
 
 .field-toolbar > * {
@@ -34,9 +75,9 @@ const templateString = `
 
 :host {
     display: block;
+    position: absolute;
     outline: none;
     resize: both;
-    overflow: auto;
 }
 :host(:active),
 :host(:focus){
@@ -67,25 +108,106 @@ const templateString = `
         <option value="6">XX-Large</option>
         <option value="7">Max</option>
       </select>
-        <img title="Clean" id="field-clean" src="data:image/gif;base64,R0lGODlhFgAWAIQbAD04KTRLYzFRjlldZl9vj1dusY14WYODhpWIbbSVFY6O7IOXw5qbms+wUbCztca0ccS4kdDQjdTLtMrL1O3YitHa7OPcsd/f4PfvrvDv8Pv5xv///////////////////yH5BAEKAB8ALAAAAAAWABYAAAV84CeOZGmeaKqubMteyzK547QoBcFWTm/jgsHq4rhMLoxFIehQQSAWR+Z4IAyaJ0kEgtFoLIzLwRE4oCQWrxoTOTAIhMCZ0tVgMBQKZHAYyFEWEV14eQ8IflhnEHmFDQkAiSkQCI2PDC4QBg+OAJc0ewadNCOgo6anqKkoIQA7" />
-        <!-- <img title="Print" onclick="printDoc();" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABYAAAAWCAYAAADEtGw7AAAABGdBTUEAALGPC/xhBQAAAAZiS0dEAP8A/wD/oL2nkwAAAAlwSFlzAAALEwAACxMBAJqcGAAAAAd0SU1FB9oEBxcZFmGboiwAAAAIdEVYdENvbW1lbnQA9syWvwAAAuFJREFUOMvtlUtsjFEUx//n3nn0YdpBh1abRpt4LFqtqkc3jRKkNEIsiIRIBBEhJJpKlIVo4m1RRMKKjQiRMJRUqUdKPT71qpIpiRKPaqdF55tv5vvusZjQTjOlseUkd3Xu/3dPzusC/22wtu2wRn+jG5So/OCDh8ycMJDflehMlkJkVK7KUYN+ufzA/RttH76zaVocDptRxzQtNi3mRWuPc+6cKtlXZ/sddP2uu9uXlmYXZ6Qm8v4Tz8lhF1H+zDQXt7S8oLMXtbF4e8QaFHjj3kbP2MzkktHpiTjp9VH6iHiA+whtAsX5brpwueMGdONdf/2A4M7ukDs1JW662+XkqTkeUoqjKtOjm2h53YFL15pSJ04Zc94wdtibr26fXlC2mzRvBccEbz2kiRFD414tKMlEZbVGT33+qCoHgha81SWYsew0r1uzfNylmtpx80pngQQ91LwVk2JGvGnfvZG6YcYRAT16GFtW5kKKfo1EQLtfh5Q2etT0BIWF+aitq4fDbk+ImYo1OxvGF03waFJQvBCkvDffRyEtxQiFFYgAZTHS0zwAGD7fG5TNnYNTp8/FzvGwJOfmgG7GOx0SAKKgQgDMgKBI0NJGMEImpGDk5+WACEwEd0ywblhGUZ4Hw5OdUekRBLT7DTgdEgxACsIznx8zpmWh7k4rkpJcuHDxCul6MDsmmBXDlWCH2+XozSgBnzsNCEE4euYV4pwCpsWYPW0UHDYBKSWu1NYjENDReqtKjwn2+zvtTc1vMSTB/mvev/WEYSlASsLimcOhOBJxw+N3aP/SjefNL5GePZmpu4kG7OPr1+tOfPyUu3BecWYKcwQcDFmwFKAUo90fhKDInBCAmvqnyMgqUEagQwCoHBDc1rjv9pIlD8IbVkz6qYViIBQGTJPx4k0XpIgEZoRN1Da0cij4VfR0ta3WvBXH/rjdCufv6R2zPgPH/e4pxSBCpeatqPrjNiso203/5s/zA171Mv8+w1LOAAAAAElFTkSuQmCC">-->
-        <img title="Undo" id="field-undo" src="data:image/gif;base64,R0lGODlhFgAWAOMKADljwliE33mOrpGjuYKl8aezxqPD+7/I19DV3NHa7P///////////////////////yH5BAEKAA8ALAAAAAAWABYAAARR8MlJq7046807TkaYeJJBnES4EeUJvIGapWYAC0CsocQ7SDlWJkAkCA6ToMYWIARGQF3mRQVIEjkkSVLIbSfEwhdRIH4fh/DZMICe3/C4nBQBADs=" />
-        <img title="Redo" id="field-redo" src="data:image/gif;base64,R0lGODlhFgAWAMIHAB1ChDljwl9vj1iE34Kl8aPD+7/I1////yH5BAEKAAcALAAAAAAWABYAAANKeLrc/jDKSesyphi7SiEgsVXZEATDICqBVJjpqWZt9NaEDNbQK1wCQsxlYnxMAImhyDoFAElJasRRvAZVRqqQXUy7Cgx4TC6bswkAOw==" />
-        <img title="Remove formatting" id="field-removeFormat" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABYAAAAWCAYAAADEtGw7AAAABGdBTUEAALGPC/xhBQAAAAZiS0dEAP8A/wD/oL2nkwAAAAlwSFlzAAAOxAAADsQBlSsOGwAAAAd0SU1FB9oECQMCKPI8CIIAAAAIdEVYdENvbW1lbnQA9syWvwAAAuhJREFUOMtjYBgFxAB501ZWBvVaL2nHnlmk6mXCJbF69zU+Hz/9fB5O1lx+bg45qhl8/fYr5it3XrP/YWTUvvvk3VeqGXz70TvbJy8+Wv39+2/Hz19/mGwjZzuTYjALuoBv9jImaXHeyD3H7kU8fPj2ICML8z92dlbtMzdeiG3fco7J08foH1kurkm3E9iw54YvKwuTuom+LPt/BgbWf3//sf37/1/c02cCG1lB8f//f95DZx74MTMzshhoSm6szrQ/a6Ir/Z2RkfEjBxuLYFpDiDi6Af///2ckaHBp7+7wmavP5n76+P2ClrLIYl8H9W36auJCbCxM4szMTJac7Kza////R3H1w2cfWAgafPbqs5g7D95++/P1B4+ECK8tAwMDw/1H7159+/7r7ZcvPz4fOHbzEwMDwx8GBgaGnNatfHZx8zqrJ+4VJBh5CQEGOySEua/v3n7hXmqI8WUGBgYGL3vVG7fuPK3i5GD9/fja7ZsMDAzMG/Ze52mZeSj4yu1XEq/ff7W5dvfVAS1lsXc4Db7z8C3r8p7Qjf///2dnZGxlqJuyr3rPqQd/Hhyu7oSpYWScylDQsd3kzvnH738wMDzj5GBN1VIWW4c3KDon7VOvm7S3paB9u5qsU5/x5KUnlY+eexQbkLNsErK61+++VnAJcfkyMTIwffj0QwZbJDKjcETs1Y8evyd48toz8y/ffzv//vPP4veffxpX77z6l5JewHPu8MqTDAwMDLzyrjb/mZm0JcT5Lj+89+Ybm6zz95oMh7s4XbygN3Sluq4Mj5K8iKMgP4f0////fv77//8nLy+7MCcXmyYDAwODS9jM9tcvPypd35pne3ljdjvj26+H2dhYpuENikgfvQeXNmSl3tqepxXsqhXPyc666s+fv1fMdKR3TK72zpix8nTc7bdfhfkEeVbC9KhbK/9iYWHiErbu6MWbY/7//8/4//9/pgOnH6jGVazvFDRtq2VgiBIZrUTIBgCk+ivHvuEKwAAAAABJRU5ErkJggg==">
-        <img title="Bold" id="field-bold" src="data:image/gif;base64,R0lGODlhFgAWAID/AMDAwAAAACH5BAEAAAAALAAAAAAWABYAQAInhI+pa+H9mJy0LhdgtrxzDG5WGFVk6aXqyk6Y9kXvKKNuLbb6zgMFADs=" />
-        <img title="Italic" id="field-italic" src="data:image/gif;base64,R0lGODlhFgAWAKEDAAAAAF9vj5WIbf///yH5BAEAAAMALAAAAAAWABYAAAIjnI+py+0Po5x0gXvruEKHrF2BB1YiCWgbMFIYpsbyTNd2UwAAOw==" />
-        <img title="Underline" id="field-underline" src="data:image/gif;base64,R0lGODlhFgAWAKECAAAAAF9vj////////yH5BAEAAAIALAAAAAAWABYAAAIrlI+py+0Po5zUgAsEzvEeL4Ea15EiJJ5PSqJmuwKBEKgxVuXWtun+DwxCCgA7" />
-        <img title="Left align" id="field-justifyleft" style="display:none" src="data:image/gif;base64,R0lGODlhFgAWAID/AMDAwAAAACH5BAEAAAAALAAAAAAWABYAQAIghI+py+0Po5y02ouz3jL4D4JMGELkGYxo+qzl4nKyXAAAOw==" />
-        <img title="Center align" id="field-justifycenter" style="display:none" src="data:image/gif;base64,R0lGODlhFgAWAID/AMDAwAAAACH5BAEAAAAALAAAAAAWABYAQAIfhI+py+0Po5y02ouz3jL4D4JOGI7kaZ5Bqn4sycVbAQA7" />
-        <img title="Right align" id="field-justifyright" style="display:none" src="data:image/gif;base64,R0lGODlhFgAWAID/AMDAwAAAACH5BAEAAAAALAAAAAAWABYAQAIghI+py+0Po5y02ouz3jL4D4JQGDLkGYxouqzl43JyVgAAOw==" />
-        <img title="Numbered list" id="field-insertorderedlist" style="display:none" src="data:image/gif;base64,R0lGODlhFgAWAMIGAAAAADljwliE35GjuaezxtHa7P///////yH5BAEAAAcALAAAAAAWABYAAAM2eLrc/jDKSespwjoRFvggCBUBoTFBeq6QIAysQnRHaEOzyaZ07Lu9lUBnC0UGQU1K52s6n5oEADs=" />
-        <img title="Dotted list" id="field-insertunorderedlist" style="display:none" src="data:image/gif;base64,R0lGODlhFgAWAMIGAAAAAB1ChF9vj1iE33mOrqezxv///////yH5BAEAAAcALAAAAAAWABYAAAMyeLrc/jDKSesppNhGRlBAKIZRERBbqm6YtnbfMY7lud64UwiuKnigGQliQuWOyKQykgAAOw==" />
-        <img title="Delete indentation" id="field-outdent" src="data:image/gif;base64,R0lGODlhFgAWAMIHAAAAADljwliE35GjuaezxtDV3NHa7P///yH5BAEAAAcALAAAAAAWABYAAAM2eLrc/jDKCQG9F2i7u8agQgyK1z2EIBil+TWqEMxhMczsYVJ3e4ahk+sFnAgtxSQDqWw6n5cEADs=" />
-        <img title="Add indentation" id="field-indent" src="data:image/gif;base64,R0lGODlhFgAWAOMIAAAAADljwl9vj1iE35GjuaezxtDV3NHa7P///////////////////////////////yH5BAEAAAgALAAAAAAWABYAAAQ7EMlJq704650B/x8gemMpgugwHJNZXodKsO5oqUOgo5KhBwWESyMQsCRDHu9VOyk5TM9zSpFSr9gsJwIAOw==" />
-        <!--<img title="Hyperlink" onclick="var sLnk=prompt('Write the URL here','http:\/\/');if(sLnk&&sLnk!=''&&sLnk!='http://'){formatDoc('createlink',sLnk)}" src="data:image/gif;base64,R0lGODlhFgAWAOMKAB1ChDRLY19vj3mOrpGjuaezxrCztb/I19Ha7Pv8/f///////////////////////yH5BAEKAA8ALAAAAAAWABYAAARY8MlJq7046827/2BYIQVhHg9pEgVGIklyDEUBy/RlE4FQF4dCj2AQXAiJQDCWQCAEBwIioEMQBgSAFhDAGghGi9XgHAhMNoSZgJkJei33UESv2+/4vD4TAQA7" />-->
-        <img title="Cut" id="field-cut" src="data:image/gif;base64,R0lGODlhFgAWAIQSAB1ChBFNsRJTySJYwjljwkxwl19vj1dusYODhl6MnHmOrpqbmpGjuaezxrCztcDCxL/I18rL1P///////////////////////////////////////////////////////yH5BAEAAB8ALAAAAAAWABYAAAVu4CeOZGmeaKqubDs6TNnEbGNApNG0kbGMi5trwcA9GArXh+FAfBAw5UexUDAQESkRsfhJPwaH4YsEGAAJGisRGAQY7UCC9ZAXBB+74LGCRxIEHwAHdWooDgGJcwpxDisQBQRjIgkDCVlfmZqbmiEAOw==" />
+        <svg xmlns="http://www.w3.org/2000/svg" id="field-clean" class="icon icon-tabler icon-tabler-eraser" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+          <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
+          <path d="M19 19h-11l-4 -4a1 1 0 0 1 0 -1.41l10 -10a1 1 0 0 1 1.41 0l5 5a1 1 0 0 1 0 1.41l-9 9" />
+          <line x1="18" y1="12.3" x2="11.7" y2="6" />
+        </svg>
+        <svg xmlns="http://www.w3.org/2000/svg" id="field-undo"  class="icon icon-tabler icon-tabler-arrow-back-up" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+          <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
+          <path d="M9 13l-4 -4l4 -4m-4 4h11a4 4 0 0 1 0 8h-1" />
+        </svg>
+        <svg xmlns="http://www.w3.org/2000/svg" id="field-redo"  class="icon icon-tabler icon-tabler-arrow-forward-up" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+          <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
+          <path d="M15 13l4 -4l-4 -4m4 4h-11a4 4 0 0 0 0 8h1" />
+        </svg>
+        <svg xmlns="http://www.w3.org/2000/svg" id="field-removeFormat" class="icon icon-tabler icon-tabler-clear-formatting" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+          <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
+          <path d="M17 15l4 4m0 -4l-4 4" />
+          <path d="M7 6v-1h11v1" />
+          <line x1="7" y1="19" x2="11" y2="19" />
+          <line x1="13" y1="5" x2="9" y2="19" />
+        </svg>
+        <svg xmlns="http://www.w3.org/2000/svg" id="field-bold"  class="icon icon-tabler icon-tabler-bold" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+          <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
+          <path d="M7 5h6a3.5 3.5 0 0 1 0 7h-6z" />
+          <path d="M13 12h1a3.5 3.5 0 0 1 0 7h-7v-7" />
+        </svg>
+        <svg xmlns="http://www.w3.org/2000/svg" id="field-italic"  class="icon icon-tabler icon-tabler-italic" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+          <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
+          <line x1="11" y1="5" x2="17" y2="5" />
+          <line x1="7" y1="19" x2="13" y2="19" />
+          <line x1="14" y1="5" x2="10" y2="19" />
+        </svg>
+        <svg xmlns="http://www.w3.org/2000/svg" id="field-underline" class="icon icon-tabler icon-tabler-underline" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+          <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
+          <line x1="6" y1="20" x2="18" y2="20" />
+          <path d="M8 5v6a4 4 0 0 0 8 0v-6" />
+        </svg>
+        <svg xmlns="http://www.w3.org/2000/svg" id="field-justifyleft"  class="icon icon-tabler icon-tabler-align-left" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+          <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
+          <line x1="4" y1="6" x2="20" y2="6" />
+          <line x1="4" y1="12" x2="14" y2="12" />
+          <line x1="4" y1="18" x2="18" y2="18" />
+        </svg>
+        <svg xmlns="http://www.w3.org/2000/svg" id="field-justifycenter" class="icon icon-tabler icon-tabler-align-center" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+          <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
+          <line x1="4" y1="6" x2="20" y2="6" />
+          <line x1="8" y1="12" x2="16" y2="12" />
+          <line x1="6" y1="18" x2="18" y2="18" />
+        </svg>
+        <svg xmlns="http://www.w3.org/2000/svg" id="field-justifyright"  class="icon icon-tabler icon-tabler-align-right" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+          <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
+          <line x1="4" y1="6" x2="20" y2="6" />
+          <line x1="10" y1="12" x2="20" y2="12" />
+          <line x1="6" y1="18" x2="20" y2="18" />
+        </svg>
+        <svg xmlns="http://www.w3.org/2000/svg" id="field-insertunorderedlist" class="icon icon-tabler icon-tabler-list" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+          <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
+          <line x1="9" y1="6" x2="20" y2="6" />
+          <line x1="9" y1="12" x2="20" y2="12" />
+          <line x1="9" y1="18" x2="20" y2="18" />
+          <line x1="5" y1="6" x2="5" y2="6.01" />
+          <line x1="5" y1="12" x2="5" y2="12.01" />
+          <line x1="5" y1="18" x2="5" y2="18.01" />
+        </svg>
+        <svg xmlns="http://www.w3.org/2000/svg" id="field-outdent"  class="icon icon-tabler icon-tabler-indent-decrease" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+          <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
+          <line x1="20" y1="6" x2="13" y2="6" />
+          <line x1="20" y1="12" x2="11" y2="12" />
+          <line x1="20" y1="18" x2="13" y2="18" />
+          <path d="M8 8l-4 4l4 4" />
+        </svg>
+        <svg xmlns="http://www.w3.org/2000/svg" id="field-indent"  class="icon icon-tabler icon-tabler-indent-increase" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+          <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
+          <line x1="20" y1="6" x2="9" y2="6" />
+          <line x1="20" y1="12" x2="13" y2="12" />
+          <line x1="20" y1="18" x2="9" y2="18" />
+          <path d="M4 8l4 4l-4 4" />
+        </svg>
+        <svg xmlns="http://www.w3.org/2000/svg" id="field-cut"  class="icon icon-tabler icon-tabler-cut" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+          <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
+          <circle cx="7" cy="17" r="3" />
+          <circle cx="17" cy="17" r="3" />
+          <line x1="9.15" y1="14.85" x2="18" y2="4" />
+          <line x1="6" y1="4" x2="14.85" y2="14.85" />
+        </svg>
+        <svg id="field-color" xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-color-picker" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+          <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
+          <line x1="11" y1="7" x2="17" y2="13" />
+          <path d="M5 19v-4l9.7 -9.7a1 1 0 0 1 1.4 0l2.6 2.6a1 1 0 0 1 0 1.4l-9.7 9.7h-4" />
+        </svg>
+        <svg id="field-backgroundColor" xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-color-swatch" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+          <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
+          <path d="M19 3h-4a2 2 0 0 0 -2 2v12a4 4 0 0 0 8 0v-12a2 2 0 0 0 -2 -2" />
+          <path d="M13 7.35l-2 -2a2 2 0 0 0 -2.828 0l-2.828 2.828a2 2 0 0 0 0 2.828l9 9" />
+          <path d="M7.3 13h-2.3a2 2 0 0 0 -2 2v4a2 2 0 0 0 2 2h12" />
+          <line x1="17" y1="17" x2="17" y2="17.01" />
+        </svg>
    </div>
-  <div class="field-textarea" contenteditable spellcheck="false">
+   <div class="field-textarea-wrapper">
+      <div class="field-textarea" contenteditable="true" spellcheck="false">
+   </div>
   </div>
 </div>`;
 
@@ -98,7 +220,8 @@ class FieldView extends PartView {
     constructor(){
         super();
 
-        this.editorCompleter = this.simpleTalkCompleter;
+        // this.editorCompleter = this.simpleTalkCompleter;
+        this.editorCompleter = null;
 
         this.template = document.createElement('template');
         this.template.innerHTML = templateString;
@@ -109,12 +232,18 @@ class FieldView extends PartView {
 
         // Bind methods
         this.onInput = this.onInput.bind(this);
+        this.onClick = this.onClick.bind(this);
         this.textToHtml = this.textToHtml.bind(this);
         this.setupPropHandlers = this.setupPropHandlers.bind(this);
         this.setUpToolbar = this.setUpToolbar.bind(this);
         this._toolbarHandler = this._toolbarHandler.bind(this);
         this.setEditorMode = this.setEditorMode.bind(this);
         this.simpleTalkCompleter = this.simpleTalkCompleter.bind(this);
+        this.initCustomHaloButton = this.initCustomHaloButton.bind(this);
+        this.toggleMode = this.toggleMode.bind(this);
+        this.toggleModePartProperty = this.toggleModePartProperty.bind(this);
+        this.openColorWheelWidget = this.openColorWheelWidget.bind(this);
+        this.onColorSelected = this.onColorSelected.bind(this);
 
         this.setupPropHandlers();
     }
@@ -124,19 +253,22 @@ class FieldView extends PartView {
         // this way anything that depends on the underlying content can
         // access it directly
         this.onPropChange('htmlContent', (value, id) => {
-            let textArea = this._shadowRoot.querySelector('.field-textarea');
             this.model.partProperties.setPropertyNamed(
                 this.model,
                 'textContent',
-                this.htmlToText(textArea)
+                this.htmlToText(this.textarea)
             );
+        });
+        this.onPropChange('mode', (value, id) => {
+            this.toggleMode(value);
         });
     }
 
     afterConnected(){
-        let textArea = this._shadowRoot.querySelector('.field-textarea');
-        textArea.addEventListener('input', this.onInput);
-        textArea.focus();
+        this.textarea = this._shadowRoot.querySelector('.field-textarea');
+        this.textareaWrapper = this._shadowRoot.querySelector('.field-textarea-wrapper');
+        this.textarea.addEventListener('input', this.onInput);
+        this.textarea.focus();
         // document.execCommand("defaultParagraphSeparator", false, "br");
         this.setUpToolbar();
         // prevent the default tab key to leave focus on the field
@@ -146,32 +278,38 @@ class FieldView extends PartView {
                 document.execCommand('insertHTML', false, '&#x9');
             };
         });
+        this.addEventListener('click', this.onClick);
+        if(!this.haloModeButton){
+            this.initCustomHaloButton();
+        }
     }
 
     afterDisconnected(){
-        let textArea = this._shadowRoot.querySelector('.field-textarea');
-        textArea.removeEventListener('input', this.onInput);
+        this.textarea.removeEventListener('input', this.onInput);
+        this.removeEventListener('click', this.onClick);
     }
 
     afterModelSet(){
-        // If we have a model, set the value of the textArea
+        // If we have a model, set the value of the textarea
         // to the current text of the field model
-        let textArea = this._shadowRoot.querySelector('.field-textarea');
+        this.textarea = this._shadowRoot.querySelector('.field-textarea');
         let htmlContent = this.model.partProperties.getPropertyNamed(
             this.model,
             'htmlContent'
         );
-        textArea.innerHTML = htmlContent;
+        this.textarea.innerHTML = htmlContent;
         // set the textContent property
         this.model.partProperties.setPropertyNamed(
             this.model,
             'textContent',
-            this.htmlToText(textArea)
+            this.htmlToText(this.textarea)
         );
+        // set the editing mode
+        let mode = this.model.partProperties.getPropertyNamed(this.model, "mode");
+        this.toggleMode(mode);
     }
 
     setUpToolbar(){
-        let textArea = this._shadowRoot.querySelector('.field-textarea');
         let toolbar = this._shadowRoot.querySelector('.field-toolbar');
         toolbar.childNodes.forEach((node) => {
             // current id contains the command and the value, maybe this is too implicit
@@ -189,25 +327,51 @@ class FieldView extends PartView {
     }
 
     _toolbarHandler(event, command, value){
-        let textArea = this._shadowRoot.querySelector('.field-textarea');
         if(command === "clean"){
             if(confirm('Are you sure?')){
-                textArea.innerHTML = "";
+                this.textarea.innerHTML = "";
             };
             return true;
         } else if(["fontsize", "fontname"].indexOf(command) > -1){
             value = event.target.value;
+        } else if(["color", "backgroundColor"].indexOf(command) > -1){
+            this.openColorWheelWidget(event, command);
         } else if(command === "mode"){
             this.setEditorMode(event.target.value);
+            return true;
         }
         // execute the command
         document.execCommand(command, false, value);
         this.model.partProperties.setPropertyNamed(
             this.model,
             'htmlContent',
-            this.htmlToText(textArea)
+            this.htmlToText(this.textarea)
         );
-        textArea.focus();
+        this.textarea.focus();
+    }
+
+    openColorWheelWidget(event, command){
+        let colorWheelWidget = new ColorWheelWidget(command);
+        // add an attribute describing the command
+        colorWheelWidget.setAttribute("selector-command", command);
+        // add a custom callback for the close button
+        let closeButton = colorWheelWidget.shadowRoot.querySelector('#close-button');
+        closeButton.addEventListener('click', () => {colorWheelWidget.remove()});
+        // add the colorWheelWidget
+        event.target.parentNode.after(colorWheelWidget);
+        // add a color-selected event callback
+        // colorWheelWidget event listener
+        let colorWheel = this.shadowRoot.querySelector('color-wheel');
+        colorWheel.addEventListener('color-selected', this.onColorSelected);
+    }
+
+    onColorSelected(event){
+        let command = event.target.getAttribute("selector-command");
+        let colorInfo = event.detail;
+        let colorStr = `rgba(${colorInfo.r}, ${colorInfo.g}, ${colorInfo.b}, ${colorInfo.alpha})`;
+        // document.execCommand(command, false, colorStr);
+        // TODO maybe this should be a partProperty
+        this.textareaWrapper.style[command] = colorStr;
     }
 
     // I set the selected editor mode, removing or adding corresponding
@@ -217,12 +381,11 @@ class FieldView extends PartView {
         let display = "inherit";
         this.editorCompleter = undefined;
         // spellcheck
-        let textArea = this._shadowRoot.querySelector('.field-textarea');
-        textArea.setAttribute("spellcheck", "true");
+        this.textarea.setAttribute("spellcheck", "true");
         if(mode === "SimpleTalk"){
             display = "none";
-            this.editorCompleter = this.simpleTalkCompleter;
-            textArea.setAttribute("spellcheck", "false");
+            // this.editorCompleter = this.simpleTalkCompleter;
+            this.textarea.setAttribute("spellcheck", "false");
         }
         toolbarElementNames.forEach((name) => {
             let idSelector = "#field-" + name;
@@ -304,9 +467,85 @@ class FieldView extends PartView {
             innerHTML
         );
     }
+
+    onClick(event){
+        if(event.button == 0){
+            // if the shift key is pressed we toggle the halo
+            if(event.shiftKey){
+                event.preventDefault();
+                event.stopPropagation();
+                if(this.hasOpenHalo){
+                    this.closeHalo();
+                    // toolbar.style.top = `${toolbar.clientHeight + 5}px`;
+                    // toolbar.style.visibility = "hidden";
+                } else {
+                    this.openHalo();
+                    // toolbar.style.top = `-${toolbar.clientHeight + 5}px`;
+                    // toolbar.style.visibility = "unset";
+                }
+            }
+        }
+
+    }
+    initCustomHaloButton(){
+        this.haloModeButton = document.createElement('div');
+        this.haloModeButton.id = "halo-field-toggle-mode";
+        this.haloModeButton.classList.add('halo-button');
+        this.haloModeButton.innerHTML = haloModeButtonSVG;
+        this.haloModeButton.style.marginRight = "6px";
+        this.haloModeButton.setAttribute('slot', 'bottom-row');
+        this.haloModeButton.setAttribute('title', 'Toggle field tools');
+        this.haloModeButton.addEventListener('click', this.toggleModePartProperty);
+    }
+
+    openHalo(){
+        // Override default. Here we add a custom button
+        // when showing.
+        let foundHalo = this.shadowRoot.querySelector('st-halo');
+        if(!foundHalo){
+            foundHalo = document.createElement('st-halo');
+            this.shadowRoot.appendChild(foundHalo);
+        }
+        foundHalo.append(this.haloModeButton);
+    }
+
+    /*
+     * I toggle the editing mode of field, by setting the 'mode'
+     * partProperty to either "viewing" or "editing."
+     */
+    toggleModePartProperty(){
+        let currentMode = this.model.partProperties.getPropertyNamed(this.model, "mode");
+        let nextMode = 'editing'; // By default, set to editing
+        if(currentMode === 'editing'){
+            nextMode = 'viewing';
+        }
+        this.model.partProperties.setPropertyNamed(
+            this.model,
+            'mode',
+            nextMode
+        );
+    }
+
+    /*
+     * I toggle the editing mode of field and toolbar, by setting
+     * the opacity of toolbar to 0 or 1 and conteneditable of textarea to
+     * false or true, respectively.
+     */
+    toggleMode(mode){
+        let toolbar = this._shadowRoot.querySelector('.field-toolbar');
+        if(mode === "viewing"){
+            toolbar.style.opacity = "0";
+            this.textarea.setAttribute("contenteditable", "false");
+        } else if(mode === "editing") {
+            toolbar.style.opacity = "1";
+            this.textarea.setAttribute("contenteditable", "true");
+        } else {
+            throw `Unkown field mode ${mode}`;
+        }
+    }
 };
 
 export {
-    FieldView,
-    FieldView as default
+FieldView,
+FieldView as default
 };

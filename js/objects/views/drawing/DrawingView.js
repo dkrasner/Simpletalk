@@ -200,6 +200,14 @@ class DrawingView extends PartView {
                 } else {
                     this.openHalo();
                 }
+            } else if(!this.hasOpenHalo){
+                // Send the click command message to self
+                this.model.sendMessage({
+                    type: 'command',
+                    commandName: 'click',
+                    args: [],
+                    shouldIgnore: true // Should ignore if System DNU
+                }, this.model);
             }
         }
     }

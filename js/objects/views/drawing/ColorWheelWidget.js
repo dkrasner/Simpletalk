@@ -32,6 +32,11 @@ const colorWheelTemplate = `
     box-sizing: border-box;
   }
 
+  #palette-title {
+    width: 100%;
+    text-align: center;
+  }
+
   #close-button {
     display: block;
     width: 12px;
@@ -76,7 +81,7 @@ const colorWheelTemplate = `
 
 </style>
 <div id="palette-wrapper">
-  <div id="palette-bar"><div id="close-button"></div></div>
+  <div id="palette-bar"><div id="close-button"></div><span id="palette-title"></span></div>
   <div id="palette-content">
     <ul id="recent-colors">
       <li class="recent-color-item selected"></li>
@@ -90,8 +95,10 @@ const colorWheelTemplate = `
 `;
 
 class ColorWheelWidget extends HTMLElement {
-    constructor(){
+    constructor(name){
         super();
+
+        this.name = name;
 
         // Setup shadow dom and template
         this.template = document.createElement('template');
@@ -118,7 +125,10 @@ class ColorWheelWidget extends HTMLElement {
         if(this.isConnected){
             this.canvas = this.shadowRoot.querySelector('canvas');
             this.bar = this.shadowRoot.getElementById('palette-bar');
-            this.closeButton = this.shadowRoot.getElementById('close-button');
+            // give the widget a title if provided
+            if(this.name){
+                this.shadowRoot.getElementById('palette-title').innerText = this.name;
+            }
 
             // Set events
             this.canvas.addEventListener('click', this.onWheelClick);
@@ -242,7 +252,7 @@ class ColorWheelWidget extends HTMLElement {
     }
 
     onClose(event){
-        this.style.display = "none";
+        this.remove();
     }
 
     _drawWheel(){
