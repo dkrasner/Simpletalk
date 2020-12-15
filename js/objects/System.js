@@ -852,9 +852,9 @@ System._commandHandlers['ask'] = function(senders, question){
 System._commandHandlers['putInto'] = function(senders, value, variableName){
     let originalSender = this.partsById[senders[0].id];
     if(!originalSender._executionContext){
-        originalSender._executionContext = {};
+        throw new Error(`No ExecutionContext for ${originalSender.type}[${originalSender.id}]`);
     }
-    originalSender._executionContext[variableName] = value;
+    originalSender._executionContext.setLocal(variableName, value);
 };
 
 System._commandHandlers['answer'] = function(senders, value){

@@ -63,7 +63,7 @@ describe('Basic Set Local Variable', () => {
         assert.exists(buttonView);
         buttonView.click();
         assert.exists(buttonModel._executionContext);
-        let variableValue = buttonModel._executionContext['myVariable'];
+        let variableValue = buttonModel._executionContext.getLocal('myVariable');
         assert.equal(variableValue, "hello");
     });
 });

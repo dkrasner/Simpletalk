@@ -1,3 +1,5 @@
+import ExecutionContext from '../objects/ExecutionContext.js';
+
 const createInterpreterSemantics = (partContext, systemContext) => {
     return {
         Script: function(scriptParts, _){
@@ -6,16 +8,18 @@ const createInterpreterSemantics = (partContext, systemContext) => {
         MessageHandler: function(handlerOpen, optionalStatementList, handlerClose){
             let {messageName, parameters} = handlerOpen.interpret();
             let handlerFunction = function(senders, ...args){
-                this._executionContext = {
-                    _argVariableNames: parameters // these are string representing the param names
-                };
+                if(!this._executionContext){
+                    this._executionContext = new ExecutionContext();
+                }
+                this._executionContext.current = messageName;
+                this._executionContext.current._argVariableNames = parameters;
                 
                 // Map each arg in order to any variable names given
                 // to it. We set these as local variables
                 args.forEach((arg, index) => {
-                    let varName = this._executionContext._argVariableNames[index];
+                    let varName = this._executionContext.current._argVariableNames[index];
                     if(varName){
-                        this._executionContext[varName] = arg;
+                        this._executionContext.setLocal(varName, arg);
                     }
                 });
 
@@ -312,7 +316,7 @@ const createInterpreterSemantics = (partContext, systemContext) => {
         variableName: function(letterPlus, optionalDigits){
             // Lookup the variable in the part's
             // current execution context
-            return partContext._executionContext[this.sourceString];
+            return partContext._executionContext.getLocal(this.sourceString);
         },
 
         _terminal(){
