@@ -126,4 +126,70 @@ describe("Basic IfThenMultiline", () => {
             semanticMatchTest(str, "IfThenMultiline");
         });
     });
+    describe("With 'else'", () => {
+        it("Can handle basic comparison", () => {
+            let str = [
+                'if 2 = 2',
+                'then go to next card',
+                'else put 5 into myVariable'
+            ].join("\n");
+            semanticMatchTest(str, "IfThenMultiline");
+        });
+        it("Can handle comparison with variable", () => {
+            let str = [
+                'if myVariable > 35',
+                'then put 35 into myVariable',
+                'else put 1 into myVariable'
+            ].join("\n");
+            semanticMatchTest(str, "IfThenMultiline");
+        });
+        it("Can handle a literal true", () => {
+            let str = [
+                'if true',
+                'then go to next card',
+                'else put false into myResult'
+            ].join("\n");
+            semanticMatchTest(str, "IfThenMultiline");
+        });
+        it("Can handle a literal true with comparison", () => {
+            let str = [
+                'if myVariable is true',
+                'then go to next card',
+                'else go to previous card'
+            ].join("\n");
+            semanticMatchTest(str, "IfThenMultiline");
+        });
+        it("Can handle literal true with not", () => {
+            let str = [
+                'if not true',
+                'then go to previous card',
+                'else go to next card'
+            ].join("\n");
+            semanticMatchTest(str, "IfThenMultiline");
+        });
+        it("Can handle literal false", () => {
+            let str = [
+                'if false',
+                'then go to previous card',
+                'else go to next card'
+            ].join("\n");
+            semanticMatchTest(str, "IfThenMultiline");
+        });
+        it("Can handle a literal false with comparison", () => {
+            let str = [
+                'if myVariable is false',
+                'then go to previous card',
+                'else go to next card'
+            ].join("\n");
+            semanticMatchTest(str, "IfThenMultiline");
+        });
+        it("Can handle literal false with not", () => {
+            let str = [
+                'if not false',
+                'then go to previous card',
+                'else put "hello" into myString'
+            ].join("\n");
+            semanticMatchTest(str, "IfThenMultiline");
+        });
+    });
 });

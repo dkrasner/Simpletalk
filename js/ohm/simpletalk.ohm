@@ -62,8 +62,6 @@
                | "not" Expression --notFactor
                | anyLiteral
                | variableName
-               | "true" --trueLiteral
-               | "false" --falseLiteral
 
         // For now, expressions are just the
         // value of a given factor.
@@ -95,8 +93,7 @@
                | Expression "is not an" Expression
         
         Conditional
-               = "true" --trueLiteral
-               | "false" --falseLiteral
+               = booleanLiteral --booleanLiteral
                | EqualityConditional
                | NonEqualityConditional
                | KindConditional
@@ -198,6 +195,16 @@
         floatLiteral
                 = "-"? digit+ "." digit+
 
+        // Booleans
+        trueLiteral
+             = "true"
+
+        falseLiteral
+             = "false"
+
+        booleanLiteral
+             = (falseLiteral | trueLiteral)
+
 	// TODO
 	comment
 		= "--" (~lineTerminator any)*
@@ -215,7 +222,7 @@
         // The "any" literal is any string or numerical
         // literal
         anyLiteral
-                = (stringLiteral | floatLiteral | integerLiteral)
+                = (stringLiteral | floatLiteral | integerLiteral | booleanLiteral)
 
 	// Basic whitespace and line termination handling.
 	// Note that we override the default Ohm definition
