@@ -73,6 +73,7 @@
                | Expression "*" Expression --timesExpr
                | Factor
 
+
         // A conditional is a form where two Expressions
         // are compared using an operator, and the result
         // is expected to be a boolean value
@@ -92,7 +93,9 @@
                | Expression "is not an" Expression
         
         Conditional
-               = EqualityConditional
+               = "true" --trueLiteral
+               | "false" --falseLiteral
+               | EqualityConditional
                | NonEqualityConditional
                | KindConditional
                | NotKindConditional
@@ -100,6 +103,7 @@
                | Expression "<" Expression --ltComparison
                | Expression ">=" Expression --gteComparison
                | Expression "<=" Expression --lteComparison
+               | Factor // This gives us variableName and some other literals should we need them
                
         IfThenInline
                = "if" Conditional "then" Command comment?
@@ -171,7 +175,7 @@
 
 	// We need to prevent keyword overload since these are core control flow indicators
 	keyword (a keyword)
-		= "do" | "next" | "else" | "on" | "end" | "pass" | "exit" | "repeat" | "function" | "return" | "global" | "send" | "if" | "then"
+		= "do" | "next" | "else" | "on" | "end" | "pass" | "exit" | "repeat" | "function" | "return" | "global" | "send" | "if" | "then" | "true" | "false"
 
 	objectId (an identifier of an object, string, numeric or mixed)
 		= ~systemObject (letter | digit)+
