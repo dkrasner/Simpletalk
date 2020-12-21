@@ -65,6 +65,10 @@ describe("Basic IfThenInline", () => {
         let str = `if not myVariable then go to next card`;
         semanticMatchTest(str, "IfThenInline");
     });
+    it("Is recognized as a Statement", () => {
+        let str = "if myVariable then go to next card";
+        semanticMatchTest(str, "Statement");
+    });
 });
 
 describe("Basic IfThenMultiline", () => {
@@ -124,6 +128,13 @@ describe("Basic IfThenMultiline", () => {
                 'then go to next card'
             ].join("\n");
             semanticMatchTest(str, "IfThenMultiline");
+        });
+        it("Is recognized as a Statement", () => {
+            let str = [
+                'if myVariable',
+                'then go to next card'
+            ].join("\n");
+            semanticMatchTest(str, "Statement");
         });
     });
     describe("With 'else'", () => {
@@ -190,6 +201,14 @@ describe("Basic IfThenMultiline", () => {
                 'else put "hello" into myString'
             ].join("\n");
             semanticMatchTest(str, "IfThenMultiline");
+        });
+        it("Is recognized as a Statement", () => {
+            let str = [
+                'if myVariable',
+                'then go to next card',
+                'else go to previous card'
+            ].join("\n");
+            semanticMatchTest(str, "Statement");
         });
     });
 });

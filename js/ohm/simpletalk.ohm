@@ -49,6 +49,8 @@
 	// Note we explicitly exclude keywords, i.e. control
 	Statement (a statement)
 		= ~"end" Command comment?
+                | ~"end" IfThenInline comment?
+                | ~"end" IfThenMultiline comment?
 
         // The HT manual describes a Factor as being:
         // "a single element of value in an expression".
