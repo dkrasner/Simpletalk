@@ -102,11 +102,20 @@
                | Expression "<=" Expression --lteComparison
                
         IfThenInline
-               = "if" Conditional "then" Command
+               = "if" Conditional "then" Command comment?
+        IfLine
+               = "if" Conditional comment?
+        
+        ElseLine
+               = "else" Command comment?
+               
+        ThenLine
+               = "then" Command comment?
         
         IfThenMultiline
-               = "if" Conditional lineTerminator "then" Command lineTerminator "else" Command --withElse
-               | "if" Conditional lineTerminator "then" Command --withoutElse
+               = IfLine lineTerminator ThenLine lineTerminator ElseLine --withElse
+               | IfLine lineTerminator ThenLine --withoutElse
+                
 
         // Expression lists are those that are passed
         // to any commands that are invoked inline.

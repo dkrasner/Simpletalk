@@ -97,7 +97,7 @@ describe("Basic Literal Conditional Tests", () => {
             semanticMatchTest(str, "Conditional");
         });
     });
-    describe.skip("Kind Equality via 'is a'", () => {
-        
+    describe("Kind Equality via 'is a'", () => {
+        it.skip("Add Kind Equality Tests and more");
     });
 });
