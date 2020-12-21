@@ -62,6 +62,8 @@
                | "not" Expression --notFactor
                | anyLiteral
                | variableName
+               | "true" --trueLiteral
+               | "false" --falseLiteral
 
         // For now, expressions are just the
         // value of a given factor.
@@ -187,7 +189,7 @@
 
         // User defined variables
         variableName
-                = letter+ (digit+)?
+                = ~(keyword " " | keyword end) letter+ (digit+)?
 
         // Numbers
         integerLiteral

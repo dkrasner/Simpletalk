@@ -66,3 +66,64 @@ describe("Basic IfThenInline", () => {
         semanticMatchTest(str, "IfThenInline");
     });
 });
+
+describe("Basic IfThenMultiline", () => {
+    describe("Without 'else'", () => {
+        it("Can handle basic comparison", () => {
+            let str = [
+                'if 2 = 2',
+                'then go to next card'
+            ].join('\n');
+            semanticMatchTest(str, "IfThenMultiline");
+        });
+        it("Can handle comparison with a variable", () => {
+            let str = [
+                'if myVariable is 34',
+                'then put 35 into myVariable'
+            ].join('\n');
+            semanticMatchTest(str, "IfThenMultiline");
+        });
+        it("Can handle a literal true", () => {
+            let str = [
+                'if true',
+                'then go to next card'
+            ].join('\n');
+            semanticMatchTest(str, "IfThenMultiline");
+        });
+        it("Can handle a literal true comparison", () => {
+            let str = [
+                'if myVariable is true',
+                'then go to next card'
+            ].join("\n");
+            semanticMatchTest(str, "IfThenMultiline");
+        });
+        it("Can handle literal true with not", () => {
+            let str = [
+                'if not true',
+                'then go to next card'
+            ].join("\n");
+            semanticMatchTest(str, "IfThenMultiline");
+        });
+        it("Can handle a literal false", () => {
+            let str = [
+                'if false',
+                'then go to next card'
+            ].join("\n");
+            semanticMatchTest(str, "IfThenMultiline");
+        });
+        it("Can handle a literal false comparison", () => {
+            let str = [
+                'if myVariable is false',
+                'then go to next card'
+            ].join('\n');
+            semanticMatchTest(str, "IfThenMultiline");
+        });
+        it("Can handle a literal false with not", () => {
+            let str = [
+                'if not false',
+                'then go to next card'
+            ].join("\n");
+            semanticMatchTest(str, "IfThenMultiline");
+        });
+    });
+});
