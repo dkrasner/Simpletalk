@@ -46,8 +46,13 @@ const createInterpreterSemantics = (partContext, systemContext) => {
                 statementList.children.forEach(statementLines => {
                     statementLines.children.forEach(statementLine => {
                         let message = statementLine.interpret();
-                        partContext.sendMessage(message, partContext);
-                        finalMessages.push(message);
+                        // Some interpret() calls, like if-then statements
+                        // that evaluated to false, will return null instead
+                        // of a true message. We need to skip over these.
+                        if(message !== null){
+                            partContext.sendMessage(message, partContext);
+                            finalMessages.push(message);
+                        }
                     });
                 });
 
@@ -286,12 +291,109 @@ const createInterpreterSemantics = (partContext, systemContext) => {
             return expression.interpret();
         },
 
+        EqualityConditional: function(expr1, comparatorLiteral, expr2){
+            let first = expr1.interpret();
+            let second = expr2.interpret();
+            return first === second;
+        },
+
+        NonEqualityConditional: function(expr1, comparatorLiteral, expr2){
+            let first = expr1.interpret();
+            let second = expr2.interpret();
+            return first !== second;
+        },
+
+        Conditional_gtComparison: function(expr1, gtLiteral, expr2){
+            let first = expr1.interpret();
+            let second = expr2.interpret();
+            return first > second;
+        },
+
+        Conditional_ltComparison: function(expr1, ltLiteral, expr2){
+            let first = expr1.interpret();
+            let second = expr2.interpret();
+            return first < second;
+        },
+
+        Conditional_gteComparison: function(expr1, gteLiteral, expr2){
+            let first = expr1.interpret();
+            let second = expr2.interpret();
+            return first >= second;
+        },
+
+        Conditional_lteComparison: function(expr1, lteLiteral, expr2){
+            let first = expr1.interpret();
+            let second = expr2.interpret();
+            return first <= second;
+        },
+
+        IfThenInline: function(ifLiteral, conditional, thenLiteral, command, optionalComment){
+            let shouldEvaluate = conditional.interpret();
+            if(shouldEvaluate){
+                return command.interpret();
+            } else {
+                return null;
+            }
+        },
+
+        IfThenMultiline_withoutElse: function(ifLine, lineTerm1, thenLine){
+            let condition = ifLine.interpret();
+            if(condition){
+                return thenLine.interpret();
+            } else {
+                return null;
+            }
+        },
+
+        IfThenMultiline_withElse: function(ifLine, lineTerm1, thenLine, lineTerm2, elseLine){
+            let condition = ifLine.interpret();
+            if(condition){
+                return thenLine.interpret();
+            } else {
+                return elseLine.interpret();
+            }
+        },
+
+        IfLine: function(ifLiteral, conditional, optionalComment){
+            return conditional.interpret();
+        },
+
+        ThenLine: function(thenLiteral, command, optionalComment){
+            return command.interpret();
+        },
+
+        ElseLine: function(elseLiteral, command, optionalComment){
+            return command.interpret();
+        },
+
+        KindConditional: function(expr1, comparatorLiteral, expr2){
+            // TODO: Flesh out this function to account for
+            // various object types and their kind comparisons
+            return false;
+        },
+
+        NotKindConditional: function(expr1, comparatorLiteral, expr2){
+            // TODO: Flesh out this function to account for
+            // various object types and their kind comparisons
+            return true;
+        },
+
         anyLiteral: function(theLiteral){
             return theLiteral.interpret();
         },
 
         stringLiteral: function(openQuote, text, closeQuote){
             return text.sourceString;
+        },
+
+        booleanLiteral: function(text){
+            if(text.sourceString == 'true'){
+                return true;
+            }
+            if(text.sourceString == 'false'){
+                return false;
+            }
+            throw new Error(`Invalid boolean literal: ${text}`);
         },
 
         integerLiteral: function(negativeSign, integer){
