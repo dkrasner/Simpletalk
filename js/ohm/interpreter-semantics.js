@@ -50,7 +50,8 @@ const createInterpreterSemantics = (partContext, systemContext) => {
                         // that evaluated to false, will return null instead
                         // of a true message. We need to skip over these.
                         if(message !== null){
-                            partContext.sendMessage(message, partContext);
+                            let commandResult = partContext.sendMessage(message, partContext);
+                            this._executionContext.setLocal('it', commandResult);
                             finalMessages.push(message);
                         }
                     });
