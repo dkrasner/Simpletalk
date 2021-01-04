@@ -316,6 +316,10 @@ const System = {
             };
             targetObject.sendMessage(msg, targetObject);
         } else {
+            // First, clear out any currently compiled handlers
+            // since the incoming script might get rid of them
+            targetObject._commandHandlers = {};
+
             // Create a semantics object whose partContext
             // attribute is set to be the target object.
             targetObject._semantics = languageGrammar.createSemantics();
