@@ -255,7 +255,7 @@ describe('Inline if-then tests', () => {
         assert.notEqual(foundName, 'evaluated');
     });
 });
-describe('Multiline If-Then tests', () => {
+describe('Singleline If-Then tests', () => {
    beforeEach(() => {
         buttonModel.partProperties.setPropertyNamed(
             buttonModel,
@@ -470,7 +470,7 @@ describe('Multiline If-Then tests', () => {
         assert.notEqual(foundName, 'evaluated');
     }); 
 });
-describe('Multiline if-then-else tests', () => {
+describe('Singleline if-then-else tests', () => {
     beforeEach(() => {
         buttonModel.partProperties.setPropertyNamed(
             buttonModel,

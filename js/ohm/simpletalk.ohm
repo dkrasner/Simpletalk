@@ -50,6 +50,7 @@
 	Statement (a statement)
 		= ~"end" Command comment?
                 | ~"end" IfThenInline comment?
+                | ~"end" IfThenSingleline comment?
                 | ~"end" IfThenMultiline comment?
 
         // The HT manual describes a Factor as being:
@@ -116,10 +117,24 @@
                
         ThenLine
                = "then" Command comment?
+
+        EndIfLine
+              = "end if" comment?
         
-        IfThenMultiline
+        IfThenSingleline
                = IfLine lineTerminator ThenLine lineTerminator ElseLine --withElse
                | IfLine lineTerminator ThenLine --withoutElse
+
+        MultiThen
+               = "then" comment? lineTerminator StatementLine+
+        MultiElse
+               = "else" comment? lineTerminator StatementLine+
+
+        IfThenMultiline
+               = IfLine lineTerminator MultiThen EndIfLine --withoutElse
+               | IfLine lineTerminator MultiThen MultiElse --withElse
+
+
                 
 
         // Expression lists are those that are passed

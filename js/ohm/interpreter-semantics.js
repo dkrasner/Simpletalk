@@ -337,7 +337,7 @@ const createInterpreterSemantics = (partContext, systemContext) => {
             }
         },
 
-        IfThenMultiline_withoutElse: function(ifLine, lineTerm1, thenLine){
+        IfThenSingleline_withoutElse: function(ifLine, lineTerm1, thenLine){
             let condition = ifLine.interpret();
             if(condition){
                 return thenLine.interpret();
@@ -346,7 +346,7 @@ const createInterpreterSemantics = (partContext, systemContext) => {
             }
         },
 
-        IfThenMultiline_withElse: function(ifLine, lineTerm1, thenLine, lineTerm2, elseLine){
+        IfThenSingleline_withElse: function(ifLine, lineTerm1, thenLine, lineTerm2, elseLine){
             let condition = ifLine.interpret();
             if(condition){
                 return thenLine.interpret();
