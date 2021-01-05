@@ -451,6 +451,22 @@ const createInterpreterSemantics = (partContext, systemContext) => {
             };
         },
 
+        RepeatControlForm_whileCondition: function(repeatLit, whileLit, conditional){
+            return {
+                repeatType: 'whileCondition',
+                condition: conditional
+            };
+        },
+
+        RepeatControlForm_withStartFinish: function(repeatLit, withLit, varName, eqLit, firstVal, toLit, secondVal){
+            return {
+                repeatType: 'withStartFinish',
+                varName: varName.sourceString,
+                start: firstVal.interpret(),
+                finish: secondVal.interpret()
+            };
+        },
+
         RepeatAdjust_exit: function(_, lineTerm, optComment){
             return {
                 type: 'repeatAdjustExit'
@@ -492,8 +508,8 @@ const createInterpreterSemantics = (partContext, systemContext) => {
                 }
                 break; // Break out of the switch
             case 'untilCondition':
-                let testCondition = repeatInfo.condition.interpret();
-                while(!testCondition){
+                let untilTestCondition = repeatInfo.condition.interpret();
+                while(!untilTestCondition){
                     let shouldBreak = false;
                     for(let i = 0; i < statementLines.length; i++){
                         let currentStatement = statementLines[i];
@@ -509,9 +525,61 @@ const createInterpreterSemantics = (partContext, systemContext) => {
                     if(shouldBreak){
                         break; // break out of the outer while loop
                     }
-                    testCondition = repeatInfo.condition.interpret();
+                    untilTestCondition = repeatInfo.condition.interpret();
                 }
                 break; // Break out of the switch case
+            case 'whileCondition':
+                let whileTestCondition = repeatInfo.condition.interpret();
+                while(whileTestCondition){
+                    let shouldBreak = false;
+                    for(let i = 0; i < statementLines.length; i++){
+                        let currentStatement = statementLines[i];
+                        if(currentStatement.type == 'repeatAdjustExit'){
+                            shouldBreak = true;
+                            break; // break out of this inner loop
+                        } else if(currentStatement.type == 'repeatAdjustNext'){
+                            break; // break out of this inner loop
+                        } else {
+                            currentStatement.interpret();
+                        }
+                    }
+                    if(shouldBreak){
+                        break; // break out of outer while loop (end repeat)
+                    }
+                    whileTestCondition = repeatInfo.condition.interpret();
+                }
+                break; // break out of switch case
+            case 'withStartFinish':
+                // For now, we assume that start is less than
+                // finish. We should probably throw an error if
+                // otherwise
+                if(repeatInfo.start > repeatInfo.finish){
+                    throw new Error(`Repeat error: start greater than finish`);
+                }
+
+                for(let i = repeatInfo.start; i <= repeatInfo.finish; i++){
+                    partContext._executionContext.setLocal(repeatInfo.varName, i);
+                    let shouldBreak = false;
+                    let shouldPass = false;
+                    for(let j = 0; j < statementLines.length; j++){
+                        let currentStatement = statementLines[j];
+                        if(currentStatement.type == 'repeatAdjustExit'){
+                            shouldBreak = true;
+                            break; // break out of this inner loop
+                        } else if(currentStatement.type == 'repeatAdjustNext'){
+                            shouldBreak = true;
+                            break; // break out of this inner loop
+                        } else {
+                            currentStatement.interpret();
+                        }
+                    }
+                    if(shouldPass){
+                        i += 1;
+                    }
+                    if(shouldBreak){
+                        break; // break out of the outer (repeat) loop
+                    }
+                }
             }
             return null;
         },

@@ -101,13 +101,54 @@ describe("Repeat Looping Tests", () => {
                 "\tend repeat",
                 "end click"
             ].join("\n");
-            console.log(script);
             compileButtonScript(script);
             sendButtonClick(script);
             let resultLimit = getLocalVar(buttonModel, "myLimit");
             let resultCount = getLocalVar(buttonModel, "myCount");
             assert.equal(resultLimit, 0);
             assert.equal(resultCount, 5);
+        });
+    });
+
+    describe("Repeat whileCondition tests", () => {
+        it("Can compile and loop while condition is true", () => {
+            let script = [
+                "on click",
+                "\tput 0 into myLimit",
+                "\tput 0 into myCount",
+                "\trepeat while myLimit < 6 ",
+                "\tput (myCount + 1) into myCount",
+                "\tput (myLimit + 1) into myLimit",
+                "\tend repeat",
+                "end click"
+            ].join("\n");
+            compileButtonScript(script);
+            sendButtonClick(script);
+            let resultLimit = getLocalVar(buttonModel, "myLimit");
+            let resultCount = getLocalVar(buttonModel, "myCount");
+            assert.equal(resultLimit, 6);
+            assert.equal(resultCount, 6);
+        });
+    });
+
+    describe("Repeat withStartFinish tests", () => {
+        it("Can compile and run when range is valid", () => {
+            let script = [
+                "on click",
+                "put 0 into myTotal",
+                "put 0 into myCount",
+                "repeat with realCount = 1 to 3",
+                "put (realCount + myTotal) into myTotal",
+                "put (myCount + 1) into myCount",
+                "end repeat",
+                "end click"
+            ].join("\n");
+            compileButtonScript(script);
+            sendButtonClick();
+            let resultTotal = getLocalVar(buttonModel, 'myTotal');
+            let resultCount = getLocalVar(buttonModel, "myCount");
+            assert.equal(resultCount, 3);
+            assert.equal(resultTotal, 6);
         });
     });
 });
