@@ -52,6 +52,7 @@
                 | ~"end" IfThenInline comment?
                 | ~"end" IfThenSingleline comment?
                 | ~"end" IfThenMultiline comment?
+                | ~"end" RepeatBlock comment?
 
         // The HT manual describes a Factor as being:
         // "a single element of value in an expression".
@@ -142,8 +143,12 @@
 			| "repeat" "with" variableName "=" (integerLiteral|variableName) "to" (integerLiteral|variableName) --withStartFinish
 			| "repeat" --forever
 
+		RepeatAdjust
+			= "exit repeat" lineTerminator comment? --exit
+			| "next repeat" lineTerminator comment? --next
+
 		RepeatBlock
-			= RepeatControlForm lineTerminator StatementLine+ "end repeat"
+			= RepeatControlForm lineTerminator (StatementLine|RepeatAdjust)+ "end repeat"
                 
 
         // Expression lists are those that are passed
@@ -170,7 +175,7 @@
 		| "delete" "this"? systemObject objectId? --deleteModel
 		| "add" systemObject stringLiteral? "to"? ("this" | "current")? systemObject? objectId? --addModel
 		| "set" stringLiteral "to" (stringLiteral | variableName) InClause? --setProperty
-		| "put" anyLiteral "into" "global"? variableName --putVariable
+		| "put" Factor "into" "global"? variableName --putVariable
 		| "ask" anyLiteral --ask
 		| "respond to" anyLiteral InClause? --eventRespond
 		| "ignore" anyLiteral InClause? --eventIgnore

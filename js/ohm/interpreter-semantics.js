@@ -49,11 +49,11 @@ const createInterpreterSemantics = (partContext, systemContext) => {
                         // Some interpret() calls, like if-then statements
                         // that evaluated to false, will return null instead
                         // of a true message. We need to skip over these.
-                        if(message !== null){
-                            let commandResult = partContext.sendMessage(message, partContext);
-                            this._executionContext.setLocal('it', commandResult);
-                            finalMessages.push(message);
-                        }
+                        // if(message !== null){
+                        //     let commandResult = partContext.sendMessage(message, partContext);
+                        //     this._executionContext.setLocal('it', commandResult);
+                        //     finalMessages.push(message);
+                        // }
                     });
                 });
 
@@ -309,7 +309,19 @@ const createInterpreterSemantics = (partContext, systemContext) => {
         },
 
         StatementLine: function(statement, newline){
-            return statement.interpret();
+            let message = statement.interpret();
+
+            // Some statements, like if-then controls
+            // and repeat controls, do not result in
+            // messages but return null.
+            // We ignore these.
+            if(message !== null){
+                let commandResult = partContext.sendMessage(message, partContext);
+                partContext._executionContext.setLocal('it', commandResult);
+                return message;
+            } else {
+                return null;
+            }
         },
 
         Statement: function(command, optionalComment){
@@ -417,6 +429,56 @@ const createInterpreterSemantics = (partContext, systemContext) => {
             // TODO: Flesh out this function to account for
             // various object types and their kind comparisons
             return true;
+        },
+
+        RepeatControlForm_forNumTimes: function(repeatLit, optionalForLit, intOrVar, timesLit){
+            return {
+                repeatType: 'forNumTimes',
+                numTimes: intOrVar.interpret()
+            };
+        },
+
+        RepeatAdjust_exit: function(_, lineTerm, optComment){
+            return {
+                type: 'repeatAdjustExit'
+            };
+        },
+
+        RepeatAdjust_next: function(_, lineTerm, optComment){
+            return {
+                type: 'repeatAdjustNext'
+            };
+        },
+
+        RepeatBlock: function(repeatControl, lineTerm, statementLineOrRepAdjustPlus, endLiteral){
+            let repeatInfo = repeatControl.interpret();
+            let statementLines = statementLineOrRepAdjustPlus.children;
+            switch(repeatInfo.repeatType){
+            case 'forNumTimes':
+                for(let i = 1; i <= repeatInfo.numTimes; i++){
+                    let shouldBreak = false;
+                    let shouldPass = false;
+                    for(let j = 0; j < statementLines.length; j++){
+                        let currentStatement = statementLines[j];
+                        if(currentStatement.type == 'repeatAdjustExit'){
+                            shouldBreak = true;
+                            break;
+                        } else if(currentStatement.type == 'repeatAdjustNext'){
+                            shouldPass = true;
+                            break;
+                        } else {
+                            currentStatement.interpret();
+                        }
+                    }
+                    if(shouldPass){
+                        i += 1;
+                    }
+                    if(shouldBreak){
+                        break;
+                    }
+                }
+            }
+            return null;
         },
 
         anyLiteral: function(theLiteral){

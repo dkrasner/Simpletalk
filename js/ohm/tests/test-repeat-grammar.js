@@ -141,3 +141,18 @@ describe("RepeatBlock tests", () => {
         semanticMatchTest(str, "RepeatBlock");
     });
 });
+
+describe("Repeat full script tests", () => {
+    it("forNumTimes", () => {
+        let script = [
+            "on click",
+            "put 0 into myNum",
+            "repeat for 5 times",
+            "put (myNum + 1) into myNum",
+            "end repeat",
+            "end click"
+        ].join("\n");
+        semanticMatchTest(script, "MessageHandler");
+        semanticMatchTest(script, "Script");
+    });
+});
