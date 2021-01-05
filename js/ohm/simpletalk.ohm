@@ -45,7 +45,7 @@
 	StatementLine (a statement line)
                 = comment lineTerminator+
 		| Statement lineTerminator+
-
+	
 	// Note we explicitly exclude keywords, i.e. control
 	Statement (a statement)
 		= ~"end" Command comment?
@@ -134,7 +134,16 @@
                = IfLine lineTerminator MultiThen EndIfLine --withoutElse
                | IfLine lineTerminator MultiThen MultiElse --withElse
 
+		// Looping (repeat)
+		RepeatControlForm
+			= "repeat" "for"? (integerLiteral|variableName) "times" --forNumTimes
+			| "repeat" "until" Conditional --untilCondition
+			| "repeat" "while" Conditional --whileCondition
+			| "repeat" "with" variableName "=" (integerLiteral|variableName) "to" (integerLiteral|variableName) --withStartFinish
+			| "repeat" --forever
 
+		RepeatBlock
+			= RepeatControlForm lineTerminator StatementLine+ "end repeat"
                 
 
         // Expression lists are those that are passed
