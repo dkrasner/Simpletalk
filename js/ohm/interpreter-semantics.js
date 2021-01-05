@@ -334,6 +334,12 @@ const createInterpreterSemantics = (partContext, systemContext) => {
             return first + second;
         },
 
+        Expression_minusExpr: function(firstExpr, operation, secondExpr){
+            let first = firstExpr.interpret();
+            let second = secondExpr.interpret();
+            return first - second;
+        },
+
         Expression_timesExpr: function(firstExpression, operation, secondExpression){
             let first = firstExpression.interpret();
             let second = secondExpression.interpret();
@@ -438,6 +444,13 @@ const createInterpreterSemantics = (partContext, systemContext) => {
             };
         },
 
+        RepeatControlForm_untilCondition: function(repeatLit, untilLit, conditional){
+            return {
+                repeatType: 'untilCondition',
+                condition: conditional
+            };
+        },
+
         RepeatAdjust_exit: function(_, lineTerm, optComment){
             return {
                 type: 'repeatAdjustExit'
@@ -462,10 +475,10 @@ const createInterpreterSemantics = (partContext, systemContext) => {
                         let currentStatement = statementLines[j];
                         if(currentStatement.type == 'repeatAdjustExit'){
                             shouldBreak = true;
-                            break;
+                            break; // break out of this inner loop
                         } else if(currentStatement.type == 'repeatAdjustNext'){
                             shouldPass = true;
-                            break;
+                            break; // break out of this inner loop
                         } else {
                             currentStatement.interpret();
                         }
@@ -474,9 +487,31 @@ const createInterpreterSemantics = (partContext, systemContext) => {
                         i += 1;
                     }
                     if(shouldBreak){
-                        break;
+                        break; // break out of the main for loop
                     }
                 }
+                break; // Break out of the switch
+            case 'untilCondition':
+                let testCondition = repeatInfo.condition.interpret();
+                while(!testCondition){
+                    let shouldBreak = false;
+                    for(let i = 0; i < statementLines.length; i++){
+                        let currentStatement = statementLines[i];
+                        if(currentStatement.type == 'repeatAdjustExit'){
+                            shouldBreak = true;
+                            break; // break out of this inner loop
+                        } else if(currentStatement.type == 'repeatAdjustNext'){
+                            break; // break out of this inner loop
+                        } else {
+                            currentStatement.interpret();
+                        }
+                    }
+                    if(shouldBreak){
+                        break; // break out of the outer while loop
+                    }
+                    testCondition = repeatInfo.condition.interpret();
+                }
+                break; // Break out of the switch case
             }
             return null;
         },

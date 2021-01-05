@@ -59,7 +59,6 @@ describe("Repeat Looping Tests", () => {
     });
 
     describe("Repeat forNumTimes tests", () => {
-        describe("Basic integer", () => {
             it("Can compile a basic script and loop correct num times", () => {
                 let script = [
                     "on click",
@@ -89,8 +88,30 @@ describe("Repeat Looping Tests", () => {
                 let result = getLocalVar(buttonModel, "myNum");
                 assert.equal(result, 3);
             });
+    });
+    describe("Repeat untilCondition tests", () => {
+        it("Can compile and loop until condition is met", () => {
+            let script = [
+                "on click",
+                "\tput 5 into myLimit",
+                "\tput 0 into myCount",
+                "\trepeat until myLimit <= 0",
+                "\tput (myCount + 1) into myCount",
+                "\tput (myLimit - 1) into myLimit",
+                "\tend repeat",
+                "end click"
+            ].join("\n");
+            console.log(script);
+            compileButtonScript(script);
+            sendButtonClick(script);
+            let resultLimit = getLocalVar(buttonModel, "myLimit");
+            let resultCount = getLocalVar(buttonModel, "myCount");
+            assert.equal(resultLimit, 0);
+            assert.equal(resultCount, 5);
         });
     });
 });
+
+
 
 

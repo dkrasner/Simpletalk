@@ -106,7 +106,7 @@ describe("RepeatBlock tests", () => {
     });
     it('untilCondition', () => {
         let str = [
-            "repeat until myVariable >= 20.5",
+            "repeat until myVariable <= 20.5",
             "doSomething myVariable",
             "go to card myVariable",
             "end repeat"
@@ -154,5 +154,19 @@ describe("Repeat full script tests", () => {
         ].join("\n");
         semanticMatchTest(script, "MessageHandler");
         semanticMatchTest(script, "Script");
+    });
+    it("untilCondition", () => {
+        let script = [
+            "on click",
+            "\tput 5 into myLimit",
+            "\tput 0 into myCount",
+            "\trepeat until myLimit <= 0",
+            "\tput (myCount + 1) into myCount",
+            "\tput (myLimit - 1) into myLimit",
+            "\tend repeat",
+            "end click"
+        ].join("\n");
+        semanticMatchTest(script, "Script");
+        semanticMatchTest(script, "MessageHandler");
     });
 });

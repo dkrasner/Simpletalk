@@ -75,6 +75,7 @@
         Expression
                = Expression "+" Expression --addExpr
                | Expression "*" Expression --timesExpr
+			   | Expression "-" Expression --minusExpr
                | Factor
 
 
