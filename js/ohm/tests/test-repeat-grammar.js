@@ -93,3 +93,51 @@ describe("RepeatControlForm tests", () => {
         });
     });
 });
+
+describe("RepeatBlock tests", () => {
+    it("forNumTimes", () => {
+        let str = [
+            "repeat for 5 times",
+            "doSomething",
+            "go to next card",
+            "end repeat"
+        ].join("\n");
+        semanticMatchTest(str, "RepeatBlock");
+    });
+    it('untilCondition', () => {
+        let str = [
+            "repeat until myVariable >= 20.5",
+            "doSomething myVariable",
+            "go to card myVariable",
+            "end repeat"
+        ].join("\n");
+        semanticMatchTest(str, "RepeatBlock");
+    });
+    it("whileCondition", () => {
+        let str = [
+            "repeat while myVariable >= 20.5",
+            "doSomething myVariable",
+            "go to card myVariable",
+            "end repeat"
+        ].join("\n");
+        semanticMatchTest(str, "RepeatBlock");
+    });
+    it("withStartFinish", () => {
+        let str = [
+            "repeat with myNum = 0 to 6",
+            "doSomething myVariable",
+            "go to card myVariable",
+            "end repeat"
+        ].join("\n");
+        semanticMatchTest(str, "RepeatBlock");
+    });
+    it("forever", () => {
+        let str = [
+            "repeat",
+            "doSomething myVariable",
+            "go to card myVariable",
+            "end repeat"
+        ].join("\n");
+        semanticMatchTest(str, "RepeatBlock");
+    });
+});
