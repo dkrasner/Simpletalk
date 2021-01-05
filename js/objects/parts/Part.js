@@ -21,12 +21,13 @@ class Part {
         this.subparts = [];
         // a list of all accepted subparts by type
         // By default this is null and each Part subclcass should
-        // specify aif otherwise
+        // specify if otherwise
         this.acceptedSubpartTypes = [];
 
         this.partProperties = new PartProperties();
         this._owner = anOwnerPart;
         this._commandHandlers = {};
+        this._privateCommandHandlers = {};
         this._functionHandlers = {};
         this._scriptSemantics = {};
         this._propertySubscribers = new Set();
@@ -40,7 +41,7 @@ class Part {
         this.addPart = this.addPart.bind(this);
         this.removePart = this.removePart.bind(this);
         this.acceptsSubpart = this.acceptsSubpart.bind(this);
-        this.setCmdHandler = this.setCmdHandler.bind(this);
+        this.setPrivateCommandHandler = this.setPrivateCommandHandler.bind(this);
         this.setFuncHandler = this.setFuncHandler.bind(this);
         this.receiveCmd = this.receiveCmd.bind(this);
         this.receiveFunc = this.receiveFunc.bind(this);
@@ -60,8 +61,8 @@ class Part {
         this.setupProperties();
 
         // command handlers
-        this.setCmdHandler("deleteModel", this.deleteModelCmdHandler);
-        this.setCmdHandler("newModel", this.newModelCmdHandler);
+        this.setPrivateCommandHandler("deleteModel", this.deleteModelCmdHandler);
+        this.setPrivateCommandHandler("newModel", this.newModelCmdHandler);
     }
 
     // Convenience getter to get the id
@@ -296,6 +297,7 @@ class Part {
 
     receiveCmd(aMessage){
         let handler = this._commandHandlers[aMessage.commandName];
+        let privateHandler = this._privateCommandHandlers[aMessage.commandName];
 
         if(handler){
             // If this Part has a handler for
@@ -304,6 +306,18 @@ class Part {
             // instance as the 'this' context for
             // the handler
             let boundHandler = handler.bind(this);
+            let originalSender;
+            if(aMessage.senders){
+                originalSender = window.System.partsById[aMessage.senders[0].id];
+            }
+            return boundHandler(aMessage.senders, ...aMessage.args);
+        } else if(privateHandler){
+            // If this Part has a handler for
+            // the given command, we run it.
+            // We also late-bind the current part
+            // instance as the 'this' context for
+            // the handler
+            let boundHandler = privateHandler.bind(this);
             let originalSender;
             if(aMessage.senders){
                 originalSender = window.System.partsById[aMessage.senders[0].id];
@@ -330,8 +344,8 @@ class Part {
         }
     }
 
-    setCmdHandler(commandName, handler){
-        this._commandHandlers[commandName] = handler;
+    setPrivateCommandHandler(commandName, handler){
+        this._privateCommandHandlers[commandName] = handler;
     }
 
     setFuncHandler(funcName, handler){
