@@ -41,14 +41,15 @@ class SvgView extends PartView {
         //Atributes
         this.setAttribute('draggable', true);
         // Events
-        this.addEventListener('click', this.onClick);
-        this.addEventListener('dragstart', this.onDragstart);
+        this['onclick'] = this.onClick;
+        this['ondragstart'] = this.onDragstart;
         // add the svg data into the custom element
         this.updateSrc(this.model.partProperties.getPropertyNamed(this, "src"));
     }
 
     afterDisconnected(){
-        this.removeEventListener('click', this.onClick);
+        this['onclick'] = null;
+        this['ondragstart'] = null;
     }
 
     onClick(event){

@@ -25,6 +25,12 @@ class Button extends Part {
             myName
         );
 
+        // set up DOM events to be handled
+        this.partProperties.setPropertyNamed(
+            this,
+            'events',
+            new Set(['mousedown', 'mouseup', 'mouseenter', 'click', 'dragstart', 'dragend'])
+        );
 
         this.isButton = true;
 

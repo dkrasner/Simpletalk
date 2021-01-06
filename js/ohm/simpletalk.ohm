@@ -153,19 +153,22 @@
         InClause (a in clause)
                 = "in" ObjectSpecifier
 
+
 	Command (a command statement)
-   		= "go to" ("next" | "previous") systemObject --goToDirection
-   		| "go to" systemObject objectId --goToByReference
+		= "go to" ("next" | "previous") systemObject --goToDirection
+		| "go to" systemObject objectId --goToByReference
 		| "answer" (stringLiteral | variableName) --answer
 		| "delete" "this"? systemObject objectId? --deleteModel
 		| "add" systemObject stringLiteral? "to"? ("this" | "current")? systemObject? objectId? --addModel
 		| "set" stringLiteral "to" (stringLiteral | variableName) InClause? --setProperty
-                | "put" anyLiteral "into" variableName --putVariable
-                | "ask" anyLiteral --ask
+		| "put" anyLiteral "into" variableName --putVariable
+		| "ask" anyLiteral --ask
+		| "respond to" anyLiteral InClause? --eventRespond
+		| "ignore" anyLiteral InClause? --eventIgnore
 		| messageName CommandArgumentList? --arbitraryCommand
 
-        CommentLines
-                = (comment lineTerminator)+
+	CommentLines
+		= (comment lineTerminator)+
 
 	systemObject (system object such as card, stack etc)
 		= ("c" | "C") "ontainer" | ("b"| "B") "ackground" | ("b" | "B") "utton" | ("c" | "C") "ard" | ("f" | "F") "ield" | ("s" | "S") "tack" | ("w" | "W") "indow" | ("t"| "T") "oolbox" | ("d" | "D") "rawing" | ("s" | "S") "vg"
@@ -201,16 +204,16 @@
 	// Accounts for singular and plural word (i.e. with and without 's')
 	singPlu<x> = x "s"?
 
-        // User defined variables
-        variableName
-                = ~(keyword " " | keyword end) letter+ (digit+)?
+	// User defined variable
+	variableName
+		= ~(keyword " " | keyword end) letter+ (digit+)?
 
-        // Numbers
-        integerLiteral
-                = "-"? digit+
+	// Numbers
+	integerLiteral
+		= "-"? digit+
 
-        floatLiteral
-                = "-"? digit+ "." digit+
+	floatLiteral
+		= "-"? digit+ "." digit+
 
         // Booleans
         trueLiteral
@@ -235,11 +238,12 @@
 
 	quoteMark = "\""
 
-  punctuation = (":" | ";" | "." | "," | "?" | "!" | "-")
-        // The "any" literal is any string or numerical
-        // literal
-        anyLiteral
-                = (stringLiteral | floatLiteral | integerLiteral | booleanLiteral)
+	punctuation = (":" | ";" | "." | "," | "?" | "!" | "-")
+
+  // The "any" literal is any string or numerical
+	// literal
+	anyLiteral
+		= (stringLiteral | floatLiteral | integerLiteral | booleanLiteral)
 
 	// Basic whitespace and line termination handling.
 	// Note that we override the default Ohm definition

@@ -231,7 +231,7 @@ const createInterpreterSemantics = (partContext, systemContext) => {
                 clause.objectType,
                 clause.thisOrCurrent
             ];
-            
+
             let msg = {
                 type: "command",
                 commandName: "setProperty",
@@ -240,6 +240,41 @@ const createInterpreterSemantics = (partContext, systemContext) => {
             return msg;
         },
 
+        Command_eventRespond: function(respondToLiteral, eventNameAsLiteral, optionalInClause){
+            let clause = optionalInClause.interpret()[0] || {};
+            let args = [
+                "eventRespond", // The property name
+                eventNameAsLiteral.interpret(), // The value or a var representing the value
+                clause.objectId,
+                clause.objectType,
+                clause.thisOrCurrent
+            ];
+
+            let msg = {
+                type: "command",
+                commandName: "setProperty",
+                args: args
+            };
+            return msg;
+        },
+
+        Command_eventIgnore: function(ignoreLiteral, eventNameAsLiteral, optionalInClause){
+            let clause = optionalInClause.interpret()[0] || {};
+            let args = [
+                "eventIgnore", // The property name
+                eventNameAsLiteral.interpret(), // The value or a var representing the value
+                clause.objectId,
+                clause.objectType,
+                clause.thisOrCurrent
+            ];
+
+            let msg = {
+                type: "command",
+                commandName: "setProperty",
+                args: args
+            };
+            return msg;
+        },
         Command_ask: function(askLiteral, question){
             return {
                 type: "command",

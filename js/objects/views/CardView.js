@@ -53,20 +53,23 @@ class CardView extends PartView {
         }
 
         // Add event listeners
-        this.addEventListener('click', this.onClick);
-        this.addEventListener('dragenter', (event) => {
-            event.preventDefault()
-        });
-        this.addEventListener('dragover', (event) => {
-            event.preventDefault()
+        this['onclick'] = this.onClick;
+        this['ondragenter'] = (event) => {
+            event.preventDefault();
+        };
+        this['ondragover'] = (event) => {
+            event.preventDefault();
             event.dataTransfer.dropEffect = "copy";
-        });
-        this.addEventListener('drop', this.onDrop);
+        };
+        this['ondrop'] = this.onDrop;
     }
 
     afterDisconnected(){
         // Remove event listeners
-        this.removeEventListener('click', this.onClick);
+        this['onclick'] = null;
+        this['ondragenter'] = null;
+        this['ondragover'] = null;
+        this['ondrop'] = null;
     }
 
     onClick(event){

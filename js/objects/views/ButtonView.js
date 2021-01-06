@@ -56,12 +56,12 @@ class ButtonView extends PartView {
         //Atributes
         this.setAttribute('draggable', true);
         // Setup mouse event handling
-        this.addEventListener('mousedown', this.onMouseDown);
-        this.addEventListener('mouseup', this.onMouseUp);
-        this.addEventListener('mouseenter', this.onMouseEnter);
-        this.addEventListener('click', this.onClick);
-        this.addEventListener('dragstart', this.onDragstart);
-        this.addEventListener('dragend', this.onDragend);
+        this['onmousedown'] = this.onMouseDown;
+        this['onmouseup'] = this.onMouseUp;
+        this['onmouseenter'] = this.onMouseEnter;
+        this['onclick'] = this.onClick;
+        this['ondragstart'] = this.onDragstart;
+        this['ondragend'] = this.onDragend;
 
         let buttonName = this.model.partProperties.getPropertyNamed(this, "name");
         if(buttonName){
@@ -70,9 +70,12 @@ class ButtonView extends PartView {
     }
 
     afterDisconnected(){
-        this.removeEventListener('click', this.onClick);
-        this.removeEventListener('mouseup', this.onMouseUp);
-        this.removeEventListener('mousedown', this.onMouseDown);
+        this['onmousedown'] = null;
+        this['onmouseup'] = null;
+        this['onmouseenter'] = null;
+        this['onclick'] = null;
+        this['ondragstart'] = null;
+        this['ondragend'] = null;
     }
 
     onClick(event){

@@ -54,6 +54,14 @@ class Card extends Part {
             );
         }
 
+        // set up DOM events to be handled
+        this.partProperties.setPropertyNamed(
+            this,
+            'events',
+            new Set(['click', 'dragenter', 'dragover', 'drop'])
+        );
+
+
         // Cards have the layout set
         // of properties, so we add
         // those

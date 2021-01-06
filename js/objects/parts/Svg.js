@@ -18,6 +18,14 @@ class Svg extends Part {
             'name',
             myName
         );
+
+        // set up DOM events to be handled
+        this.partProperties.setPropertyNamed(
+            this,
+            'events',
+            new Set(['click', 'dragstart'])
+        );
+
         this.partProperties.newBasicProp(
             'draggable',
             true

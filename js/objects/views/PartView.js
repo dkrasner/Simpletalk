@@ -36,6 +36,8 @@ class PartView extends HTMLElement {
         this.primHandlePropChange = this.primHandlePropChange.bind(this);
         this.onPropChange = this.onPropChange.bind(this);
         this.scriptChanged = this.scriptChanged.bind(this);
+        this.eventRespond = this.eventRespond.bind(this);
+        this.eventIgnore = this.eventIgnore.bind(this);
 
         // Bind Halo related methods
         this.openHalo = this.openHalo.bind(this);
@@ -71,6 +73,11 @@ class PartView extends HTMLElement {
         this.model = aModel;
         aModel.addPropertySubscriber(this);
         this.setAttribute('part-id', aModel.id);
+        // set onevent DOM element handlers for events property
+        // NOTE: run here as opposed to in this.connectedCallback() because
+        // the latter can technically be invoked before the model is set
+        let events = this.model.partProperties.getPropertyNamed(this.model, "events");
+        events.forEach((eventRespond) => this.eventRespond(eventRespond));
         this.afterModelSet();
     }
 
@@ -89,6 +96,8 @@ class PartView extends HTMLElement {
         // Do not override this method
         // TODO: Implement the universals
         this.onPropChange('script', this.scriptChanged);
+        this.onPropChange('eventRespond', this.eventRespond);
+        this.onPropChange('eventIgnore', this.eventIgnore);
     }
 
     sendMessage(aMessage, target){
@@ -128,6 +137,25 @@ class PartView extends HTMLElement {
             codeString: value,
             targetId: partId
         }, window.System);
+    }
+
+    // add the event to "event" property and an event listener to the DOM
+    // element which will send a corresponding message
+    eventRespond(eventName){
+        let message = {
+            type: "command",
+            commandName: eventName,
+            args: [],
+            shouldIgnore: true
+        };
+        this[`on${eventName}`] = () => this.sendMessage(message, this.model);
+    }
+
+    // remove the event from "event" property and the event listener from
+    // the DOM element
+    eventIgnore(eventName, partId){
+        // remove eventListener
+        this[`on${eventName}`] = null;
     }
 
     openToolbox(){
