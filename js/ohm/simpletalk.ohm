@@ -161,7 +161,7 @@
 		| "delete" "this"? systemObject objectId? --deleteModel
 		| "add" systemObject stringLiteral? "to"? ("this" | "current")? systemObject? objectId? --addModel
 		| "set" stringLiteral "to" (stringLiteral | variableName) InClause? --setProperty
-		| "put" anyLiteral "into" variableName --putVariable
+		| "put" anyLiteral "into" "global"? variableName --putVariable
 		| "ask" anyLiteral --ask
 		| "respond to" anyLiteral InClause? --eventRespond
 		| "ignore" anyLiteral InClause? --eventIgnore

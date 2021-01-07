@@ -691,6 +691,15 @@ const System = {
         return currentCards[0].model;
     },
 
+    // return the model corresponding to the world stack
+    getWorldStackModel: function(){
+        let worldStack = document.querySelectorAll('st-world');
+        if(worldStack.length > 1){
+            throw "Found multiple world stack!";
+        }
+        return worldStack[0].model;
+    },
+
     /** Serialization / Deserialization **/
     fromSerialization: function(aString, recursive=true){
         let json = JSON.parse(aString);
@@ -853,7 +862,11 @@ System._commandHandlers['ask'] = function(senders, question){
     return prompt(question);
 };
 
-System._commandHandlers['putInto'] = function(senders, value, variableName){
+System._commandHandlers['putInto'] = function(senders, value, variableName, global){
+    if(global){
+        System.getWorldStackModel()._executionContext.setLocal(variableName, value);
+        return;
+    }
     let originalSender = this.partsById[senders[0].id];
     if(!originalSender._executionContext){
         throw new Error(`No ExecutionContext for ${originalSender.type}[${originalSender.id}]`);

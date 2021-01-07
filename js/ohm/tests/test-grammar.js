@@ -617,5 +617,9 @@ describe("SimpleTalk Grammar", () => {
             const s = `put -0.12 into myCustomVariable`;
             semanticMatchTest(s, 'Command_putVariable');
         });
+        it("Can parse put assignment command into global variable (float literal)", () => {
+            const s = `put -0.12 into global myCustomVariable`;
+            semanticMatchTest(s, 'Command_putVariable');
+        });
     });
 });

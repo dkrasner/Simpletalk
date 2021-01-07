@@ -12,8 +12,21 @@ class ExecutionContext {
         this._current = null;
 
         // Bind methods
+        this.get = this.get.bind(this);
         this.getLocal = this.getLocal.bind(this);
         this.setLocal = this.setLocal.bind(this);
+    }
+
+    // I retrieve the value corresponding to the variable name
+    // If the variable is undefined locally I look it up in the
+    // WorldStack global store.
+    get(varName){
+        let localValue = this.getLocal(varName);
+        if(localValue !== undefined){
+            return localValue;
+        };
+        let worldStack = window.System.getWorldStackModel();
+        return worldStack._executionContext.getLocal(varName);
     }
 
     getLocal(varName){
