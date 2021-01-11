@@ -5,98 +5,50 @@
  */
 import chai from 'chai';
 const assert = chai.assert;
+const expect = chai.expect;
 
 describe('Button Editor tests', () => {
+    let currentCard = System.getCurrentCardModel();
+    let button = System.newModel("button", currentCard.id);
     describe('System initialialization', () => {
-        it('Has loaded set to true', () => {
-            assert.isTrue(System.isLoaded);
+        it('All parts are present', () => {
+            assert.exists(currentCard);
+            assert.exists(button);
         });
-        it('Has created a world view element', () => {
-            let foundEl = document.querySelector('st-world');
-            assert.exists(foundEl);
+        it('editorOpen prop is false and no editor is present', () => {
+            let editorOpenProp = button.partProperties.getPropertyNamed(button, "editorOpen");
+            assert.isFalse(editorOpenProp);
+            let editorView = document.querySelector('st-button-editor');
+            assert.isNull(editorView);
         });
-        it('Can locate the current stack', () => {
-            let foundEl = document.querySelector('.current-stack');
-            assert.exists(foundEl);
-            assert.exists(foundEl.model);
-        });
-        it('Can locate the (only) current card in the stack', () => {
-            let foundEl = document.querySelector('st-card.current-card');
-            assert.exists(foundEl);
-            assert.exists(foundEl.model);
-        });
-        it('Can get card view by its id', () => {
-            let cardEl = document.querySelector('st-card.current-card');
-            let id = cardEl.getAttribute('part-id');
-            let found = document.querySelector(`[part-id="${id}"]`);
-            assert.equal(id, "2");
-            assert.exists(found);
-        });
-    });
-
-    describe('Adding the button that will be tested', () => {
-        var buttonModel;
-        it('Can add the button via System message', () => {
-            let stackEl = document.querySelector('.current-stack');
-            let cardEl = stackEl.querySelector('st-card');
-            let msg = {
-                type: "command",
-                commandName: "newModel",
-                args: ["button", cardEl.model.id]
+        it('Sending an openEditor message opens the editor', () => {
+            let sendFunction = function(){
+                let msg = {
+                    type: 'command',
+                    commandName: 'openEditor',
+                    args: []
+                };
+                button.sendMessage(msg, button);
             };
-            System.receiveMessage(msg);
-            let btnEl = cardEl.querySelector('st-button');
-            assert.exists(btnEl);
-            buttonModel = btnEl.model;
-            assert.exists(buttonModel);
+            expect(sendFunction).to.not.throw();
+            // TODO 
+            let editorView = document.querySelector('st-button-editor');
+            assert.isNotNull(editorView);
         });
-        describe('#mouseEnter', () => {
-            it('Triggering mouseEnter on the ButtonView element sends the mouseEnter msg to System', () => {
-                let buttonView = document.querySelector('st-button');
-                let event = new window.MouseEvent('mouseenter');
-                assert.doesNotThrow(
-                    buttonView.dispatchEvent.bind(buttonView, event),
-                    Error
-                );
-            });
-
-            it('Button can capture the mouseEnter message', () => {
-                let result = 0;
-                let handler = function(){
-                    result = 1;
+        it('Sending an closeEditor message closes the editor', () => {
+            let sendFunction = function(){
+                let msg = {
+                    type: 'command',
+                    commandName: 'closeEditor',
+                    args: []
                 };
-                let buttonView = document.querySelector('st-button');
-                let buttomModel = buttonView.model;
-                buttonModel._commandHandlers['mouseEnter'] = handler;
-                let event = new window.MouseEvent('mouseenter');
-                buttonView.dispatchEvent(event);
-
-                assert.equal(1, result);
-            });
+                button.sendMessage(msg, button);
+            };
+            expect(sendFunction).to.not.throw();
+            // TODO 
+            let editorView = document.querySelector('st-button-editor');
+            assert.isNull(editorView);
         });
-        describe('#mouseUp', () => {
-            it('Triggering mouseUp on the ButtonView element sends the mouseEnter msg to System', () => {
-                let buttonView = document.querySelector('st-button');
-                let event = new window.MouseEvent('mouseup');
-                assert.doesNotThrow(
-                    buttonView.dispatchEvent.bind(buttonView, event),
-                    Error
-                );
-            });
 
-            it('Button can capture the mouseUp message', () => {
-                let result = 0;
-                let handler = function(){
-                    result = 1;
-                };
-                let buttonView = document.querySelector('st-button');
-                let buttomModel = buttonView.model;
-                buttonModel._commandHandlers['mouseUp'] = handler;
-                let event = new window.MouseEvent('mouseup');
-                buttonView.dispatchEvent(event);
-
-                assert.equal(1, result);
-            });
-        });
     });
 });

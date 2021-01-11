@@ -10,10 +10,14 @@ class ButtonEditorView extends PartView {
         this.defaultWidth = "100px";
         this.defaultHeight = "100px";
 
+
+        // Configure the Shadow DOM and template
         this.template = document.createElement('template');
         this.template.innerHTML = templateString;
-        this._shadowRoot = this.attachShadow({mode: 'open'});
-        this._shadowRoot.appendChild(this.template.content.cloneNode(true));
+        this.shadow = this.attachShadow({mode: 'open'});
+        this.shadow.append(
+            this.template.content.cloneNode(true)
+        );
     }
 
     afterModelSet() {

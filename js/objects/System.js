@@ -27,6 +27,7 @@ import DrawingView from './views/drawing/DrawingView.js';
 import SvgView from './views/SvgView.js';
 
 import Halo from './views/Halo.js';
+import ButtonEditorView from './views/editors/ButtonEditorView.js';
 
 import ohm from 'ohm-js';
 import interpreterSemantics from '../ohm/interpreter-semantics.js';
@@ -832,6 +833,22 @@ const System = {
             throw new Error(`Could not locate an active current stack!`);
         }
         return currentStackView.goToCardById(cardId);
+    },
+
+    openEditorForPart: function(partType, partId){
+        let currentStackModel = this.getCurrentStackModel();
+        let currentStackView = this.findViewById(currentStackModel.id);
+        let editor;
+        if(partType === 'button'){
+            editor = document.createElement("st-button-editor");
+        }
+        editor.setAttribute("data-part-id", partId);
+        currentStackView.appendChild(editor);
+    },
+
+    closeEditorForPart: function(partType, partId){
+        let editor = document.querySelector(`st-${partType}-editor[data-part-id="${partId}"]`);
+        editor.parentNode.removeChild(editor);
     }
 };
 
@@ -1396,6 +1413,7 @@ document.addEventListener('DOMContentLoaded', () => {
     // Add any other non-part view CustomElements,
     // like the halo
     window.customElements.define('st-halo', Halo);
+    window.customElements.define('st-button-editor', ButtonEditorView);
 
     // Perform the initial setup of
     // the system
