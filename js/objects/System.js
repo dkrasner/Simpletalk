@@ -14,6 +14,7 @@ import Window from './parts/Window.js';
 import Container from './parts/Container.js';
 import Drawing from './parts/Drawing.js';
 import Svg from './parts/Svg.js';
+import Ar from './parts/Ar.js';
 
 import WorldView from './views/WorldView.js';
 import StackView from './views/StackView.js';
@@ -25,6 +26,7 @@ import FieldView from './views/FieldView.js';
 import ContainerView from './views/ContainerView.js';
 import DrawingView from './views/drawing/DrawingView.js';
 import SvgView from './views/SvgView.js';
+import ArView from './views/ArView.js';
 
 import Halo from './views/Halo.js';
 
@@ -1093,6 +1095,25 @@ System._commandHandlers['openToolbox'] = function(senders, targetId){
         System
     );
 
+    // Add a button to add a Ar
+    let addArBtn = this.newModel('button', windowCurrentCardModel.id);
+    addArBtn.partProperties.setPropertyNamed(
+        addArBtn,
+        'name',
+        'Add Ar to Card'
+    );
+    let addArBtnScript = 'on click\n    add ar to current card\nend click';
+    addArBtn.partProperties.setPropertyNamed(
+        addArBtn,
+        'script',
+        addArBtnScript
+    );
+    System.sendMessage(
+        {type: "compile", codeString: addArBtnScript, targetId: addArBtn.id},
+        System,
+        System
+    );
+
     // Add a button to add a Field
     let addFieldBtn = this.newModel('button', windowCurrentCardModel.id);
     addFieldBtn.partProperties.setPropertyNamed(
@@ -1347,6 +1368,7 @@ System.registerPart('field', Field);
 System.registerPart('container', Container);
 System.registerPart('drawing', Drawing);
 System.registerPart('svg', Svg);
+System.registerPart('ar', Ar);
 
 /** Register the initial set of views in the system **/
 System.registerView('button', ButtonView);
@@ -1358,6 +1380,7 @@ System.registerView('field', FieldView);
 System.registerView('container', ContainerView);
 System.registerView('drawing', DrawingView);
 System.registerView('svg', SvgView);
+System.registerView('ar', ArView);
 
 
 // Convenience method for adding all of the
