@@ -836,9 +836,13 @@ const System = {
     },
 
     openEditorForPart: function(partType, partId){
+        // if there is already and editor open for this part do nothing
+        let editor = document.querySelector(`st-${partType}-editor[data-part-id="${partId}"]`);
+        if(editor){
+            return;
+        }
         let currentStackModel = this.getCurrentStackModel();
         let currentStackView = this.findViewById(currentStackModel.id);
-        let editor;
         if(partType === 'button'){
             editor = document.createElement("st-button-editor");
         }

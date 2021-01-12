@@ -35,6 +35,20 @@ describe('Button Editor tests', () => {
             let editorView = document.querySelector('st-button-editor');
             assert.isNotNull(editorView);
         });
+        it('Sending a second openEditor message does nothing', () => {
+            let sendFunction = function(){
+                let msg = {
+                    type: 'command',
+                    commandName: 'openEditor',
+                    args: []
+                };
+                button.sendMessage(msg, button);
+            };
+            expect(sendFunction).to.not.throw();
+            // TODO 
+            let editorViews = document.querySelectorAll('st-button-editor');
+            assert.equal(editorViews.length, 1);
+        });
         it('Sending an closeEditor message closes the editor', () => {
             let sendFunction = function(){
                 let msg = {
