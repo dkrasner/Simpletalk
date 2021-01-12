@@ -1,20 +1,21 @@
 import PartView from './PartView.js';
 
 const templateString = `
-    <svg draggable=true xmlns="http://www.w3.org/2000/svg">
-    </svg>
+    <video id="video" width="640" height="480" autoplay>
+    </video>
 `;
 
 class ArView extends PartView {
     constructor(){
         super();
-        this.defaultWidth = "100px";
-        this.defaultHeight = "100px";
+        this.defaultWidth = "640px";
+        this.defaultHeight = "480px";
 
         this.template = document.createElement('template');
         this.template.innerHTML = templateString;
         this._shadowRoot = this.attachShadow({mode: 'open'});
         this._shadowRoot.appendChild(this.template.content.cloneNode(true));
+
         // State
         this.state = {
             "moving": false
@@ -24,7 +25,7 @@ class ArView extends PartView {
         this.onDragstart = this.onDragstart.bind(this);
         this.onDragstart = this.onDragstart.bind(this);
         this.onHaloResize = this.onHaloResize.bind(this);
-        this.updateSrc = this.updateSrc.bind(this);
+        this.startVideo = this.startVideo.bind(this);
     }
 
     afterModelSet() {
@@ -43,8 +44,8 @@ class ArView extends PartView {
         // Events
         this['onclick'] = this.onClick;
         this['ondragstart'] = this.onDragstart;
-        // add the svg data into the custom element
-        this.updateSrc(this.model.partProperties.getPropertyNamed(this, "src"));
+        // Start the video
+        this.startVideo();
     }
 
     afterDisconnected(){
@@ -97,43 +98,15 @@ class ArView extends PartView {
         svg.style.height = `${newHeight}px`;
     }
 
-    // Fetch svg data, either remote url or local path;
-    // checks for its integrity and updated the DOM
-    updateSrc(svgUri){
-        // Replacing image with another
-        fetch(svgUri).then(response => {
-            let contentType = response.headers.get('content-type');
-            if(contentType == 'image/svg+xml'){
-                return response.text();
-            } else {
-                throw new Error(`SVGView cannot load file of type ${contentType}`);
-            }
-        })
-        .then(text => {
-            let parser = new DOMParser();
-            let xmlDocument = parser.parseFromString(text, 'application/xml');
-            let newArEl = xmlDocument.documentElement;
-            let currentArEl = this._shadowRoot.querySelector('svg');
-            newArEl.style.width = this.defaultWidth;
-            newArEl.style.height = this.defaultHeight;
-            currentArEl.remove();
-            this._shadowRoot.appendChild(newArEl);
-        })
-        .catch(error => {
-            console.error(error);
-        });
-    }
-/*
-    attributeChangedCallback(name, oldVal, newVal) {
-        if (name === "src") {
-            console.log("ASDF: attributeChangedCallback()");
-            this.model.partProperties.setPropertyNamed(this.model, "src", newVal);
+    startVideo(){
+        let video = this._shadowRoot.querySelector('video');
+        if(navigator.mediaDevices && navigator.mediaDevices.getUserMedia) {
+            navigator.mediaDevices.getUserMedia({ video: true }).then(function(stream) {
+                video.srcObject = stream;
+                video.play();
+            });
         }
     }
-    static get observedAttributes() {
-        return ["src"]
-    }
-*/
 };
 
 export {

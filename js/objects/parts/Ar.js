@@ -4,14 +4,6 @@ class Ar extends Part {
     constructor(owner, src, name) {
         super(owner);
 
-        // Properties
-        this.partProperties.newBasicProp("src", null);
-        let mySrc = src || "/images/noun_ar_placeholder.svg";
-        this.partProperties.setPropertyNamed(
-            this,
-            'src',
-            mySrc
-        );
         let myName = name || `Ar ${this.id}`;
         this.partProperties.setPropertyNamed(
             this,
