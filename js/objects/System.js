@@ -716,7 +716,7 @@ const System = {
         // recursively
         if(recursive){
             json.subparts.forEach(subpartId => {
-                let serializationEl = document.querySelector('script[data-part-id="${subpartId}"]');
+                let serializationEl = document.querySelector(`script[data-part-id="${subpartId}"]`);
                 if(serializationEl){
                     let content = serializationEl.innerHTML;
                     this.fromSerialization(content);
