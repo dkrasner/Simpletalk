@@ -195,6 +195,14 @@ st-container:empty {
     min-width: 100px;
 }
 
+/* =Ar Styles
+ *---------------------------------------------------------*/
+st-ar {
+    display: block;
+    position: absolute;
+    /* border: 1px solid rgb(150, 150, 150);*/
+}
+
 /* =Svg Styles
  *---------------------------------------------------------*/
 st-svg {
