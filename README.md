@@ -1,5 +1,7 @@
 # SimpleTalk
-An implementation of HyperTalk in Ohm-js
+A project inspired by the ideas from [HyperCard](https://en.wikipedia.org/wiki/HyperCard) and [Smalltalk](https://en.wikipedia.org/wiki/Smalltalk). The project is very early stages and represents our desire to think about 'authoring' environments. The goal is not so much to create a working system, although that is one, but to begin thinking about research in personal computing moving forward.
+
+No official release at the moment and documentation to follow.
 
 ## Installation
 
