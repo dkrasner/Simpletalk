@@ -13,7 +13,7 @@ import WorldStack from './parts/WorldStack.js';
 import Window from './parts/Window.js';
 import Container from './parts/Container.js';
 import Drawing from './parts/Drawing.js';
-import Svg from './parts/Svg.js';
+import Image from './parts/Image.js';
 
 import ButtonEditor from './parts/editors/ButtonEditor.js';
 
@@ -26,7 +26,7 @@ import WindowView from './views/WindowView';
 import FieldView from './views/FieldView.js';
 import ContainerView from './views/ContainerView.js';
 import DrawingView from './views/drawing/DrawingView.js';
-import SvgView from './views/SvgView.js';
+import ImageView from './views/ImageView.js';
 
 import Halo from './views/Halo.js';
 import ButtonEditorView from './views/editors/ButtonEditorView.js';
@@ -386,7 +386,7 @@ const System = {
         if(name){
             // TODO! this is a total hack, shold we update the grammar?
             // find a better way to pass args?
-            if (kind === "svg"){
+            if (kind === "image"){
                 model.partProperties.setPropertyNamed(model, "src", name);
             } else {
                 model.partProperties.setPropertyNamed(model, 'name', name);
@@ -1120,21 +1120,21 @@ System._commandHandlers['openToolbox'] = function(senders, targetId){
         );
     };
 
-    // Add a button to add a Svg
-    let addSvgBtn = this.newModel('button', windowCurrentCardModel.id);
-    addSvgBtn.partProperties.setPropertyNamed(
-        addSvgBtn,
+    // Add a button to add a Image
+    let addImageBtn = this.newModel('button', windowCurrentCardModel.id);
+    addImageBtn.partProperties.setPropertyNamed(
+        addImageBtn,
         'name',
-        'Add Svg to Card'
+        'Add Image to Card'
     );
-    let addSvgBtnScript = 'on click\n    add svg to current card\nend click';
-    addSvgBtn.partProperties.setPropertyNamed(
-        addSvgBtn,
+    let addImageBtnScript = 'on click\n    add image to current card\nend click';
+    addImageBtn.partProperties.setPropertyNamed(
+        addImageBtn,
         'script',
-        addSvgBtnScript
+        addImageBtnScript
     );
     System.sendMessage(
-        {type: "compile", codeString: addSvgBtnScript, targetId: addSvgBtn.id},
+        {type: "compile", codeString: addImageBtnScript, targetId: addImageBtn.id},
         System,
         System
     );
@@ -1209,7 +1209,7 @@ System._commandHandlers['openWorldCatalog'] = function(senders, targetId){
             if (partName === "stack"){
                 script = 'on click\n    add  stack "new stack" to world \nend click';
                 partModel = this.newModel(
-                    "svg",
+                    "image",
                     windowCurrentCardModel.id,
                     "",
                     "",
@@ -1218,7 +1218,7 @@ System._commandHandlers['openWorldCatalog'] = function(senders, targetId){
             } else if (partName === "card"){
                 script = 'on click\n    add card "new card" to current stack \nend click';
                 partModel = this.newModel(
-                    "svg",
+                    "image",
                     windowCurrentCardModel.id,
                     "",
                     "",
@@ -1227,7 +1227,7 @@ System._commandHandlers['openWorldCatalog'] = function(senders, targetId){
             } else if (partName === "window"){
                 script = 'on click\n    add window "new window" to current stack \nend click';
                 partModel = this.newModel(
-                    "svg",
+                    "image",
                     windowCurrentCardModel.id,
                     "",
                     "",
@@ -1236,7 +1236,7 @@ System._commandHandlers['openWorldCatalog'] = function(senders, targetId){
             } else if (partName === "container"){
                 script = 'on click\n    add container "new container" to current card \nend click';
                 partModel = this.newModel(
-                    "svg",
+                    "image",
                     windowCurrentCardModel.id,
                     "",
                     "",
@@ -1248,15 +1248,15 @@ System._commandHandlers['openWorldCatalog'] = function(senders, targetId){
             } else if (partName === "drawing"){
                 script = 'on click\n    add drawing "new drawing" to current card \nend click';
                 partModel = this.newModel(
-                    "svg",
+                    "image",
                     windowCurrentCardModel.id,
                     "",
                     "",
                     '/images/drawing.svg'
                 );
-            } else if (partName === "svg"){
-                script = 'on click\n    add svg to current card \nend click';
-                partModel = this.newModel("svg", windowCurrentCardModel.id);
+            } else if (partName === "image"){
+                script = 'on click\n    add image to current card \nend click';
+                partModel = this.newModel("image", windowCurrentCardModel.id);
             }
 
             let view = this.findViewById(partModel.id);
@@ -1452,7 +1452,7 @@ System.registerPart('window', Window);
 System.registerPart('field', Field);
 System.registerPart('container', Container);
 System.registerPart('drawing', Drawing);
-System.registerPart('svg', Svg);
+System.registerPart('image', Image);
 
 /** Register the initial set of views in the system **/
 System.registerView('button', ButtonView);
@@ -1463,7 +1463,7 @@ System.registerView('window', WindowView);
 System.registerView('field', FieldView);
 System.registerView('container', ContainerView);
 System.registerView('drawing', DrawingView);
-System.registerView('svg', SvgView);
+System.registerView('image', ImageView);
 
 
 // Convenience method for adding all of the
