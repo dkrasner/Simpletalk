@@ -35,6 +35,13 @@ describe('Button Editor tests', () => {
             let editorView = document.querySelector('st-button-editor');
             assert.isNotNull(editorView);
         });
+        it('Editor model and view have the proper target ids', () => {
+            let editorView = document.querySelector('st-button-editor');
+            let editorModel = editorView.model;
+            let targetId = editorModel.partProperties.getPropertyNamed(editorModel, "targetId");
+            assert.equal(targetId, button.id);
+            assert.equal(targetId, editorView.getAttribute("target-id"));
+        });
         it('Sending a second openEditor message does nothing', () => {
             let sendFunction = function(){
                 let msg = {

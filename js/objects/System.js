@@ -15,6 +15,8 @@ import Container from './parts/Container.js';
 import Drawing from './parts/Drawing.js';
 import Svg from './parts/Svg.js';
 
+import ButtonEditor from './parts/editors/ButtonEditor.js';
+
 import WorldView from './views/WorldView.js';
 import StackView from './views/StackView.js';
 import ButtonView from './views/ButtonView.js';
@@ -837,21 +839,19 @@ const System = {
 
     openEditorForPart: function(partType, partId){
         // if there is already and editor open for this part do nothing
-        let editor = document.querySelector(`st-${partType}-editor[data-part-id="${partId}"]`);
+        let editor = document.querySelector(`st-${partType}-editor[target-id="${partId}"]`);
         if(editor){
             return;
         }
-        let currentStackModel = this.getCurrentStackModel();
-        let currentStackView = this.findViewById(currentStackModel.id);
+        let currentCard = this.getCurrentCardModel();
         if(partType === 'button'){
-            editor = document.createElement("st-button-editor");
+            editor = this.newModel("button-editor", currentCard.id);
         }
-        editor.setAttribute("data-part-id", partId);
-        currentStackView.appendChild(editor);
+        editor.partProperties.setPropertyNamed(editor, "targetId", partId);
     },
 
     closeEditorForPart: function(partType, partId){
-        let editor = document.querySelector(`st-${partType}-editor[data-part-id="${partId}"]`);
+        let editor = document.querySelector(`st-${partType}-editor[target-id="${partId}"]`);
         editor.parentNode.removeChild(editor);
     }
 };
@@ -1305,7 +1305,7 @@ System._commandHandlers['openScriptEditor'] = function(senders, targetId){
         'script'
     );
 
-    let htmlContent = fieldView.textToHtml(currentScript)
+    let htmlContent = fieldView.textToHtml(currentScript);
     // set the inner html of the textarea with the proper htmlContent
     // NOTE: at the moment fieldView does not subscribe to htmlContent
     // change due to cursor focus and other issues
@@ -1368,6 +1368,7 @@ System.registerPart('field', Field);
 System.registerPart('container', Container);
 System.registerPart('drawing', Drawing);
 System.registerPart('svg', Svg);
+System.registerPart('button-editor', ButtonEditor);
 
 /** Register the initial set of views in the system **/
 System.registerView('button', ButtonView);
@@ -1379,6 +1380,7 @@ System.registerView('field', FieldView);
 System.registerView('container', ContainerView);
 System.registerView('drawing', DrawingView);
 System.registerView('svg', SvgView);
+System.registerView('button-editor', ButtonEditorView);
 
 
 // Convenience method for adding all of the
@@ -1417,7 +1419,6 @@ document.addEventListener('DOMContentLoaded', () => {
     // Add any other non-part view CustomElements,
     // like the halo
     window.customElements.define('st-halo', Halo);
-    window.customElements.define('st-button-editor', ButtonEditorView);
 
     // Perform the initial setup of
     // the system

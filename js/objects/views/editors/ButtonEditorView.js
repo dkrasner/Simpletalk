@@ -1,4 +1,5 @@
 import PartView from '../PartView.js';
+import Field from '../../parts/Field.js';
 
 const templateString = `
 <style>
@@ -7,8 +8,9 @@ const templateString = `
         box-sizing: border-box;
         top: 200px;
         left: 200px;
+        border-style: inset;
         min-width: 300px;
-        min-height: 200px;
+        min-height: 300px;
     }
 
     .st-field-bar {
@@ -28,7 +30,17 @@ const templateString = `
     }
 
     .st-field-main > * {
-       width: 50%;
+        width: 50%;
+    }
+
+    .st-field-pain-general > st-field {
+        position: relative!important;
+        height: 100%;
+    }
+
+    .st-field-pain-editor > * {
+        position: relative;
+        height: 100%;
     }
 
     .st-field-button {
@@ -43,8 +55,8 @@ const templateString = `
         background-color: rgba(255, 50, 50, 0.4);
     }
 
-    :st-field{
-        position: relative;
+    .button-editor {
+        position:relative;
         height: 100%;
     }
 </style>
@@ -59,7 +71,7 @@ const templateString = `
         <slot></slot>
     </div>
     <div class="st-field-pane-editor">
-        <st-field></st-field>
+        <slot></slot>
     </div>
 </div>
 `;
@@ -79,15 +91,29 @@ class ButtonEditorView extends PartView {
         this.mouseDownInBar = false;
 
         // bind methods
+        this.setupPropHandlers = this.setupPropHandlers.bind(this);
         this.setupClickAndDrag = this.setupClickAndDrag.bind(this);
+        this.setupField = this.setupField.bind(this);
         // this.setupBarButtons = this.setupBarButtons.bind(this);
         // this.setupExpanderAreas = this.setupExpanderAreas.bind(this);
         this.onMouseMoveInBar = this.onMouseMoveInBar.bind(this);
         this.onMouseDownInBar = this.onMouseDownInBar.bind(this);
         this.onMouseUpAfterDrag = this.onMouseUpAfterDrag.bind(this);
+
+        // Setup prop change handlers
+        this.setupPropHandlers();
     }
 
+    setupPropHandlers(){
+        this.onPropChange('targetId', (value) => {
+            this.setAttribute("target-id", value);
+        });
+    }
+
+
     afterModelSet() {
+        // set the editor field model
+
     }
 
     afterConnected(){
@@ -96,9 +122,43 @@ class ButtonEditorView extends PartView {
         // this.setupExpanderAreas();
         this.style.top = "50px";
         this.style.left = "50px";
+        this.setupField();
     }
 
     afterDisconnected(){
+    }
+
+    setupField(){
+        let partId = this.getAttribute("part-id");
+        let targetPart = window.System.partsById[partId];
+        let currentCardModel = window.System.getCurrentCardModel();
+        // create the field model and attach to current card
+        // of the new window.
+        let fieldModel = window.System.newModel('field', currentCardModel.id);
+
+        // setup cusotm editor css classes
+        let fieldView = window.System.findViewById(fieldModel.id);
+        fieldView.classList.add("button-editor");
+        // Set the field's htmlContent to be the textToHtml converted
+        // script of the given target part.
+        let currentScript = targetPart.partProperties.getPropertyNamed(
+            targetPart,
+            'script'
+        );
+
+        let htmlContent = fieldView.textToHtml(currentScript);
+        // set the inner html of the textarea with the proper htmlContent
+        // NOTE: at the moment fieldView does not subscribe to htmlContent
+        // change due to cursor focus and other issues
+        let textArea = fieldView._shadowRoot.querySelector(".field-textarea");
+        textArea.innerHTML = htmlContent;
+        fieldModel.partProperties.setPropertyNamed(
+            fieldModel,
+            'htmlContent',
+            htmlContent
+        );
+
+
     }
 
     setupClickAndDrag(){

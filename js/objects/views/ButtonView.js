@@ -4,7 +4,6 @@
  * I am a webcomponent representing a Button.
  */
 import PartView from './PartView.js';
-import ButtonEditorView from './editors/ButtonEditorView.js'
 
 const templateString = `
                 <style>
