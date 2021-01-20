@@ -31,16 +31,30 @@ describe('Button Editor tests', () => {
                 button.sendMessage(msg, button);
             };
             expect(sendFunction).to.not.throw();
-            // TODO 
             let editorView = document.querySelector('st-button-editor');
             assert.isNotNull(editorView);
         });
-        it('Editor model and view have the proper target ids', () => {
+        it.skip('Editor model and view have the proper target ids', () => {
             let editorView = document.querySelector('st-button-editor');
             let editorModel = editorView.model;
             let targetId = editorModel.partProperties.getPropertyNamed(editorModel, "targetId");
             assert.equal(targetId, button.id);
             assert.equal(targetId, editorView.getAttribute("target-id"));
+        });
+        it.skip('Clicking the Editor script button opens text field', () => {
+            let editorView = document.querySelector('st-button-editor');
+            let button = editorView.querySelector('.edit-script-button');
+            let clickEvent = new window.MouseEvent('click');
+            let clickEventFunc = function(){
+                button.dispatchEvent(clickEvent);
+            };
+            let fieldView = editorView.querySelector('st-field');
+            expect(clickEventFunc).to.not.throw(Error);
+            assert.isNotNull(fieldView);
+        });
+        it.skip('Script editor target is correct', () => {
+            //TODO this really can't be done at the moment due to how
+            // script editor is constructed but should be in the future
         });
         it('Sending a second openEditor message does nothing', () => {
             let sendFunction = function(){
@@ -52,7 +66,6 @@ describe('Button Editor tests', () => {
                 button.sendMessage(msg, button);
             };
             expect(sendFunction).to.not.throw();
-            // TODO 
             let editorViews = document.querySelectorAll('st-button-editor');
             assert.equal(editorViews.length, 1);
         });

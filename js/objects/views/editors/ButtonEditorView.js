@@ -76,7 +76,7 @@ const templateString = `
 </div>
 `;
 
-class ButtonEditorView extends PartView {
+class ButtonEditorView extends HTMLElement {
     constructor(){
         super();
 
@@ -91,50 +91,38 @@ class ButtonEditorView extends PartView {
         this.mouseDownInBar = false;
 
         // bind methods
-        this.setupPropHandlers = this.setupPropHandlers.bind(this);
+        this.setTarget = this.setTarget.bind(this);
         this.setupClickAndDrag = this.setupClickAndDrag.bind(this);
         this.setupField = this.setupField.bind(this);
         // this.setupBarButtons = this.setupBarButtons.bind(this);
         // this.setupExpanderAreas = this.setupExpanderAreas.bind(this);
-        this.onMouseMoveInBar = this.onMouseMoveInBar.bind(this);
         this.onMouseDownInBar = this.onMouseDownInBar.bind(this);
         this.onMouseUpAfterDrag = this.onMouseUpAfterDrag.bind(this);
-
-        // Setup prop change handlers
-        this.setupPropHandlers();
-    }
-
-    setupPropHandlers(){
-        this.onPropChange('targetId', (value) => {
-            this.setAttribute("target-id", value);
-        });
     }
 
 
-    afterModelSet() {
-        // set the editor field model
-
+    connectedCallback(){
+        if(this.isConnected){
+            this.setupClickAndDrag();
+            // this.setupBarButtons();
+            // this.setupExpanderAreas();
+            this.style.top = "50px";
+            this.style.left = "50px";
+        }
     }
 
-    afterConnected(){
-        this.setupClickAndDrag();
-        // this.setupBarButtons();
-        // this.setupExpanderAreas();
-        this.style.top = "50px";
-        this.style.left = "50px";
-        this.setupField();
+    disconnectedCallback(){
     }
 
-    afterDisconnected(){
+    setTarget(partId){
+        this.setAttribute("target-id", partId);
     }
 
     setupField(){
-        let partId = this.getAttribute("part-id");
-        let targetPart = window.System.partsById[partId];
-        let currentCardModel = window.System.getCurrentCardModel();
-        // create the field model and attach to current card
-        // of the new window.
-        let fieldModel = window.System.newModel('field', currentCardModel.id);
+        let targetId = this.getAttribute("target-id");
+        console.log(targetId);
+        let targetPart = window.System.partsById[targetId];
+        let fieldModel = window.System.newModel('field', this.model.id);
 
         // setup cusotm editor css classes
         let fieldView = window.System.findViewById(fieldModel.id);

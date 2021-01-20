@@ -844,10 +844,16 @@ const System = {
             return;
         }
         let currentCard = this.getCurrentCardModel();
+        let currentCardView = this.findViewById(currentCard.id);
         if(partType === 'button'){
-            editor = this.newModel("button-editor", currentCard.id);
+            // Create the new view instance,
+            // append to parent, and set the target 
+            editor = document.createElement(
+                "st-button-editor"
+            );
         }
-        editor.partProperties.setPropertyNamed(editor, "targetId", partId);
+        currentCardView.appendChild(editor);
+        editor.setTarget(partId);
     },
 
     closeEditorForPart: function(partType, partId){
@@ -1368,7 +1374,7 @@ System.registerPart('field', Field);
 System.registerPart('container', Container);
 System.registerPart('drawing', Drawing);
 System.registerPart('svg', Svg);
-System.registerPart('button-editor', ButtonEditor);
+Sys
 
 /** Register the initial set of views in the system **/
 System.registerView('button', ButtonView);
@@ -1380,7 +1386,6 @@ System.registerView('field', FieldView);
 System.registerView('container', ContainerView);
 System.registerView('drawing', DrawingView);
 System.registerView('svg', SvgView);
-System.registerView('button-editor', ButtonEditorView);
 
 
 // Convenience method for adding all of the
@@ -1419,6 +1424,7 @@ document.addEventListener('DOMContentLoaded', () => {
     // Add any other non-part view CustomElements,
     // like the halo
     window.customElements.define('st-halo', Halo);
+    window.customElements.define('st-button-editor', ButtonEditorView);
 
     // Perform the initial setup of
     // the system
