@@ -1374,7 +1374,6 @@ System.registerPart('field', Field);
 System.registerPart('container', Container);
 System.registerPart('drawing', Drawing);
 System.registerPart('svg', Svg);
-Sys
 
 /** Register the initial set of views in the system **/
 System.registerView('button', ButtonView);
