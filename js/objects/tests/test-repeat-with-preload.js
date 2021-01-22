@@ -151,6 +151,25 @@ describe("Repeat Looping Tests", () => {
             assert.equal(resultTotal, 6);
         });
     });
+
+    describe("Misc example tests", () => {
+        it("Can exit repeat on if condition", () => {
+            let script = [
+                "on click",
+                "put 0 into Counter",
+                "repeat until Counter = 5",
+                "answer Counter",
+                "put (Counter + 1) into Counter",
+                "if Counter >= 3 then exit repeat",
+                "end repeat",
+                "end click"
+            ].join("\n");
+            compileButtonScript(script);
+            sendButtonClick();
+            let result = getLocalVar(buttonModel, 'Counter');
+            assert.equal(result, 3);
+        });
+    });
 });
 
 

@@ -170,3 +170,20 @@ describe("Repeat full script tests", () => {
         semanticMatchTest(script, "MessageHandler");
     });
 });
+
+describe("Misc full script repeat tests", () => {
+    it("Can parse an exit repeat in nested if block", () => {
+        let script = [
+        "on click",
+        "put 0 into Counter",
+        "repeat until Counter = 5",
+        "answer Counter",
+        "put (Counter + 1) into Counter",
+        "if Counter >= 3 then exit repeat",
+        "end repeat",
+        "end click"
+        ].join("\n");
+        semanticMatchTest(script, "Script");
+        semanticMatchTest(script, "MessageHandler");
+    });
+});

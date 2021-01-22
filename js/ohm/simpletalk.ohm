@@ -48,11 +48,13 @@
 	
 	// Note we explicitly exclude keywords, i.e. control
 	Statement (a statement)
-		= ~"end" Command comment?
-                | ~"end" IfThenInline comment?
+                = ~"end" IfThenInline comment?
                 | ~"end" IfThenSingleline comment?
                 | ~"end" IfThenMultiline comment?
                 | ~"end" RepeatBlock comment?
+                | ~"end" RepeatAdjust comment?
+                | ~"end" Command comment?
+
 
         // The HT manual describes a Factor as being:
         // "a single element of value in an expression".
@@ -110,15 +112,15 @@
                | Factor // This gives us variableName and some other literals should we need them
                
         IfThenInline
-               = "if" Conditional "then" Command comment?
+               = "if" Conditional "then" Statement comment?
         IfLine
                = "if" Conditional comment?
         
         ElseLine
-               = "else" Command comment?
+               = "else" Statement comment?
                
         ThenLine
-               = "then" Command comment?
+               = "then" Statement comment?
 
         EndIfLine
               = "end if" comment?
@@ -145,8 +147,8 @@
 			| "repeat" --forever
 
 		RepeatAdjust
-			= "exit repeat" lineTerminator comment? --exit
-			| "next repeat" lineTerminator comment? --next
+			= "exit repeat" --exit
+			| "next repeat" --next
 
 		RepeatBlock
 			= RepeatControlForm lineTerminator (StatementLine|RepeatAdjust)+ "end repeat"

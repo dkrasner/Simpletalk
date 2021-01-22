@@ -320,7 +320,7 @@ const createInterpreterSemantics = (partContext, systemContext) => {
                 partContext._executionContext.setLocal('it', commandResult);
                 return message;
             } else {
-                return null;
+                return statement.sourceString;
             }
         },
 
@@ -386,10 +386,10 @@ const createInterpreterSemantics = (partContext, systemContext) => {
             return first <= second;
         },
 
-        IfThenInline: function(ifLiteral, conditional, thenLiteral, command, optionalComment){
+        IfThenInline: function(ifLiteral, conditional, thenLiteral, statement, optionalComment){
             let shouldEvaluate = conditional.interpret();
             if(shouldEvaluate){
-                return command.interpret();
+                return statement.interpret();
             } else {
                 return null;
             }
@@ -417,12 +417,12 @@ const createInterpreterSemantics = (partContext, systemContext) => {
             return conditional.interpret();
         },
 
-        ThenLine: function(thenLiteral, command, optionalComment){
-            return command.interpret();
+        ThenLine: function(thenLiteral, statement, optionalComment){
+            return statement.interpret();
         },
 
-        ElseLine: function(elseLiteral, command, optionalComment){
-            return command.interpret();
+        ElseLine: function(elseLiteral, statement, optionalComment){
+            return statement.interpret();
         },
 
         KindConditional: function(expr1, comparatorLiteral, expr2){
@@ -467,16 +467,12 @@ const createInterpreterSemantics = (partContext, systemContext) => {
             };
         },
 
-        RepeatAdjust_exit: function(_, lineTerm, optComment){
-            return {
-                type: 'repeatAdjustExit'
-            };
+        RepeatAdjust_exit: function(_){
+            return null;
         },
 
-        RepeatAdjust_next: function(_, lineTerm, optComment){
-            return {
-                type: 'repeatAdjustNext'
-            };
+        RepeatAdjust_next: function(_){
+            return null;
         },
 
         RepeatBlock: function(repeatControl, lineTerm, statementLineOrRepAdjustPlus, endLiteral){
@@ -513,10 +509,11 @@ const createInterpreterSemantics = (partContext, systemContext) => {
                     let shouldBreak = false;
                     for(let i = 0; i < statementLines.length; i++){
                         let currentStatement = statementLines[i];
-                        if(currentStatement.type == 'repeatAdjustExit'){
+                        console.log(currentStatement.sourceString);
+                        if(currentStatement == 'exit repeat'){
                             shouldBreak = true;
                             break; // break out of this inner loop
-                        } else if(currentStatement.type == 'repeatAdjustNext'){
+                        } else if(currentStatement == 'next repeat'){
                             break; // break out of this inner loop
                         } else {
                             currentStatement.interpret();
