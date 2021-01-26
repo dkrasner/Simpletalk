@@ -10,26 +10,41 @@ const templateString = `
         border-style: inset;
     }
 
+:host > color-wheel{
+position: absolute;
+}
+
     .editor-bar {
         display: flex;
         flex-direction: row;
+        width: 100%;
         height: 25px;
         background-color: rgb(218, 218, 218);
-        padding-left: 8px;
-        padding-right: 8px;
-        align-items: center;
     }
 
     .editor-main {
         display: flex;
-        flex-direction: column;
+        flex-direction: row;
+        flex-wrap: wrap;
         padding: 5px;
+        justify-content: center;
     }
 
     .editor-main > * {
-        margin-top: 1px;
-        margin-bottom: 1px;
+        margin-top: 5px;
+        margin-right: 1px;
+        margin-left: 1px;
+    }
+
+    .editor-main input {
+        width: 80%;
         text-align: center;
+    }
+
+    .editor-main > button {
+        background-color: var(--palette-yellow);
+        padding: 5px;
+        border-radius: 5px;
     }
 
     .editor-bar-button {
@@ -39,19 +54,56 @@ const templateString = `
         border-radius: 100%;
         background-color: rgba(255, 150, 150);
         margin-right: 4px;
+        margin-left: 4px;
+        align-self: center;
     }
+
     .close-button {
         background-color: rgba(255, 50, 50, 0.4);
     }
 
+    .editor-title {
+        align-self: center;
+        margin-left: 10px;
+    }
     .button-editor {
         position:relative;
         height: 100%;
     }
 
-    .events {
+    .events-display {
         display: flex;
-        flex-direction: column
+        flex-direction: column;
+        align-items: center;
+    }
+
+    .events-display > * {
+        width: 80%;
+        text-align: center;
+        margin-top: 2px;
+    }
+
+    .event-list {
+        display: flex;
+        flex-direction: row;
+        flex-wrap: wrap;
+        justify-content: center;
+    }
+
+    .event-list > div {
+        background-color: #4da5c6;
+        border-style: solid;
+        border-radius: 5px;
+        margin-right: 2px;
+        margin-left: 2px;
+        margin-top: 2px;
+        border-width: 1px;
+        padding: 1px;
+    }
+
+    .event-list .remove {
+        cursor: pointer;
+        margin-right: 1px;
     }
 </style>
 <div class="editor-bar">
@@ -62,13 +114,13 @@ const templateString = `
 </div>
 <div class="editor-main">
     <input class="name"></input>
-    <button class="script">Script</button>
-    <button class="background-color" name="background-color">Background Color</button>
-    <button class="font-color" name="font-color">Font Color</button>
     <div class="events-display">
         <input class="events"></input>
         <div class="event-list"></div>
     </div>
+    <button class="script">Script</button>
+    <button class="background-color" name="background-color">Background Color</button>
+    <button class="font-color" name="font-color">Font Color</button>
 </div>
 `;
 
@@ -154,7 +206,7 @@ class ButtonEditorView extends HTMLElement {
         let titleSpan = this._shadowRoot.querySelector('.editor-title > span');
         let nameInput = this._shadowRoot.querySelector('input.name');
         titleSpan.textContent = `Button Editor [${name}]`;
-        nameInput.defaultValue = name;
+        nameInput.placeholder = name;
         // set up events editing interface
         let currentEvents = this.target.partProperties.getPropertyNamed(this.target, "events");
         let eventsDiv = this._shadowRoot.querySelector('.editor-main > div.events-display');
@@ -214,7 +266,12 @@ class ButtonEditorView extends HTMLElement {
     }
 
     openColorWheelWidget(event){
-        let colorWheelWidget = new ColorWheelWidget(event.target.name);
+        // make sure the color wheel is not already open
+        let colorWheelWidget = this._shadowRoot.querySelector(`color-wheel[selector-command="${event.target.name}"]`);
+        if(colorWheelWidget){
+            return;
+        }
+        colorWheelWidget = new ColorWheelWidget(event.target.name);
         // add an attribute describing the command
         colorWheelWidget.setAttribute("selector-command", event.target.name);
         // add a custom callback for the close button
@@ -293,15 +350,24 @@ class ButtonEditorView extends HTMLElement {
 
     _displayEvent(eventName){
         let eventListDiv = this._shadowRoot.querySelector('div.event-list');
-        let eventEl = document.createElement("div");
+        // if the event is already listed do nothing
+        // TODO: this is a hack b/c the editor is not properly responsive at the moment
+        let eventEl = eventListDiv.querySelector(`#${eventName}`);
+        if(eventEl){
+            return;
+        }
+        eventEl = document.createElement("div");
         let eventSpan = document.createElement("span");
+        let closeSpan = document.createElement("span");
         let xmlDocument = SVGParser.parseFromString(closeIcon, 'application/xml');
         let closeSvgEl = xmlDocument.documentElement;
-        closeSvgEl.name = eventName;
+        closeSpan.name = eventName;
         eventEl.id = eventName;
-        closeSvgEl.addEventListener('click', this.onIgnoreEvent);
+        closeSpan.addEventListener('click', this.onIgnoreEvent);
         eventSpan.textContent = eventName;
-        eventEl.appendChild(closeSvgEl);
+        closeSpan.textContent = "-";
+        closeSpan.classList.add("remove");
+        eventEl.appendChild(closeSpan);
         eventEl.appendChild(eventSpan);
         eventListDiv.appendChild(eventEl);
     }

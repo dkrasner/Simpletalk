@@ -79,7 +79,7 @@ describe('Button Editor tests', () => {
         it('Button name is default displayed', () => {
             let editorView = document.querySelector('st-button-editor');
             let input = editorView._shadowRoot.querySelector('input.name');
-            assert.equal(input.defaultValue, buttonName);
+            assert.equal(input.placeholder, buttonName);
         });
         it('Text input changes the button name as desired', () => {
             let newName = "a cooler button";
@@ -120,7 +120,7 @@ describe('Button Editor tests', () => {
             let anEventName = buttonEvents.values().next().value;
             let eventEl = eventList.querySelector(`#${anEventName}`);
             assert.isNotNull(eventEl);
-            let removeX = eventEl.querySelector('svg');
+            let removeX = eventEl.querySelector('span.remove');
             let clickEvent = new window.MouseEvent('click');
             removeX.dispatchEvent(clickEvent);
             eventEl = eventList.querySelector(`#${anEventName}`);

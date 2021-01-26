@@ -93,8 +93,6 @@ st-world > .current-stack > st-background {
 }
 
 
-
-
 /* =Card Styles
  *----------------------------------------------------*/
 st-card {
@@ -216,6 +214,19 @@ st-field {
     height: 300px;
 }
 
+/* =Editor Styles
+ *----------------------------------------------------*/
+st-button-editor{
+    width: 300px;
+    background-color: var(--palette-cornsik);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+st-button-editor > color-wheel{
+    position: absolute;
+}
 /* =Layout Class Styles
  * --------------------------------------------------------*/
 .list-layout {
