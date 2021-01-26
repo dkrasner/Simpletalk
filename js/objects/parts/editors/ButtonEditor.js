@@ -16,6 +16,10 @@ class ButtonEditor extends Part {
     constructor(owner, name){
         super(owner);
 
+        this.acceptedSubpartTypes = [
+            "field"
+        ];
+
         // If we are initializing with a name,
         // set the name part property
         let myName = name || `ButtonEditor ${this.id}`;

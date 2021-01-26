@@ -18,6 +18,7 @@ global.DOMParser = window.DOMParser;
 global.alert = function alert(arg) {};
 document.execCommand = function execCommandMock() { };
 
+
 // add the grammar in
 var fs = require('fs');
 window.grammar = fs.readFileSync('./js/ohm/simpletalk.ohm');

@@ -321,7 +321,7 @@ class FieldView extends PartView {
                 if(command === "fontsize"){
                     eventName = "change";
                 }
-                node.addEventListener(eventName, (event) => {this._toolbarHandler(event, command, value);})
+                node.addEventListener(eventName, (event) => {this._toolbarHandler(event, command, value);});
             }
         });
     }
@@ -356,7 +356,7 @@ class FieldView extends PartView {
         colorWheelWidget.setAttribute("selector-command", command);
         // add a custom callback for the close button
         let closeButton = colorWheelWidget.shadowRoot.querySelector('#close-button');
-        closeButton.addEventListener('click', () => {colorWheelWidget.remove()});
+        closeButton.addEventListener('click', () => {colorWheelWidget.remove();});
         // add the colorWheelWidget
         event.target.parentNode.after(colorWheelWidget);
         // add a color-selected event callback
