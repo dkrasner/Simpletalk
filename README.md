@@ -1,3 +1,6 @@
+# Overview
+This repository a project, currently named "SimpleTalk," begun at the initiation of the UnitedLex computing lab. More information is to come, but an overview of the lab and its structure can be found in the [mandate document](https://github.com/UnitedLexCorp/SimpleTalk/blob/master/Mandate_Public_Repository.pdf).
+
 # SimpleTalk
 A project inspired by the ideas from [HyperCard](https://en.wikipedia.org/wiki/HyperCard) and [Smalltalk](https://en.wikipedia.org/wiki/Smalltalk). The project is very early stages and represents our desire to think about 'authoring' environments. The goal is not so much to create a working system, although that is one, but to begin thinking about research in personal computing moving forward.
 
