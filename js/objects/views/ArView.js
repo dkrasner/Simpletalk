@@ -46,6 +46,21 @@ class ArView extends PartView {
         this['ondragstart'] = this.onDragstart;
         // Start the video
         this.startVideo();
+        // Load model and run detection
+        const modelParams = {
+            flipHorizontal: true,   // flip e.g for video  
+            maxNumBoxes: 20,        // maximum number of boxes to detect
+            iouThreshold: 0.5,      // ioU threshold for non-max suppression
+            scoreThreshold: 0.6,    // confidence threshold for predictions.
+        }
+        handTrack.load(modelParams).then(model => {
+            this.model = model;
+            console.log("model loaded!!!");
+            const video = document.getElementById("video");
+            this.model.detect(video).then(predictions => {
+                console.log("Predictions: ", predictions);
+            });
+        });
     }
 
     afterDisconnected(){
