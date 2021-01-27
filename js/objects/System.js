@@ -34,6 +34,7 @@ import ButtonEditorView from './views/editors/ButtonEditorView.js';
 import ohm from 'ohm-js';
 import interpreterSemantics from '../ohm/interpreter-semantics.js';
 
+const video = document.createElement('video');
 
 const System = {
     name: "System",
@@ -1440,6 +1441,28 @@ System._commandHandlers['saveHTML'] = function(senders){
     anchor.click();
     window.URL.revokeObjectURL(url);
     anchor.parentElement.removeChild(anchor);
+};
+
+System._commandHandlers['startVideo'] = () => {
+    if (video.srcObject !== null) {
+        return;
+    }
+    navigator.mediaDevices.getUserMedia({ video: true }).then(stream => {
+        video.srcObject = stream;
+        video.play();
+    });
+};
+
+System._commandHandlers['stopVideo'] = () => {
+    if (video.srcObject === null) {
+        return;
+    }
+    video.pause();
+    const tracks = video.srcObject.getTracks();
+    for (var i = 0; i < tracks.length; i++) {
+        tracks[i].stop();
+    }
+    video.srcObject = null;
 };
 
 /** Register the initial set of parts in the system **/
