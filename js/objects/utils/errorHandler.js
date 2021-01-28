@@ -14,7 +14,7 @@ const errorHandler = {
             default:
                 // if I don't know what to do with this message
                 // I send it along to the System
-                return window.System.sendMessage(aMessage);
+                return window.System.receiveMessage(aMessage);
         }
     },
 
