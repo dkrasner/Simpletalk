@@ -35,6 +35,7 @@ import ohm from 'ohm-js';
 import interpreterSemantics from '../ohm/interpreter-semantics.js';
 
 const video = document.createElement('video');
+var handDetectionModel = null;
 
 const System = {
     name: "System",
@@ -1463,6 +1464,52 @@ System._commandHandlers['stopVideo'] = () => {
         tracks[i].stop();
     }
     video.srcObject = null;
+};
+
+// https://aaronsmith.online/easily-load-an-external-script-using-javascript/
+const loadScript = src => {
+    return new Promise((resolve, reject) => {
+        const script = document.createElement('script')
+        script.type = 'text/javascript'
+        script.onload = resolve
+        script.onerror = reject
+        script.src = src
+        document.head.append(script)
+    })
+}
+
+const loadHandDetectionModel = () => {
+    if (handDetectionModel === null) {
+        window.tf.loadFrozenModel(
+            "https://cdn.jsdelivr.net/npm/handtrackjs/models/web/ssdlitemobilenetv2/tensorflowjs_model.pb",
+            "https://cdn.jsdelivr.net/npm/handtrackjs/models/web/ssdlitemobilenetv2/weights_manifest.json"
+        ).then(model => {
+            console.log("hand detection model loaded");
+            handDetectionModel = model;
+        }).catch(err => {
+            console.log("error loading hand detection model");
+            console.log(err);
+        });
+    }
+}
+
+System._commandHandlers['startHandDetectionModel'] = () => {
+    if (typeof window.tf === 'undefined') {
+        loadScript("https://cdn.jsdelivr.net/npm/@tensorflow/tfjs@0.13.5/dist/tf.js").then(() => {
+            loadHandDetectionModel();
+        });
+    } else {
+        loadHandDetectionModel();
+    }
+};
+
+const unloadHandDetectionModel = () => {
+    console.log(handDetectionModel);
+    handDetectionModel = null;
+}
+
+System._commandHandlers['stopHandDetectionModel'] = () => {
+    unloadHandDetectionModel();
 };
 
 /** Register the initial set of parts in the system **/
