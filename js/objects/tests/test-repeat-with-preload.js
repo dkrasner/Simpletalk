@@ -153,7 +153,7 @@ describe("Repeat Looping Tests", () => {
     });
 
     describe("Misc example tests", () => {
-        it("Can exit repeat on if condition", () => {
+        it("Can exit repeat on if condition (until)", () => {
             let script = [
                 "on click",
                 "put 0 into Counter",
@@ -169,6 +169,133 @@ describe("Repeat Looping Tests", () => {
             let result = getLocalVar(buttonModel, 'Counter');
             assert.equal(result, 3);
         });
+
+        it("Can exit repeat on if condition (forNumTimes)", () => {
+            let script = [
+                "on click",
+                "put 0 into Counter",
+                "repeat 5 times",
+                "if Counter = 4 then exit repeat",
+                "put (Counter + 1) into Counter",
+                "end repeat",
+                "end click"
+            ].join("\n");
+            compileButtonScript(script);
+            sendButtonClick();
+            let result = getLocalVar(buttonModel, 'Counter');
+            assert.equal(result, 4);
+        });
+
+        it("Can exit repeat on if condition (while)", () => {
+            let script = [
+                "on click",
+                "put 0 into Counter",
+                "put 0 into timesItLooped",
+                "repeat while Counter < 6",
+                "put (Counter + 1) into Counter",
+                "if Counter > 3 then exit repeat",
+                "put (timesItLooped + 1) into timesItLooped",
+                "end repeat",
+                "end click"
+            ].join("\n");
+            compileButtonScript(script);
+            sendButtonClick();
+            let counter = getLocalVar(buttonModel, 'Counter');
+            let timesItLooped = getLocalVar(buttonModel, 'timesItLooped');
+            assert.equal(counter, 4);
+            assert.equal(timesItLooped, 3);
+        });
+
+        it("Can exit repeat on if condition (withStartFinish)", () => {
+            let script = [
+                "on click",
+                "put 0 into Counter",
+                "repeat with realCount = 2 to 7",
+                "if Counter > 2 then exit repeat",
+                "put (Counter + 1) into Counter",
+                "end repeat",
+                "end click"
+            ].join("\n");
+            compileButtonScript(script);
+            sendButtonClick();
+            let counter = getLocalVar(buttonModel, 'Counter');
+            let finalIndex = getLocalVar(buttonModel, 'realCount');
+            assert.equal(counter, 3);
+            assert.equal(finalIndex, 5);
+        });
+
+        it("Can next repeat on if condition (until)", () => {
+            let script = [
+                "on click",
+                "put 0 into Counter",
+                "put 0 into CounterMinusOne",
+                "repeat until Counter = 5",
+                "answer Counter",
+                "put (Counter + 1) into Counter",
+                "if Counter = 3 then next repeat",
+                "put (CounterMinusOne + 1) into CounterMinusOne",
+                "end repeat",
+                "end click"
+            ].join("\n");
+            compileButtonScript(script);
+            sendButtonClick();
+            let result = getLocalVar(buttonModel, 'Counter');
+            let backupResult = getLocalVar(buttonModel, 'CounterMinusOne');
+            assert.equal(result, 5);
+            assert.equal(backupResult, 4);
+        });
+
+        it("Can next repeat on if condition (forNumTimes)", () => {
+            let script = [
+                "on click",
+                "put 0 into Counter",
+                "repeat for 10 times",
+                "if Counter > 3 then next repeat",
+                "put (Counter + 1) into Counter",
+                "end repeat",
+                "end click"
+            ].join("\n");
+            compileButtonScript(script);
+            sendButtonClick();
+            let result = getLocalVar(buttonModel, 'Counter');
+            assert.equal(result, 4);
+        });
+
+        it("Can next repeat on if condition (while)", () => {
+            let script = [
+                "on click",
+                "put 0 into Counter",
+                "put 0 into timesItLooped",
+                "repeat while Counter < 6",
+                "put (Counter + 1) into Counter",
+                "if Counter = 3 then next repeat",
+                "put (timesItLooped + 1) into timesItLooped",
+                "end repeat",
+                "end click"
+            ].join("\n");
+            compileButtonScript(script);
+            sendButtonClick();
+            let counter = getLocalVar(buttonModel, 'Counter');
+            let timesItLooped = getLocalVar(buttonModel, 'timesItLooped');
+            assert.equal(counter, 6);
+            assert.equal(timesItLooped, 5);
+        });
+
+        it("Can next repeat on if condition (withStartFinish)" , () => {
+            let script = [
+                "on click",
+                "put 0 into Counter",
+                "repeat with realCount = 2 to 7",
+                "if realCount = 4 then next repeat",
+                "put (Counter + 1) into Counter",
+                "end repeat",
+                "end click"
+            ].join("\n");
+            compileButtonScript(script);
+            sendButtonClick();
+            let counter = getLocalVar(buttonModel, "Counter");
+            assert.equal(counter, 4);
+        });        
     });
 });
 

@@ -23,14 +23,12 @@ const createInterpreterSemantics = (partContext, systemContext) => {
                     }
                 });
 
-                let finalMessages = [];
-
                 // In the grammar, the StatementList is
                 // an optional rule, meaning the result of the rule
                 // is an empty array (no statementlist) or a single
                 // item array (the statementlist)
                 if(optionalStatementList.children.length == 0){
-                    return finalMessages;
+                    return;
                 }
                 let statementList = optionalStatementList.children[0];
 
@@ -46,18 +44,8 @@ const createInterpreterSemantics = (partContext, systemContext) => {
                 statementList.children.forEach(statementLines => {
                     statementLines.children.forEach(statementLine => {
                         let message = statementLine.interpret();
-                        // Some interpret() calls, like if-then statements
-                        // that evaluated to false, will return null instead
-                        // of a true message. We need to skip over these.
-                        // if(message !== null){
-                        //     let commandResult = partContext.sendMessage(message, partContext);
-                        //     this._executionContext.setLocal('it', commandResult);
-                        //     finalMessages.push(message);
-                        // }
                     });
                 });
-
-                return finalMessages;
             };
             
             partContext._commandHandlers[messageName] = handlerFunction;
@@ -315,17 +303,17 @@ const createInterpreterSemantics = (partContext, systemContext) => {
             // and repeat controls, do not result in
             // messages but return null.
             // We ignore these.
-            if(message !== null){
+            if(message && typeof(message) !== 'string'){
                 let commandResult = partContext.sendMessage(message, partContext);
                 partContext._executionContext.setLocal('it', commandResult);
-                return message;
+                return null;
             } else {
-                return statement.sourceString;
+                return message;
             }
         },
 
-        Statement: function(command, optionalComment){
-            return command.interpret();
+        Statement: function(actualStatement, optionalComment){
+            return actualStatement.interpret();
         },
 
         Expression_addExpr: function(firstExpression, operation, secondExpression){
@@ -468,11 +456,11 @@ const createInterpreterSemantics = (partContext, systemContext) => {
         },
 
         RepeatAdjust_exit: function(_){
-            return null;
+            return 'exit repeat';
         },
 
         RepeatAdjust_next: function(_){
-            return null;
+            return 'next repeat';
         },
 
         RepeatBlock: function(repeatControl, lineTerm, statementLineOrRepAdjustPlus, endLiteral){
@@ -485,14 +473,13 @@ const createInterpreterSemantics = (partContext, systemContext) => {
                     let shouldPass = false;
                     for(let j = 0; j < statementLines.length; j++){
                         let currentStatement = statementLines[j];
-                        if(currentStatement.type == 'repeatAdjustExit'){
+                        let result = currentStatement.interpret();
+                        if(result == 'exit repeat'){
                             shouldBreak = true;
                             break; // break out of this inner loop
-                        } else if(currentStatement.type == 'repeatAdjustNext'){
+                        } else if(result == 'next repeat'){
                             shouldPass = true;
                             break; // break out of this inner loop
-                        } else {
-                            currentStatement.interpret();
                         }
                     }
                     if(shouldPass){
@@ -509,14 +496,14 @@ const createInterpreterSemantics = (partContext, systemContext) => {
                     let shouldBreak = false;
                     for(let i = 0; i < statementLines.length; i++){
                         let currentStatement = statementLines[i];
-                        console.log(currentStatement.sourceString);
-                        if(currentStatement == 'exit repeat'){
-                            shouldBreak = true;
-                            break; // break out of this inner loop
-                        } else if(currentStatement == 'next repeat'){
-                            break; // break out of this inner loop
-                        } else {
-                            currentStatement.interpret();
+                        let result = currentStatement.interpret();
+                        if(result){
+                            if(result == 'exit repeat'){
+                                shouldBreak = true;
+                                break;
+                            } else if(result == 'next repeat'){
+                                break;
+                            }
                         }
                     }
                     if(shouldBreak){
@@ -531,13 +518,12 @@ const createInterpreterSemantics = (partContext, systemContext) => {
                     let shouldBreak = false;
                     for(let i = 0; i < statementLines.length; i++){
                         let currentStatement = statementLines[i];
-                        if(currentStatement.type == 'repeatAdjustExit'){
+                        let result = currentStatement.interpret();
+                        if(result == 'exit repeat'){
                             shouldBreak = true;
                             break; // break out of this inner loop
-                        } else if(currentStatement.type == 'repeatAdjustNext'){
+                        } else if(result == "next repeat"){
                             break; // break out of this inner loop
-                        } else {
-                            currentStatement.interpret();
                         }
                     }
                     if(shouldBreak){
@@ -560,14 +546,13 @@ const createInterpreterSemantics = (partContext, systemContext) => {
                     let shouldPass = false;
                     for(let j = 0; j < statementLines.length; j++){
                         let currentStatement = statementLines[j];
-                        if(currentStatement.type == 'repeatAdjustExit'){
+                        let result = currentStatement.interpret();
+                        if(result == "exit repeat"){
                             shouldBreak = true;
                             break; // break out of this inner loop
-                        } else if(currentStatement.type == 'repeatAdjustNext'){
-                            shouldBreak = true;
+                        } else if(result == "next repeat"){
+                            shouldPass = true;
                             break; // break out of this inner loop
-                        } else {
-                            currentStatement.interpret();
                         }
                     }
                     if(shouldPass){
