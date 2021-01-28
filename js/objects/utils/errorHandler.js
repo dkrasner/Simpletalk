@@ -43,6 +43,8 @@ const errorHandler = {
         textLines[errorLineNum] += ` <<<[Expected:${expectedText}; ruleName: "${ruleName}"]`;
         textContent = textLines.join("\n");
         scriptEditor.setTextValue(textContent);
+        // open the grammar
+        this._openGrammar(aMessage.partId, ruleName);
     },
 
     _openScriptEditor: function(partId){
@@ -51,6 +53,16 @@ const errorHandler = {
             type: "command",
             "commandName": "openScriptEditor",
             args: [partId]
+        };
+        targetView.model.sendMessage(msg, targetView.model);
+    },
+
+    _openGrammar: function(partId, ruleName){
+        let targetView = window.System.findViewById(partId);
+        let msg = {
+            type: "command",
+            "commandName": "openSimpletalkGrammar",
+            args: [ruleName]
         };
         targetView.model.sendMessage(msg, targetView.model);
     }

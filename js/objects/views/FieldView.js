@@ -43,6 +43,7 @@ const templateString = `
     width: 100%;
     height: 90%;
     background-color: var(--palette-cornsik);
+    overflow: auto;
 }
 
 .field-textarea {
@@ -234,6 +235,7 @@ class FieldView extends PartView {
         this.onInput = this.onInput.bind(this);
         this.onClick = this.onClick.bind(this);
         this.textToHtml = this.textToHtml.bind(this);
+        this.setTextValue = this.setTextValue.bind(this);
         this.setupPropHandlers = this.setupPropHandlers.bind(this);
         this.setUpToolbar = this.setUpToolbar.bind(this);
         this._toolbarHandler = this._toolbarHandler.bind(this);
@@ -321,7 +323,7 @@ class FieldView extends PartView {
                 if(command === "fontsize"){
                     eventName = "change";
                 }
-                node.addEventListener(eventName, (event) => {this._toolbarHandler(event, command, value);})
+                node.addEventListener(eventName, (event) => {this._toolbarHandler(event, command, value);});
             }
         });
     }
@@ -350,13 +352,23 @@ class FieldView extends PartView {
         this.textarea.focus();
     }
 
+    setTextValue(text){
+        let innerHTML = this.textToHtml(text);
+        this.textarea.innerHTML = innerHTML;
+        this.model.partProperties.setPropertyNamed(
+            this.model,
+            'htmlContent',
+            innerHTML
+        );
+    }
+
     openColorWheelWidget(event, command){
         let colorWheelWidget = new ColorWheelWidget(command);
         // add an attribute describing the command
         colorWheelWidget.setAttribute("selector-command", command);
         // add a custom callback for the close button
         let closeButton = colorWheelWidget.shadowRoot.querySelector('#close-button');
-        closeButton.addEventListener('click', () => {colorWheelWidget.remove()});
+        closeButton.addEventListener('click', () => {colorWheelWidget.remove();});
         // add the colorWheelWidget
         event.target.parentNode.after(colorWheelWidget);
         // add a color-selected event callback

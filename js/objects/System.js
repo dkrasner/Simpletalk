@@ -300,7 +300,7 @@ const System = {
         if(!targetObject || targetObject == undefined){
             throw new Error(`System could not compile target object ${aMessage.targetId}`);
         }
-        
+
 
         // Attempt to parse the incoming SimpleTalk script string.
         // If there are grammatical errors, report them and bail.
@@ -309,10 +309,14 @@ const System = {
         // level of the script, which will create the JS handler functions
         let parsedScript = languageGrammar.match(aMessage.codeString);
         if(parsedScript.failed()){
+            // consider using the parse data from trace
+            // example: let tracedScript = languageGrammar.trace(aMessage.codeString);
+            // let tree = tracedScript.toString();
             let msg = {
                 type: "error",
                 name: "GrammarMatchError",
-                message: parsedScript.message,
+                parsedScript: parsedScript,
+                partId: aMessage.targetId
             };
             targetObject.sendMessage(msg, targetObject);
         } else {
@@ -329,8 +333,8 @@ const System = {
             );
             targetObject._semantics(parsedScript).interpret();
         }
-        
-        
+
+
         // Be sure to then update the
         // serialization for the target
         // part, thus adding the script to
@@ -698,6 +702,21 @@ const System = {
             throw "Found multiple world stack!";
         }
         return worldStack[0].model;
+    },
+
+    // return the model corresponding script editor st-field
+    // Note: we use the window.model.target to locate the corresponding window
+    // but return its st-field subpart
+    findScriptEditorByTargetId: function(id){
+        let scriptEditorField;
+        let windows = document.querySelectorAll("st-window");
+        windows.forEach((w) => {
+            let target = w.model.target;
+            if(target && target.id === id){
+                scriptEditorField = w.querySelector("st-field");
+            }
+        });
+        return scriptEditorField;
     },
 
     /** Serialization / Deserialization **/
@@ -1284,7 +1303,7 @@ System._commandHandlers['openScriptEditor'] = function(senders, targetId){
         'script'
     );
 
-    let htmlContent = fieldView.textToHtml(currentScript)
+    let htmlContent = fieldView.textToHtml(currentScript);
     // set the inner html of the textarea with the proper htmlContent
     // NOTE: at the moment fieldView does not subscribe to htmlContent
     // change due to cursor focus and other issues
@@ -1318,6 +1337,66 @@ System._commandHandlers['openScriptEditor'] = function(senders, targetId){
             textContent
         );
     };
+};
+
+System._commandHandlers['openSimpletalkGrammar'] = function(senders, ruleName){
+    // The stack where the window will be inserted will
+    // be the current stack
+    let currentStackView = document.querySelector('.current-stack');
+    let insertStack = currentStackView.model;
+
+    let winModel = this.newModel('window', insertStack.id);
+    let winTitle = "Simpltetalk Grammar";
+    winModel.partProperties.setPropertyNamed(
+        winModel,
+        'title',
+        winTitle
+    );
+    let winView = this.findViewById(winModel.id);
+    let winStackModel = this.newModel('stack', winModel.id);
+    let winStackView = this.findViewById(winStackModel.id);
+    winStackView.classList.add('window-stack');
+    let currentCardView = winView.querySelector('.current-stack .current-card');
+    let currentCard = currentCardView.model;
+
+    // Set the current card's layout to be a column list
+    currentCard.partProperties.setPropertyNamed(
+        currentCard,
+        'layout',
+        'list'
+    );
+
+    // Create the Field model and attach to current card
+    // of the new window.
+    let fieldModel = this.newModel('field', currentCard.id);
+    let fieldView = this.findViewById(fieldModel.id);
+    // Set the field's htmlContent to be the textToHtml converted
+    // Simpletalk grammar.
+    let grammar = System.grammar.source.sourceString;
+
+    let htmlContent = fieldView.textToHtml(grammar);
+    // set the inner html of the textarea with the proper htmlContent
+    // NOTE: at the moment fieldView does not subscribe to htmlContent
+    // change due to cursor focus and other issues
+    let textArea = fieldView._shadowRoot.querySelector(".field-textarea");
+    textArea.innerHTML = htmlContent;
+    fieldModel.partProperties.setPropertyNamed(
+        fieldModel,
+        'htmlContent',
+        htmlContent
+    );
+
+    // if the ruleName has been provided, scroll that into view
+    if(ruleName){
+        let regex = `${ruleName}`;
+        for(var i = 0; i < textArea.children.length; i++){
+            let line = textArea.children[i];
+            let text = line.textContent;
+            if(text.match(regex)){
+                line.scrollIntoView();
+            }
+        };
+    }
 };
 
 System._commandHandlers['saveHTML'] = function(senders){
