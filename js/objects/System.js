@@ -1512,6 +1512,58 @@ System._commandHandlers['stopHandDetectionModel'] = () => {
     unloadHandDetectionModel();
 };
 
+const scaleDim = (dim) => {
+    const scale = 0.7;
+    const stride = 16;
+    const evenRes = dim * scale - 1;
+    return evenRes - (evenRes % stride) + 1;
+};
+
+const detectHands = async () => {
+    const canvas = document.createElement('canvas');
+    canvas.width = video.videoWidth;
+    canvas.height = video.videoHeight;
+    const ctx = canvas.getContext('2d');
+    ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
+    const scaledWidth = scaleDim(canvas.width);
+    const scaledHeight = scaleDim(canvas.height);
+    const image = tf.fromPixels(canvas).resizeBilinear([scaledHeight, scaledWidth]).expandDims(0);
+    const bboxes = await handDetectionModel.executeAsync(image).then(result => {
+        const [scores, boxes] = result;
+        const indices = tf.image.nonMaxSuppression(
+            boxes.reshape([boxes.shape[1], boxes.shape[3]]),
+            scores.reshape([scores.shape[1]]),
+            20,
+            0.5,
+            0.80).dataSync();
+        var bboxes = [];
+        var idx;
+        for (let i = 0; i < indices.length; i++) {
+            idx = indices[i];
+            var score = scores.get(0, idx, 0);
+            // Original order is [minY, minX, maxY, maxX] so we reorder.
+            var box = [
+                boxes.get(0, idx, 0, 1) * canvas.width, // minX
+                boxes.get(0, idx, 0, 0) * canvas.height, // minY
+                boxes.get(0, idx, 0, 3) * canvas.width, // maxX
+                boxes.get(0, idx, 0, 2) * canvas.height // maxY
+            ];
+            bboxes.push([score, box]);
+        }
+        return bboxes;
+    });
+    console.log(bboxes);
+};
+
+System._commandHandlers['detectHands'] = () => {
+    if (handDetectionModel === null) {
+        console.log("Error: no hand detection model loaded");
+        return;
+    }
+    detectHands();
+}
+
+
 /** Register the initial set of parts in the system **/
 System.registerPart('card', Card);
 System.registerPart('stack', Stack);
