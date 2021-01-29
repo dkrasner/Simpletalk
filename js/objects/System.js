@@ -149,6 +149,7 @@ const System = {
         );
         worldView.setModel(worldModel);
         document.body.appendChild(worldView);
+        document.body.appendChild(video);
         document.body.appendChild(canvas);
 
 
