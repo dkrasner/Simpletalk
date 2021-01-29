@@ -1,7 +1,5 @@
 import ColorWheelWidget from '../drawing/ColorWheelWidget.js';
 
-const closeIcon = `<svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-square-x" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z" fill="none"></path><rect x="4" y="4" width="16" height="16" rx="2"></rect><path d="M10 10l4 4m0 -4l-4 4"></path></svg>`;
-
 const templateString = `
 <style>
     :host {
@@ -124,7 +122,6 @@ position: absolute;
 </div>
 `;
 
-const SVGParser = new DOMParser();
 
 class ButtonEditorView extends HTMLElement {
     constructor(){
@@ -359,8 +356,6 @@ class ButtonEditorView extends HTMLElement {
         eventEl = document.createElement("div");
         let eventSpan = document.createElement("span");
         let closeSpan = document.createElement("span");
-        let xmlDocument = SVGParser.parseFromString(closeIcon, 'application/xml');
-        let closeSvgEl = xmlDocument.documentElement;
         closeSpan.name = eventName;
         eventEl.id = eventName;
         closeSpan.addEventListener('click', this.onIgnoreEvent);
