@@ -85,7 +85,7 @@
         // are compared using an operator, and the result
         // is expected to be a boolean value
         EqualityConditional
-               = Expression "=" Expression
+               = Expression "==" Expression
                | Expression "is" Expression
         
         NonEqualityConditional

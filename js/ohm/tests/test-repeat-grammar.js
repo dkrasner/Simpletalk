@@ -176,7 +176,7 @@ describe("Misc full script repeat tests", () => {
         let script = [
         "on click",
         "put 0 into Counter",
-        "repeat until Counter = 5",
+        "repeat until Counter == 5",
         "answer Counter",
         "put (Counter + 1) into Counter",
         "if Counter >= 3 then exit repeat",

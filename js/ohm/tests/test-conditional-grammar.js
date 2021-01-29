@@ -28,17 +28,17 @@ const semanticMatchTest = (str, semanticType) => {
 describe("Basic Literal Conditional Tests", () => {
     describe("Equality via = sign", () => {
         it("Can deal with Integer literals", () => {
-            let str = `2 = 4`;
+            let str = `2 == 4`;
             semanticMatchTest(str, "EqualityConditional");
             semanticMatchTest(str, "Conditional");
         });
         it("Can deal with Float literals", () => {
-            let str = `0.1409 = 22.4`;
+            let str = `0.1409 == 22.4`;
             semanticMatchTest(str, "EqualityConditional");
             semanticMatchTest(str, "Conditional");
         });
         it("Can deal with String literals", () => {
-            let str = `"this is the first string" = "this is the second string"`;
+            let str = `"this is the first string" == "this is the second string"`;
             semanticMatchTest(str, "EqualityConditional");
             semanticMatchTest(str, "Conditional");
         });

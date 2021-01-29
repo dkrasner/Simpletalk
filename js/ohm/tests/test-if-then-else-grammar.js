@@ -34,7 +34,7 @@ const semanticMatchTest = (str, semanticType) => {
 
 describe("Basic IfThenInline", () => {
     it("Can handle basic comparison", () => {
-        let str = `if 2 = 2 then go to next card`;
+        let str = `if 2 == 2 then go to next card`;
         semanticMatchTest(str, "IfThenInline");
     });
     it("Can handle comparison with variable", () => {
@@ -75,7 +75,7 @@ describe("Basic IfThenSingleline", () => {
     describe("Without 'else'", () => {
         it("Can handle basic comparison", () => {
             let str = [
-                'if 2 = 2',
+                'if 2 == 2',
                 'then go to next card'
             ].join('\n');
             semanticMatchTest(str, "IfThenSingleline");
@@ -140,7 +140,7 @@ describe("Basic IfThenSingleline", () => {
     describe("With 'else'", () => {
         it("Can handle basic comparison", () => {
             let str = [
-                'if 2 = 2',
+                'if 2 == 2',
                 'then go to next card',
                 'else put 5 into myVariable'
             ].join("\n");
@@ -217,7 +217,7 @@ describe("Basic IfThenMultiline", () => {
     describe("Without else", () => {
         it('Can handle basic comparison', () => {
             let str = [
-                'if 2 = 2',
+                'if 2 == 2',
                 'then',
                 'doSomething',
                 'go to next card',
@@ -228,7 +228,7 @@ describe("Basic IfThenMultiline", () => {
         });
         it('Can handle comparison with a variable', () => {
             let str = [
-                'if 2 = myVariable',
+                'if 2 == myVariable',
                 'then',
                 'doSomething',
                 'go to next card',
@@ -318,7 +318,7 @@ describe("Basic IfThenMultiline", () => {
     describe('With else', () => {
         it('Can handle basic comparison', () => {
             let str = [
-                'if 2 = 2',
+                'if 2 == 2',
                 'then',
                 'doSomething',
                 'go to next card',

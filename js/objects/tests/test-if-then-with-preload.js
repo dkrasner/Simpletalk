@@ -95,7 +95,7 @@ describe('Inline if-then tests', () => {
     it('Can deal with an equality comparison (true)', () => {
         let script = [
             'on click',
-            '\tif (2+2) = 4 then set "name" to "evaluated3"',
+            '\tif (2+2) == 4 then set "name" to "evaluated3"',
             'end click'
         ].join('\n');
         compileButtonScript(script);
@@ -111,7 +111,7 @@ describe('Inline if-then tests', () => {
     it('Can deal with an equality comparison (false)', () => {
         let script = [
             'on click',
-            '\tif (2+3) = 4 then set "name" to "evaluated4"',
+            '\tif (2+3) == 4 then set "name" to "evaluated4"',
             'end click'
         ].join('\n');
         compileButtonScript(script);
@@ -300,7 +300,7 @@ describe('Singleline If-Then tests', () => {
     it('Can deal with an equality comparison (true)', () => {
         let script = [
             'on click',
-            '\tif (2+2) = 4',
+            '\tif (2+2) == 4',
             'then set "name" to "evaluated3"',
             'end click'
         ].join('\n');
@@ -317,7 +317,7 @@ describe('Singleline If-Then tests', () => {
     it('Can deal with an equality comparison (false)', () => {
         let script = [
             'on click',
-            '\tif (2+3) = 4',
+            '\tif (2+3) == 4',
             'then set "name" to "evaluated4"',
             'end click'
         ].join('\n');

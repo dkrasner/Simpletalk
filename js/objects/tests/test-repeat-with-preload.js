@@ -157,7 +157,7 @@ describe("Repeat Looping Tests", () => {
             let script = [
                 "on click",
                 "put 0 into Counter",
-                "repeat until Counter = 5",
+                "repeat until Counter == 5",
                 "answer Counter",
                 "put (Counter + 1) into Counter",
                 "if Counter >= 3 then exit repeat",
@@ -175,7 +175,7 @@ describe("Repeat Looping Tests", () => {
                 "on click",
                 "put 0 into Counter",
                 "repeat 5 times",
-                "if Counter = 4 then exit repeat",
+                "if Counter == 4 then exit repeat",
                 "put (Counter + 1) into Counter",
                 "end repeat",
                 "end click"
@@ -229,10 +229,10 @@ describe("Repeat Looping Tests", () => {
                 "on click",
                 "put 0 into Counter",
                 "put 0 into CounterMinusOne",
-                "repeat until Counter = 5",
+                "repeat until Counter == 5",
                 "answer Counter",
                 "put (Counter + 1) into Counter",
-                "if Counter = 3 then next repeat",
+                "if Counter == 3 then next repeat",
                 "put (CounterMinusOne + 1) into CounterMinusOne",
                 "end repeat",
                 "end click"
@@ -268,7 +268,7 @@ describe("Repeat Looping Tests", () => {
                 "put 0 into timesItLooped",
                 "repeat while Counter < 6",
                 "put (Counter + 1) into Counter",
-                "if Counter = 3 then next repeat",
+                "if Counter == 3 then next repeat",
                 "put (timesItLooped + 1) into timesItLooped",
                 "end repeat",
                 "end click"
@@ -286,7 +286,7 @@ describe("Repeat Looping Tests", () => {
                 "on click",
                 "put 0 into Counter",
                 "repeat with realCount = 2 to 7",
-                "if realCount = 4 then next repeat",
+                "if realCount == 4 then next repeat",
                 "put (Counter + 1) into Counter",
                 "end repeat",
                 "end click"
