@@ -40,7 +40,7 @@ const errorHandler = {
         let textContent = scriptEditor.model.partProperties.getPropertyNamed(scriptEditor, "textContent");
         let textLines = textContent.split("\n");
         // replace said text line with an error marker
-        textLines[errorLineNum] += ` <<<[Expected:${expectedText}; ruleName: "${ruleName}"]`;
+        textLines[errorLineNum] += ` --<<<[Expected:${expectedText}; ruleName: "${ruleName}"]`;
         textContent = textLines.join("\n");
         scriptEditor.setTextValue(textContent);
         // open the grammar
