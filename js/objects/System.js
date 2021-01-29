@@ -35,6 +35,7 @@ import ohm from 'ohm-js';
 import interpreterSemantics from '../ohm/interpreter-semantics.js';
 
 const video = document.createElement('video');
+const canvas = document.createElement('canvas');
 var handDetectionModel = null;
 
 const System = {
@@ -148,6 +149,8 @@ const System = {
         );
         worldView.setModel(worldModel);
         document.body.appendChild(worldView);
+        document.body.appendChild(canvas);
+
 
         // Create an initial blank Stack in this
         // case
@@ -1520,7 +1523,6 @@ const scaleDim = (dim) => {
 };
 
 const detectHands = async () => {
-    const canvas = document.createElement('canvas');
     canvas.width = video.videoWidth;
     canvas.height = video.videoHeight;
     const ctx = canvas.getContext('2d');
