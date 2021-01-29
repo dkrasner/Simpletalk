@@ -606,7 +606,14 @@ const createInterpreterSemantics = (partContext, systemContext) => {
         variableName: function(letterPlus, optionalDigits){
             // Lookup the variable in the part's
             // current execution context
-            return partContext._executionContext.get(this.sourceString);
+            // If the variable is not a key on the object,
+            // we throw an error: this means the variable has not yet
+            // been defined but is being looked up.
+            let value = partContext._executionContext.get(this.sourceString);
+            if(value == undefined){
+                throw new Error(`Variable ${this.sourceString} has not been defined`);
+            }
+            return value;
         },
 
         _terminal(){

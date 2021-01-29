@@ -66,6 +66,26 @@ describe('Basic Set Local Variable', () => {
         let variableValue = buttonModel._executionContext.getLocal('myVariable');
         assert.equal(variableValue, "hello");
     });
+
+    it('Throws an error if attempting to read an undefined variable', () => {
+        let testScript = [
+            "on click",
+            "put (notYetDefined + 7) into myNewVariable",
+            "end click"
+        ].join("\n");
+        let sendFunction = function(){
+            let msg = {
+                type: 'compile',
+                codeString: script,
+                targetId: buttonModel.id
+            };
+            window.System.compile(msg);
+        };
+        expect(sendFunction).to.not.throw(Error);
+        let buttonView = document.querySelector(`[part-id="${buttonModel.id}"]`);
+        assert.exists(buttonView);
+        expect(buttonView.click).to.throw();
+    });
 });
 
 describe('Can set property based on local variable', () => {
