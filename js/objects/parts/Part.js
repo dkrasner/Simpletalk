@@ -54,6 +54,8 @@ class Part {
         this.serialize = this.serialize.bind(this);
         this.setFromDeserialized = this.setFromDeserialized.bind(this);
         this.deleteModelCmdHandler = this.deleteModelCmdHandler.bind(this);
+        this.openEditorCmdHandler = this.openEditorCmdHandler.bind(this);
+        this.closeEditorCmdHandler = this.closeEditorCmdHandler.bind(this);
         this.isSubpartOfCurrentCard = this.isSubpartOfCurrentCard.bind(this);
         this.isSubpartOfCurrentStack = this.isSubpartOfCurrentStack.bind(this);
 
@@ -64,6 +66,8 @@ class Part {
         // command handlers
         this.setPrivateCommandHandler("deleteModel", this.deleteModelCmdHandler);
         this.setPrivateCommandHandler("newModel", this.newModelCmdHandler);
+        this.setPrivateCommandHandler("openEditor", this.openEditorCmdHandler);
+        this.setPrivateCommandHandler("closeEditor", this.closeEditorCmdHandler);
     }
 
     // Convenience getter to get the id
@@ -189,6 +193,10 @@ class Part {
             new BasicProperty(
                 'backgroundColor',
                 'white'
+            ),
+            new BasicProperty(
+                'editorOpen',
+                false
             ),
             // List of (web) events the part subscribes to
             new BasicProperty(
@@ -389,6 +397,14 @@ class Part {
         Command handlers which are invoked at the Part level
         which are not immediately delegaed to the Part._owner
     **/
+
+    openEditorCmdHandler(){
+        this.partProperties.setPropertyNamed(this, 'editorOpen', true);
+    }
+
+    closeEditorCmdHandler(){
+        this.partProperties.setPropertyNamed(this, 'editorOpen', false);
+    }
 
     deleteModelCmdHandler(senders, objectId, modelType){
         if (modelType && modelType.toLowerCase() === this.type && !objectId){

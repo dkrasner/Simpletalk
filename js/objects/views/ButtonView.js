@@ -47,6 +47,12 @@ class ButtonView extends PartView {
         this.onPropChange('name', (value, partId) => {
             this.innerText = value;
         });
+        this.onPropChange('background-color', (value) => {
+            this.style.backgroundColor = value;
+        });
+        this.onPropChange('font-color', (value) =>{
+            this.style.color = value;
+        });
         this.onPropChange("draggable", (value) => {
             this.setAttribute('draggable', value);
         });
@@ -76,6 +82,20 @@ class ButtonView extends PartView {
         this['onclick'] = null;
         this['ondragstart'] = null;
         this['ondragend'] = null;
+    }
+
+    // We overwrite the PartView.onHaloOpenEditor for the moment
+    // TODO when all editors are properly established this can
+    // be moved back to the base class, and remove from here
+    onHaloOpenEditor(){
+        // Send the message to open a script editor
+        // with this view's model as the target
+        this.model.sendMessage({
+            type: 'command',
+            commandName: 'openEditor',
+            args: [this.model.id],
+            shouldIgnore: true // Should ignore if System DNU
+        }, this.model);
     }
 
     onClick(event){
@@ -152,6 +172,15 @@ class ButtonView extends PartView {
     onDragend(event){
         this.classList.remove('active');
     };
+
+    // Overwriting the base class open/close editor methods
+    openEditor(){
+        window.System.openEditorForPart("button", this.model.id);
+    }
+
+    closeEditor(){
+        window.System.closeEditorForPart("button", this.model.id);
+    }
 };
 
 export {

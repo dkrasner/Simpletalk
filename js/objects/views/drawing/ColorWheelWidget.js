@@ -44,6 +44,8 @@ const colorWheelTemplate = `
     margin-left: 8px;
     background-color: white;
     border: 1px solid black;
+    text-align: center;
+    font-size: 12px;
   }
 
   #palette-content {
@@ -81,7 +83,7 @@ const colorWheelTemplate = `
 
 </style>
 <div id="palette-wrapper">
-  <div id="palette-bar"><div id="close-button"></div><span id="palette-title"></span></div>
+  <div id="palette-bar"><div id="close-button">x</div><span id="palette-title"></span></div>
   <div id="palette-content">
     <ul id="recent-colors">
       <li class="recent-color-item selected"></li>

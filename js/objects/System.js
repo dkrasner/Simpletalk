@@ -15,6 +15,8 @@ import Container from './parts/Container.js';
 import Drawing from './parts/Drawing.js';
 import Svg from './parts/Svg.js';
 
+import ButtonEditor from './parts/editors/ButtonEditor.js';
+
 import WorldView from './views/WorldView.js';
 import StackView from './views/StackView.js';
 import ButtonView from './views/ButtonView.js';
@@ -27,6 +29,7 @@ import DrawingView from './views/drawing/DrawingView.js';
 import SvgView from './views/SvgView.js';
 
 import Halo from './views/Halo.js';
+import ButtonEditorView from './views/editors/ButtonEditorView.js';
 
 import ohm from 'ohm-js';
 import interpreterSemantics from '../ohm/interpreter-semantics.js';
@@ -832,6 +835,30 @@ const System = {
             throw new Error(`Could not locate an active current stack!`);
         }
         return currentStackView.goToCardById(cardId);
+    },
+
+    openEditorForPart: function(partType, partId){
+        // if there is already and editor open for this part do nothing
+        let editor = document.querySelector(`st-${partType}-editor[target-id="${partId}"]`);
+        if(editor){
+            return;
+        }
+        let currentCard = this.getCurrentCardModel();
+        let currentCardView = this.findViewById(currentCard.id);
+        if(partType === 'button'){
+            // Create the new view instance,
+            // append to parent, and set the target 
+            editor = document.createElement(
+                "st-button-editor"
+            );
+        }
+        currentCardView.appendChild(editor);
+        editor.setTarget(partId);
+    },
+
+    closeEditorForPart: function(partType, partId){
+        let editor = document.querySelector(`st-${partType}-editor[target-id="${partId}"]`);
+        editor.parentNode.removeChild(editor);
     }
 };
 
@@ -1284,7 +1311,7 @@ System._commandHandlers['openScriptEditor'] = function(senders, targetId){
         'script'
     );
 
-    let htmlContent = fieldView.textToHtml(currentScript)
+    let htmlContent = fieldView.textToHtml(currentScript);
     // set the inner html of the textarea with the proper htmlContent
     // NOTE: at the moment fieldView does not subscribe to htmlContent
     // change due to cursor focus and other issues
@@ -1396,6 +1423,7 @@ document.addEventListener('DOMContentLoaded', () => {
     // Add any other non-part view CustomElements,
     // like the halo
     window.customElements.define('st-halo', Halo);
+    window.customElements.define('st-button-editor', ButtonEditorView);
 
     // Perform the initial setup of
     // the system

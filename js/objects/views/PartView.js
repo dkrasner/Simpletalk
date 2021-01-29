@@ -47,6 +47,10 @@ class PartView extends HTMLElement {
         this.onHaloDelete = this.onHaloDelete.bind(this);
         this.onHaloOpenEditor = this.onHaloOpenEditor.bind(this);
 
+        // Bind editor related methods
+        this.openEditor = this.openEditor.bind(this);
+        this.closeEditor = this.closeEditor.bind(this);
+
         // Bind lifecycle methods
         this.afterModelSet = this.afterModelSet.bind(this);
         this.afterConnected = this.afterConnected.bind(this);
@@ -98,6 +102,13 @@ class PartView extends HTMLElement {
         this.onPropChange('script', this.scriptChanged);
         this.onPropChange('eventRespond', this.eventRespond);
         this.onPropChange('eventIgnore', this.eventIgnore);
+        this.onPropChange('editorOpen', (value) => {
+            if(value === true){
+                this.openEditor();
+            } else if(value === false){
+                this.closeEditor();
+            }
+        });
     }
 
     sendMessage(aMessage, target){
@@ -280,7 +291,16 @@ class PartView extends HTMLElement {
         return false;
     }
 
+    /* Editor related methods */
+    openEditor(){
+        // Does nothing by default.
+        // Should be implemented in subclass
+    }
 
+    closeEditor(){
+        // Does nothing by default.
+        // Should be implemented in subclass
+    }
 };
 
 export {

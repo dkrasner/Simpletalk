@@ -43,6 +43,7 @@ const templateString = `
      left: calc(-1 * var(--halo-button-width-padded));
      width: calc(100% + (2 * var(--halo-button-width-padded)));
      height: calc(100% + (2 * var(--halo-button-height-padded)));
+     color: initial;
  }
 
 

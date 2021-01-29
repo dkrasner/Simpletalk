@@ -83,6 +83,14 @@ class Button extends Part {
             'draggable',
             true
         );
+        this.partProperties.newBasicProp(
+            'background-color',
+            null
+        );
+        this.partProperties.newBasicProp(
+            'font-color',
+            null
+        )
     }
 
     get type(){
