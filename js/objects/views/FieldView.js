@@ -41,7 +41,8 @@ const templateString = `
 
 .field-textarea-wrapper {
     width: 100%;
-    height: 90%;
+    height: 100%;
+    min-height: 300px;
     background-color: var(--palette-cornsik);
     overflow: auto;
 }

@@ -242,11 +242,11 @@ class WindowView extends PartView {
             let box = view.getBoundingClientRect();
             let newWidth = Math.floor(box.width) + event.movementX;
             if(newWidth){
-                view.style.minWidth = `${newWidth}px`;
+                view.style.width = `${newWidth}px`;
             }
             let newHeight = Math.floor(box.height) + event.movementY;
             if(newHeight){
-                view.style.minHeight = `${newHeight}px`;
+                view.style.height = `${newHeight}px`;
             }
         }
     }

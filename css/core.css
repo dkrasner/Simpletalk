@@ -30,7 +30,7 @@
 /* Prerequisites */
 * {
     box-sizing: border-box;
-    z-index: 0;
+    flex-grow: 1;
 }
 
 .active {
@@ -54,7 +54,7 @@ st-world {
 st-stack {
     width: 100%;
     height: 100%;
-    position: relative;
+    display: flex;
 }
 
 st-world > st-stack {
@@ -124,6 +124,8 @@ st-button {
     font-family: monospace;
     border: 1px solid rgb(50, 50, 50);
     user-select: none;
+    margin-left: -1px;
+    margin-right: -1px;
 }
 
 st-button:not(.editing):hover {
@@ -161,14 +163,17 @@ st-window {
     box-shadow: 3px 4px 4px 0px rgba(50, 50, 50, 0.3);
 }
 
+st-window:active {
+    z-index: 100;
+}
 /* width and height of stacks in windows should
  * adjust based on contents, but at minimum be 100%
  * of parent
  */
 st-window > st-stack,
 st-window > st-stack > .current-card {
-    min-width: auto;
-    min-height: auto;
+    min-width: 100%;
+    min-height: 100%;
     height: auto;
     width: auto
 }
@@ -210,8 +215,11 @@ st-drawing {
 /* =Field Styles
  *----------------------------------------------------*/
 st-field {
-    width: 800px;
-    height: 300px;
+    min-height: 300px;
+}
+
+st-window st-field{
+    height: 100%;
 }
 
 /* =Editor Styles
@@ -226,6 +234,10 @@ st-button-editor{
 
 st-button-editor > color-wheel{
     position: absolute;
+}
+
+st-button-editor:active {
+    z-index: 100;
 }
 /* =Layout Class Styles
  * --------------------------------------------------------*/
