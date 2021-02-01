@@ -5,6 +5,7 @@
  * SimpleTalk parts.
  */
 import idMaker from '../utils/idMaker.js';
+import errorHandler from '../utils/errorHandler.js';
 import eventMessenger from '../utils/eventMessenger.js';
 import {
     PartProperties,
@@ -46,6 +47,7 @@ class Part {
         this.setFuncHandler = this.setFuncHandler.bind(this);
         this.receiveCmd = this.receiveCmd.bind(this);
         this.receiveFunc = this.receiveFunc.bind(this);
+        this.receiveError = this.receiveError.bind(this);
         this.receiveMessage = this.receiveMessage.bind(this);
         this.delegateMessage = this.delegateMessage.bind(this);
         this.sendMessage = this.sendMessage.bind(this);
@@ -330,9 +332,15 @@ class Part {
             case 'function':
                 return this.receiveFunc(aMessage);
                 //break;
+            case 'error':
+                return this.receiveError(aMessage);
             default:
                 return this.delegateMessage(aMessage);
         }
+    }
+
+    receiveError(aMessage){
+        return errorHandler.handle(aMessage);
     }
 
     receiveCmd(aMessage){

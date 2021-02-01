@@ -11,7 +11,7 @@ function eventMessenger(eventName, part){
         commandName: eventName,
         args: [],
         shouldIgnore: true
-    }
+    };
     part.sendMessage(message, part);
     return message;
 };
