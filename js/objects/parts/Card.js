@@ -21,11 +21,7 @@ class Card extends Part {
         super(owner);
         this.stack = this._owner;
         this.acceptedSubpartTypes = [
-<<<<<<< HEAD
-            "button", "button-editor", "field", "field", "container", "drawing", "svg"
-=======
-            "button", "field", "field", "container", "drawing", "image"
->>>>>>> 1642fa7... Initial commit of new Image/ImageView Part
+            "button", "button-editor", "field", "field", "container", "drawing", "image"
         ];
         this.isCard = true;
 

@@ -1,5 +1,13 @@
 import PartView from './PartView.js';
 
+const linkIcon = `
+<svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-link" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
+  <path d="M10 14a3.5 3.5 0 0 0 5 0l4 -4a3.5 3.5 0 0 0 -5 -5l-.5 .5" />
+  <path d="M14 10a3.5 3.5 0 0 0 -5 0l-4 4a3.5 3.5 0 0 0 5 5l.5 -.5" />
+</svg>
+`;
+
 const templateString = `
 <img id="wrapped-image" class="hidden" />
 <svg class="hidden" id="wrapped-svg" draggable=true xmlns="http://www.w3.org/2000/svg">
@@ -30,6 +38,8 @@ class ImageView extends PartView {
         this.updateSvgImage = this.updateSvgImage.bind(this);
         this.updateBinaryImage = this.updateBinaryImage.bind(this);
         this.onClick = this.onClick.bind(this);
+        this.initCustomHaloButton = this.initCustomHaloButton.bind(this);
+        this.updateImageLink = this.updateImageLink.bind(this);
         //this.onDragstart = this.onDragstart.bind(this);
         //this.onDragstart = this.onDragstart.bind(this);
         //this.onHaloResize = this.onHaloResize.bind(this);
@@ -69,6 +79,10 @@ class ImageView extends PartView {
     afterConnected(){
         this['onclick'] = this.onClick;
         //this['ondragstart'] = this.onDragstart;
+
+        if(!this.haloButton){
+            this.initCustomHaloButton();
+        }
     }
 
     afterDisconnected(){
@@ -106,6 +120,28 @@ class ImageView extends PartView {
         imgEl.classList.add('hidden');
         currentSvgEl.remove();
         this._shadowRoot.appendChild(newSvgEl);
+        newSvgEl.style.width = "100%";
+        newSvgEl.style.height = "100%";
+    }
+
+    updateImageLink(event){
+        // Tells the model to update its
+        // src link for the image
+        let currentSrc = this.model.partProperties.getPropertyNamed(
+            this.model,
+            'src'
+        );
+        let result = window.prompt("Edit URL for image:", currentSrc);
+        if(result && result !== '' && result !== currentSrc){
+            this.sendMessage(
+                {
+                    type: 'command',
+                    commandName: 'loadImageFrom',
+                    args: [ result ]
+                },
+                this.model
+            );
+        }
     }
 
     onClick(event){
@@ -128,6 +164,28 @@ class ImageView extends PartView {
                 }, this.model);
             }
         }
+    }
+
+    openHalo(){
+        // Override default. Here we add a custom button
+        // when showing.
+        let foundHalo = this.shadowRoot.querySelector('st-halo');
+        if(!foundHalo){
+            foundHalo = document.createElement('st-halo');
+            this.shadowRoot.appendChild(foundHalo);
+        }
+        foundHalo.append(this.haloButton);
+    }
+
+    initCustomHaloButton(){
+        this.haloButton = document.createElement('div');
+        this.haloButton.id = 'halo-image-link';
+        this.haloButton.classList.add('halo-button');
+        this.haloButton.innerHTML = linkIcon;
+        this.haloButton.style.marginTop = "6px";
+        this.haloButton.setAttribute('slot', 'right-column');
+        this.haloButton.setAttribute('title', 'Edit link for image file');
+        this.haloButton.addEventListener('click', this.updateImageLink);
     }
 };
 
