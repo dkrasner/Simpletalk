@@ -39,7 +39,7 @@ class Image extends Part {
 
         this.partProperties.newBasicProp(
             'draggable',
-            true
+            false
         );
 
         // Private command handlers
