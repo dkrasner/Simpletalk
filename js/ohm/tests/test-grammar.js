@@ -9,23 +9,23 @@ var assert = chai.assert;
 const matchTest = (str) => {
     const match = g.match(str);
     assert.isTrue(match.succeeded());
-}
+};
 const semanticMatchTest = (str, semanticType) => {
     const typeMatch = g.match(str, semanticType);
     assert.isTrue(typeMatch.succeeded());
-}
+};
 const matchAndsemanticMatchTest = (str, semanticType) => {
     matchTest(str);
     const typeMatch = g.match(str, semanticType);
     assert.isTrue(typeMatch.succeeded());
-}
+};
 const semanticMatchFailTest = (str, semanticType) => {
     const typeMatch = g.match(str, semanticType);
     assert.isFalse(typeMatch.succeeded());
-}
+};
 String.prototype.unCapitalize = function() {
     return this.charAt(0).toLowerCase() + this.slice(1);
-}
+};
 
 describe("SimpleTalk Grammar", () => {
     describe("Basic lexical", () => {
@@ -361,7 +361,7 @@ describe("SimpleTalk Grammar", () => {
             it ("Basic Add (no id)", () => {
                 const objects = [
                     "background", "card", "container", "field", "button", "stack", "window",
-                    "toolbox", "drawing", "svg"
+                    "toolbox", "drawing", "image"
                 ];
                 objects.forEach((d) => {
                     const s = `add ${d} to card`;
@@ -373,7 +373,7 @@ describe("SimpleTalk Grammar", () => {
             it ("Basic Add (wth id)", () => {
                 const objects = [
                     "background", "card", "container", "field", "button", "stack", "window",
-                    "toolbox", "drawing", "svg"
+                    "toolbox", "drawing", "image"
                 ];
                 objects.forEach((d) => {
                     const s = `add ${d} to card 20`;
@@ -385,7 +385,7 @@ describe("SimpleTalk Grammar", () => {
             it ("Add to 'this'", () => {
                 const objects = [
                     "background", "card", "container", "field", "button", "stack", "window",
-                    "toolbox", "drawing", "svg"
+                    "toolbox", "drawing", "image"
                 ];
                 objects.forEach((d) => {
                     const s = `add ${d} to this stack`;
@@ -397,7 +397,7 @@ describe("SimpleTalk Grammar", () => {
             it ("Add to 'current'", () => {
                 const objects = [
                     "background", "card", "container", "field", "button", "stack", "window",
-                    "toolbox", "drawing", "svg"
+                    "toolbox", "drawing", "image"
                 ];
                 objects.forEach((d) => {
                     const s = `add ${d} to current stack`;
@@ -409,7 +409,7 @@ describe("SimpleTalk Grammar", () => {
             it ("Basic Add (with name, no id)", () => {
                 const objects = [
                     "background", "card", "container", "field", "button", "stack", "window",
-                    "toolbox", "drawing", "svg"
+                    "toolbox", "drawing", "image"
                 ];
                 objects.forEach((d) => {
                     const s = `add ${d} "newPart 123" to card`;
@@ -421,7 +421,7 @@ describe("SimpleTalk Grammar", () => {
             it ("Basic Add (with name, wth id)", () => {
                 const objects = [
                     "background", "card", "container", "field", "button", "stack", "window",
-                    "toolbox", "drawing", "svg"
+                    "toolbox", "drawing", "image"
                 ];
                 objects.forEach((d) => {
                     const s = `add ${d} "newPart 123" to card 20`;
@@ -433,7 +433,7 @@ describe("SimpleTalk Grammar", () => {
             it ("Add named to 'this'", () => {
                 const objects = [
                     "background", "card", "container", "field", "button", "stack", "window",
-                    "toolbox", "drawing", "svg"
+                    "toolbox", "drawing", "image"
                 ];
                 objects.forEach((d) => {
                     const s = `add ${d} "newPart 123" to this stack`;
@@ -445,7 +445,7 @@ describe("SimpleTalk Grammar", () => {
             it ("Add named to 'current'", () => {
                 const objects = [
                     "background", "card", "container", "field", "button", "stack", "window",
-                    "toolbox", "drawing", "svg"
+                    "toolbox", "drawing", "image"
                 ];
                 objects.forEach((d) => {
                     const s = `add ${d} "newPart123" to current stack`;
@@ -457,7 +457,7 @@ describe("SimpleTalk Grammar", () => {
             it ("Add (no target or context)", () => {
                 const objects = [
                     "background", "card", "container", "field", "button", "stack", "window",
-                    "toolbox", "drawing", "svg"
+                    "toolbox", "drawing", "image"
                 ];
                 objects.forEach((d) => {
                     const s = `add ${d}`;
@@ -469,7 +469,7 @@ describe("SimpleTalk Grammar", () => {
             it ("Add named (no target or context)", () => {
                 const objects = [
                     "background", "card", "container", "field", "button", "stack", "window",
-                    "toolbox", "drawing", "svg"
+                    "toolbox", "drawing", "image"
                 ];
                 objects.forEach((d) => {
                     const s = `add ${d} "newPart123"`;
