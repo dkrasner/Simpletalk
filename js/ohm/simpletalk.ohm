@@ -45,13 +45,16 @@
 	StatementLine (a statement line)
                 = comment lineTerminator+
 		| Statement lineTerminator+
-
+	
 	// Note we explicitly exclude keywords, i.e. control
 	Statement (a statement)
-		= ~"end" Command comment?
-                | ~"end" IfThenInline comment?
+                = ~"end" IfThenInline comment?
                 | ~"end" IfThenSingleline comment?
                 | ~"end" IfThenMultiline comment?
+                | ~"end" RepeatBlock comment?
+                | ~"end" RepeatAdjust comment?
+                | ~"end" Command comment?
+
 
         // The HT manual describes a Factor as being:
         // "a single element of value in an expression".
@@ -74,6 +77,7 @@
         Expression
                = Expression "+" Expression --addExpr
                | Expression "*" Expression --timesExpr
+			   | Expression "-" Expression --minusExpr
                | Factor
 
 
@@ -81,7 +85,7 @@
         // are compared using an operator, and the result
         // is expected to be a boolean value
         EqualityConditional
-               = Expression "=" Expression
+               = Expression "==" Expression
                | Expression "is" Expression
         
         NonEqualityConditional
@@ -108,15 +112,15 @@
                | Factor // This gives us variableName and some other literals should we need them
                
         IfThenInline
-               = "if" Conditional "then" Command comment?
+               = "if" Conditional "then" Statement comment?
         IfLine
                = "if" Conditional comment?
         
         ElseLine
-               = "else" Command comment?
+               = "else" Statement comment?
                
         ThenLine
-               = "then" Command comment?
+               = "then" Statement comment?
 
         EndIfLine
               = "end if" comment?
@@ -134,7 +138,20 @@
                = IfLine lineTerminator MultiThen EndIfLine --withoutElse
                | IfLine lineTerminator MultiThen MultiElse --withElse
 
+		// Looping (repeat)
+		RepeatControlForm
+			= "repeat" "for"? (integerLiteral|variableName) "times" --forNumTimes
+			| "repeat" "until" Conditional --untilCondition
+			| "repeat" "while" Conditional --whileCondition
+			| "repeat" "with" variableName "=" (integerLiteral|variableName) "to" (integerLiteral|variableName) --withStartFinish
+			| "repeat" --forever
 
+		RepeatAdjust
+			= "exit repeat" --exit
+			| "next repeat" --next
+
+		RepeatBlock
+			= RepeatControlForm lineTerminator (StatementLine|RepeatAdjust)+ "end repeat"
                 
 
         // Expression lists are those that are passed
@@ -161,7 +178,7 @@
 		| "delete" "this"? systemObject objectId? --deleteModel
 		| "add" systemObject stringLiteral? "to"? ("this" | "current")? systemObject? objectId? --addModel
 		| "set" stringLiteral "to" (stringLiteral | variableName) InClause? --setProperty
-		| "put" anyLiteral "into" "global"? variableName --putVariable
+		| "put" Factor "into" "global"? variableName --putVariable
 		| "ask" anyLiteral --ask
 		| "respond to" anyLiteral InClause? --eventRespond
 		| "ignore" anyLiteral InClause? --eventIgnore

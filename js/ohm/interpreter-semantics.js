@@ -23,14 +23,12 @@ const createInterpreterSemantics = (partContext, systemContext) => {
                     }
                 });
 
-                let finalMessages = [];
-
                 // In the grammar, the StatementList is
                 // an optional rule, meaning the result of the rule
                 // is an empty array (no statementlist) or a single
                 // item array (the statementlist)
                 if(optionalStatementList.children.length == 0){
-                    return finalMessages;
+                    return;
                 }
                 let statementList = optionalStatementList.children[0];
 
@@ -46,18 +44,8 @@ const createInterpreterSemantics = (partContext, systemContext) => {
                 statementList.children.forEach(statementLines => {
                     statementLines.children.forEach(statementLine => {
                         let message = statementLine.interpret();
-                        // Some interpret() calls, like if-then statements
-                        // that evaluated to false, will return null instead
-                        // of a true message. We need to skip over these.
-                        if(message !== null){
-                            let commandResult = partContext.sendMessage(message, partContext);
-                            this._executionContext.setLocal('it', commandResult);
-                            finalMessages.push(message);
-                        }
                     });
                 });
-
-                return finalMessages;
             };
             
             partContext._commandHandlers[messageName] = handlerFunction;
@@ -309,17 +297,35 @@ const createInterpreterSemantics = (partContext, systemContext) => {
         },
 
         StatementLine: function(statement, newline){
-            return statement.interpret();
+            let message = statement.interpret();
+
+            // Some statements, like if-then controls
+            // and repeat controls, do not result in
+            // messages but return null.
+            // We ignore these.
+            if(message && typeof(message) !== 'string'){
+                let commandResult = partContext.sendMessage(message, partContext);
+                partContext._executionContext.setLocal('it', commandResult);
+                return null;
+            } else {
+                return message;
+            }
         },
 
-        Statement: function(command, optionalComment){
-            return command.interpret();
+        Statement: function(actualStatement, optionalComment){
+            return actualStatement.interpret();
         },
 
         Expression_addExpr: function(firstExpression, operation, secondExpression){
             let first = firstExpression.interpret();
             let second = secondExpression.interpret();
             return first + second;
+        },
+
+        Expression_minusExpr: function(firstExpr, operation, secondExpr){
+            let first = firstExpr.interpret();
+            let second = secondExpr.interpret();
+            return first - second;
         },
 
         Expression_timesExpr: function(firstExpression, operation, secondExpression){
@@ -368,10 +374,10 @@ const createInterpreterSemantics = (partContext, systemContext) => {
             return first <= second;
         },
 
-        IfThenInline: function(ifLiteral, conditional, thenLiteral, command, optionalComment){
+        IfThenInline: function(ifLiteral, conditional, thenLiteral, statement, optionalComment){
             let shouldEvaluate = conditional.interpret();
             if(shouldEvaluate){
-                return command.interpret();
+                return statement.interpret();
             } else {
                 return null;
             }
@@ -399,12 +405,12 @@ const createInterpreterSemantics = (partContext, systemContext) => {
             return conditional.interpret();
         },
 
-        ThenLine: function(thenLiteral, command, optionalComment){
-            return command.interpret();
+        ThenLine: function(thenLiteral, statement, optionalComment){
+            return statement.interpret();
         },
 
-        ElseLine: function(elseLiteral, command, optionalComment){
-            return command.interpret();
+        ElseLine: function(elseLiteral, statement, optionalComment){
+            return statement.interpret();
         },
 
         KindConditional: function(expr1, comparatorLiteral, expr2){
@@ -417,6 +423,147 @@ const createInterpreterSemantics = (partContext, systemContext) => {
             // TODO: Flesh out this function to account for
             // various object types and their kind comparisons
             return true;
+        },
+
+        RepeatControlForm_forNumTimes: function(repeatLit, optionalForLit, intOrVar, timesLit){
+            return {
+                repeatType: 'forNumTimes',
+                numTimes: intOrVar.interpret()
+            };
+        },
+
+        RepeatControlForm_untilCondition: function(repeatLit, untilLit, conditional){
+            return {
+                repeatType: 'untilCondition',
+                condition: conditional
+            };
+        },
+
+        RepeatControlForm_whileCondition: function(repeatLit, whileLit, conditional){
+            return {
+                repeatType: 'whileCondition',
+                condition: conditional
+            };
+        },
+
+        RepeatControlForm_withStartFinish: function(repeatLit, withLit, varName, eqLit, firstVal, toLit, secondVal){
+            return {
+                repeatType: 'withStartFinish',
+                varName: varName.sourceString,
+                start: firstVal.interpret(),
+                finish: secondVal.interpret()
+            };
+        },
+
+        RepeatAdjust_exit: function(_){
+            return 'exit repeat';
+        },
+
+        RepeatAdjust_next: function(_){
+            return 'next repeat';
+        },
+
+        RepeatBlock: function(repeatControl, lineTerm, statementLineOrRepAdjustPlus, endLiteral){
+            let repeatInfo = repeatControl.interpret();
+            let statementLines = statementLineOrRepAdjustPlus.children;
+            switch(repeatInfo.repeatType){
+            case 'forNumTimes':
+                for(let i = 1; i <= repeatInfo.numTimes; i++){
+                    let shouldBreak = false;
+                    let shouldPass = false;
+                    for(let j = 0; j < statementLines.length; j++){
+                        let currentStatement = statementLines[j];
+                        let result = currentStatement.interpret();
+                        if(result == 'exit repeat'){
+                            shouldBreak = true;
+                            break; // break out of this inner loop
+                        } else if(result == 'next repeat'){
+                            shouldPass = true;
+                            break; // break out of this inner loop
+                        }
+                    }
+                    if(shouldPass){
+                        i += 1;
+                    }
+                    if(shouldBreak){
+                        break; // break out of the main for loop
+                    }
+                }
+                break; // Break out of the switch
+            case 'untilCondition':
+                let untilTestCondition = repeatInfo.condition.interpret();
+                while(!untilTestCondition){
+                    let shouldBreak = false;
+                    for(let i = 0; i < statementLines.length; i++){
+                        let currentStatement = statementLines[i];
+                        let result = currentStatement.interpret();
+                        if(result){
+                            if(result == 'exit repeat'){
+                                shouldBreak = true;
+                                break;
+                            } else if(result == 'next repeat'){
+                                break;
+                            }
+                        }
+                    }
+                    if(shouldBreak){
+                        break; // break out of the outer while loop
+                    }
+                    untilTestCondition = repeatInfo.condition.interpret();
+                }
+                break; // Break out of the switch case
+            case 'whileCondition':
+                let whileTestCondition = repeatInfo.condition.interpret();
+                while(whileTestCondition){
+                    let shouldBreak = false;
+                    for(let i = 0; i < statementLines.length; i++){
+                        let currentStatement = statementLines[i];
+                        let result = currentStatement.interpret();
+                        if(result == 'exit repeat'){
+                            shouldBreak = true;
+                            break; // break out of this inner loop
+                        } else if(result == "next repeat"){
+                            break; // break out of this inner loop
+                        }
+                    }
+                    if(shouldBreak){
+                        break; // break out of outer while loop (end repeat)
+                    }
+                    whileTestCondition = repeatInfo.condition.interpret();
+                }
+                break; // break out of switch case
+            case 'withStartFinish':
+                // For now, we assume that start is less than
+                // finish. We should probably throw an error if
+                // otherwise
+                if(repeatInfo.start > repeatInfo.finish){
+                    throw new Error(`Repeat error: start greater than finish`);
+                }
+
+                for(let i = repeatInfo.start; i <= repeatInfo.finish; i++){
+                    partContext._executionContext.setLocal(repeatInfo.varName, i);
+                    let shouldBreak = false;
+                    let shouldPass = false;
+                    for(let j = 0; j < statementLines.length; j++){
+                        let currentStatement = statementLines[j];
+                        let result = currentStatement.interpret();
+                        if(result == "exit repeat"){
+                            shouldBreak = true;
+                            break; // break out of this inner loop
+                        } else if(result == "next repeat"){
+                            shouldPass = true;
+                            break; // break out of this inner loop
+                        }
+                    }
+                    if(shouldPass){
+                        i += 1;
+                    }
+                    if(shouldBreak){
+                        break; // break out of the outer (repeat) loop
+                    }
+                }
+            }
+            return null;
         },
 
         anyLiteral: function(theLiteral){
@@ -459,7 +606,14 @@ const createInterpreterSemantics = (partContext, systemContext) => {
         variableName: function(letterPlus, optionalDigits){
             // Lookup the variable in the part's
             // current execution context
-            return partContext._executionContext.get(this.sourceString);
+            // If the variable is not a key on the object,
+            // we throw an error: this means the variable has not yet
+            // been defined but is being looked up.
+            let value = partContext._executionContext.get(this.sourceString);
+            if(value == undefined){
+                throw new Error(`Variable ${this.sourceString} has not been defined`);
+            }
+            return value;
         },
 
         _terminal(){
