@@ -251,8 +251,19 @@ class Halo extends HTMLElement {
 
     onResizeMouseMove(event){
         let rect = this.targetElement.getBoundingClientRect();
-        let newWidth = event.movementX + rect.width;
-        let newHeight = event.movementY + rect.height;
+        let newWidth, newHeight;
+        if(this.targetElement.preserveAspectOnResize){
+            let ratio = rect.width / rect.height;
+            let hyp = Math.sqrt((event.movementX**2) + (event.movementY**2));
+            if(event.movementX < 0 || event.movementY < 0){
+                hyp = hyp * -1;
+            }
+            newHeight = rect.height + hyp;
+            newWidth = rect.width + hyp;
+        } else {
+            newWidth = event.movementX + rect.width;
+            newHeight = event.movementY + rect.height;
+        }
         this.targetElement.style.width = `${newWidth}px`;
         this.targetElement.style.height = `${newHeight}px`;
         if(this.targetElement.onHaloResize){

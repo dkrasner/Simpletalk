@@ -16,9 +16,16 @@ const templateString = `
 :host {
     display: block;
     position: absolute;
+    padding: 1px;
+    user-select: none;
 }
 .hidden {
     display: none;
+}
+img {
+    width: 100%;
+    height: auto;
+    display: block;
 }
 </style>
 `;
@@ -40,9 +47,7 @@ class ImageView extends PartView {
         this.onClick = this.onClick.bind(this);
         this.initCustomHaloButton = this.initCustomHaloButton.bind(this);
         this.updateImageLink = this.updateImageLink.bind(this);
-        //this.onDragstart = this.onDragstart.bind(this);
-        //this.onDragstart = this.onDragstart.bind(this);
-        //this.onHaloResize = this.onHaloResize.bind(this);
+        this.updateSizingForBinaryImage = this.updateSizingForBinaryImage.bind(this);
     }
 
     afterModelSet(){
@@ -107,6 +112,11 @@ class ImageView extends PartView {
         let svgEl = this._shadowRoot.getElementById('wrapped-svg');
         svgEl.classList.add('hidden');
         imgEl.src = imageData;
+        imgEl.onload = () => {
+            console.log('image onload');
+            this.updateSizingForBinaryImage();
+        };
+        this.preserveAspectOnResize = true;
         imgEl.classList.remove('hidden');
     }
 
@@ -122,6 +132,7 @@ class ImageView extends PartView {
         this._shadowRoot.appendChild(newSvgEl);
         newSvgEl.style.width = "100%";
         newSvgEl.style.height = "100%";
+        this.preserveAspectOnResize = false;
     }
 
     updateImageLink(event){
@@ -142,6 +153,15 @@ class ImageView extends PartView {
                 this.model
             );
         }
+    }
+
+    updateSizingForBinaryImage(){
+        // Ensure that the web component's dimensions
+        // match the aspect ratio of the incoming image binary.
+        // This prevents odd resizing behavior when using the halo.
+        let image = this._shadowRoot.getElementById('wrapped-image');
+        this.style.width = `${image.naturalWidth}px`;
+        this.style.height = `${image.naturalHeight}px`;
     }
 
     onClick(event){
