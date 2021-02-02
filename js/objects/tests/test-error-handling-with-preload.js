@@ -30,7 +30,7 @@ describe('Error Handling', () => {
             assert.isEmpty(button._commandHandlers);
         });
     });
-    describe('Compiling a bad script throws a corresponding "GrammarMatchError"', () => {
+    describe('GrammarMatchError', () => {
         it('GrammarMatchError automatically opens the script editor (if not present)', () => {
             let firstScript = [
                 'on doSomethingFirst',
@@ -42,14 +42,39 @@ describe('Error Handling', () => {
             assert.isNotNull(scriptEditor);
         });
         it('Script editor has the propertly error marked content', () => {
-            let markedUpScript = [
+           let markedUpScript = [
                 'on doSomethingFirst',
-                'not a command <<<[Expected:"end"; ruleName: "StatementList"]',
+                'not a command --<<<[Expected:"end"; ruleName: "StatementList"]',
                 'end doSomethingFirst',
             ].join('\n');
             let scriptEditor = window.System.findScriptEditorByTargetId(button.id);
             let textContent = scriptEditor.model.partProperties.getPropertyNamed(scriptEditor, "textContent");
             assert.equal(markedUpScript, textContent);
+        });
+    });
+    describe('MessageNotUnderstood', () => {
+        before(() => {
+            // add a grammatically correct script that reference an unkown command
+            let firstScript = [
+                'on click',
+                'someNotACommandCommand',
+                'end click',
+            ].join('\n');
+            button.partProperties.setPropertyNamed(button, "script", firstScript);
+        });
+
+        it('Sending a MessageNotUnderstood', () => {
+            let MNUmsg = {
+                type: "error",
+                name: "MessageNotUnderstood",
+                message: {
+                    type: "command",
+                    commandName: "someNotACommandCommand",
+                    args: [],
+                    senders: [{name: "Button", id: button.id}]
+                }
+            };
+            button.sendMessage(MNUmsg, button);
         });
     });
 });

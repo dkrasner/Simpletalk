@@ -11,6 +11,8 @@ const errorHandler = {
         switch(aMessage.name){
             case 'GrammarMatchError':
                 return this.handleGrammarMatchError(aMessage);
+            case 'MessageNotUnderstood':
+                return this.handleMessageNotUnderstood(aMessage);
             default:
                 // if I don't know what to do with this message
                 // I send it along to the System
@@ -45,6 +47,32 @@ const errorHandler = {
         scriptEditor.setTextValue(textContent);
         // open the grammar
         this._openGrammar(aMessage.partId, ruleName);
+    },
+
+    handleMessageNotUnderstood(aMessage){
+        let offendingMessage = aMessage.message;
+        let originalSender = offendingMessage.senders[0];
+        // Are we ever going to have MNU errors on messages that
+        // are not type: command?
+        if(offendingMessage.type === "command"){
+            let commandName = offendingMessage.commandName;
+            let scriptEditor = window.System.findScriptEditorByTargetId(originalSender.id);
+            if(!scriptEditor){
+                this._openScriptEditor(originalSender.id);
+                scriptEditor = window.System.findScriptEditorByTargetId(originalSender.id);
+            }
+            let textContent = scriptEditor.model.partProperties.getPropertyNamed(scriptEditor, "textContent");
+            let textLines = textContent.split("\n");
+            // offending command text line with an error marker
+            textLines.forEach((line) => {
+                if(line.match(" ${commandName} ")){
+                    line += ` --<<<[MessageNotUnderstood:command; commandName: "${commandName}"]`;
+                }
+            });
+            textContent = textLines.join("\n");
+            scriptEditor.setTextValue(textContent);
+            console.log(textContent);
+        }
     },
 
     _openScriptEditor: function(partId){

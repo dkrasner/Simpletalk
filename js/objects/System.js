@@ -294,8 +294,13 @@ const System = {
         if(aMessage.shouldIgnore){
             return;
         }
-        console.error(aMessage);
-        throw new Error(`System does not understand message ${aMessage.type}`);
+        let originalSender = this.partsById[aMessage.senders[0].id];
+        let msg = {
+            type: "error",
+            name: "MessageNotUnderstood",
+            message: aMessage
+        };
+        originalSender.sendMessage(msg, originalSender);
     },
 
     compile: function(aMessage){
@@ -1420,7 +1425,11 @@ System._commandHandlers['openSimpletalkGrammar'] = function(senders, ruleName){
             let line = textArea.children[i];
             let text = line.textContent;
             if(text.match(regex)){
-                line.scrollIntoView();
+                try{
+                    line.scrollIntoView();
+                } catch (e) {
+                    console.log("script editor does not support line.scrollInfoView()");
+                };
             }
         };
     }
