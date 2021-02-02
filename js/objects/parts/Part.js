@@ -60,6 +60,7 @@ class Part {
         this.closeEditorCmdHandler = this.closeEditorCmdHandler.bind(this);
         this.isSubpartOfCurrentCard = this.isSubpartOfCurrentCard.bind(this);
         this.isSubpartOfCurrentStack = this.isSubpartOfCurrentStack.bind(this);
+        this.getOwnerBranch = this.getOwnerBranch.bind(this);
 
 
         // Finally, we finish initialization
@@ -82,6 +83,43 @@ class Part {
         return this.partProperties.setPropertyNamed(this, 'id', val);
     }
 
+
+    // Return an array of names of all of my and my ancestors' handlers
+    // for the moment this is just names, type, id and whether the handler overrides
+    // an owner's, but could be richer info, such as arguments, documentation etc
+    get commandHandlerRegistry(){
+        let handlersInfo = {};
+        let ownerBranch = this.getOwnerBranch();
+        for(let i = 1; i <= ownerBranch.length; i++){
+            let part = ownerBranch[ownerBranch.length - i];
+            let partType = part.type;
+            if(part.id === -1){
+                partType = "System";
+            }
+            Object.keys(part._commandHandlers).forEach((h) => {
+                let override = false;
+                if(handlersInfo[h]){
+                    override = true;
+                }
+                handlersInfo[h] = {partId: part.id, partType: partType, override: override};
+            });
+        }
+        return handlersInfo;
+    }
+
+    // returns the this.part -> System branch by part id
+    getOwnerBranch(branch){
+        if(!branch){
+            branch = [this];
+        }
+        if(this.type === "world"){
+            branch.push(window.System);
+            return branch;
+        } else {
+            branch.push(this._owner);
+        };
+        return this._owner.getOwnerBranch(branch);
+    }
     // perform a deep copy of myself (and all my suparts)
     // assigning new ids
     copy(ownerPart){
