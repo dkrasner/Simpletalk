@@ -84,6 +84,13 @@ class Image extends Part {
                     });
                 }
             })
+            .then(() => {
+                this.partProperties.setPropertyNamed(
+                    this,
+                    'src',
+                    sourceUrl
+                );
+            })
             .catch(err => {
                 console.error(err);
             });
