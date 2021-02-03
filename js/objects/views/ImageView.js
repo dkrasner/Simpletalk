@@ -21,11 +21,6 @@ const templateString = `
     user-select: none;
 }
 
-svg {
-    width: 100%;
-    height: 100%;
-}
-
 .hidden {
     display: none;
 }
@@ -119,10 +114,12 @@ class ImageView extends PartView {
         let imgEl = this._shadowRoot.getElementById('wrapped-image');
         let svgEl = this._shadowRoot.getElementById('wrapped-svg');
         svgEl.classList.add('hidden');
+        svgEl.classList.remove('currently-wrapped');
+        imgEl.classList.add('currently-wrapped');
         imgEl.src = imageData;
         imgEl.onload = () => {
             console.log('image onload');
-            this.updateSizingForBinaryImage();
+            //this.updateSizingForBinaryImage();
         };
         this.preserveAspectOnResize = true;
         imgEl.classList.remove('hidden');
@@ -147,11 +144,12 @@ class ImageView extends PartView {
             newSvgEl.setAttribute('width', viewBoxWidth);
         } 
         newSvgEl.id = 'wrapped-svg';
+        newSvgEl.classList.add('currently-wrapped');
         imgEl.classList.add('hidden');
+        imgEl.classList.remove('currently-wrapped');
         currentSvgEl.remove();
         this._shadowRoot.appendChild(newSvgEl);
-        console.log('new svg appended to shadow dom...');
-        this.updateSizingForViewport();
+        //this.updateSizingForViewport();
         this.preserveAspectOnResize = false;
     }
 
@@ -238,6 +236,36 @@ class ImageView extends PartView {
             this.shadowRoot.appendChild(foundHalo);
         }
         foundHalo.append(this.haloButton);
+    }
+
+    onHaloResize(movementX, movementY){
+        // Override default behavior.
+        // We resize the wrapped svg or img instead
+        // and have the outer component simply react to
+        // the change.
+        let wrappedImage = this._shadowRoot.querySelector('.currently-wrapped');
+        let rect = wrappedImage.getBoundingClientRect();
+        let newWidth, newHeight;
+        if(this.preserveAspectOnResize){
+            let ratio = rect.width / rect.height;
+            let hyp = Math.sqrt((movementX**2) + (movementY**2));
+            if(movementX < 0 || movementY < 0){
+                hyp = hyp * -1;
+            }
+            newHeight = rect.height + hyp;
+            newWidth = rect.width + hyp;
+        } else {
+            newWidth = rect.width + movementX;
+            newHeight = rect.height + movementY;
+            wrappedImage.style.width = `${newWidth}px`;
+            wrappedImage.style.height = `${newHeight}px`;
+        }
+
+        if(newWidth && newHeight){
+            this.style.width = `${newWidth}px`;
+            this.style.height = `${newHeight}px`;
+        }
+        
     }
 
     initCustomHaloButton(){
