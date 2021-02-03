@@ -49,7 +49,6 @@ class ImageView extends PartView {
         this.onClick = this.onClick.bind(this);
         this.initCustomHaloButton = this.initCustomHaloButton.bind(this);
         this.updateImageLink = this.updateImageLink.bind(this);
-        this.updateSizingForBinaryImage = this.updateSizingForBinaryImage.bind(this);
         this.updateSizingForViewport = this.updateSizingForViewport.bind(this);
     }
 
@@ -118,15 +117,13 @@ class ImageView extends PartView {
         imgEl.classList.add('currently-wrapped');
         imgEl.src = imageData;
         imgEl.onload = () => {
-            console.log('image onload');
-            //this.updateSizingForBinaryImage();
+            this.updateSizingForViewport();
         };
         this.preserveAspectOnResize = true;
         imgEl.classList.remove('hidden');
     }
 
     updateSvgImage(imageData){
-        console.log('updateSvgImage triggered...');
         let imgEl = this._shadowRoot.getElementById('wrapped-image');
         let currentSvgEl = this._shadowRoot.getElementById('wrapped-svg');
         let parser = new DOMParser();
@@ -149,7 +146,7 @@ class ImageView extends PartView {
         imgEl.classList.remove('currently-wrapped');
         currentSvgEl.remove();
         this._shadowRoot.appendChild(newSvgEl);
-        //this.updateSizingForViewport();
+        this.updateSizingForViewport();
         this.preserveAspectOnResize = false;
     }
 
@@ -173,35 +170,30 @@ class ImageView extends PartView {
         }
     }
 
-    updateSizingForBinaryImage(){
-        // Ensure that the web component's dimensions
-        // match the aspect ratio of the incoming image binary.
-        // This prevents odd resizing behavior when using the halo.
-        let image = this._shadowRoot.getElementById('wrapped-image');
-        this.style.width = `${image.naturalWidth}px`;
-        this.style.height = `${image.naturalHeight}px`;
-    }
-
     updateSizingForViewport(){
         // Ensure that this component does not display larger
         // than the current remaining subrectangle of its origin
         // and the corner of the viewport
-        console.log('updateSizingForViewport called');
-        let rect = this.getBoundingClientRect();
-        let padding = 60;
-        if((rect.width - padding) > document.clientWidth){
-            let newWidth = document.clientWidth - padding;
-            let widthRatio = newWidth / rect.width;
-            this.style.width = `${newWidth}px`;
-            this.style.height = `${rect.height * widthRatio}px`;
-            this.updateSizingForViewport();
+        let padding = 40;
+        
+        // First, we need to find the absolute top corner
+        // locations for the element
+        let el = this._shadowRoot.querySelector('.currently-wrapped');
+        let top = 0;
+        let left = 0;
+        while(el){
+            top += el.offsetTop;
+            left += el.offsetLeft;
+            el = el.offsetParent;
         }
-        if((rect.height - padding) > document.clientHeight){
-            let newHeight = document.clientHeight - padding;
-            let heightRatio = newHeight / rect.height;
-            this.style.height = `${newHeight}px`;
-            this.style.width = `${rect.width * heightRatio}px`;
-            this.updateSizingForViewport();
+
+        let rect = this.getBoundingClientRect();
+        debugger;
+        let heightLimit = document.documentElement.clientHeight - padding;
+        if((rect.height + top) > heightLimit){
+            let ratio = (heightLimit - top) / rect.height;
+            this.style.height = `${rect.height * ratio}px`;
+            this.style.width = `${rect.width * ratio}px`;
         }
     }
 
