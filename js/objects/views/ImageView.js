@@ -14,11 +14,18 @@ const templateString = `
 </svg>
 <style>
 :host {
+    box-sizing: border-box;
     display: block;
     position: absolute;
     padding: 1px;
     user-select: none;
 }
+
+svg {
+    width: 100%;
+    height: 100%;
+}
+
 .hidden {
     display: none;
 }
@@ -48,6 +55,7 @@ class ImageView extends PartView {
         this.initCustomHaloButton = this.initCustomHaloButton.bind(this);
         this.updateImageLink = this.updateImageLink.bind(this);
         this.updateSizingForBinaryImage = this.updateSizingForBinaryImage.bind(this);
+        this.updateSizingForViewport = this.updateSizingForViewport.bind(this);
     }
 
     afterModelSet(){
@@ -121,17 +129,29 @@ class ImageView extends PartView {
     }
 
     updateSvgImage(imageData){
+        console.log('updateSvgImage triggered...');
         let imgEl = this._shadowRoot.getElementById('wrapped-image');
         let currentSvgEl = this._shadowRoot.getElementById('wrapped-svg');
         let parser = new DOMParser();
         let xmlDocument = parser.parseFromString(imageData, 'application/xml');
         let newSvgEl = xmlDocument.documentElement;
+
+        // Ensure that the SVG has some width and height attributes
+        // set so we have initial dimensions to display. If not present,
+        // pull from viewbox.
+        if(!newSvgEl.hasAttribute('width') || !newSvgEl.hasAttribute('height')){
+            let viewBox = newSvgEl.getAttribute('viewBox').split(" ");
+            let viewBoxWidth = parseInt(viewBox[2]);
+            let viewBoxHeight = parseInt(viewBox[3]);
+            newSvgEl.setAttribute('height', viewBoxHeight);
+            newSvgEl.setAttribute('width', viewBoxWidth);
+        } 
         newSvgEl.id = 'wrapped-svg';
         imgEl.classList.add('hidden');
         currentSvgEl.remove();
         this._shadowRoot.appendChild(newSvgEl);
-        newSvgEl.style.width = "100%";
-        newSvgEl.style.height = "100%";
+        console.log('new svg appended to shadow dom...');
+        this.updateSizingForViewport();
         this.preserveAspectOnResize = false;
     }
 
@@ -162,6 +182,29 @@ class ImageView extends PartView {
         let image = this._shadowRoot.getElementById('wrapped-image');
         this.style.width = `${image.naturalWidth}px`;
         this.style.height = `${image.naturalHeight}px`;
+    }
+
+    updateSizingForViewport(){
+        // Ensure that this component does not display larger
+        // than the current remaining subrectangle of its origin
+        // and the corner of the viewport
+        console.log('updateSizingForViewport called');
+        let rect = this.getBoundingClientRect();
+        let padding = 60;
+        if((rect.width - padding) > document.clientWidth){
+            let newWidth = document.clientWidth - padding;
+            let widthRatio = newWidth / rect.width;
+            this.style.width = `${newWidth}px`;
+            this.style.height = `${rect.height * widthRatio}px`;
+            this.updateSizingForViewport();
+        }
+        if((rect.height - padding) > document.clientHeight){
+            let newHeight = document.clientHeight - padding;
+            let heightRatio = newHeight / rect.height;
+            this.style.height = `${newHeight}px`;
+            this.style.width = `${rect.width * heightRatio}px`;
+            this.updateSizingForViewport();
+        }
     }
 
     onClick(event){
