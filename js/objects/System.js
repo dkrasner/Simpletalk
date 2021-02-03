@@ -355,10 +355,6 @@ const System = {
         let handler = this._commandHandlers[aMessage.commandName];
         if(handler){
             let boundHandler = handler.bind(this);
-            let originalSender;
-            if(aMessage.senders){
-                originalSender = this.partsById[aMessage.senders[0].id];
-            }
             return boundHandler(aMessage.senders, ...aMessage.args);
         } else {
             return this.doesNotUnderstand(aMessage);
