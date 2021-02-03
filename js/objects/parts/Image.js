@@ -5,8 +5,13 @@ class Image extends Part {
         super(owner);
 
         // Properties
-        this.partProperties.newBasicProp("src", null);
-        let mySrc = src || "/images/noun_svg_placeholder.svg";
+        this.partProperties.newDynamicProp(
+            "src",
+            this.setSource,
+            this.getSource
+        );
+
+        this._src = src || "/images/noun_svg_placeholder.svg";
 
         this.partProperties.newBasicProp(
             "mimeType",
@@ -18,11 +23,6 @@ class Image extends Part {
             null
         );
 
-        this.partProperties.setPropertyNamed(
-            this,
-            'src',
-            mySrc
-        );
         let myName = name || `Image ${this.id}`;
         this.partProperties.setPropertyNamed(
             this,
@@ -85,15 +85,24 @@ class Image extends Part {
                 }
             })
             .then(() => {
-                this.partProperties.setPropertyNamed(
-                    this,
-                    'src',
-                    sourceUrl
-                );
+                // Manually set the _src.
+                // This ensures that we don't infinitely
+                // call the load operation
+                this._src = sourceUrl;
             })
             .catch(err => {
                 console.error(err);
             });
+    }
+
+    setSource(owner, property, value){
+        owner._src = value;
+        owner.loadImageFromSource([this], value);
+        
+    }
+
+    getSource(owner, property){
+        return owner._src;
     }
 
     get type(){

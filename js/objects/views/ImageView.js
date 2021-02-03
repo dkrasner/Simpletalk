@@ -188,7 +188,6 @@ class ImageView extends PartView {
         }
 
         let rect = this.getBoundingClientRect();
-        debugger;
         let heightLimit = document.documentElement.clientHeight - padding;
         if((rect.height + top) > heightLimit){
             let ratio = (heightLimit - top) / rect.height;
