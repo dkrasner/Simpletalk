@@ -46,6 +46,7 @@ class PartView extends HTMLElement {
         this.openWorldCatalog = this.openWorldCatalog.bind(this);
         this.onHaloDelete = this.onHaloDelete.bind(this);
         this.onHaloOpenEditor = this.onHaloOpenEditor.bind(this);
+        this.onHaloResize = this.onHaloResize.bind(this);
 
         // Bind editor related methods
         this.openEditor = this.openEditor.bind(this);
@@ -269,6 +270,30 @@ class PartView extends HTMLElement {
             commandName: 'openScriptEditor',
             args: [this.model.id]
         }, this.model);
+    }
+
+    onHaloResize(movementX, movementY){
+        // Default implementation on what to do during
+        // halo button resize opertations. Subclasses
+        // can override for custom behavior.
+        // Default is to update the View component's
+        // width and height style properties directly.
+        let rect = this.getBoundingClientRect();
+        let newWidth, newHeight;
+        if(this.preserveAspectOnResize){
+            let ratio = rect.width / rect.height;
+            let hyp = Math.sqrt((event.movementX**2) + (event.movementY**2));
+            if(event.movementX < 0 || event.movementY < 0){
+                hyp = hyp * -1;
+            }
+            newHeight = rect.height + hyp;
+            newWidth = rect.width + hyp;
+        } else {
+            newWidth = event.movementX + rect.width;
+            newHeight = event.movementY + rect.height;
+        }
+        this.style.width = `${newWidth}px`;
+        this.style.height = `${newHeight}px`;
     }
 
     get wantsHaloMove(){
