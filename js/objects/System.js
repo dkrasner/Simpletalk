@@ -1555,24 +1555,26 @@ const detectHands = async (recipientId) => {
         console.log(bboxes);
     } else {
         let recipient = System.partsById[recipientId];
-        System.sendMessage({
+        let msg = {
             type: 'command',
             commandName: 'detectedHands',
             args: [JSON.stringify(bboxes, null, 4)]
-        },
-        System,
-        recipient);
+        };
+        System.sendMessage(msg, System, recipient);
     }
 };
 
-System._commandHandlers['detectHands'] = (senders, ...args) => {
+System._commandHandlers['detectHands'] = (senders, recipientId) => {
     if (handDetectionModel === null) {
         console.log("Error: no hand detection model loaded");
         return;
     }
-    let recipientId = null;
-    if (senders.length) {
-        recipientId = senders[0].id;
+    if (recipientId === undefined) {
+        if (senders !== undefined && senders.length) {
+            recipientId = senders[0].id;
+        } else {
+            recipientId = null;
+        }
     }
     detectHands(recipientId);
 }
