@@ -1519,7 +1519,7 @@ const scaleDim = (dim) => {
     return evenRes - (evenRes % stride) + 1;
 };
 
-const detectHands = async () => {
+const detectHands = async (recipientId) => {
     canvas.width = video.videoWidth;
     canvas.height = video.videoHeight;
     const ctx = canvas.getContext('2d');
@@ -1551,15 +1551,30 @@ const detectHands = async () => {
         }
         return bboxes;
     });
-    console.log(bboxes);
+    if (recipientId === null) {
+        console.log(bboxes);
+    } else {
+        let recipient = System.partsById[recipientId];
+        System.sendMessage({
+            type: 'command',
+            commandName: 'detectedHands',
+            args: [JSON.stringify(bboxes, null, 4)]
+        },
+        System,
+        recipient);
+    }
 };
 
-System._commandHandlers['detectHands'] = () => {
+System._commandHandlers['detectHands'] = (senders, ...args) => {
     if (handDetectionModel === null) {
         console.log("Error: no hand detection model loaded");
         return;
     }
-    detectHands();
+    let recipientId = null;
+    if (senders.length) {
+        recipientId = senders[0].id;
+    }
+    detectHands(recipientId);
 }
 
 
