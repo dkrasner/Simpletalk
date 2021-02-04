@@ -167,10 +167,10 @@
 
 
         PartialSpecifier
-                = "part" objectId --partById
-                | systemObject stringLiteral --partByName
-                | systemObject integerLiteral --partByIndex
-                | numericalKeyword systemObject --partByNumericalIndex
+                = "part" "id" objectId --partById
+                | (systemObject | "part") stringLiteral --partByName
+                | (systemObject | "part") integerLiteral --partByIndex
+                | numericalKeyword (systemObject | "part") --partByNumericalIndex
                 | ObjectSpecifier "of" ObjectSpecifier --compoundSpecifierWithoutTerminal
 
         TerminalSpecifier
