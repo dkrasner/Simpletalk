@@ -64,14 +64,17 @@ const errorHandler = {
             let textContent = scriptEditor.model.partProperties.getPropertyNamed(scriptEditor, "textContent");
             let textLines = textContent.split("\n");
             // offending command text line with an error marker
-            textLines.forEach((line) => {
-                if(line.match(" ${commandName} ")){
-                    line += ` --<<<[MessageNotUnderstood:command; commandName: "${commandName}"]`;
+            let regex = new RegExp(`\\s*${commandName}(\s|$)`, 'g');
+            for(let i = 0; i < textLines.length; i++){
+                let line = textLines[i];
+                if(line.match(regex)){
+                    textLines[i] = line += ` --<<<[MessageNotUnderstood:command; commandName: "${commandName}"]`;
                 }
+            }
+            textLines.forEach((line) => {
             });
             textContent = textLines.join("\n");
             scriptEditor.setTextValue(textContent);
-            console.log(textContent);
         }
     },
 

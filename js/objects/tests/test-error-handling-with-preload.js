@@ -8,6 +8,7 @@ const expect = chai.expect;
 
 let currentCard;
 let button;
+let anotherButton;
 describe('Error Handling', () => {
     describe('Setup', () => {
         it('Can add a new button to the current card', () => {
@@ -60,21 +61,38 @@ describe('Error Handling', () => {
                 'someNotACommandCommand',
                 'end click',
             ].join('\n');
-            button.partProperties.setPropertyNamed(button, "script", firstScript);
+            // we add a whole new button b/c at the moment our scripting field is not
+            // responsive
+            anotherButton = window.System.newModel("button", currentCard.id);
+            anotherButton.partProperties.setPropertyNamed(anotherButton, "script", firstScript);
         });
 
         it('Sending a MessageNotUnderstood', () => {
-            let MNUmsg = {
-                type: "error",
-                name: "MessageNotUnderstood",
-                message: {
-                    type: "command",
-                    commandName: "someNotACommandCommand",
-                    args: [],
-                    senders: [{name: "Button", id: button.id}]
-                }
+            let sendErrorMsgFunction = function(){
+                let MNUmsg = {
+                    type: "error",
+                    name: "MessageNotUnderstood",
+                    message: {
+                        type: "command",
+                        commandName: "someNotACommandCommand",
+                        args: [],
+                        senders: [{name: "Button", id: anotherButton.id}]
+                    }
+                };
+                anotherButton.sendMessage(MNUmsg, anotherButton);
             };
-            button.sendMessage(MNUmsg, button);
+            expect(sendErrorMsgFunction).to.not.throw();
+        });
+
+        it('MessageNotUnderstood command is marked up in the editor', () => {
+            let markedUpScript = [
+                'on click',
+                'someNotACommandCommand --<<<[MessageNotUnderstood:command; commandName: "someNotACommandCommand"]',
+                'end click',
+            ].join('\n');
+            let scriptEditor = window.System.findScriptEditorByTargetId(anotherButton.id);
+            let textContent = scriptEditor.model.partProperties.getPropertyNamed(scriptEditor, "textContent");
+            assert.equal(markedUpScript, textContent);
         });
     });
 });
