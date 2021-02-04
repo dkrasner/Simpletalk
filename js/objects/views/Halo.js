@@ -1,6 +1,10 @@
 /**
  * New Halo
  */
+
+/** Note: Icons are from 
+*** https://tablericons.com/
+**/
 const deleteIcon =`
 <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-trash" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
   <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
@@ -246,17 +250,32 @@ class Halo extends HTMLElement {
     }
 
     onResizeMouseMove(event){
-        let rect = this.targetElement.getBoundingClientRect();
-        let newWidth = event.movementX + rect.width;
-        let newHeight = event.movementY + rect.height;
-        this.targetElement.style.width = `${newWidth}px`;
-        this.targetElement.style.height = `${newHeight}px`;
-        if(this.targetElement.onHaloResize){
-            this.targetElement.onHaloResize(
-                event.movementX,
-                event.movementY
-            );
-        }
+        // let rect = this.targetElement.getBoundingClientRect();
+        // let newWidth, newHeight;
+        // if(this.targetElement.preserveAspectOnResize){
+        //     let ratio = rect.width / rect.height;
+        //     let hyp = Math.sqrt((event.movementX**2) + (event.movementY**2));
+        //     if(event.movementX < 0 || event.movementY < 0){
+        //         hyp = hyp * -1;
+        //     }
+        //     newHeight = rect.height + hyp;
+        //     newWidth = rect.width + hyp;
+        // } else {
+        //     newWidth = event.movementX + rect.width;
+        //     newHeight = event.movementY + rect.height;
+        // }
+        // this.targetElement.style.width = `${newWidth}px`;
+        // this.targetElement.style.height = `${newHeight}px`;
+        // if(this.targetElement.onHaloResize){
+        //     this.targetElement.onHaloResize(
+        //         event.movementX,
+        //         event.movementY
+        //     );
+        // }
+        this.targetElement.onHaloResize(
+            event.movementX,
+            event.movementY
+        );
     }
 };
 

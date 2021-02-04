@@ -45,11 +45,11 @@ describe('newModel tests', () => {
         expect(sendFunc).to.not.throw(Error);
     });
 
-    it('Can send newModel message without error (add svg to current card)', () => {
+    it('Can send newModel message without error (add image to current card)', () => {
         let msg = {
             type: 'command',
             commandName: 'newModel',
-            args: ['svg', currentCard.id, "", "", "https://thomasnyberg.com/TsxxJJ9/translate.svg"]
+            args: ['image', currentCard.id, "", "", "https://thomasnyberg.com/TsxxJJ9/translate.svg"]
         };
 
         let sendFunc = function(){
@@ -59,13 +59,13 @@ describe('newModel tests', () => {
         expect(sendFunc).to.not.throw(Error);
     });
 
-    it.skip('Can send newModel message without error (add default svg)', () => {
+    it.skip('Can send newModel message without error (add default image)', () => {
         // TODO: figure out how to deal with relative paths (default svg icon) in
         // tests or get rid of them all together
         let msg = {
             type: 'command',
             commandName: 'newModel',
-            args: ['svg']
+            args: ['image']
         };
 
         let sendFunc = function(){
@@ -75,11 +75,11 @@ describe('newModel tests', () => {
         expect(sendFunc).to.not.throw(Error);
     });
 
-    it('Can send newModel message without error (add svg to current card without id)', () => {
+    it('Can send newModel message without error (add image to current card without id)', () => {
         let msg = {
             type: 'command',
             commandName: 'newModel',
-            args: ['svg', undefined, "", "", "https://thomasnyberg.com/TsxxJJ9/translate.svg"]
+            args: ['image', undefined, "", "", "https://thomasnyberg.com/TsxxJJ9/translate.svg"]
         };
 
         let sendFunc = function(){
@@ -89,11 +89,11 @@ describe('newModel tests', () => {
         expect(sendFunc).to.not.throw(Error);
     });
 
-    it('Can send newModel message without error (add svg to current card, in context)', () => {
+    it('Can send newModel message without error (add image to current card, in context)', () => {
         let msg = {
             type: 'command',
             commandName: 'newModel',
-            args: ['svg', "", "card", "current", "https://thomasnyberg.com/TsxxJJ9/translate.svg"]
+            args: ['image', "", "card", "current", "https://thomasnyberg.com/TsxxJJ9/translate.svg"]
         };
 
         let sendFunc = function(){
