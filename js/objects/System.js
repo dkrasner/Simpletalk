@@ -1541,13 +1541,11 @@ const detectHands = async (recipientId) => {
             idx = indices[i];
             var score = scores.get(0, idx, 0);
             // Original order is [minY, minX, maxY, maxX] so we reorder.
-            var box = [
-                boxes.get(0, idx, 0, 1) * canvas.width, // minX
-                boxes.get(0, idx, 0, 0) * canvas.height, // minY
-                boxes.get(0, idx, 0, 3) * canvas.width, // maxX
-                boxes.get(0, idx, 0, 2) * canvas.height // maxY
-            ];
-            bboxes.push([score, box]);
+            var box = {
+                upperLeft: [boxes.get(0, idx, 0, 1), boxes.get(0, idx, 0, 0)],
+                lowerRight: [boxes.get(0, idx, 0, 3), boxes.get(0, idx, 0, 2)]
+            };
+            bboxes.push({score: score, box: box});
         }
         return bboxes;
     });
