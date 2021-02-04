@@ -1,4 +1,4 @@
- SimpleTalk {
+  SimpleTalk {
  	Script
 		= ScriptPart+ end
 
@@ -162,10 +162,20 @@
                 = NonemptyListOf<Expression, ",">
 
         ObjectSpecifier (a object specifier)
-                = "this" systemObject --thisSystemObject
-                | "current" systemObject --currentSystemObject
-                | "part" objectId --partById
+                = TerminalSpecifier
+                | ObjectSpecifier "of" TerminalSpecifier --compoundSpecifierWithTerminal
+
+
+        PartialSpecifier
+                = "part" objectId --partById
                 | systemObject stringLiteral --partByName
+                | systemObject integerLiteral --partByIndex
+                | numericalKeyword systemObject --partByNumericalIndex
+                | ObjectSpecifier "of" ObjectSpecifier --compoundSpecifierWithoutTerminal
+
+        TerminalSpecifier
+                = "this" systemObject --thisSystemObject
+                | "current" ("stack" | "card"| "background") --currentSystemObject
 
         InClause (a in clause)
                 = "in" ObjectSpecifier
@@ -212,6 +222,11 @@
 	// We need to prevent keyword overload since these are core control flow indicators
 	keyword (a keyword)
 		= "do" | "next" | "else" | "on" | "end" | "pass" | "exit" | "repeat" | "function" | "return" | "global" | "send" | "if" | "then" | "true" | "false"
+
+        // These are convenience keywords used in place of indexing
+        numericalKeyword (a number in English)
+                = "first" | "second" | "third" | "fourth" | "fifth" | "sixth"
+                | "seventh" | "eighth" | "ninth" | "tenth"
 
 	objectId (an identifier of an object, string, numeric or mixed)
 		= ~systemObject (letter | digit)+
