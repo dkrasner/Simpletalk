@@ -593,6 +593,41 @@ const createInterpreterSemantics = (partContext, systemContext) => {
             };
         },
 
+        PartialSpecifier_partByName: function(objectType, stringLiteral){
+            let name = stringLiteral.interpret();
+            if(objectType.sourceString == 'part'){
+                return function(contextPart){
+                    let found = contextPart.subparts.filter(subpart => {
+                        let foundName = subpart.partProperties.getPropertyNamed(
+                            subpart,
+                            'name'
+                        );
+                        return name == foundName;
+                    });
+                    if(found.length){
+                        return found[0];
+                    }
+                    throw new Error(`${contextPart.type}[${contextPart.id}] does not have a part named "${name}"`);
+                };
+            } else {
+                return function(contextPart){
+                    let found = contextPart.subparts.filter(subpart => {
+                        return subpart.type == objectType.sourceString;
+                    }).filter(subpart => {
+                        let foundName = subpart.partProperties.getPropertyNamed(
+                            subpart,
+                            'name'
+                        );
+                        return foundName == name;
+                    });
+                    if(found.length){
+                        return found[0];
+                    }
+                    throw new Error(`${contextPart.type}[${contextPart.id}] does not have a ${objectType.sourceString} named "${name}"`);
+                };
+            }
+        },
+
         TerminalSpecifier_thisSystemObject: function(thisLiteral, systemObject){
             // A specifier that refers to the current
             // part in the script execution context.
