@@ -168,7 +168,7 @@
         // last possible query one can do in a chain.
         // 'this card' and 'current stack' are examples.
         TerminalSpecifier
-                = "this" systemObject --thisSystemObject
+                = "this" ("stack" | "card" | "background") --thisSystemObject
                 | "current" ("stack" | "card"| "background") --currentSystemObject
                 
         // Partial specifiers are those that can sometimes be terminal,
@@ -188,8 +188,8 @@
 
 
         QueriedSpecifier
-                = QueriedSpecifier QueriedSpecifier
-                | PartialSpecifier "of"
+                = QueriedSpecifier QueriedSpecifier --nested
+                | PartialSpecifier "of" --prefixed
 
 
         InClause (a in clause)

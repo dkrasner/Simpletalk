@@ -1,5 +1,19 @@
 import ExecutionContext from '../objects/ExecutionContext.js';
 
+// Helpers
+function findNearestParentOfKind(aPart, aPartType){
+    let owner = aPart._owner;
+    let found = null;
+    while(owner){
+        if(owner.type == aPartType){
+            found = owner;
+            break;
+        }
+        owner = owner._owner;
+    }
+    return found;
+}
+
 const createInterpreterSemantics = (partContext, systemContext) => {
     return {
         Script: function(scriptParts, _){
@@ -74,39 +88,6 @@ const createInterpreterSemantics = (partContext, systemContext) => {
             });
         },
         
-        ObjectSpecifier_thisSystemObject: function(thisLiteral, systemObject){
-            let targetKind = systemObject.sourceString;
-            if(partContext.type !== systemObject.sourceString){
-                throw new Error(`'this' is not a ${systemObject.sourceString} (it is a ${partContext.type})`);
-            }
-            return partContext;
-        },
-        
-        ObjectSpecifier_currentSystemObject: function(currentLiteral, systemObject){
-            let targetKind = systemObject.sourceString;
-            if(!['card', 'stack'].includes(targetKind)){
-                throw "Semantic Error: 'current' can only apply to a card or stack";
-            }
-            let foundPart = systemContext.getCurrentCardModel();
-            if(!foundPart){
-                throw new Error(`Could not find current ${targetKind} in System!`);
-            }
-        },
-        
-        ObjectSpecifier_partById: function(partLiteral, identifier){
-            let foundPart = systemContext.partsById[identifier.sourceString];
-            if(!foundPart){
-                throw new Error(`Could not find part ${partLiteral.sourceString} ${identifier.sourceString}`);
-            }
-            return foundPart;
-        },
-        
-        ObjectSpecifier_partByName: function(systemObject, nameLiteral){
-            let name = nameLiteral.interpret();
-            let kind = systemObject.sourceString;
-            
-            throw new Error(`Should be implemented: lookup concrete part instance`);
-        },
         
         InClause: function(inLiteral, objectSpecifier){
             return objectSpecifier.interpret();
@@ -566,6 +547,115 @@ const createInterpreterSemantics = (partContext, systemContext) => {
             return null;
         },
 
+        /** Object Specifiers **/
+        PartialSpecifier_partByIndex: function(objectType, integerLiteral){
+            let index = integerLiteral.interpret();
+            if(index < 1){
+                throw new Error(`Part indices must be 1 or greater`);
+            }
+            return function(contextPart){
+                if(objectType.sourceString == 'part'){
+                    if(index > contextPart.subparts.length){
+                        throw new Error(`${contextPart.type}[${contextPart.id}] does not have a part numbered ${index}`);
+                    }
+                    return contextPart.subparts[index-1];
+                } else {
+                    let partsOfType = contextPart.subparts.filter(subpart => {
+                        return subpart.type == objectType.sourceString;
+                    });
+                    if(index > partsOfType.length){
+                        throw new Error(`${contextPart.type}[${contextPart.id}] does not have a ${objectType.sourceString} numbered ${index}`);
+                    }
+                    return partsOfType[index-1];return contextPart.subparts.filter(subpart => {
+                        return subpart.type == objectType.sourceString;
+                    })[index-1];
+                }
+            }; 
+        },
+
+        PartialSpecifier_partByNumericalIndex: function(numericalKeyword, objectType){
+            let index = numericalKeyword.interpret();
+            return function(contextPart){
+                if(objectType.sourceString == 'part'){
+                    if(index > contextPart.subparts.length){
+                        throw new Error(`${contextPart.type}[${contextPart.id}] does not have a part numbered ${index}`);
+                    }
+                    return contextPart.subparts[index-1];
+                } else {
+                    let partsOfType = contextPart.subparts.filter(subpart => {
+                        return subpart.type == objectType.sourceString;
+                    });
+                    if(index > partsOfType.length){
+                        throw new Error(`${contextPart.type}[${contextPart.id}] does not have a ${objectType.sourceString} numbered ${index}`);
+                    }
+                    return partsOfType[index-1];
+                }
+            };
+        },
+
+        TerminalSpecifier_thisSystemObject: function(thisLiteral, systemObject){
+            // A specifier that refers to the current
+            // part in the script execution context.
+            // Note that we also check this card and this stack
+            // as being the card/stack in which the partContext exists (if it is
+            // not a card or stack)
+            let targetType = systemObject.sourceString;
+            return function(contextPart){
+                if(targetType == 'card'){
+                    if(partContext.type == 'card'){
+                        return partContext;
+                    } else {
+                        return findNearestParentOfKind(targetType);
+                    }
+                } else if(targetType == 'stack'){
+                    if(partContext.type == 'stack'){
+                        return partContext;
+                    } else {
+                        return findNearestParentOfKind(targetType);
+                    }
+                }
+                return findNearestParentOfKind(targetType);
+            };
+        },
+
+        TerminalSpecifier_currentSystemObject: function(currentLiteral, systemObject){
+            // A specifier that refers to the current stack or card being
+            // displayed to the user. Note that this is different from the
+            // 'this' form, which refers to the card/stack in which the current
+            // part resides.
+            let targetType = systemObject.sourceString;
+            return function(contextPart){
+                if(targetType == 'stack'){
+                    return System.getCurrentStackModel();
+                } else {
+                    return System.getCurrentCardModel();
+                }
+            };
+        },
+
+        QueriedSpecifier_prefixed: function(partialSpecifier, ofLiteral){
+            return partialSpecifier.interpret();
+        },
+
+        QueriedSpecifier_nested: function(firstQuery, secondQuery){
+            return function(contextPart){
+                let inner = secondQuery.interpret()(contextPart);
+                console.log('inner:');
+                console.log(inner);
+                let outer = firstQuery.interpret()(inner);
+                console.log('outer:');
+                console.log(outer);
+                return outer;
+            };
+        },
+
+        ObjectSpecifier_compoundQueryWithTerminal: function(queriedSpecifier, terminalSpecifier){
+            // The terminal here is the ultimate part context
+            let finalPart = terminalSpecifier.interpret()();
+            let result = queriedSpecifier.interpret()(finalPart);
+            return result.id;
+        },
+
         anyLiteral: function(theLiteral){
             return theLiteral.interpret();
         },
@@ -601,6 +691,33 @@ const createInterpreterSemantics = (partContext, systemContext) => {
                 return -1 * result;
             }
             return result;
+        },
+
+        numericalKeyword: function(numeralName){
+            switch(numeralName.sourceString){
+            case 'first':
+                return 1;
+            case 'second':
+                return 2;
+            case 'third':
+                return 3;
+            case 'fourth':
+                return 4;
+            case 'fifth':
+                return 5;
+            case 'sixth':
+                return 6;
+            case 'seventh':
+                return 7;
+            case 'eighth':
+                return 8;
+            case 'ninth':
+                return 9;
+            case 'tenth':
+                return 10;
+            }
+
+            return -1;
         },
 
         variableName: function(letterPlus, optionalDigits){

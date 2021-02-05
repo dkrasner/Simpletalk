@@ -1680,7 +1680,7 @@ let languageGrammar;
 if (window.grammar){
     // for testing it is sometimes convenient to load the grammar and add to window
     // see ./tests/preload.js for example
-   languageGrammar = ohm.grammar(window.grammar);
+    languageGrammar = ohm.grammar(window.grammar);
 } else {
     languageGrammar = ohm.grammarFromScriptElement();
 }
