@@ -48,9 +48,19 @@ const numbers = [
 
 describe("Terminal Specifier Tests", () => {
     it("thisSystemObject", () => {
-        partTypes.forEach(partName => {
+        ['card', 'stack'].forEach(partName => {
             let str = `this ${partName}`;
             semanticMatchTest(str, "TerminalSpecifier");
+        });
+    });
+    describe("Part by id tests", () => {
+        it("Can parse a part by an integer literal id", () => {
+            let str = `part id 24`;
+            semanticMatchTest(str, 'TerminalSpecifier_partById');
+        });
+        it("Cannot parse a part by a float literal id", () => {
+            let str = `part id 2.3`;
+            semanticMatchFailTest(str, 'TerminalSpecifier_partById');
         });
     });
     it('currentSystemObject (card, background,  and stack only)', () => {
@@ -70,16 +80,6 @@ describe("Terminal Specifier Tests", () => {
 });
 
 describe("Partial Specifier Tests", () => {
-    describe("Part by id tests", () => {
-        it("Can parse a part by an integer literal id", () => {
-            let str = `part id 24`;
-            semanticMatchTest(str, 'PartialSpecifier_partById');
-        });
-        it("Cannot parse a part by a float literal id", () => {
-            let str = `part id 2.3`;
-            semanticMatchFailTest(str, 'PartialSpecifier_partById');
-        });
-    });
     describe("Part by name tests", () => {
         it("Can parse available system part refs by name", () => {
             partTypes.forEach(partName => {

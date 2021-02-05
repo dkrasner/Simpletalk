@@ -502,19 +502,11 @@ const System = {
     //     }
     // },
 
-    setProperty(senders, propName, value, objectId, objectType, context){
+    setProperty(senders, propName, value, objectId){
         let target;
         let originalSender = senders[0].id;
 
-        if(context == 'current'){
-            // If the context is 'current', this means we want
-            // to set some property on the current card or stack
-            if(objectType == 'card'){
-                target = this.getCurrentCardModel();
-            } else if(objectType == 'stack'){
-                target = this.getCurrentStackModel();
-            }
-        } else if(objectId){
+        if(objectId){
             // Otherwise, if there is an objectId, we are
             // setting the property of a specific part by
             // id

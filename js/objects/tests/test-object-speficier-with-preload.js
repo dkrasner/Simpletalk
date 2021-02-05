@@ -223,4 +223,119 @@ describe("ObjectSpecifier Tests", () => {
             assert.equal(expectedValue, result);
         });
     });
+
+    describe("Simple specifiers with implicit card context (equiv. to 'this')", () => {
+        let semantics;
+        let partContext;
+
+        before(() => {
+            // We set the 'this card' part context to be the 2nd card in the stack, which
+            // is different from the current card (which is the 3rd card at this point).
+            // Remember that 'current card' and 'this card' can be different, if the script
+            // calling it is in a part that is not within the currently displayed card
+            partContext = window.System.getCurrentStackModel().subparts.filter(subpart => {
+                return subpart.type == 'card';
+            })[1];
+            semantics = testLanguageGrammar.createSemantics();
+            semantics.addOperation(
+                'interpret',
+                interpreterSemantics(partContext, window.System)
+            ); 
+        });
+
+        it("Can match the button 1 (implicit this card)", () => {
+            let str = `button 1`;
+            let matchObject = testLanguageGrammar.match(str, 'ObjectSpecifier');
+            assert.isTrue(matchObject.succeeded());
+            let expectedPart = partContext.subparts.filter(part => {
+                return part.type == 'button';
+            })[0];
+            let expectedValue = expectedPart.id;
+            let result = semantics(matchObject).interpret();
+            assert.equal(expectedValue, result);
+        });
+        it("Can match second field (implicit this card)", () => {
+            let str = `second field`;
+            let matchObject = testLanguageGrammar.match(str, 'ObjectSpecifier');
+            assert.isTrue(matchObject.succeeded());
+            let expectedPart = partContext.subparts.filter(part => {
+                return part.type == 'field';
+            })[1];
+            let expectedValue = expectedPart.id;
+            let result = semantics(matchObject).interpret();
+            assert.equal(expectedValue, result);
+        });
+        it("Can match part 3 of (implicit this card)", () => {
+            let str = `part 3`;
+            let matchObject = testLanguageGrammar.match(str, 'ObjectSpecifier');
+            assert.isTrue(matchObject.succeeded());
+            let expectedPart = partContext.subparts[2];
+            let expectedValue = expectedPart.id;
+            let result = semantics(matchObject).interpret();
+            assert.equal(expectedValue, result);
+        });
+        it("Can match the fourth part (implicit this card)", () => {
+            let str = `fourth part`;
+            let matchObject = testLanguageGrammar.match(str, 'ObjectSpecifier');
+            assert.isTrue(matchObject.succeeded());
+            let expectedPart = partContext.subparts[3];
+            let expectedValue = expectedPart.id;
+            let result = semantics(matchObject).interpret();
+            assert.equal(expectedValue, result);
+        });
+        it("Can match a field by name (implicit this card)", () => {
+            let str = `field "Field 2"`;
+            let matchObject = testLanguageGrammar.match(str, 'ObjectSpecifier');
+            assert.isTrue(matchObject.succeeded());
+            let expectedPart = partContext.subparts.filter(subpart => {
+                return subpart.type == 'field';
+            })[1];
+            let expectedValue = expectedPart.id;
+            let result = semantics(matchObject).interpret();
+            assert.equal(expectedValue, result);
+        });
+    });
+
+    describe("Complex Specifiers with current stack in context", () => {
+        let semantics;
+        let partContext;
+
+        before(() => {
+            partContext = window.System.getCurrentStackModel();
+            semantics = testLanguageGrammar.createSemantics();
+            semantics.addOperation(
+                'interpret',
+                interpreterSemantics(partContext, window.System)
+            ); 
+        });
+
+        it("Can get button 1 of card 2 of current stack", () => {
+            let str = `button 1 of card 2 of current stack`;
+            let matchObject = testLanguageGrammar.match(str, 'ObjectSpecifier');
+            assert.isTrue(matchObject.succeeded());
+            let secondCard = partContext.subparts.filter(subpart => {
+                return subpart.type == 'card';
+            })[1];
+            let expectedPart = secondCard.subparts.filter(subpart => {
+                return subpart.type == 'button';
+            })[0];
+            let expectedValue = expectedPart.id;
+            let result = semantics(matchObject).interpret();
+            assert.equal(expectedValue, result);
+        });
+        it("Can get third field of second card of current stack", () => {
+            let str = `third field of second card of current stack`;
+            let matchObject = testLanguageGrammar.match(str, 'ObjectSpecifier');
+            assert.isTrue(matchObject.succeeded());
+            let secondCard = partContext.subparts.filter(subpart => {
+                return subpart.type == 'card';
+            })[1];
+            let expectedPart = secondCard.subparts.filter(subpart => {
+                return subpart.type == 'field';
+            })[2];
+            let expectedValue = expectedPart.id;
+            let result = semantics(matchObject).interpret();
+            assert.equal(expectedValue, result);
+        });
+    });
 });

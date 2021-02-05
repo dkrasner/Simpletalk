@@ -197,13 +197,11 @@ const createInterpreterSemantics = (partContext, systemContext) => {
         },
 
         Command_setProperty: function(setLiteral, propNameAsLiteral, toLiteral, literalOrVarName, optionalInClause){
-            let clause = optionalInClause.interpret()[0] || {};
+            let specifiedObjectId = optionalInClause.interpret()[0] || null;
             let args = [
                 propNameAsLiteral.interpret(), // The property name
                 literalOrVarName.interpret(), // The value or a var representing the value
-                clause.objectId,
-                clause.objectType,
-                clause.thisOrCurrent
+                specifiedObjectId
             ];
 
             let msg = {
@@ -648,8 +646,15 @@ const createInterpreterSemantics = (partContext, systemContext) => {
                     } else {
                         return findNearestParentOfKind(targetType);
                     }
+                } else {
+                    // If we reach this point, we expect the systemObject
+                    // type to be equivalent to the overall partContext.
+                    // If it is not, throw and error
+                    if(partContext.type !== systemObject.sourceString){
+                        throw new Error(`'this' is a ${partContext.type}, not a ${systemObject.sourceString}!`);
+                    }
+                    return partContext;
                 }
-                return findNearestParentOfKind(targetType);
             };
         },
 
@@ -661,11 +666,20 @@ const createInterpreterSemantics = (partContext, systemContext) => {
             let targetType = systemObject.sourceString;
             return function(contextPart){
                 if(targetType == 'stack'){
-                    return System.getCurrentStackModel();
+                    return systemContext.getCurrentStackModel();
                 } else {
-                    return System.getCurrentCardModel();
+                    return systemContext.getCurrentCardModel();
                 }
             };
+        },
+
+        TerminalSpecifier_partById: function(objectType, idLiteral, objectId){
+            let id = objectId.interpret();
+            let found = systemContext.partsById[id];
+            if(!found){
+                throw new Error(`Cannot find ${objectType.sourceString} with id ${objectId}`);
+            }
+            return found;
         },
 
         QueriedSpecifier_prefixed: function(partialSpecifier, ofLiteral){
@@ -675,11 +689,7 @@ const createInterpreterSemantics = (partContext, systemContext) => {
         QueriedSpecifier_nested: function(firstQuery, secondQuery){
             return function(contextPart){
                 let inner = secondQuery.interpret()(contextPart);
-                console.log('inner:');
-                console.log(inner);
                 let outer = firstQuery.interpret()(inner);
-                console.log('outer:');
-                console.log(outer);
                 return outer;
             };
         },
@@ -688,6 +698,21 @@ const createInterpreterSemantics = (partContext, systemContext) => {
             // The terminal here is the ultimate part context
             let finalPart = terminalSpecifier.interpret()();
             let result = queriedSpecifier.interpret()(finalPart);
+            return result.id;
+        },
+
+        ObjectSpecifier_singleNonTerminal: function(partialSpecifier){
+            // A single non-terminal object specifier is one
+            // whose terminal object is implicitly assumed to
+            // be the card in which the current context part
+            // exists.
+            let finalPart;
+            if(partContext.type == 'card'){
+                finalPart = partContext;
+            } else {
+                finalPart = findNearestParentOfKind(partContext, 'card');
+            }
+            let result = partialSpecifier.interpret()(finalPart);
             return result.id;
         },
 
