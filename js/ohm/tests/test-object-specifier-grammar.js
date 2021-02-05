@@ -124,7 +124,23 @@ describe("Compound Specifier Tests (non-terminal)", () => {
     describe('partByName of:', () => {
         it('partByName', () => {
             let str = `button "hello" of card "some card"`;
-            semanticMatchTest(str, 'PartialSpecifier_compoundSpecifierWithoutTerminal');
+            semanticMatchTest(str, 'ObjectSpecifier_compoundQueryWithoutTerminal');
+        });
+        it("partByIndex", () => {
+            let str = `button "hello there" of card 2`;
+            semanticMatchTest(str, 'ObjectSpecifier_compoundQueryWithoutTerminal');
+        });
+        it("partByNumericalIndex", () => {
+            let str = `button "hello there" of second card`;
+            semanticMatchTest(str, 'ObjectSpecifier_compoundQueryWithoutTerminal');
+        });
+        it("compoundSpecifierWithoutTerminal", () => {
+            let str = `button "hello" of card 3 of stack "home stack"`;
+            semanticMatchTest(str, 'ObjectSpecifier_compoundQueryWithoutTerminal');
+        });
+        it("compoundSpecifierWithTerminal", () => {
+            let str = `button "myButton" of card 5 of current stack`;
+            semanticMatchTest(str, 'ObjectSpecifier_compoundQueryWithTerminal');
         });
     });
 });

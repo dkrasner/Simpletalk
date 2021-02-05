@@ -161,21 +161,36 @@
         CommandArgumentList
                 = NonemptyListOf<Expression, ",">
 
-        ObjectSpecifier (a object specifier)
-                = TerminalSpecifier
-                | ObjectSpecifier "of" TerminalSpecifier --compoundSpecifierWithTerminal
 
 
+        // A "terminal" specifier is one that cannot have
+        // "of" attached to the end of it because it's the
+        // last possible query one can do in a chain.
+        // 'this card' and 'current stack' are examples.
+        TerminalSpecifier
+                = "this" systemObject --thisSystemObject
+                | "current" ("stack" | "card"| "background") --currentSystemObject
+                
+        // Partial specifiers are those that can sometimes be terminal,
+        // like when `card "some card name"` which will assume the current
+        // stack as its target
         PartialSpecifier
                 = "part" "id" objectId --partById
                 | (systemObject | "part") stringLiteral --partByName
                 | (systemObject | "part") integerLiteral --partByIndex
                 | numericalKeyword (systemObject | "part") --partByNumericalIndex
-                | ObjectSpecifier "of" ObjectSpecifier --compoundSpecifierWithoutTerminal
+        
 
-        TerminalSpecifier
-                = "this" systemObject --thisSystemObject
-                | "current" ("stack" | "card"| "background") --currentSystemObject
+        ObjectSpecifier (a object specifier)
+                = TerminalSpecifier
+                | QueriedSpecifier TerminalSpecifier --compoundQueryWithTerminal
+                | QueriedSpecifier PartialSpecifier --compoundQueryWithoutTerminal
+
+
+        QueriedSpecifier
+                = QueriedSpecifier QueriedSpecifier
+                | PartialSpecifier "of"
+
 
         InClause (a in clause)
                 = "in" ObjectSpecifier
