@@ -34,6 +34,9 @@ import ButtonEditorView from './views/editors/ButtonEditorView.js';
 import ohm from 'ohm-js';
 import interpreterSemantics from '../ohm/interpreter-semantics.js';
 
+const video = document.createElement('video');
+const canvas = document.createElement('canvas');
+var handDetectionModel = null;
 
 const System = {
     name: "System",
@@ -146,6 +149,10 @@ const System = {
         );
         worldView.setModel(worldModel);
         document.body.appendChild(worldView);
+
+        // Uncomment the following to see hand detection frames.
+        //document.body.appendChild(video);
+        //document.body.appendChild(canvas);
 
         // Create an initial blank Stack in this
         // case
@@ -349,10 +356,6 @@ const System = {
         let handler = this._commandHandlers[aMessage.commandName];
         if(handler){
             let boundHandler = handler.bind(this);
-            let originalSender;
-            if(aMessage.senders){
-                originalSender = this.partsById[aMessage.senders[0].id];
-            }
             return boundHandler(aMessage.senders, ...aMessage.args);
         } else {
             return this.doesNotUnderstand(aMessage);
@@ -1441,6 +1444,140 @@ System._commandHandlers['saveHTML'] = function(senders){
     window.URL.revokeObjectURL(url);
     anchor.parentElement.removeChild(anchor);
 };
+
+System._commandHandlers['startVideo'] = () => {
+    if (video.srcObject !== null) {
+        return;
+    }
+    navigator.mediaDevices.getUserMedia({ video: true }).then(stream => {
+        video.srcObject = stream;
+        video.play();
+    });
+};
+
+System._commandHandlers['stopVideo'] = () => {
+    if (video.srcObject === null) {
+        return;
+    }
+    video.pause();
+    const tracks = video.srcObject.getTracks();
+    for (var i = 0; i < tracks.length; i++) {
+        tracks[i].stop();
+    }
+    video.srcObject = null;
+};
+
+// https://aaronsmith.online/easily-load-an-external-script-using-javascript/
+const loadScript = src => {
+    return new Promise((resolve, reject) => {
+        const script = document.createElement('script')
+        script.type = 'text/javascript'
+        script.onload = resolve
+        script.onerror = reject
+        script.src = src
+        document.head.append(script)
+    })
+}
+
+const loadHandDetectionModel = () => {
+    if (handDetectionModel === null) {
+        window.tf.loadFrozenModel(
+            "https://cdn.jsdelivr.net/npm/handtrackjs/models/web/ssdlitemobilenetv2/tensorflowjs_model.pb",
+            "https://cdn.jsdelivr.net/npm/handtrackjs/models/web/ssdlitemobilenetv2/weights_manifest.json"
+        ).then(model => {
+            console.log("hand detection model loaded");
+            handDetectionModel = model;
+        }).catch(err => {
+            console.log("error loading hand detection model");
+            console.log(err);
+        });
+    }
+}
+
+System._commandHandlers['startHandDetectionModel'] = () => {
+    if (typeof window.tf === 'undefined') {
+        loadScript("https://cdn.jsdelivr.net/npm/@tensorflow/tfjs@0.13.5/dist/tf.js").then(() => {
+            loadHandDetectionModel();
+        });
+    } else {
+        loadHandDetectionModel();
+    }
+};
+
+const unloadHandDetectionModel = () => {
+    console.log(handDetectionModel);
+    handDetectionModel = null;
+}
+
+System._commandHandlers['stopHandDetectionModel'] = () => {
+    unloadHandDetectionModel();
+};
+
+const scaleDim = (dim) => {
+    const scale = 0.7;
+    const stride = 16;
+    const evenRes = dim * scale - 1;
+    return evenRes - (evenRes % stride) + 1;
+};
+
+const detectHands = async (recipientId) => {
+    canvas.width = video.videoWidth;
+    canvas.height = video.videoHeight;
+    const ctx = canvas.getContext('2d');
+    ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
+    const scaledWidth = scaleDim(canvas.width);
+    const scaledHeight = scaleDim(canvas.height);
+    const image = tf.fromPixels(canvas).resizeBilinear([scaledHeight, scaledWidth]).expandDims(0);
+    const bboxes = await handDetectionModel.executeAsync(image).then(result => {
+        const [scores, boxes] = result;
+        const indices = tf.image.nonMaxSuppression(
+            boxes.reshape([boxes.shape[1], boxes.shape[3]]),
+            scores.reshape([scores.shape[1]]),
+            20,
+            0.5,
+            0.80).dataSync();
+        var bboxes = [];
+        var idx;
+        for (let i = 0; i < indices.length; i++) {
+            idx = indices[i];
+            var score = scores.get(0, idx, 0);
+            // Original order is [minY, minX, maxY, maxX] so we reorder.
+            var box = {
+                upperLeft: [boxes.get(0, idx, 0, 1), boxes.get(0, idx, 0, 0)],
+                lowerRight: [boxes.get(0, idx, 0, 3), boxes.get(0, idx, 0, 2)]
+            };
+            bboxes.push({score: score, box: box});
+        }
+        return bboxes;
+    });
+    if (recipientId === null) {
+        console.log(bboxes);
+    } else {
+        let recipient = System.partsById[recipientId];
+        let msg = {
+            type: 'command',
+            commandName: 'detectedHands',
+            args: [JSON.stringify(bboxes, null, 4)]
+        };
+        System.sendMessage(msg, System, recipient);
+    }
+};
+
+System._commandHandlers['detectHands'] = (senders, recipientId) => {
+    if (handDetectionModel === null) {
+        console.log("Error: no hand detection model loaded");
+        return;
+    }
+    if (recipientId === undefined) {
+        if (senders !== undefined && senders.length) {
+            recipientId = senders[0].id;
+        } else {
+            recipientId = null;
+        }
+    }
+    detectHands(recipientId);
+}
+
 
 /** Register the initial set of parts in the system **/
 System.registerPart('card', Card);
