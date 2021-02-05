@@ -149,9 +149,10 @@ const System = {
         );
         worldView.setModel(worldModel);
         document.body.appendChild(worldView);
-        document.body.appendChild(video);
-        document.body.appendChild(canvas);
 
+        // Uncomment the following to see hand detection frames.
+        //document.body.appendChild(video);
+        //document.body.appendChild(canvas);
 
         // Create an initial blank Stack in this
         // case
