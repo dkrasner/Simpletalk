@@ -237,7 +237,7 @@
 
 	// We need to prevent keyword overload since these are core control flow indicators
 	keyword (a keyword)
-		= "do" | "next" | "else" | "on" | "end" | "pass" | "exit" | "repeat" | "function" | "return" | "global" | "send" | "if" | "then" | "true" | "false"
+		= "do" | "next" | "else" | "on" | "end" | "pass" | "exit" | "repeat" | "function" | "return" | "global" | "send" | "if" | "then" | "true" | "false" | numericalKeyword
 
         // These are convenience keywords used in place of indexing
         numericalKeyword (a number in English)

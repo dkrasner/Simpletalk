@@ -30,7 +30,7 @@ const partTypes = [
     "window",
     "toolbox",
     "drawing",
-    "svg"
+    "image"
 ];
 
 const numbers = [
