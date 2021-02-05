@@ -68,34 +68,53 @@ const errorHandler = {
             for(let i = 0; i < textLines.length; i++){
                 let line = textLines[i];
                 if(line.match(regex)){
-                    textLines[i] = line += ` --<<<[MessageNotUnderstood:command; commandName: "${commandName}"]`;
+                    textLines[i] = line += ` --<<<[MessageNotUnderstood: command; commandName: "${commandName}"]`;
                 }
             }
             textLines.forEach((line) => {
             });
             textContent = textLines.join("\n");
             scriptEditor.setTextValue(textContent);
+
+            // finally open the debugger (or current version thereof)
+            // NOTE: this is a bit dangerous, b/c if the System doesn't
+            // handle the `openDebugger` command anywhere it will throw
+            // a MNU error, which will then invoke this handler cuasing
+            // an infinite loop!
+            this._openDebugger(originalSender.id);
         }
     },
 
     _openScriptEditor: function(partId){
-        let targetView = window.System.findViewById(partId);
+        let target = window.System.partsById[partId];
         let msg = {
             type: "command",
             "commandName": "openScriptEditor",
             args: [partId]
         };
-        targetView.model.sendMessage(msg, targetView.model);
+        target.sendMessage(msg, target);
     },
 
     _openGrammar: function(partId, ruleName){
-        let targetView = window.System.findViewById(partId);
+        let target = window.System.partsById[partId];
         let msg = {
             type: "command",
             "commandName": "openSimpletalkGrammar",
             args: [ruleName]
         };
-        targetView.model.sendMessage(msg, targetView.model);
+        target.sendMessage(msg, target);
+    },
+
+    // At the moment this simply opens a st-window st-field with
+    // information about the available commands for said parts
+    _openDebugger: function(partId){
+        let target = window.System.partsById[partId];
+        let msg = {
+            type: "command",
+            "commandName": "openDebugger",
+            args: [partId]
+        };
+        target.sendMessage(msg, target);
     }
 };
 

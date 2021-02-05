@@ -87,7 +87,7 @@ describe('Error Handling', () => {
         it('MessageNotUnderstood command is marked up in the editor', () => {
             let markedUpScript = [
                 'on click',
-                'someNotACommandCommand --<<<[MessageNotUnderstood:command; commandName: "someNotACommandCommand"]',
+                'someNotACommandCommand --<<<[MessageNotUnderstood: command; commandName: "someNotACommandCommand"]',
                 'end click',
             ].join('\n');
             let scriptEditor = window.System.findScriptEditorByTargetId(anotherButton.id);

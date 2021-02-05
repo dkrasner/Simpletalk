@@ -1435,6 +1435,57 @@ System._commandHandlers['openSimpletalkGrammar'] = function(senders, ruleName){
     }
 };
 
+System._commandHandlers['openDebugger'] = function(senders, partId){
+    let target = this.partsById[partId];
+    // The stack where the window will be inserted will
+    // be the current stack
+    let currentStackView = document.querySelector('.current-stack');
+    let insertStack = currentStackView.model;
+
+    let winModel = this.newModel('window', insertStack.id);
+    let winTitle = "Command Handlers";
+    winModel.partProperties.setPropertyNamed(
+        winModel,
+        'title',
+        winTitle
+    );
+    let winView = this.findViewById(winModel.id);
+    let winStackModel = this.newModel('stack', winModel.id);
+    let winStackView = this.findViewById(winStackModel.id);
+    winStackView.classList.add('window-stack');
+    let currentCardView = winView.querySelector('.current-stack .current-card');
+    let currentCard = currentCardView.model;
+
+    // Set the current card's layout to be a column list
+    currentCard.partProperties.setPropertyNamed(
+        currentCard,
+        'layout',
+        'list'
+    );
+
+    // Create the Field model and attach to current card
+    // of the new window.
+    let fieldModel = this.newModel('field', currentCard.id);
+    let fieldView = this.findViewById(fieldModel.id);
+
+    let textContent = "";
+    Object.keys(target.commandHandlerRegistry).forEach((name) =>{
+        let info = target.commandHandlerRegistry[name];
+        textContent += `${name}: ${JSON.stringify(info)}\n`;
+    });
+    let htmlContent = fieldView.textToHtml(textContent);
+    // set the inner html of the textarea with the proper htmlContent
+    // NOTE: at the moment fieldView does not subscribe to htmlContent
+    // change due to cursor focus and other issues
+    let textArea = fieldView._shadowRoot.querySelector(".field-textarea");
+    textArea.innerHTML = htmlContent;
+    fieldModel.partProperties.setPropertyNamed(
+        fieldModel,
+        'htmlContent',
+        htmlContent
+    );
+};
+
 System._commandHandlers['saveHTML'] = function(senders){
     let anchor = document.createElement('a');
     anchor.style.display = "none";
