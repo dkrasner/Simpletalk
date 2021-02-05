@@ -414,7 +414,7 @@ class FieldView extends PartView {
         if(match){
             let messageName = match[1];
             // if input break is a new line then an extra
-            // <div></br></div> has beed added into the elemen alreadyt
+            // <div></br></div> has beed added into the elemen already
             let tabLine = "\t\n";
             if(match[2] === "\n"){
                 tabLine= "";
@@ -437,9 +437,17 @@ class FieldView extends PartView {
      */
     textToHtml(text){
         if(text){
-            if(text.includes("\n")){
-                text = "<div>" + text + "<br></div>";
-                return text.replace(/\n/g, "</div><div>");
+            let textLines = text.split("\n");
+            if(textLines.length > 1){
+                let html = "";
+                textLines.forEach((line) => {
+                    if(line){
+                        html += `<div>${line}</div>`;
+                    } else {
+                        html += "<div><br></div>";
+                    }
+                });
+                return  `<div>${html}<br></div>`;
             } else {
                 return text;
             }

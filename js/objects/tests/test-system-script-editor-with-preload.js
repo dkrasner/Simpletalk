@@ -170,7 +170,7 @@ describe('ScriptEditor Functionality', () => {
             let fieldModel = editorFieldView.model;
             let textArea = editorFieldView._shadowRoot.querySelector('.field-textarea');
             let newHTMLContent = "on message ";
-            let completedHTMLContent = "on message <div>\t</div><div>end message<br></div>";
+            let completedHTMLContent = "on message <div><div>\t</div><div>end message</div><br></div>";
 
             // Simulate typing the input events
             let event = new window.Event('input');
