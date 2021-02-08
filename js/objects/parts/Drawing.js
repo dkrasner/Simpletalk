@@ -55,11 +55,21 @@ class Drawing extends Part {
     }
 
     setupDrawingCommands(){
-        this._commandHandlers['lineTo'] = this.lineTo;
-        this._commandHandlers['moveTo'] = this.moveTo;
-        this._commandHandlers['beginDraw'] = this.beginDraw;
-        this._commandHandlers['endDraw'] = this.endDraw;
-        this._commandHandlers['stroke'] = this.stroke;
+        this.setPrivateCommandHandler('lineTo', (senders, ...args) => {
+            this.lineTo(...args);
+        });
+        this.setPrivateCommandHandler('moveTo', (senders, ...args) => {
+            this.moveTo(...args);
+        });
+        this.setPrivateCommandHandler('beginDraw', (senders, ...args) => {
+            this.beginDraw(...args);
+        });
+        this.setPrivateCommandHandler('finishDraw', (senders, ...args) => {
+            this.endDraw(...args);
+        });
+        this.setPrivateCommandHandler('stroke', (senders, ...args) => {
+            this.stroke(...args);
+        });
     }
 
     /* Scriptable Drawing Commands */
@@ -72,6 +82,7 @@ class Drawing extends Part {
         }
     }
     moveTo(coordPair){
+        console.log(this.activeContext, coordPair);
         if(this.isDrawing){
             let coords = this.coordsFromString(coordPair);
             this.activeContext.moveTo(

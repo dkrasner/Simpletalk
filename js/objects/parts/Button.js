@@ -90,7 +90,7 @@ class Button extends Part {
         this.partProperties.newBasicProp(
             'font-color',
             null
-        )
+        );
     }
 
     get type(){
