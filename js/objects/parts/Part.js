@@ -392,10 +392,6 @@ class Part {
             // instance as the 'this' context for
             // the handler
             let boundHandler = handler.bind(this);
-            let originalSender;
-            if(aMessage.senders){
-                originalSender = window.System.partsById[aMessage.senders[0].id];
-            }
             return boundHandler(aMessage.senders, ...aMessage.args);
         } else if(privateHandler){
             // If this Part has a handler for
@@ -404,10 +400,6 @@ class Part {
             // instance as the 'this' context for
             // the handler
             let boundHandler = privateHandler.bind(this);
-            let originalSender;
-            if(aMessage.senders){
-                originalSender = window.System.partsById[aMessage.senders[0].id];
-            }
             return boundHandler(aMessage.senders, ...aMessage.args);
         } else {
             // Otherwise, we have no handler for
