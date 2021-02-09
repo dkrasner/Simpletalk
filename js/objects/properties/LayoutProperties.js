@@ -5,14 +5,14 @@
  * that will supply them with the needed Part
  * Properties relevant to Layouts.
  */
-const addLayoutProperties = (aPart) => {
+const addLayoutProperties = (aPart, kind='absolute') => {
     // The kind of layout. For now
-    // only 'list' and null are possible.
-    // null is the normal, absolute position
+    // only 'absolute' and 'list' are possible.
+    // absolute is the default position
     // layout. It is also the default
     aPart.partProperties.newBasicProp(
         'layout',
-        null
+        kind
     );
 
     // If the layout is 'list', this
@@ -31,6 +31,7 @@ const addLayoutProperties = (aPart) => {
         'listItemSpacing',
         null
     );
+
 };
 
 export {
