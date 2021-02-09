@@ -1,3 +1,5 @@
+import cssStyler from '../utils//styler.js';
+
 /**
  * PartProperties
  * ------------------------------------
@@ -107,6 +109,29 @@ class DynamicProperty extends BasicProperty {
                     val
                 );
             }
+        }
+    }
+};
+
+
+/** I am a special property which handles interfacing with the
+  * the cssStyle basic property. Whenever I am updated I make
+  * sure to update the cssStyle property via the styler utility
+  * function. I can be used to create different and indepent
+  * styling options.
+  **/
+class StyleProperty extends BasicProperty {
+    constructor(name, styler=cssStyler, readOnly=false, aliases=[]){
+        super(name, null, readOnly, aliases);
+    }
+
+    // In this override, we update the cssStyle property
+    setValue(owner, val, notify=true){
+        if(!this.readOnly){
+            let styleProperty = owner.partProperties.findPropertyNamed("cssStyle");
+            let style = styleProperty.getValue(owner);
+            newStyle = styler(style);
+            styleProperty.setValue(owner, newStyle, notify);
         }
     }
 };

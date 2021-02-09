@@ -244,6 +244,13 @@ class Part {
                 new Set(),
                 false,
                 []
+            ),
+            // Styling
+            // css (really JS style) key-values
+            new BasicProperty(
+                'cssStyle',
+                {},
+                false,
             )
         ];
         basicProps.forEach(prop => {

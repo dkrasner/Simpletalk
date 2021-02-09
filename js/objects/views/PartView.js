@@ -32,6 +32,9 @@ class PartView extends HTMLElement {
         this.sendMessage = this.sendMessage.bind(this);
         this.setupBasePropHandlers = this.setupBasePropHandlers.bind(this);
 
+        // Bind initial property method
+        this.styleCSS = this.styleCSS.bind(this);
+
         // Bind property change reaction methods
         this.primHandlePropChange = this.primHandlePropChange.bind(this);
         this.onPropChange = this.onPropChange.bind(this);
@@ -83,6 +86,8 @@ class PartView extends HTMLElement {
         // the latter can technically be invoked before the model is set
         let events = this.model.partProperties.getPropertyNamed(this.model, "events");
         events.forEach((eventRespond) => this.eventRespond(eventRespond));
+        // load all the initial styling
+        this.styleCSS();
         this.afterModelSet();
     }
 
@@ -108,6 +113,19 @@ class PartView extends HTMLElement {
                 this.openEditor();
             } else if(value === false){
                 this.closeEditor();
+            }
+        });
+    }
+
+    styleCSS(){
+        let cssStyle = this.model.partProperties.getPropertyNamed(this, "cssStyle");
+        console.log(cssStyle);
+        Object.keys((key) => {
+            // null and undefined are assumed to do nothing to the styling to
+            // allow for various stylesheet and related css settings
+            let value = cssStyle[key];
+            if(value!== null && value!==undefined){
+                this.style[key] = value;
             }
         });
     }

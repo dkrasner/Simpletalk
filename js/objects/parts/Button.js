@@ -44,20 +44,28 @@ class Button extends Part {
         );
 
         this.partProperties.newBasicProp(
-            'style',
-            'normal'
-        );
-        this.partProperties.newBasicProp(
-            'textAlign',
+            'text-align',
             'center'
         );
         this.partProperties.newBasicProp(
-            'textFont',
+            'text-font',
             'default'
         );
         this.partProperties.newBasicProp(
-            'textStyle',
+            'background-color',
+            null
+        );
+        this.partProperties.newBasicProp(
+            'text-color',
+            null
+        );
+        this.partProperties.newBasicProp(
+            'text-style',
             'plain'
+        );
+        this.partProperties.newBasicProp(
+            'name-visible',
+            true
         );
         this.partProperties.newBasicProp(
             'visible',
@@ -68,29 +76,9 @@ class Button extends Part {
             true
         );
         this.partProperties.newBasicProp(
-            'hilite',
-            false
-        );
-        this.partProperties.newBasicProp(
-            'iconAlign',
-            'center'
-        );
-        this.partProperties.newBasicProp(
-            'showName',
-            true
-        );
-        this.partProperties.newBasicProp(
             'draggable',
             true
         );
-        this.partProperties.newBasicProp(
-            'background-color',
-            null
-        );
-        this.partProperties.newBasicProp(
-            'font-color',
-            null
-        )
     }
 
     get type(){

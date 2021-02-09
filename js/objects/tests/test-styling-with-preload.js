@@ -6,33 +6,47 @@
 import chai from 'chai';
 const assert = chai.assert;
 const expect = chai.expect;
-import styler from '../utils/styler.js';
+import cssStyler from '../utils/styler.js';
 
 let currentCardModel;
 let buttonModel;
 let stylerObj;
 
-describe('Styler Util', () => {
+describe('CSS Styler Util', () => {
     before(() => {
         stylerObj = {};
     });
-    it('Color style conversion', () => {
-        styler(stylerObj, "font-color", "red");
-        assert.equal("red", stylerObj["color"]);
+    it('Text styles conversion', () => {
+        cssStyler(stylerObj, "text-color", "red");
+        assert.equal(stylerObj["color"], "red");
+        cssStyler(stylerObj, "font", "Times");
+        assert.equal(stylerObj["fontFamily"], "Times");
+    });
+    it('Name visibility', () => {
+        cssStyler(stylerObj, "name-visible", true);
+        assert.equal(stylerObj["color"], "red");
+        cssStyler(stylerObj, "name-visible", false);
+        assert.equal(stylerObj["color"], "transparent");
+    });
+    it('Visibility', () => {
+        cssStyler(stylerObj, "visible", true);
+        assert.equal(stylerObj["visibility"], "visible");
+        cssStyler(stylerObj, "visible", false);
+        assert.equal(stylerObj["visibility"], "hidden");
     });
     it('Background Color style conversion', () => {
-        styler(stylerObj, "background-color", "red");
-        assert.equal("red", stylerObj["backgroundColor"]);
+        cssStyler(stylerObj, "background-color", "red");
+        assert.equal(stylerObj["backgroundColor"], "red");
     });
     it('Styles updated properly', () => {
-        styler(stylerObj, "background-color", "black");
-        assert.equal("black", stylerObj["backgroundColor"]);
-        styler(stylerObj, "font-color", "black");
-        assert.equal("black", stylerObj["color"]);
+        cssStyler(stylerObj, "background-color", "black");
+        assert.equal(stylerObj["backgroundColor"], "black");
+        cssStyler(stylerObj, "text-color", "black");
+        assert.equal(stylerObj["color"], "black");
     });
 });
 
-describe.skip('Styling Properties', () => {
+describe('Styling Properties', () => {
     before(() => {
         let currentCardView = document.querySelector('.current-stack > .current-card');
         currentCardModel = currentCardView.model;
@@ -50,12 +64,15 @@ describe.skip('Styling Properties', () => {
             currentCardModel.sendMessage(msg, currentCardModel);
         };
         expect(addButton).to.not.throw(Error);
-        let button = currentCardModel.subparts.filter(subpart => {
+        buttonModel = currentCardModel.subparts.filter(subpart => {
             return subpart.type == 'button';
         })[0];
-        buttonModel = button;
         assert.exists(buttonModel);
     });
-    it('Updaing the styling properties, updates the cssStyle property', () => {
+    it('Initial button css properties are properly set', () => {
+        let buttonView = window.System.findViewById(buttonModel.id);
+        console.log(buttonView.style);
+    });
+    it.skip('Updating the styling properties, updates the cssStyle property', () => {
     });
 });
