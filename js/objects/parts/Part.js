@@ -383,8 +383,6 @@ class Part {
 
     receiveCmd(aMessage){
         let handler = this._commandHandlers[aMessage.commandName];
-        let privateHandler = this._privateCommandHandlers[aMessage.commandName];
-
         if(handler){
             // If this Part has a handler for
             // the given command, we run it.
@@ -392,31 +390,26 @@ class Part {
             // instance as the 'this' context for
             // the handler
             let boundHandler = handler.bind(this);
-            let originalSender;
-            if(aMessage.senders){
-                originalSender = window.System.partsById[aMessage.senders[0].id];
-            }
             return boundHandler(aMessage.senders, ...aMessage.args);
-        } else if(privateHandler){
+        }
+
+        let privateHandler = this._privateCommandHandlers[aMessage.commandName];
+        if(privateHandler){
             // If this Part has a handler for
             // the given command, we run it.
             // We also late-bind the current part
             // instance as the 'this' context for
             // the handler
             let boundHandler = privateHandler.bind(this);
-            let originalSender;
-            if(aMessage.senders){
-                originalSender = window.System.partsById[aMessage.senders[0].id];
-            }
             return boundHandler(aMessage.senders, ...aMessage.args);
-        } else {
-            // Otherwise, we have no handler for
-            // it, so we delegate along the
-            // message delegation chain. It is up
-            // to Parts to properly implement delegation
-            // for themselves!
-            return this.delegateMessage(aMessage);
         }
+
+        // Otherwise, we have no handler for
+        // it, so we delegate along the
+        // message delegation chain. It is up
+        // to Parts to properly implement delegation
+        // for themselves!
+        return this.delegateMessage(aMessage);
     }
 
     receiveFunc(aMessage){
