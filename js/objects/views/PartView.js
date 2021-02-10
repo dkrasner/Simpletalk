@@ -106,6 +106,7 @@ class PartView extends HTMLElement {
         // Do not override this method
         // TODO: Implement the universals
         this.onPropChange('script', this.scriptChanged);
+        this.onPropChange('cssStyle', this.styleCSS);
         this.onPropChange('eventRespond', this.eventRespond);
         this.onPropChange('eventIgnore', this.eventIgnore);
         this.onPropChange('editorOpen', (value) => {
@@ -119,14 +120,9 @@ class PartView extends HTMLElement {
 
     styleCSS(){
         let cssStyle = this.model.partProperties.getPropertyNamed(this, "cssStyle");
-        console.log(cssStyle);
-        Object.keys((key) => {
-            // null and undefined are assumed to do nothing to the styling to
-            // allow for various stylesheet and related css settings
+        Object.keys(cssStyle).forEach((key) => {
             let value = cssStyle[key];
-            if(value!== null && value!==undefined){
-                this.style[key] = value;
-            }
+            this.style[key] = value;
         });
     }
 

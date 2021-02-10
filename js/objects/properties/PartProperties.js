@@ -121,8 +121,9 @@ class DynamicProperty extends BasicProperty {
   * styling options.
   **/
 class StyleProperty extends BasicProperty {
-    constructor(name, styler=cssStyler, readOnly=false, aliases=[]){
-        super(name, null, readOnly, aliases);
+    constructor(name, defaultValue,  styler=cssStyler, readOnly=false, aliases=[]){
+        super(name, defaultValue, readOnly, aliases);
+        this.styler = styler;
     }
 
     // In this override, we update the cssStyle property
@@ -130,7 +131,7 @@ class StyleProperty extends BasicProperty {
         if(!this.readOnly){
             let styleProperty = owner.partProperties.findPropertyNamed("cssStyle");
             let style = styleProperty.getValue(owner);
-            newStyle = styler(style);
+            let newStyle = this.styler(style, this.name, val);
             styleProperty.setValue(owner, newStyle, notify);
         }
     }
@@ -148,6 +149,7 @@ class PartProperties {
         this.setPropertyNamed = this.setPropertyNamed.bind(this);
         this.getPropertyNamed = this.getPropertyNamed.bind(this);
         this.newBasicProp = this.newBasicProp.bind(this);
+        this.newStyleProp = this.newStyleProp.bind(this);
         this.newDynamicProp = this.newDynamicProp.bind(this);
         this._indexOfProperty = this._indexOfProperty.bind(this);
     }
@@ -231,6 +233,13 @@ class PartProperties {
     // property.
     newBasicProp(...args){
         let newProp = new BasicProperty(...args);
+        this.addProperty(newProp);
+    }
+
+    // Convenience method for creating a new style 
+    // property.
+    newStyleProp(...args){
+        let newProp = new StyleProperty(...args);
         this.addProperty(newProp);
     }
 

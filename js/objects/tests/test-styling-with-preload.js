@@ -38,6 +38,12 @@ describe('CSS Styler Util', () => {
         cssStyler(stylerObj, "background-color", "red");
         assert.equal(stylerObj["backgroundColor"], "red");
     });
+    it('Null or undefined value styles do not update the style object', () => {
+        cssStyler(stylerObj, "background-color", null);
+        assert.equal(stylerObj["backgroundColor"], "red");
+        cssStyler(stylerObj, "background-color", undefined);
+        assert.equal(stylerObj["backgroundColor"], "red");
+    });
     it('Styles updated properly', () => {
         cssStyler(stylerObj, "background-color", "black");
         assert.equal(stylerObj["backgroundColor"], "black");
@@ -69,10 +75,41 @@ describe('Styling Properties', () => {
         })[0];
         assert.exists(buttonModel);
     });
-    it('Initial button css properties are properly set', () => {
-        let buttonView = window.System.findViewById(buttonModel.id);
-        console.log(buttonView.style);
+    it('Initial button "cssStyle" BasicProperty is properly set', () => {
+        // Note we just test for some of the core style props as the
+        // complete list is likely to change in the future
+        let styleProp = buttonModel.partProperties.getPropertyNamed(buttonModel, "cssStyle");
+        assert.equal(styleProp['visibility'], 'visible');
+        assert.equal(styleProp['textAlign'], 'center');
     });
-    it.skip('Updating the styling properties, updates the cssStyle property', () => {
+    it('Initial button DOM element style attribute is properly set', () => {
+        // Note we just test for some of the core style props as the
+        // complete list is likely to change in the future
+        let buttonView = window.System.findViewById(buttonModel.id);
+        assert.equal(buttonView.style['visibility'], 'visible');
+        assert.equal(buttonView.style['textAlign'], 'center');
+    });
+    it('Updating StyleProperty directly updates the "cssStyle" BasicProperty', () => {
+        buttonModel.partProperties.setPropertyNamed(buttonModel, "visible", false);
+        let styleProp = buttonModel.partProperties.getPropertyNamed(buttonModel, "cssStyle");
+        assert.equal(styleProp['visibility'], 'hidden');
+    });
+    it('Updating StyleProperty directly updates the DOM element style attribute', () => {
+        let buttonView = window.System.findViewById(buttonModel.id);
+        assert.equal(buttonView.style['visibility'], 'hidden');
+    });
+    it('Updating StyleProperty via "set" message updates the "cssStyle" BasicProperty', () => {
+        let msg  = {
+            type: "command",
+            commandName: "setProperty",
+            args: ["visible", true]
+        };
+        buttonModel.sendMessage(msg, buttonModel);
+        let styleProp = buttonModel.partProperties.getPropertyNamed(buttonModel, "cssStyle");
+        assert.equal(styleProp['visibility'], 'visible');
+    });
+    it('Updating StyleProperty via "set" updates the DOM element style attribute', () => {
+        let buttonView = window.System.findViewById(buttonModel.id);
+        assert.equal(buttonView.style['visibility'], 'visible');
     });
 });

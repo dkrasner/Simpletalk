@@ -43,42 +43,45 @@ class Button extends Part {
             [] // no aliases
         );
 
-        this.partProperties.newBasicProp(
+        // Styling
+        this.partProperties.newStyleProp(
             'text-align',
-            'center'
+            'center',
         );
-        this.partProperties.newBasicProp(
+        this.partProperties.newStyleProp(
             'text-font',
-            'default'
+            'default',
         );
-        this.partProperties.newBasicProp(
+        this.partProperties.newStyleProp(
             'background-color',
-            null
+            null,
         );
-        this.partProperties.newBasicProp(
+        this.partProperties.newStyleProp(
             'text-color',
-            null
+            null,
         );
-        this.partProperties.newBasicProp(
+        this.partProperties.newStyleProp(
             'text-style',
-            'plain'
+            'plain',
         );
-        this.partProperties.newBasicProp(
+        this.partProperties.newStyleProp(
             'name-visible',
-            true
+            true,
         );
-        this.partProperties.newBasicProp(
+        this.partProperties.newStyleProp(
             'visible',
-            true
+            true,
         );
-        this.partProperties.newBasicProp(
+        // TODO tbd props
+        this.partProperties.newStyleProp(
             'autoHilite',
             true
         );
-        this.partProperties.newBasicProp(
+        this.partProperties.newStyleProp(
             'draggable',
             true
         );
+        this.setupStyleProperties();
     }
 
     get type(){

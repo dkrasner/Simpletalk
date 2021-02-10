@@ -39,6 +39,7 @@ class Part {
         // Bind methods
         this.copy = this.copy.bind(this);
         this.setupProperties = this.setupProperties.bind(this);
+        this.setupStyleProperties = this.setupStyleProperties.bind(this);
 
         this.addPart = this.addPart.bind(this);
         this.removePart = this.removePart.bind(this);
@@ -291,6 +292,19 @@ class Part {
             },
             function(){return} // no getter
         );
+    }
+
+    // To be called in each sub-class that has StyleProperties
+    // called after the style props are configured
+    setupStyleProperties(){
+        this.partProperties._properties.forEach((prop) => {
+            if(prop.constructor.name === "StyleProperty"){
+                // setting the value on itself ensures that the cssStyle
+                // BasicProperty is updated with the appropriate styler
+                // conversion css key-val
+                prop.setValue(this, prop._value);
+            }
+        });
     }
 
     /** Subpart Access **/
