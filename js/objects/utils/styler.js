@@ -54,6 +54,14 @@ const cssStyler = (styleObj, propertyName, propertyValue) => {
             styleObj["visibility"] = "visible";
         }
         break;
+
+    default:
+        // for the default we simply allow ST style names to map 1-1
+        // to CSS/JS style names. This is only somewhat safe, since the DOM
+        // will simply ignore nonsense names without throwing an error. But it
+        // does allow us to avoid writing a rule for every term (example: width,
+        // height, top, left etc)
+        _setOrNot(styleObj, propertyName,  propertyValue);
     }
     return styleObj;
 

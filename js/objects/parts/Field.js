@@ -77,6 +77,19 @@ class Field extends Part {
             'wideMargins',
             false
         );
+        // Styling
+        // setting width and height to null
+        // effectively forces to the default size
+        // of the button to fit the button name
+        this.partProperties.newStyleProp(
+            'width',
+            null,
+        );
+        this.partProperties.newStyleProp(
+            'height',
+            null,
+        );
+        this.setupStyleProperties();
     }
 
     get type(){

@@ -306,8 +306,8 @@ class PartView extends HTMLElement {
             newWidth = event.movementX + rect.width;
             newHeight = event.movementY + rect.height;
         }
-        this.style.width = `${newWidth}px`;
-        this.style.height = `${newHeight}px`;
+        this.model.partProperties.setPropertyNamed(this.model, "width", `${newWidth}px`);
+        this.model.partProperties.setPropertyNamed(this.model, "height", `${newHeight}px`);
     }
 
     get wantsHaloMove(){
@@ -323,7 +323,7 @@ class PartView extends HTMLElement {
             parentModel,
             'layout'
         );
-        if(!parentLayout || parentLayout == ""){
+        if(parentLayout === 'absolute' | !parentLayout || parentLayout == ""){
             return true;
         }
 

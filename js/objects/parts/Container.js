@@ -28,6 +28,14 @@ class Container extends Part {
             'background-color',
             null,
         );
+        this.partProperties.newStyleProp(
+            'width',
+            "300px",
+        );
+        this.partProperties.newStyleProp(
+            'height',
+            "200px",
+        );
 
         this.setupStyleProperties();
     }

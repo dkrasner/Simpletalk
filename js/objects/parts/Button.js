@@ -72,6 +72,17 @@ class Button extends Part {
             'visible',
             true,
         );
+        // setting width and height to null
+        // effectively forces to the default size
+        // of the button to fit the button name
+        this.partProperties.newStyleProp(
+            'width',
+            null,
+        );
+        this.partProperties.newStyleProp(
+            'height',
+            null,
+        );
         // TODO tbd props
         this.partProperties.newBasicProp(
             'autoHilite',

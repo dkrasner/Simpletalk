@@ -23,7 +23,7 @@
     --container-default-height: 15vh;
     --drawing-default-width: 500px;
     --drawing-default-height: 300px;
-    --field-default-width: 30vw;
+    --field-default-width: 40vw;
     --field-default-height: 20vh;
 }
 
@@ -145,8 +145,6 @@ st-svg {
  *----------------------------------------------------*/
 st-drawing {
     background-color: #1fe0; /* transparent */
-    width: var(--drawing-default-width);
-    height: var(--drawing-default-height);
 }
 
 /* =Field Styles

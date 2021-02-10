@@ -18,18 +18,6 @@ class Drawing extends Part {
             'drawing'
         );
 
-        // Styling
-        this.partProperties.newStyleProp(
-            'height',
-            250
-        );
-        this.partProperties.newStyleProp(
-            'width',
-            250
-        );
-
-        this.setupStyleProperties();
-
         // When drawing from a script/commands,
         // we will use this as the open canvas
         // whose image bytes will be set to the
