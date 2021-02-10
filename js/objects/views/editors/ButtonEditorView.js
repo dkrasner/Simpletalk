@@ -118,7 +118,7 @@ position: absolute;
     </div>
     <button class="script">Script</button>
     <button class="background-color" name="background-color">Background Color</button>
-    <button class="font-color" name="font-color">Font Color</button>
+    <button class="text-color" name="text-color">Font Color</button>
 </div>
 `;
 
@@ -181,7 +181,7 @@ class ButtonEditorView extends HTMLElement {
         nameInput.removeEventListener('input', this.onNameInput);
         let backgroundButton = this._shadowRoot.querySelector('button.background-color');
         backgroundButton.removeEventListener('click', this.openColorWheelWidget);
-        let colorButton = this._shadowRoot.querySelector('button.font-color');
+        let colorButton = this._shadowRoot.querySelector('button.text-color');
         let eventsDiv = this._shadowRoot.querySelector('.editor-main > div.events-display');
         let eventsInput = eventsDiv.querySelector('input.events');
         eventsInput.removeEventListener('keydown', this.onEventInputKeydown);
@@ -228,7 +228,7 @@ class ButtonEditorView extends HTMLElement {
         nameInput.addEventListener('input', this.onNameInput);
         let backgroundButton = this._shadowRoot.querySelector('button.background-color');
         backgroundButton.addEventListener('click', this.openColorWheelWidget);
-        let colorButton = this._shadowRoot.querySelector('button.font-color');
+        let colorButton = this._shadowRoot.querySelector('button.text-color');
         colorButton.addEventListener('click', this.openColorWheelWidget);
         let eventsDiv = this._shadowRoot.querySelector('.editor-main > div.events-display');
         let eventsInput = eventsDiv.querySelector('input.events');

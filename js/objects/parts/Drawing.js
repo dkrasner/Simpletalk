@@ -18,17 +18,17 @@ class Drawing extends Part {
             'drawing'
         );
 
-        // Adjust any properties as needed
-        this.partProperties.setPropertyNamed(
-            this,
-            'width',
-            250
-        );
-        this.partProperties.setPropertyNamed(
-            this,
+        // Styling
+        this.partProperties.newStyleProp(
             'height',
             250
         );
+        this.partProperties.newStyleProp(
+            'width',
+            250
+        );
+
+        this.setupStyleProperties();
 
         // When drawing from a script/commands,
         // we will use this as the open canvas

@@ -41,6 +41,8 @@ const cssStyler = (styleObj, propertyName, propertyValue) => {
     case "name-visible":
         if(propertyValue === false){
             styleObj["color"] = "transparent";
+        } else {
+            styleObj["color"] = "initial";
         }
         break;
 

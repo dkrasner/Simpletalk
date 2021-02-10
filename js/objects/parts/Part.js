@@ -184,10 +184,6 @@ class Part {
                 true
             ),
             new BasicProperty(
-                'height',
-                0
-            ),
-            new BasicProperty(
                 'id',
                 idMaker.new()
             ),
@@ -226,14 +222,6 @@ class Part {
             new BasicProperty(
                 'topLeft',
                 0
-            ),
-            new BasicProperty(
-                'width',
-                0
-            ),
-            new BasicProperty(
-                'backgroundColor',
-                'white'
             ),
             new BasicProperty(
                 'editorOpen',

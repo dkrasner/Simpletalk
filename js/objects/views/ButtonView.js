@@ -50,7 +50,7 @@ class ButtonView extends PartView {
         this.onPropChange('background-color', (value) => {
             this.style.backgroundColor = value;
         });
-        this.onPropChange('font-color', (value) =>{
+        this.onPropChange('text-color', (value) =>{
             this.style.color = value;
         });
         this.onPropChange("draggable", (value) => {

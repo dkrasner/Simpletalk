@@ -22,6 +22,14 @@ class Container extends Part {
 
         // accept all subparts
         this.acceptedSubpartTypes = ["*"];
+
+        // Styling
+        this.partProperties.newStyleProp(
+            'background-color',
+            null,
+        );
+
+        this.setupStyleProperties();
     }
 
     get type(){

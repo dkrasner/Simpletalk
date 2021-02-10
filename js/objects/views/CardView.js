@@ -29,7 +29,6 @@ class CardView extends PartView {
         this.onDrop = this.onDrop.bind(this);
         this.setupPropHandlers = this.setupPropHandlers.bind(this);
         this.layoutChanged = this.layoutChanged.bind(this);
-        this.bgColorChanged = this.bgColorChanged.bind(this);
 
         // Setup prop handlers
         this.setupPropHandlers();
@@ -37,7 +36,6 @@ class CardView extends PartView {
 
     setupPropHandlers(){
         this.onPropChange('layout', this.layoutChanged);
-        this.onPropChange('backgroundColor', this.bgColorChanged);
     }
 
     afterConnected(){
@@ -96,7 +94,7 @@ class CardView extends PartView {
                 commandName : "copyModel",
                 args: [sourceModelId, this.model.id],
                 shouldIgnore: true
-            }
+            };
             this.sendMessage(msg, sourceModel);
         }
     }
@@ -122,20 +120,8 @@ class CardView extends PartView {
         } else if(layout && listDirection){
             this.classList.add('list-column');
         }
-        // background stuff
-        let backgroundColor = this.model.partProperties.getPropertyNamed(
-            this.model,
-            'backgroundColor'
-        );
-        this.style['backgroundColor'] = backgroundColor;
-        // TODO this could bemore propgrammatic. For example
-        // styleProperties((prop) => {this.style[prop.name] = prop.value}) etc
     }
 
-    // TODO: this shold be a more general prop change handler
-    bgColorChanged(value){
-        this.style['backgroundColor'] = value;
-    }
 };
 
 export {

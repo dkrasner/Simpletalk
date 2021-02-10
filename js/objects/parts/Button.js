@@ -73,11 +73,11 @@ class Button extends Part {
             true,
         );
         // TODO tbd props
-        this.partProperties.newStyleProp(
+        this.partProperties.newBasicProp(
             'autoHilite',
             true
         );
-        this.partProperties.newStyleProp(
+        this.partProperties.newBasicProp(
             'draggable',
             true
         );
