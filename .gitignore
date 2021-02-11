@@ -8,4 +8,4 @@ nodeenv
 package-lock.json
 
 # Ignore Emacs stash files
-#\#*\#
+\#*
