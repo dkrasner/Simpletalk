@@ -168,14 +168,6 @@ class Part {
         // to ALL Parts in the system.
         let basicProps = [
             new BasicProperty(
-                'bottom',
-                0
-            ),
-            new BasicProperty(
-                'bottomRight',
-                0
-            ),
-            new BasicProperty(
                 'contents',
                 null,
             ),
@@ -188,16 +180,6 @@ class Part {
                 idMaker.new()
             ),
             new BasicProperty(
-                'left',
-                0
-            ),
-            new BasicProperty(
-                'location',
-                0,
-                false,
-                ['loc']
-            ),
-            new BasicProperty(
                 'name',
                 ''
             ),
@@ -208,20 +190,8 @@ class Part {
                 ['rect']
             ),
             new BasicProperty(
-                'right',
-                0
-            ),
-            new BasicProperty(
                 'script',
                 null // For now
-            ),
-            new BasicProperty(
-                'top',
-                0
-            ),
-            new BasicProperty(
-                'topLeft',
-                0
             ),
             new BasicProperty(
                 'editorOpen',
