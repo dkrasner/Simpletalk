@@ -56,6 +56,7 @@ class Drawing extends Part {
 
     setupDrawingCommands(){
         this.setPrivateCommandHandler('lineTo', (senders, ...args) => {
+            console.log('is this working?');
             this.lineTo(...args);
         });
         this.setPrivateCommandHandler('moveTo', (senders, ...args) => {
@@ -81,23 +82,24 @@ class Drawing extends Part {
             this.activeContext.stroke();
         }
     }
-    moveTo(coordPair){
-        console.log(this.activeContext, coordPair);
+    moveTo(x, y){
+        console.log(`lineTo ${x}, ${y}`);
         if(this.isDrawing){
-            let coords = this.coordsFromString(coordPair);
+            //let coords = this.coordsFromString(coordPair);
             this.activeContext.moveTo(
-                coords.x,
-                coords.y
+                x,
+                y
             );
         }
     }
 
-    lineTo(coordPair){
+    lineTo(x, y){
+        console.log(`lineTo ${x}, ${y}`);
         if(this.isDrawing){
-            let coords = this.coordsFromString(coordPair);
+            //let coords = this.coordsFromString(coordPair);
             this.activeContext.lineTo(
-                coords.x,
-                coords.y
+                x,
+                y
             );
         }
     }
