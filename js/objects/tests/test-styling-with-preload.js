@@ -24,7 +24,7 @@ describe('CSS Styler Util', () => {
     });
     it('Name visibility', () => {
         cssStyler(stylerObj, "name-visible", true);
-        assert.equal(stylerObj["color"], "red");
+        assert.equal(stylerObj["color"], "initial");
         cssStyler(stylerObj, "name-visible", false);
         assert.equal(stylerObj["color"], "transparent");
     });
@@ -37,6 +37,16 @@ describe('CSS Styler Util', () => {
     it('Background Color style conversion', () => {
         cssStyler(stylerObj, "background-color", "red");
         assert.equal(stylerObj["backgroundColor"], "red");
+    });
+    it('Unit properties (top, left) conversion', () => {
+        cssStyler(stylerObj, "top", 2);
+        assert.equal(stylerObj["top"], "2px");
+        cssStyler(stylerObj, "top", "2");
+        assert.equal(stylerObj["top"], "2px");
+        cssStyler(stylerObj, "top", "2px");
+        assert.equal(stylerObj["top"], "2px");
+        cssStyler(stylerObj, "top", null);
+        assert.equal(stylerObj["top"], "2px");
     });
     it('Null or undefined value styles do not update the style object', () => {
         cssStyler(stylerObj, "background-color", null);

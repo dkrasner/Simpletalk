@@ -217,8 +217,8 @@ class WindowView extends PartView {
         let currentLeft = parseInt(this.style.left);
         let newTop = `${currentTop + event.movementY}px`;
         let newLeft = `${currentLeft + event.movementX}px`;
-        this.style.top = newTop;
-        this.style.left = newLeft;
+        this.model.partProperties.setPropertyNamed(this.model, "top", newTop);
+        this.model.partProperties.setPropertyNamed(this.model, "left", newLeft);
     }
 
     onGripUp(event){

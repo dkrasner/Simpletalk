@@ -34,6 +34,14 @@ const cssStyler = (styleObj, propertyName, propertyValue) => {
         _setOrNot(styleObj, "textAlign",  propertyValue);
         break;
 
+    case "top":
+        _setOrNot(styleObj, "top",  _intToPx(propertyValue));
+        break;
+
+    case "left":
+        _setOrNot(styleObj, "left",  _intToPx(propertyValue));
+        break;
+
     case "text-style":
         _setOrNot(styleObj, "textStyle",  propertyValue);
         break;
@@ -74,6 +82,16 @@ const cssStyler = (styleObj, propertyName, propertyValue) => {
 const _setOrNot = (styleObj, name, value) => {
     if(value !== null && value !== undefined){
         styleObj[name] = value;
+    }
+}
+
+
+const _intToPx = (n) => {
+    if(n !== null && n !== undefined){
+        if(typeof(n) === "string"){
+            n = n.split("px")[0];
+        }
+        return `${n}px`;
     }
 }
 
