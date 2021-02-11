@@ -546,6 +546,15 @@ const createInterpreterSemantics = (partContext, systemContext) => {
         },
 
         /** Object Specifiers **/
+
+        /**
+         * The partByIndex Partial Specifier
+         * refers to partials that specify a part
+         * type and an integer literal, for ex:
+         *     field 3
+         * The above example refers to the third
+         * field part in its owner/parent part.
+         */
         PartialSpecifier_partByIndex: function(objectType, integerLiteral){
             let index = integerLiteral.interpret();
             if(index < 1){
@@ -571,6 +580,14 @@ const createInterpreterSemantics = (partContext, systemContext) => {
             }; 
         },
 
+        /**
+         * The partByNumericalIndex Partial Specifier
+         * refers to partial that specify a part
+         * type preceded by the English word for the
+         * number. For the moment we accept first - tenth
+         * Example:
+         *     sixth button
+         */
         PartialSpecifier_partByNumericalIndex: function(numericalKeyword, objectType){
             let index = numericalKeyword.interpret();
             return function(contextPart){
@@ -591,6 +608,12 @@ const createInterpreterSemantics = (partContext, systemContext) => {
             };
         },
 
+        /**
+         * The partByName Partial Specifier
+         * refers to a partial that specifies a part
+         * by its name property. Example:
+         *     card "My Custom Card"
+         */
         PartialSpecifier_partByName: function(objectType, stringLiteral){
             let name = stringLiteral.interpret();
             if(objectType.sourceString == 'part'){
@@ -626,12 +649,19 @@ const createInterpreterSemantics = (partContext, systemContext) => {
             }
         },
 
+        /**
+         * The 'this' specifier is a terminal (final)
+         * specifier that refers to one of three things:
+         * 1. the type of the current part executing the script,
+         *    example: this button
+         * 2. Card, which refers to the card that owns the
+         *    part that is currently executing the script, ex:
+         *    this card
+         * 3. Stack, which refers to the stack that owns the
+         *    part that is currently executing the script, ex:
+         *    this stack
+         */
         TerminalSpecifier_thisSystemObject: function(thisLiteral, systemObject){
-            // A specifier that refers to the current
-            // part in the script execution context.
-            // Note that we also check this card and this stack
-            // as being the card/stack in which the partContext exists (if it is
-            // not a card or stack)
             let targetType = systemObject.sourceString;
             return function(contextPart){
                 if(targetType == 'card'){
@@ -657,12 +687,16 @@ const createInterpreterSemantics = (partContext, systemContext) => {
                 }
             };
         },
-
+        
+        /**
+         * The 'current' specifier is a terminal (final)
+         * specifier that refers to either the current card or stack
+         * being displayed to the user.
+         * There are only two possible valid options:
+         *     `current card`
+         *     `current stack`
+         */
         TerminalSpecifier_currentSystemObject: function(currentLiteral, systemObject){
-            // A specifier that refers to the current stack or card being
-            // displayed to the user. Note that this is different from the
-            // 'this' form, which refers to the card/stack in which the current
-            // part resides.
             let targetType = systemObject.sourceString;
             return function(contextPart){
                 if(targetType == 'stack'){
@@ -673,6 +707,13 @@ const createInterpreterSemantics = (partContext, systemContext) => {
             };
         },
 
+        /**
+         * The partById specifier is a terminal (final)
+         * specifier that refers to a given part type
+         * by its unique system id. For any kind of part,
+         * we use `part id <objectId>`
+         * Examples: `card id 266` `part id 5`
+         */
         TerminalSpecifier_partById: function(objectType, idLiteral, objectId){
             let id = objectId.interpret();
             let found = systemContext.partsById[id];
@@ -682,10 +723,22 @@ const createInterpreterSemantics = (partContext, systemContext) => {
             return found;
         },
 
+        /**
+         * A "prefixed" queried specifier is just
+         * a PartialSpecifier with "of" in front of it, indicating
+         * that a different partial will precede it be queried inside of it.
+         * Example `of button "My Button"`
+         */
         QueriedSpecifier_prefixed: function(partialSpecifier, ofLiteral){
             return partialSpecifier.interpret();
         },
 
+        /**
+         * A nested queried specifier is one that has two
+         * or more prefixed specifiers. The simplest would be
+         * something like:
+         *     `of card "My Card" of stack "Another named stack"`
+         */
         QueriedSpecifier_nested: function(firstQuery, secondQuery){
             return function(contextPart){
                 let inner = secondQuery.interpret()(contextPart);
@@ -694,6 +747,11 @@ const createInterpreterSemantics = (partContext, systemContext) => {
             };
         },
 
+        /**
+         * A Compound with terminal specifier is a QueriedSpecifier
+         * that finishes with a Terminal specifier.
+         * Example: `of button 3 of card "Some named card" of current stack`
+         */
         ObjectSpecifier_compoundQueryWithTerminal: function(queriedSpecifier, terminalSpecifier){
             // The terminal here is the ultimate part context
             let finalPart = terminalSpecifier.interpret()();
@@ -701,6 +759,15 @@ const createInterpreterSemantics = (partContext, systemContext) => {
             return result.id;
         },
 
+        /**
+         * A single non-terminal ObjectSpecifier is just a Partial
+         * specifier by itself. When present outside of a QueriedSpecifier,
+         * it will be interpreted in the current context and treated
+         * as terminal/final. For example:
+         *     button 4
+         * by itself as a whole specifier will be interpreted as
+         * `button 4 of this card`
+         */
         ObjectSpecifier_singleNonTerminal: function(partialSpecifier){
             // A single non-terminal object specifier is one
             // whose terminal object is implicitly assumed to
