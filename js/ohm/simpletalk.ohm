@@ -170,7 +170,7 @@
         TerminalSpecifier
                 = ("part" | systemObject) "id" objectId --partById
                 | "this" systemObject --thisSystemObject
-                | "current" ("stack" | "card"| "background") --currentSystemObject
+                | "current" ("stack" | "card") --currentSystemObject
                 
         // Partial specifiers are those that can sometimes be terminal,
         // like when `card "some card name"` which will assume the current

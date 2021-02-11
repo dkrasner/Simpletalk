@@ -22,7 +22,6 @@ const semanticMatchFailTest = (str, semanticType) => {
 
 const partTypes = [
     "card",
-    "background",
     "container",
     "button",
     "field",
@@ -63,8 +62,8 @@ describe("Terminal Specifier Tests", () => {
             semanticMatchFailTest(str, 'TerminalSpecifier_partById');
         });
     });
-    it('currentSystemObject (card, background,  and stack only)', () => {
-        let valid = ['card', 'stack', 'background'];
+    it('currentSystemObject (card and stack only)', () => {
+        let valid = ['card', 'stack'];
         let invalid = partTypes.filter(partName => {
             return !valid.includes(partName);
         });
