@@ -520,7 +520,7 @@ describe("SimpleTalk Grammar", () => {
                     semanticMatchTest(s, "Statement");
                 });
             });
-            it ("Set background color in this or current", () => {
+            it.skip("Set background color in this or current", () => {
                 const objects = ["background", "card", "container", "field", "button", "stack", "window"];
                 ["this", "current"].forEach((context) => {
                     objects.forEach((d) => {

@@ -1,4 +1,4 @@
- SimpleTalk {
+  SimpleTalk {
  	Script
 		= ScriptPart+ end
 
@@ -161,11 +161,37 @@
         CommandArgumentList
                 = NonemptyListOf<Expression, ",">
 
+
+
+        // A "terminal" specifier is one that cannot have
+        // "of" attached to the end of it because it's the
+        // last possible query one can do in a chain.
+        // 'this card' and 'current stack' are examples.
+        TerminalSpecifier
+                = ("part" | systemObject) "id" objectId --partById
+                | "this" systemObject --thisSystemObject
+                | "current" ("stack" | "card") --currentSystemObject
+                
+        // Partial specifiers are those that can sometimes be terminal,
+        // like when `card "some card name"` which will assume the current
+        // stack as its target
+        PartialSpecifier
+                = (systemObject | "part") stringLiteral --partByName
+                | (systemObject | "part") integerLiteral --partByIndex
+                | numericalKeyword (systemObject | "part") --partByNumericalIndex
+        
+
         ObjectSpecifier (a object specifier)
-                = "this" systemObject --thisSystemObject
-                | "current" systemObject --currentSystemObject
-                | "part" objectId --partById
-                | systemObject stringLiteral --partByName
+                = TerminalSpecifier
+                | QueriedSpecifier TerminalSpecifier --compoundQueryWithTerminal
+                | QueriedSpecifier PartialSpecifier --compoundQueryWithoutTerminal
+                | PartialSpecifier --singleNonTerminal
+
+
+        QueriedSpecifier
+                = QueriedSpecifier QueriedSpecifier --nested
+                | PartialSpecifier "of" --prefixed
+
 
         InClause (a in clause)
                 = "in" ObjectSpecifier
@@ -211,7 +237,12 @@
 
 	// We need to prevent keyword overload since these are core control flow indicators
 	keyword (a keyword)
-		= "do" | "next" | "else" | "on" | "end" | "pass" | "exit" | "repeat" | "function" | "return" | "global" | "send" | "if" | "then" | "true" | "false"
+		= "do" | "next" | "else" | "on" | "end" | "pass" | "exit" | "repeat" | "function" | "return" | "global" | "send" | "if" | "then" | "true" | "false" | numericalKeyword
+
+        // These are convenience keywords used in place of indexing
+        numericalKeyword (a number in English)
+                = "first" | "second" | "third" | "fourth" | "fifth" | "sixth"
+                | "seventh" | "eighth" | "ninth" | "tenth"
 
 	objectId (an identifier of an object, string, numeric or mixed)
 		= ~systemObject (letter | digit)+

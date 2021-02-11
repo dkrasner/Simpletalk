@@ -1,5 +1,19 @@
 import ExecutionContext from '../objects/ExecutionContext.js';
 
+// Helpers
+function findNearestParentOfKind(aPart, aPartType){
+    let owner = aPart._owner;
+    let found = null;
+    while(owner){
+        if(owner.type == aPartType){
+            found = owner;
+            break;
+        }
+        owner = owner._owner;
+    }
+    return found;
+}
+
 const createInterpreterSemantics = (partContext, systemContext) => {
     return {
         Script: function(scriptParts, _){
@@ -74,39 +88,6 @@ const createInterpreterSemantics = (partContext, systemContext) => {
             });
         },
         
-        ObjectSpecifier_thisSystemObject: function(thisLiteral, systemObject){
-            let targetKind = systemObject.sourceString;
-            if(partContext.type !== systemObject.sourceString){
-                throw new Error(`'this' is not a ${systemObject.sourceString} (it is a ${partContext.type})`);
-            }
-            return partContext;
-        },
-        
-        ObjectSpecifier_currentSystemObject: function(currentLiteral, systemObject){
-            let targetKind = systemObject.sourceString;
-            if(!['card', 'stack'].includes(targetKind)){
-                throw "Semantic Error: 'current' can only apply to a card or stack";
-            }
-            let foundPart = systemContext.getCurrentCardModel();
-            if(!foundPart){
-                throw new Error(`Could not find current ${targetKind} in System!`);
-            }
-        },
-        
-        ObjectSpecifier_partById: function(partLiteral, identifier){
-            let foundPart = systemContext.partsById[identifier.sourceString];
-            if(!foundPart){
-                throw new Error(`Could not find part ${partLiteral.sourceString} ${identifier.sourceString}`);
-            }
-            return foundPart;
-        },
-        
-        ObjectSpecifier_partByName: function(systemObject, nameLiteral){
-            let name = nameLiteral.interpret();
-            let kind = systemObject.sourceString;
-            
-            throw new Error(`Should be implemented: lookup concrete part instance`);
-        },
         
         InClause: function(inLiteral, objectSpecifier){
             return objectSpecifier.interpret();
@@ -216,13 +197,11 @@ const createInterpreterSemantics = (partContext, systemContext) => {
         },
 
         Command_setProperty: function(setLiteral, propNameAsLiteral, toLiteral, literalOrVarName, optionalInClause){
-            let clause = optionalInClause.interpret()[0] || {};
+            let specifiedObjectId = optionalInClause.interpret()[0] || null;
             let args = [
                 propNameAsLiteral.interpret(), // The property name
                 literalOrVarName.interpret(), // The value or a var representing the value
-                clause.objectId,
-                clause.objectType,
-                clause.thisOrCurrent
+                specifiedObjectId
             ];
 
             let msg = {
@@ -566,6 +545,244 @@ const createInterpreterSemantics = (partContext, systemContext) => {
             return null;
         },
 
+        /** Object Specifiers **/
+
+        /**
+         * The partByIndex Partial Specifier
+         * refers to partials that specify a part
+         * type and an integer literal, for ex:
+         *     field 3
+         * The above example refers to the third
+         * field part in its owner/parent part.
+         */
+        PartialSpecifier_partByIndex: function(objectType, integerLiteral){
+            let index = integerLiteral.interpret();
+            if(index < 1){
+                throw new Error(`Part indices must be 1 or greater`);
+            }
+            return function(contextPart){
+                if(objectType.sourceString == 'part'){
+                    if(index > contextPart.subparts.length){
+                        throw new Error(`${contextPart.type}[${contextPart.id}] does not have a part numbered ${index}`);
+                    }
+                    return contextPart.subparts[index-1];
+                } else {
+                    let partsOfType = contextPart.subparts.filter(subpart => {
+                        return subpart.type == objectType.sourceString;
+                    });
+                    if(index > partsOfType.length){
+                        throw new Error(`${contextPart.type}[${contextPart.id}] does not have a ${objectType.sourceString} numbered ${index}`);
+                    }
+                    return partsOfType[index-1];return contextPart.subparts.filter(subpart => {
+                        return subpart.type == objectType.sourceString;
+                    })[index-1];
+                }
+            }; 
+        },
+
+        /**
+         * The partByNumericalIndex Partial Specifier
+         * refers to partial that specify a part
+         * type preceded by the English word for the
+         * number. For the moment we accept first - tenth
+         * Example:
+         *     sixth button
+         */
+        PartialSpecifier_partByNumericalIndex: function(numericalKeyword, objectType){
+            let index = numericalKeyword.interpret();
+            return function(contextPart){
+                if(objectType.sourceString == 'part'){
+                    if(index > contextPart.subparts.length){
+                        throw new Error(`${contextPart.type}[${contextPart.id}] does not have a part numbered ${index}`);
+                    }
+                    return contextPart.subparts[index-1];
+                } else {
+                    let partsOfType = contextPart.subparts.filter(subpart => {
+                        return subpart.type == objectType.sourceString;
+                    });
+                    if(index > partsOfType.length){
+                        throw new Error(`${contextPart.type}[${contextPart.id}] does not have a ${objectType.sourceString} numbered ${index}`);
+                    }
+                    return partsOfType[index-1];
+                }
+            };
+        },
+
+        /**
+         * The partByName Partial Specifier
+         * refers to a partial that specifies a part
+         * by its name property. Example:
+         *     card "My Custom Card"
+         */
+        PartialSpecifier_partByName: function(objectType, stringLiteral){
+            let name = stringLiteral.interpret();
+            if(objectType.sourceString == 'part'){
+                return function(contextPart){
+                    let found = contextPart.subparts.filter(subpart => {
+                        let foundName = subpart.partProperties.getPropertyNamed(
+                            subpart,
+                            'name'
+                        );
+                        return name == foundName;
+                    });
+                    if(found.length){
+                        return found[0];
+                    }
+                    throw new Error(`${contextPart.type}[${contextPart.id}] does not have a part named "${name}"`);
+                };
+            } else {
+                return function(contextPart){
+                    let found = contextPart.subparts.filter(subpart => {
+                        return subpart.type == objectType.sourceString;
+                    }).filter(subpart => {
+                        let foundName = subpart.partProperties.getPropertyNamed(
+                            subpart,
+                            'name'
+                        );
+                        return foundName == name;
+                    });
+                    if(found.length){
+                        return found[0];
+                    }
+                    throw new Error(`${contextPart.type}[${contextPart.id}] does not have a ${objectType.sourceString} named "${name}"`);
+                };
+            }
+        },
+
+        /**
+         * The 'this' specifier is a terminal (final)
+         * specifier that refers to one of three things:
+         * 1. the type of the current part executing the script,
+         *    example: this button
+         * 2. Card, which refers to the card that owns the
+         *    part that is currently executing the script, ex:
+         *    this card
+         * 3. Stack, which refers to the stack that owns the
+         *    part that is currently executing the script, ex:
+         *    this stack
+         */
+        TerminalSpecifier_thisSystemObject: function(thisLiteral, systemObject){
+            let targetType = systemObject.sourceString;
+            return function(contextPart){
+                if(targetType == 'card'){
+                    if(partContext.type == 'card'){
+                        return partContext;
+                    } else {
+                        return findNearestParentOfKind(targetType);
+                    }
+                } else if(targetType == 'stack'){
+                    if(partContext.type == 'stack'){
+                        return partContext;
+                    } else {
+                        return findNearestParentOfKind(targetType);
+                    }
+                } else {
+                    // If we reach this point, we expect the systemObject
+                    // type to be equivalent to the overall partContext.
+                    // If it is not, throw and error
+                    if(partContext.type !== systemObject.sourceString){
+                        throw new Error(`'this' is a ${partContext.type}, not a ${systemObject.sourceString}!`);
+                    }
+                    return partContext;
+                }
+            };
+        },
+        
+        /**
+         * The 'current' specifier is a terminal (final)
+         * specifier that refers to either the current card or stack
+         * being displayed to the user.
+         * There are only two possible valid options:
+         *     `current card`
+         *     `current stack`
+         */
+        TerminalSpecifier_currentSystemObject: function(currentLiteral, systemObject){
+            let targetType = systemObject.sourceString;
+            return function(contextPart){
+                if(targetType == 'stack'){
+                    return systemContext.getCurrentStackModel();
+                } else {
+                    return systemContext.getCurrentCardModel();
+                }
+            };
+        },
+
+        /**
+         * The partById specifier is a terminal (final)
+         * specifier that refers to a given part type
+         * by its unique system id. For any kind of part,
+         * we use `part id <objectId>`
+         * Examples: `card id 266` `part id 5`
+         */
+        TerminalSpecifier_partById: function(objectType, idLiteral, objectId){
+            let id = objectId.interpret();
+            let found = systemContext.partsById[id];
+            if(!found){
+                throw new Error(`Cannot find ${objectType.sourceString} with id ${objectId}`);
+            }
+            return found;
+        },
+
+        /**
+         * A "prefixed" queried specifier is just
+         * a PartialSpecifier with "of" in front of it, indicating
+         * that a different partial will precede it be queried inside of it.
+         * Example `of button "My Button"`
+         */
+        QueriedSpecifier_prefixed: function(partialSpecifier, ofLiteral){
+            return partialSpecifier.interpret();
+        },
+
+        /**
+         * A nested queried specifier is one that has two
+         * or more prefixed specifiers. The simplest would be
+         * something like:
+         *     `of card "My Card" of stack "Another named stack"`
+         */
+        QueriedSpecifier_nested: function(firstQuery, secondQuery){
+            return function(contextPart){
+                let inner = secondQuery.interpret()(contextPart);
+                let outer = firstQuery.interpret()(inner);
+                return outer;
+            };
+        },
+
+        /**
+         * A Compound with terminal specifier is a QueriedSpecifier
+         * that finishes with a Terminal specifier.
+         * Example: `of button 3 of card "Some named card" of current stack`
+         */
+        ObjectSpecifier_compoundQueryWithTerminal: function(queriedSpecifier, terminalSpecifier){
+            // The terminal here is the ultimate part context
+            let finalPart = terminalSpecifier.interpret()();
+            let result = queriedSpecifier.interpret()(finalPart);
+            return result.id;
+        },
+
+        /**
+         * A single non-terminal ObjectSpecifier is just a Partial
+         * specifier by itself. When present outside of a QueriedSpecifier,
+         * it will be interpreted in the current context and treated
+         * as terminal/final. For example:
+         *     button 4
+         * by itself as a whole specifier will be interpreted as
+         * `button 4 of this card`
+         */
+        ObjectSpecifier_singleNonTerminal: function(partialSpecifier){
+            // A single non-terminal object specifier is one
+            // whose terminal object is implicitly assumed to
+            // be the card in which the current context part
+            // exists.
+            let finalPart;
+            if(partContext.type == 'card'){
+                finalPart = partContext;
+            } else {
+                finalPart = findNearestParentOfKind(partContext, 'card');
+            }
+            let result = partialSpecifier.interpret()(finalPart);
+            return result.id;
+        },
+
         anyLiteral: function(theLiteral){
             return theLiteral.interpret();
         },
@@ -601,6 +818,33 @@ const createInterpreterSemantics = (partContext, systemContext) => {
                 return -1 * result;
             }
             return result;
+        },
+
+        numericalKeyword: function(numeralName){
+            switch(numeralName.sourceString){
+            case 'first':
+                return 1;
+            case 'second':
+                return 2;
+            case 'third':
+                return 3;
+            case 'fourth':
+                return 4;
+            case 'fifth':
+                return 5;
+            case 'sixth':
+                return 6;
+            case 'seventh':
+                return 7;
+            case 'eighth':
+                return 8;
+            case 'ninth':
+                return 9;
+            case 'tenth':
+                return 10;
+            }
+
+            return -1;
         },
 
         variableName: function(letterPlus, optionalDigits){

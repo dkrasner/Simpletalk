@@ -1,0 +1,11 @@
+# Ignore node environments
+# and the node modules folder
+node_modules
+nodeenv
+
+# For now, ignore the package
+# lock
+package-lock.json
+
+# Ignore Emacs stash files
+\#*
