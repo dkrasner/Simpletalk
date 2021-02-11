@@ -36,7 +36,14 @@ class Container extends Part {
             'height',
             "200px",
         );
-
+        this.partProperties.newStyleProp(
+            'top',
+            "0",
+        );
+        this.partProperties.newStyleProp(
+            'left',
+            "0",
+        );
         this.setupStyleProperties();
     }
 

@@ -83,6 +83,14 @@ class Button extends Part {
             'height',
             null,
         );
+        this.partProperties.newStyleProp(
+            'top',
+            "0",
+        );
+        this.partProperties.newStyleProp(
+            'left',
+            "0",
+        );
         // TODO tbd props
         this.partProperties.newBasicProp(
             'autoHilite',

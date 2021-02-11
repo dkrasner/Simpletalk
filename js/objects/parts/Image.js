@@ -41,6 +41,15 @@ class Image extends Part {
             'draggable',
             false
         );
+        this.partProperties.newStyleProp(
+            'top',
+            "0",
+        );
+        this.partProperties.newStyleProp(
+            'left',
+            "0",
+        );
+        this.setupStyleProperties();
 
         // Private command handlers
         this.setPrivateCommandHandler("loadImageFrom", this.loadImageFromSource);

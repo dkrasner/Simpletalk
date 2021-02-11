@@ -17,6 +17,16 @@ class Drawing extends Part {
             'mode',
             'drawing'
         );
+        // Style
+        this.partProperties.newStyleProp(
+            'top',
+            "0",
+        );
+        this.partProperties.newStyleProp(
+            'left',
+            "0",
+        );
+        this.setupStyleProperties();
 
         // When drawing from a script/commands,
         // we will use this as the open canvas

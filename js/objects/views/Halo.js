@@ -229,8 +229,9 @@ class Halo extends HTMLElement {
         let newTop = event.movementY + currentTop;
         let newLeft = event.movementX + currentLeft;
 
-        this.targetElement.style.top = `${newTop}px`;
-        this.targetElement.style.left = `${newLeft}px`;
+        let model = this.targetElement.model;
+        model.partProperties.setPropertyNamed(model, "top", `${newTop}px`);
+        model.partProperties.setPropertyNamed(model, "left", `${newLeft}px`);
     }
 
     onMouseUp(event){
