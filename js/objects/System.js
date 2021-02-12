@@ -1497,6 +1497,14 @@ System._commandHandlers['saveHTML'] = function(senders){
     anchor.parentElement.removeChild(anchor);
 };
 
+System._commandHandlers['tell'] = (senders, targetId, deferredMessage) => {
+    let targetPart = System.partsById[targetId];
+    if(!targetPart){
+        throw new Error(`Attempted to tell part id ${targetId}: no such part!`);
+    }
+    targetPart.sendMessage(deferredMessage, targetPart);
+};
+
 System._commandHandlers['startVideo'] = () => {
     if (video.srcObject !== null) {
         return;
@@ -1522,14 +1530,14 @@ System._commandHandlers['stopVideo'] = () => {
 // https://aaronsmith.online/easily-load-an-external-script-using-javascript/
 const loadScript = src => {
     return new Promise((resolve, reject) => {
-        const script = document.createElement('script')
-        script.type = 'text/javascript'
-        script.onload = resolve
-        script.onerror = reject
-        script.src = src
-        document.head.append(script)
-    })
-}
+        const script = document.createElement('script');
+        script.type = 'text/javascript';
+        script.onload = resolve;
+        script.onerror = reject;
+        script.src = src;
+        document.head.append(script);
+    });
+};
 
 const loadHandDetectionModel = () => {
     if (handDetectionModel === null) {
@@ -1628,7 +1636,7 @@ System._commandHandlers['detectHands'] = (senders, recipientId) => {
         }
     }
     detectHands(recipientId);
-}
+};
 
 
 /** Register the initial set of parts in the system **/

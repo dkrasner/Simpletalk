@@ -258,6 +258,17 @@ const createInterpreterSemantics = (partContext, systemContext) => {
             };
         },
 
+        Command_tellCommand: function(tellLiteral, objectSpecifier, toLiteral, command){
+            return {
+                type: 'command',
+                commandName: 'tell',
+                args: [
+                    objectSpecifier.interpret(),
+                    command.interpret()
+                ]
+            };
+        },
+
         Command_arbitraryCommand: function(commandName, optionalArgumentList){
             // Because the argument list is optional here, it will
             // be either an empty array (no arguments) or a size 1
@@ -671,13 +682,13 @@ const createInterpreterSemantics = (partContext, systemContext) => {
                     if(partContext.type == 'card'){
                         return partContext;
                     } else {
-                        return findNearestParentOfKind(targetType);
+                        return findNearestParentOfKind(partContext, targetType);
                     }
                 } else if(targetType == 'stack'){
                     if(partContext.type == 'stack'){
                         return partContext;
                     } else {
-                        return findNearestParentOfKind(targetType);
+                        return findNearestParentOfKind(partContext, targetType);
                     }
                 } else {
                     // If we reach this point, we expect the systemObject
@@ -718,8 +729,8 @@ const createInterpreterSemantics = (partContext, systemContext) => {
          * Examples: `card id 266` `part id 5`
          */
         TerminalSpecifier_partById: function(objectType, idLiteral, objectId){
-            let id = objectId.interpret();
-            let found = systemContext.partsById[id];
+            let id = objectId.sourceString;
+            let found = systemContext.partsById[parseInt(id)];
             if(!found){
                 throw new Error(`Cannot find ${objectType.sourceString} with id ${objectId}`);
             }
