@@ -26,6 +26,10 @@ class Drawing extends Part {
             'left',
             "0",
         );
+        this.partProperties.newStyleProp(
+            'rotate',
+            null
+        );
         this.setupStyleProperties();
 
         // When drawing from a script/commands,

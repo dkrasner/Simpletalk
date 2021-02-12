@@ -44,6 +44,10 @@ class Container extends Part {
             'left',
             "0",
         );
+        this.partProperties.newStuyleProp(
+            'rotate',
+            null
+        );
         this.setupStyleProperties();
     }
 

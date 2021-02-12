@@ -49,6 +49,10 @@ class Image extends Part {
             'left',
             "0",
         );
+        this.partProperties.newStyleProp(
+            'rotate',
+            null
+        );
         this.setupStyleProperties();
 
         // Private command handlers

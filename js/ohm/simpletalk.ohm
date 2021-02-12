@@ -203,7 +203,7 @@
 		| "answer" (stringLiteral | variableName) --answer
 		| "delete" "this"? systemObject objectId? --deleteModel
 		| "add" systemObject stringLiteral? "to"? ("this" | "current")? systemObject? objectId? --addModel
-		| "set" stringLiteral "to" (stringLiteral | variableName) InClause? --setProperty
+		| "set" stringLiteral "to" (stringLiteral | variableName | integerLiteral ) InClause? --setProperty
 		| "put" Factor "into" "global"? variableName --putVariable
 		| "ask" anyLiteral --ask
 		| "respond to" anyLiteral InClause? --eventRespond

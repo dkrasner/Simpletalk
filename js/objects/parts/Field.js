@@ -97,6 +97,10 @@ class Field extends Part {
             'left',
             "0",
         );
+        this.partProperties.newStyleProp(
+            'rotate',
+            null
+        );
         this.setupStyleProperties();
     }
 

@@ -46,6 +46,10 @@ const cssStyler = (styleObj, propertyName, propertyValue) => {
         _setOrNot(styleObj, "textStyle",  propertyValue);
         break;
 
+    case "rotate":
+        _setOrNot(styleObj, "transform",  _intToRotateDeg(propertyValue));
+        break;
+
     case "name-visible":
         if(propertyValue === false){
             styleObj["color"] = "transparent";
@@ -82,6 +86,15 @@ const cssStyler = (styleObj, propertyName, propertyValue) => {
 const _setOrNot = (styleObj, name, value) => {
     if(value !== null && value !== undefined){
         styleObj[name] = value;
+    }
+}
+
+const _intToRotateDeg = (n) => {
+    if(n !== null && n !== undefined){
+        if(typeof(n) === "string"){
+            n = n.split("deg")[0];
+        }
+        return `rotate(${n}deg)`;
     }
 }
 

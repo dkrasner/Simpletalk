@@ -38,7 +38,7 @@ describe('CSS Styler Util', () => {
         cssStyler(stylerObj, "background-color", "red");
         assert.equal(stylerObj["backgroundColor"], "red");
     });
-    it('Unit properties (top, left) conversion', () => {
+    it('Unit px properties (top, left) conversion', () => {
         cssStyler(stylerObj, "top", 2);
         assert.equal(stylerObj["top"], "2px");
         cssStyler(stylerObj, "top", "2");
@@ -47,6 +47,14 @@ describe('CSS Styler Util', () => {
         assert.equal(stylerObj["top"], "2px");
         cssStyler(stylerObj, "top", null);
         assert.equal(stylerObj["top"], "2px");
+    });
+    it('Unit rotate(deg) property conversion', () => {
+        cssStyler(stylerObj, "rotate", null);
+        assert.equal(stylerObj["transform"], undefined);
+        cssStyler(stylerObj, "rotate", 20);
+        assert.equal(stylerObj["transform"], "rotate(20deg)");
+        cssStyler(stylerObj, "rotate", -20);
+        assert.equal(stylerObj["transform"], "rotate(-20deg)");
     });
     it('Null or undefined value styles do not update the style object', () => {
         cssStyler(stylerObj, "background-color", null);
