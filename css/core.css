@@ -24,7 +24,7 @@
     --drawing-default-width: 500px;
     --drawing-default-height: 300px;
     --field-default-width: 40vw;
-    --field-default-height: 20vh;
+    --field-default-height: 30vh;
 }
 
 /* Keyframe Animations */
@@ -39,8 +39,7 @@
 }
 
 .active {
-    background-color: black;
-    color: white;
+    outline: solid var(--palette-orange) 1px;
 }
 
 /* =World Styles
@@ -97,6 +96,10 @@ st-button:not(.editing):hover {
     cursor: pointer;
 }
 
+st-button:(.editing){
+    background-color: white;
+    color: black;
+}
 /* =Window Styles
  *----------------------------------------------------*/
 st-window {
@@ -145,6 +148,7 @@ st-svg {
  *----------------------------------------------------*/
 st-drawing {
     background-color: #1fe0; /* transparent */
+    position: absolute;
 }
 
 /* =Field Styles
@@ -152,6 +156,7 @@ st-drawing {
 st-field {
     width: var(--field-default-width);
     height: var(--field-default-height);
+    position: absolute;
 }
 
 

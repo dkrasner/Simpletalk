@@ -15,11 +15,7 @@ import Stack from '../parts/Stack.js';
 // the current stack, or else they have the class
 // window-stack (suggesting there's window part
 // who wishes to display it)
-const templateString = `
-                <style>
-                </style>
-                <slot></slot>
-`;
+const templateString = `<slot></slot>`;
 
 class StackView extends PartView {
     constructor(){

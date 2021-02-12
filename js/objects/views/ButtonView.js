@@ -7,10 +7,6 @@ import PartView from './PartView.js';
 
 const templateString = `
                 <style>
-                 :host(.editing){
-                     background-color: white;
-                     color: black;
-                 }
                  .st-button-label {
                      user-select: none;
                      pointer-events: none;
