@@ -47,6 +47,7 @@ class Drawing extends Part {
         this.lineTo = this.lineTo.bind(this);
         this.beginDraw = this.beginDraw.bind(this);
         this.endDraw = this.endDraw.bind(this);
+        this.clear = this.clear.bind(this);
         this.coordsFromString = this.coordsFromString.bind(this);
     }
 
@@ -69,6 +70,9 @@ class Drawing extends Part {
         });
         this.setPrivateCommandHandler('stroke', (senders, ...args) => {
             this.stroke(...args);
+        });
+        this.setPrivateCommandHandler('clear', (senders, ...args) => {
+            this.clear(...args);
         });
     }
 
@@ -153,6 +157,30 @@ class Drawing extends Part {
             this.activeContext = null;
             this.isDrawing = false;
         }
+    }
+
+    clear(){
+        if(this.isDrawing){
+            return;
+        }
+        this.activeCanvas = document.createElement('canvas');
+        this.activeCanvas.width = this.partProperties.getPropertyNamed(
+            this,
+            'width'
+        );
+        this.activeCanvas.height = this.partProperties.getPropertyNamed(
+            this,
+            'height'
+        );
+        this.activeContext = this.activeCanvas.getContext('2d');
+        this.partProperties.setPropertyNamed(
+            this,
+            'image',
+            this.activeCanvas.toDataURL()
+        );
+        this.activeCanvas = null;
+        this.activeContext = null;
+        
     }
 
     /* Utility Methods for Scriptable Drawing */
