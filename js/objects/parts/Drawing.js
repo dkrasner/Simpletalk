@@ -47,6 +47,7 @@ class Drawing extends Part {
         this.lineTo = this.lineTo.bind(this);
         this.beginDraw = this.beginDraw.bind(this);
         this.endDraw = this.endDraw.bind(this);
+        this.clear = this.clear.bind(this);
         this.coordsFromString = this.coordsFromString.bind(this);
     }
 
@@ -55,11 +56,24 @@ class Drawing extends Part {
     }
 
     setupDrawingCommands(){
-        this._commandHandlers['lineTo'] = this.lineTo;
-        this._commandHandlers['moveTo'] = this.moveTo;
-        this._commandHandlers['beginDraw'] = this.beginDraw;
-        this._commandHandlers['endDraw'] = this.endDraw;
-        this._commandHandlers['stroke'] = this.stroke;
+        this.setPrivateCommandHandler('lineTo', (senders, ...args) => {
+            this.lineTo(...args);
+        });
+        this.setPrivateCommandHandler('moveTo', (senders, ...args) => {
+            this.moveTo(...args);
+        });
+        this.setPrivateCommandHandler('beginDraw', (senders, ...args) => {
+            this.beginDraw(...args);
+        });
+        this.setPrivateCommandHandler('finishDraw', (senders, ...args) => {
+            this.endDraw(...args);
+        });
+        this.setPrivateCommandHandler('stroke', (senders, ...args) => {
+            this.stroke(...args);
+        });
+        this.setPrivateCommandHandler('clear', (senders, ...args) => {
+            this.clear(...args);
+        });
     }
 
     /* Scriptable Drawing Commands */
@@ -71,22 +85,22 @@ class Drawing extends Part {
             this.activeContext.stroke();
         }
     }
-    moveTo(coordPair){
+    moveTo(x, y){
         if(this.isDrawing){
-            let coords = this.coordsFromString(coordPair);
+            //let coords = this.coordsFromString(coordPair);
             this.activeContext.moveTo(
-                coords.x,
-                coords.y
+                x,
+                y
             );
         }
     }
 
-    lineTo(coordPair){
+    lineTo(x, y){
         if(this.isDrawing){
-            let coords = this.coordsFromString(coordPair);
+            //let coords = this.coordsFromString(coordPair);
             this.activeContext.lineTo(
-                coords.x,
-                coords.y
+                x,
+                y
             );
         }
     }
@@ -143,6 +157,30 @@ class Drawing extends Part {
             this.activeContext = null;
             this.isDrawing = false;
         }
+    }
+
+    clear(){
+        if(this.isDrawing){
+            return;
+        }
+        this.activeCanvas = document.createElement('canvas');
+        this.activeCanvas.width = this.partProperties.getPropertyNamed(
+            this,
+            'width'
+        );
+        this.activeCanvas.height = this.partProperties.getPropertyNamed(
+            this,
+            'height'
+        );
+        this.activeContext = this.activeCanvas.getContext('2d');
+        this.partProperties.setPropertyNamed(
+            this,
+            'image',
+            this.activeCanvas.toDataURL()
+        );
+        this.activeCanvas = null;
+        this.activeContext = null;
+        
     }
 
     /* Utility Methods for Scriptable Drawing */

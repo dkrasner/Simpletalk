@@ -60,6 +60,9 @@ const createInterpreterSemantics = (partContext, systemContext) => {
                         let message = statementLine.interpret();
                     });
                 });
+
+                // Restore any previous execution context
+                partContext._executionContext.restore();
             };
             
             partContext._commandHandlers[messageName] = handlerFunction;
