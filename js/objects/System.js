@@ -33,6 +33,7 @@ import ButtonEditorView from './views/editors/ButtonEditorView.js';
 
 import ohm from 'ohm-js';
 import interpreterSemantics from '../ohm/interpreter-semantics.js';
+import {ExecutionStack} from './ExecutionContext.js';
 
 const video = document.createElement('video');
 const canvas = document.createElement('canvas');
@@ -910,14 +911,10 @@ System._commandHandlers['ask'] = function(senders, question){
 
 System._commandHandlers['putInto'] = function(senders, value, variableName, global){
     if(global){
-        System.getWorldStackModel()._executionContext.setLocal(variableName, value);
+        System.executionStack.setGlobal(variableName, value);
         return;
     }
-    let originalSender = this.partsById[senders[0].id];
-    if(!originalSender._executionContext){
-        throw new Error(`No ExecutionContext for ${originalSender.type}[${originalSender.id}]`);
-    }
-    originalSender._executionContext.setLocal(variableName, value);
+    System.executionStack.current.setLocal(variableName, value);
 };
 
 System._commandHandlers['answer'] = function(senders, value){
@@ -1686,6 +1683,10 @@ if (window.grammar){
 }
 
 System.grammar = languageGrammar;
+
+// Set the exection stack on the
+// System
+System.executionStack = new ExecutionStack();
 
 document.addEventListener('DOMContentLoaded', () => {
     // Add the System object to window so
