@@ -33,7 +33,7 @@ import ButtonEditorView from './views/editors/ButtonEditorView.js';
 
 import ohm from 'ohm-js';
 import interpreterSemantics from '../ohm/interpreter-semantics.js';
-import {ExecutionStack} from './ExecutionContext.js';
+import {ExecutionStack} from './ExecutionStack.js';
 
 const video = document.createElement('video');
 const canvas = document.createElement('canvas');

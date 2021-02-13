@@ -39,7 +39,7 @@ class ExecutionStack {
         return this._globals[varName];
     }
 
-    get context(){
+    get current(){
         if(!this._stack.length){
             return null;
         }
@@ -70,11 +70,11 @@ class ActivationContext {
     }
 
     getLocal(varName){
-        return this.current[varName];
+        return this._locals[varName];
     }
 
     setLocal(varName, value){
-        this.current[varName] = value;
+        this._locals[varName] = value;
     }
 }
 

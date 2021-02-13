@@ -1,4 +1,4 @@
-import ExecutionContext from '../objects/ExecutionContext.js';
+import {ActivationContext} from '../objects/ExecutionStack.js';
 
 // Helpers
 function findNearestParentOfKind(aPart, aPartType){
@@ -22,21 +22,7 @@ const createInterpreterSemantics = (partContext, systemContext) => {
         MessageHandler: function(handlerOpen, optionalStatementList, handlerClose){
             let {messageName, parameters} = handlerOpen.interpret();
             let handlerFunction = function(senders, ...args){
-                if(!this._executionContext){
-                    this._executionContext = new ExecutionContext();
-                }
-                this._executionContext.current = messageName;
-                this._executionContext.current._argVariableNames = parameters;
-
-                // Map each arg in order to any variable names given
-                // to it. We set these as local variables
-                args.forEach((arg, index) => {
-                    let varName = this._executionContext.current._argVariableNames[index];
-                    if(varName){
-                        this._executionContext.setLocal(varName, arg);
-                    }
-                });
-
+                
                 // In the grammar, the StatementList is
                 // an optional rule, meaning the result of the rule
                 // is an empty array (no statementlist) or a single
@@ -45,6 +31,21 @@ const createInterpreterSemantics = (partContext, systemContext) => {
                     return;
                 }
                 let statementList = optionalStatementList.children[0];
+
+                // Next, we initialize a new ActivationContext
+                // that will hold all variable information for
+                // the execution of this handler.
+                // We push it to the top of the current execution stack
+                // and set the argument variables to locals
+                let activation = new ActivationContext(messageName, this);
+                systemContext.executionStack.push(activation);
+                args.forEach((argValue, index) => {
+                    let argName = parameters[index];
+                    systemContext.executionStack.current.setLocal(
+                        argName,
+                        argValue
+                    );
+                });
 
                 // Because StatementList is both optional *and* made up
                 // of iterable StatementLine rules (ie, 'StatementLine+' in grammar),
@@ -62,7 +63,7 @@ const createInterpreterSemantics = (partContext, systemContext) => {
                 });
 
                 // Restore any previous execution context
-                partContext._executionContext.restore();
+                systemContext.executionStack.pop();
             };
             
             partContext._commandHandlers[messageName] = handlerFunction;
@@ -298,7 +299,7 @@ const createInterpreterSemantics = (partContext, systemContext) => {
             // We ignore these.
             if(message && typeof(message) !== 'string'){
                 let commandResult = partContext.sendMessage(message, partContext);
-                partContext._executionContext.setLocal('it', commandResult);
+                systemContext.executionStack.current.setLocal('it', commandResult);
                 return null;
             } else {
                 return message;
@@ -534,7 +535,7 @@ const createInterpreterSemantics = (partContext, systemContext) => {
                 }
 
                 for(let i = repeatInfo.start; i <= repeatInfo.finish; i++){
-                    partContext._executionContext.setLocal(repeatInfo.varName, i);
+                    systemContext.executionStack.current.setLocal(repeatInfo.varName, i);
                     let shouldBreak = false;
                     let shouldPass = false;
                     for(let j = 0; j < statementLines.length; j++){
@@ -867,7 +868,7 @@ const createInterpreterSemantics = (partContext, systemContext) => {
             // If the variable is not a key on the object,
             // we throw an error: this means the variable has not yet
             // been defined but is being looked up.
-            let value = partContext._executionContext.get(this.sourceString);
+            let value = systemContext.executionStack.current.get(this.sourceString);
             if(value == undefined){
                 throw new Error(`Variable ${this.sourceString} has not been defined`);
             }
