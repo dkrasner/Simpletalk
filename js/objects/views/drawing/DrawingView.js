@@ -79,6 +79,13 @@ class DrawingView extends PartView {
 
     setupPropHandlers(){
         this.onPropChange('mode', this.modeChanged);
+        this.onPropChange('image', () => {
+            let imageBits = this.model.partProperties.getPropertyNamed(
+                this.model,
+                'image'
+            );
+            this.restoreImageFromModel(imageBits);
+        });
     }
 
     modeChanged(value){

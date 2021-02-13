@@ -104,7 +104,9 @@ class Button extends Part {
             'draggable',
             true
         );
+
         this.setupStyleProperties();
+
     }
 
     get type(){

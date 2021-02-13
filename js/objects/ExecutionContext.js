@@ -10,11 +10,13 @@ class ExecutionContext {
     constructor(){
         this._lookup = {};
         this._current = null;
+        this._prev = null;
 
         // Bind methods
         this.get = this.get.bind(this);
         this.getLocal = this.getLocal.bind(this);
         this.setLocal = this.setLocal.bind(this);
+        this.restore = this.restore.bind(this);
     }
 
     // I retrieve the value corresponding to the variable name
@@ -43,11 +45,17 @@ class ExecutionContext {
                 _argVariableNames: []
             };
         }
+        this._prev = this._current;
         this._current = this._lookup[messageName];
     }
 
     get current(){
         return this._current;
+    }
+
+    restore(){
+        // Restore the previous context
+        this._current = this._prev;
     }
 };
 
