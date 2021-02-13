@@ -224,13 +224,14 @@ class Halo extends HTMLElement {
     }
 
     onMouseMove(event){
-        let currentTop = this.targetElement.offsetTop;
-        let currentLeft = this.targetElement.offsetLeft;
+        let currentTop = parseInt(this.targetElement.style.top);
+        let currentLeft = parseInt(this.targetElement.style.left);
         let newTop = event.movementY + currentTop;
         let newLeft = event.movementX + currentLeft;
 
-        this.targetElement.style.top = `${newTop}px`;
-        this.targetElement.style.left = `${newLeft}px`;
+        let model = this.targetElement.model;
+        model.partProperties.setPropertyNamed(model, "top", newTop);
+        model.partProperties.setPropertyNamed(model, "left", newLeft);
     }
 
     onMouseUp(event){
@@ -250,28 +251,6 @@ class Halo extends HTMLElement {
     }
 
     onResizeMouseMove(event){
-        // let rect = this.targetElement.getBoundingClientRect();
-        // let newWidth, newHeight;
-        // if(this.targetElement.preserveAspectOnResize){
-        //     let ratio = rect.width / rect.height;
-        //     let hyp = Math.sqrt((event.movementX**2) + (event.movementY**2));
-        //     if(event.movementX < 0 || event.movementY < 0){
-        //         hyp = hyp * -1;
-        //     }
-        //     newHeight = rect.height + hyp;
-        //     newWidth = rect.width + hyp;
-        // } else {
-        //     newWidth = event.movementX + rect.width;
-        //     newHeight = event.movementY + rect.height;
-        // }
-        // this.targetElement.style.width = `${newWidth}px`;
-        // this.targetElement.style.height = `${newHeight}px`;
-        // if(this.targetElement.onHaloResize){
-        //     this.targetElement.onHaloResize(
-        //         event.movementX,
-        //         event.movementY
-        //     );
-        // }
         this.targetElement.onHaloResize(
             event.movementX,
             event.movementY

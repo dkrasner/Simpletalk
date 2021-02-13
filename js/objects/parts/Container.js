@@ -22,6 +22,33 @@ class Container extends Part {
 
         // accept all subparts
         this.acceptedSubpartTypes = ["*"];
+
+        // Styling
+        this.partProperties.newStyleProp(
+            'background-color',
+            null,
+        );
+        this.partProperties.newStyleProp(
+            'width',
+            "300px",
+        );
+        this.partProperties.newStyleProp(
+            'height',
+            "200px",
+        );
+        this.partProperties.newStyleProp(
+            'top',
+            "0",
+        );
+        this.partProperties.newStyleProp(
+            'left',
+            "0",
+        );
+        this.partProperties.newStuyleProp(
+            'rotate',
+            null
+        );
+        this.setupStyleProperties();
     }
 
     get type(){

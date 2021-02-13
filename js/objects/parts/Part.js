@@ -39,6 +39,7 @@ class Part {
         // Bind methods
         this.copy = this.copy.bind(this);
         this.setupProperties = this.setupProperties.bind(this);
+        this.setupStyleProperties = this.setupStyleProperties.bind(this);
 
         this.addPart = this.addPart.bind(this);
         this.removePart = this.removePart.bind(this);
@@ -167,14 +168,6 @@ class Part {
         // to ALL Parts in the system.
         let basicProps = [
             new BasicProperty(
-                'bottom',
-                0
-            ),
-            new BasicProperty(
-                'bottomRight',
-                0
-            ),
-            new BasicProperty(
                 'contents',
                 null,
             ),
@@ -183,22 +176,8 @@ class Part {
                 true
             ),
             new BasicProperty(
-                'height',
-                0
-            ),
-            new BasicProperty(
                 'id',
                 idMaker.new()
-            ),
-            new BasicProperty(
-                'left',
-                0
-            ),
-            new BasicProperty(
-                'location',
-                0,
-                false,
-                ['loc']
             ),
             new BasicProperty(
                 'name',
@@ -211,28 +190,8 @@ class Part {
                 ['rect']
             ),
             new BasicProperty(
-                'right',
-                0
-            ),
-            new BasicProperty(
                 'script',
                 null // For now
-            ),
-            new BasicProperty(
-                'top',
-                0
-            ),
-            new BasicProperty(
-                'topLeft',
-                0
-            ),
-            new BasicProperty(
-                'width',
-                0
-            ),
-            new BasicProperty(
-                'backgroundColor',
-                'white'
             ),
             new BasicProperty(
                 'editorOpen',
@@ -244,6 +203,13 @@ class Part {
                 new Set(),
                 false,
                 []
+            ),
+            // Styling
+            // css (really JS style) key-values
+            new BasicProperty(
+                'cssStyle',
+                {},
+                false,
             )
         ];
         basicProps.forEach(prop => {
@@ -284,6 +250,19 @@ class Part {
             },
             function(){return} // no getter
         );
+    }
+
+    // To be called in each sub-class that has StyleProperties
+    // called after the style props are configured
+    setupStyleProperties(){
+        this.partProperties._properties.forEach((prop) => {
+            if(prop.constructor.name === "StyleProperty"){
+                // setting the value on itself ensures that the cssStyle
+                // BasicProperty is updated with the appropriate styler
+                // conversion css key-val
+                prop.setValue(this, prop._value);
+            }
+        });
     }
 
     /** Subpart Access **/

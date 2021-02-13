@@ -10,27 +10,7 @@
  */
 import PartView from './PartView.js';
 
-const templateString = `
-                <style>
-                 #available-stacks {
-                     display: block;
-                     width: 100%;
-                     height: 100%;
-                     position: relative;
-                 }
-
-                 #available-stacks > st-stack {
-                     display: none;
-                 }
-
-                 #available-stacks > st-stack.current-stack {
-                     display: inherit;
-                 }
-                </style>
-                <div id="available-stacks">
-                    <slot></slot>
-                </div>
-`;
+const templateString = `<slot></slot>`;
 
 class WorldView extends PartView {
     constructor(){

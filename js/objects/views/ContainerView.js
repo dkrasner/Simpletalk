@@ -83,11 +83,13 @@ class ContainerView extends PartView {
     openHalo(){
         // Compute the appropriate width and height from
         // current rect
+        /*
         let rect = this.getBoundingClientRect();
         this.style.width = `${Math.floor(rect.width)}px`;
         this.style.height = `${Math.floor(rect.height)}px`;
         this.style.top = `${Math.floor(rect.top)}px`;
         this.style.left = `${Math.floor(rect.left)}px`;
+        */
         let foundHalo = this._shadowRoot.querySelector('st-halo');
         if(foundHalo){
             this._shadowRoot.removeChild(foundHalo);

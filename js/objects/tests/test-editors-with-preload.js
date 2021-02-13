@@ -98,7 +98,7 @@ describe('Button Editor tests', () => {
             let editorView = document.querySelector('st-button-editor');
             let buttonBG = editorView._shadowRoot.querySelector('button.background-color');
             assert.isNotNull(buttonBG);
-            let buttonFont = editorView._shadowRoot.querySelector('button.font-color');
+            let buttonFont = editorView._shadowRoot.querySelector('button.text-color');
             assert.isNotNull(buttonFont);
         });
         it('All default button events are present', () => {

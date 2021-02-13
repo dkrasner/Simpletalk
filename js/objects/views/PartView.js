@@ -32,6 +32,9 @@ class PartView extends HTMLElement {
         this.sendMessage = this.sendMessage.bind(this);
         this.setupBasePropHandlers = this.setupBasePropHandlers.bind(this);
 
+        // Bind initial property method
+        this.styleCSS = this.styleCSS.bind(this);
+
         // Bind property change reaction methods
         this.primHandlePropChange = this.primHandlePropChange.bind(this);
         this.onPropChange = this.onPropChange.bind(this);
@@ -83,6 +86,8 @@ class PartView extends HTMLElement {
         // the latter can technically be invoked before the model is set
         let events = this.model.partProperties.getPropertyNamed(this.model, "events");
         events.forEach((eventRespond) => this.eventRespond(eventRespond));
+        // load all the initial styling
+        this.styleCSS();
         this.afterModelSet();
     }
 
@@ -101,6 +106,7 @@ class PartView extends HTMLElement {
         // Do not override this method
         // TODO: Implement the universals
         this.onPropChange('script', this.scriptChanged);
+        this.onPropChange('cssStyle', this.styleCSS);
         this.onPropChange('eventRespond', this.eventRespond);
         this.onPropChange('eventIgnore', this.eventIgnore);
         this.onPropChange('editorOpen', (value) => {
@@ -109,6 +115,14 @@ class PartView extends HTMLElement {
             } else if(value === false){
                 this.closeEditor();
             }
+        });
+    }
+
+    styleCSS(){
+        let cssStyle = this.model.partProperties.getPropertyNamed(this, "cssStyle");
+        Object.keys(cssStyle).forEach((key) => {
+            let value = cssStyle[key];
+            this.style[key] = value;
         });
     }
 
@@ -292,8 +306,8 @@ class PartView extends HTMLElement {
             newWidth = event.movementX + rect.width;
             newHeight = event.movementY + rect.height;
         }
-        this.style.width = `${newWidth}px`;
-        this.style.height = `${newHeight}px`;
+        this.model.partProperties.setPropertyNamed(this.model, "width", `${newWidth}px`);
+        this.model.partProperties.setPropertyNamed(this.model, "height", `${newHeight}px`);
     }
 
     get wantsHaloMove(){
@@ -309,7 +323,7 @@ class PartView extends HTMLElement {
             parentModel,
             'layout'
         );
-        if(!parentLayout || parentLayout == ""){
+        if(parentLayout === 'absolute' | !parentLayout || parentLayout == ""){
             return true;
         }
 

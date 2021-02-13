@@ -1,3 +1,5 @@
+import cssStyler from '../utils//styler.js';
+
 /**
  * PartProperties
  * ------------------------------------
@@ -111,6 +113,30 @@ class DynamicProperty extends BasicProperty {
     }
 };
 
+
+/** I am a special property which handles interfacing with the
+  * the cssStyle basic property. Whenever I am updated I make
+  * sure to update the cssStyle property via the styler utility
+  * function. I can be used to create different and indepent
+  * styling options.
+  **/
+class StyleProperty extends BasicProperty {
+    constructor(name, defaultValue,  styler=cssStyler, readOnly=false, aliases=[]){
+        super(name, defaultValue, readOnly, aliases);
+        this.styler = styler;
+    }
+
+    // In this override, we update the cssStyle property
+    setValue(owner, val, notify=true){
+        if(!this.readOnly){
+            let styleProperty = owner.partProperties.findPropertyNamed("cssStyle");
+            let style = styleProperty.getValue(owner);
+            let newStyle = this.styler(style, this.name, val);
+            styleProperty.setValue(owner, newStyle, notify);
+        }
+    }
+};
+
 class PartProperties {
     constructor(){
         this._properties = [];
@@ -123,6 +149,7 @@ class PartProperties {
         this.setPropertyNamed = this.setPropertyNamed.bind(this);
         this.getPropertyNamed = this.getPropertyNamed.bind(this);
         this.newBasicProp = this.newBasicProp.bind(this);
+        this.newStyleProp = this.newStyleProp.bind(this);
         this.newDynamicProp = this.newDynamicProp.bind(this);
         this._indexOfProperty = this._indexOfProperty.bind(this);
     }
@@ -206,6 +233,13 @@ class PartProperties {
     // property.
     newBasicProp(...args){
         let newProp = new BasicProperty(...args);
+        this.addProperty(newProp);
+    }
+
+    // Convenience method for creating a new style 
+    // property.
+    newStyleProp(...args){
+        let newProp = new StyleProperty(...args);
         this.addProperty(newProp);
     }
 

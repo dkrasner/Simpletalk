@@ -7,10 +7,6 @@ import PartView from './PartView.js';
 
 const templateString = `
                 <style>
-                 :host(.editing){
-                     background-color: white;
-                     color: black;
-                 }
                  .st-button-label {
                      user-select: none;
                      pointer-events: none;
@@ -50,7 +46,7 @@ class ButtonView extends PartView {
         this.onPropChange('background-color', (value) => {
             this.style.backgroundColor = value;
         });
-        this.onPropChange('font-color', (value) =>{
+        this.onPropChange('text-color', (value) =>{
             this.style.color = value;
         });
         this.onPropChange("draggable", (value) => {

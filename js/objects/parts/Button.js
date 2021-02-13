@@ -43,54 +43,70 @@ class Button extends Part {
             [] // no aliases
         );
 
-        this.partProperties.newBasicProp(
-            'style',
-            'normal'
+        // Styling
+        this.partProperties.newStyleProp(
+            'text-align',
+            'center',
         );
-        this.partProperties.newBasicProp(
-            'textAlign',
-            'center'
+        this.partProperties.newStyleProp(
+            'text-font',
+            'default',
         );
-        this.partProperties.newBasicProp(
-            'textFont',
-            'default'
+        this.partProperties.newStyleProp(
+            'background-color',
+            null,
         );
-        this.partProperties.newBasicProp(
-            'textStyle',
-            'plain'
+        this.partProperties.newStyleProp(
+            'text-color',
+            null,
         );
-        this.partProperties.newBasicProp(
+        this.partProperties.newStyleProp(
+            'text-style',
+            'plain',
+        );
+        this.partProperties.newStyleProp(
+            'name-visible',
+            true,
+        );
+        this.partProperties.newStyleProp(
             'visible',
-            true
+            true,
         );
+        // setting width and height to null
+        // effectively forces to the default size
+        // of the button to fit the button name
+        this.partProperties.newStyleProp(
+            'width',
+            null,
+        );
+        this.partProperties.newStyleProp(
+            'height',
+            null,
+        );
+        this.partProperties.newStyleProp(
+            'top',
+            "0",
+        );
+        this.partProperties.newStyleProp(
+            'left',
+            "0",
+        );
+        this.partProperties.newStyleProp(
+            'rotate',
+            null,
+        );
+        // TODO tbd props
         this.partProperties.newBasicProp(
             'autoHilite',
-            true
-        );
-        this.partProperties.newBasicProp(
-            'hilite',
-            false
-        );
-        this.partProperties.newBasicProp(
-            'iconAlign',
-            'center'
-        );
-        this.partProperties.newBasicProp(
-            'showName',
             true
         );
         this.partProperties.newBasicProp(
             'draggable',
             true
         );
-        this.partProperties.newBasicProp(
-            'background-color',
-            null
-        );
-        this.partProperties.newBasicProp(
-            'font-color',
-            null
-        );
+
+        this.setupStyleProperties();
+
     }
 
     get type(){

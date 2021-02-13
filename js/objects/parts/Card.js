@@ -61,6 +61,13 @@ class Card extends Part {
             new Set(['click', 'dragenter', 'dragover', 'drop'])
         );
 
+        // Styling
+        this.partProperties.newStyleProp(
+            'background-color',
+            null,
+        );
+
+        this.setupStyleProperties();
 
         // Cards have the layout set
         // of properties, so we add

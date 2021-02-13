@@ -19,6 +19,12 @@
     --palette-orange: #ff7c5d;
     --palette-red: #c70151;
     --palette-cornsik: #FFF8DC;
+    --container-default-width: 20vw;
+    --container-default-height: 15vh;
+    --drawing-default-width: 500px;
+    --drawing-default-height: 300px;
+    --field-default-width: 40vw;
+    --field-default-height: 30vh;
 }
 
 /* Keyframe Animations */
@@ -29,67 +35,24 @@
 
 /* Prerequisites */
 * {
-    box-sizing: border-box;
-    flex-grow: 1;
+    visibility: initial;
 }
 
 .active {
-    background-color: black;
-    color: white;
+    outline: solid var(--palette-orange) 1px;
 }
 
 /* =World Styles
  *----------------------------------------------------*/
 st-world {
-    display: block;
-    position: relative;
-    width: 100%;
-    height: 100%;
-    background-color: pink;
+    visibility: hidden;
 }
 
 
 /* =Stack Styles
  *----------------------------------------------------*/
 st-stack {
-    width: 100%;
-    height: 100%;
-    display: flex;
-}
-
-st-world > st-stack {
-     display: none;
-}
-
-.current-stack {
-    display: block;
-}
-
-.current-stack > st-window {
-    z-index: 1;
-}
-
-.current-stack > st-button {
-    z-index: 1;
-}
-
-.current-stack > st-container {
-    z-index: 1;
-}
-/* =Background Styles
- *----------------------------------------------------*/
-st-background {
-    display: block;
-    position: absolute;
-    width: 100%;
-    height: 100%;
-}
-
-/* Give a pinkish background color to the background
- * of the current Stack in the world (but not Windows, etc)
- */
-st-world > .current-stack > st-background {
-    background-color: var(--palette-blue);
+    visibility: hidden;
 }
 
 
@@ -104,6 +67,7 @@ st-card {
 
 .current-card {
     display: block;
+    visibility: initial;
     background-color: var(--palette-blue);
 }
 
@@ -132,25 +96,10 @@ st-button:not(.editing):hover {
     cursor: pointer;
 }
 
-
-/* =Layout Styles
- *----------------------------------------------------*/
-st-layout {
-    display: flex;
-    position: absolute;
-    border: 1px solid transparent;
-    box-sizing: border-box;
+st-button:(.editing){
+    background-color: white;
+    color: black;
 }
-
-st-layout.list-column {
-    flex-direction: column;
-}
-
-st-layout.list-row {
-    flex-direction: row;
-}
-
-
 /* =Window Styles
  *----------------------------------------------------*/
 st-window {
@@ -166,37 +115,26 @@ st-window {
 st-window:active {
     z-index: 100;
 }
-/* width and height of stacks in windows should
- * adjust based on contents, but at minimum be 100%
- * of parent
- */
-st-window > st-stack,
-st-window > st-stack > .current-card {
-    min-width: 100%;
-    min-height: 100%;
-    height: auto;
-    width: auto
-}
 
-/* This is the fix for Toolbox window's
- * layout, but it's hacky and suggests that
- * perhaps layouts should be more fundamental
- **/
-st-window > st-stack > .current-card > st-layout {
-    position: relative;
-}
-
+ *---------------------------------------
 /* =Container Styles
  *---------------------------------------------------------*/
 st-container {
     position: absolute;
     border: 1px solid rgb(150, 150, 150);
+    width: var(--container-default-width);
+    height: var(--container-default-height);
 }
 
 st-container:empty {
-    min-height: 100px;
-    min-width: 100px;
+    display: block;
+    position: absolute;
+    border: 1px solid rgb(150, 150, 150);
+    width: var(--container-default-width);
+    height: var(--container-default-height);
 }
+-----------------*/
+
 
 /* =Svg Styles
  *---------------------------------------------------------*/
@@ -210,17 +148,17 @@ st-svg {
  *----------------------------------------------------*/
 st-drawing {
     background-color: #1fe0; /* transparent */
+    position: absolute;
 }
 
 /* =Field Styles
  *----------------------------------------------------*/
 st-field {
-    min-height: 300px;
+    width: var(--field-default-width);
+    height: var(--field-default-height);
+    position: absolute;
 }
 
-st-window st-field{
-    height: 100%;
-}
 
 /* =Editor Styles
  *----------------------------------------------------*/
@@ -239,6 +177,7 @@ st-button-editor > color-wheel{
 st-button-editor:active {
     z-index: 100;
 }
+
 /* =Layout Class Styles
  * --------------------------------------------------------*/
 .list-layout {

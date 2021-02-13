@@ -28,11 +28,8 @@ const templateString = `
     display: flex;
     align-items: center;
     flex-direction: column;
-    max-height: 100%important;
     height: 100%;
     width: 100%;
-    overflow-y: auto;
-    overflow-x: hidden;
 }
 
 .field color-wheel {
@@ -42,7 +39,6 @@ const templateString = `
 .field-textarea-wrapper {
     width: 100%;
     height: 100%;
-    min-height: 300px;
     background-color: var(--palette-cornsik);
     overflow: auto;
 }
@@ -60,8 +56,6 @@ const templateString = `
     justify-content: center;
     width: 100%;
     background-color: var(--palette-red);
-    padding-top: 5px;
-    padding-bottom: 5px;
     opacity: 1;
     transition: opacity .5s, transform 1s;
 }
@@ -73,17 +67,6 @@ const templateString = `
 
 .field-toolbar > *:active {
     outline: 2px solid #004b67;
-}
-
-:host {
-    display: block;
-    position: absolute;
-    outline: none;
-    resize: both;
-}
-:host(:active),
-:host(:focus){
-    outline: none;
 }
 </style>
 <div class="field">

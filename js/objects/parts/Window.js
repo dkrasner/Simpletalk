@@ -46,6 +46,20 @@ class Window extends Part {
             'isResizable',
             true
         );
+        // Style
+        this.partProperties.newStyleProp(
+            'top',
+            "0",
+        );
+        this.partProperties.newStyleProp(
+            'left',
+            "0",
+        );
+        this.partProperties.newStyleProp(
+            'rotate',
+            null
+        );
+        this.setupStyleProperties();
 
         // Bind methods
         this.setTarget = this.setTarget.bind(this);
