@@ -45,12 +45,21 @@ class ExecutionStack {
         }
         return this._stack[this._stack.length - 1];
     }
+
+    get previous(){
+        if(!this._stack.length >= 2){
+            return null;
+        }
+        return this._stack[this._stack.length - 2];
+    }
 };
 
 class ActivationContext {
-    constructor(messageName, part){
+    constructor(messageName, part, incomingMessage, handlerFunction){
         this.part = part;
         this.messageName = messageName;
+        this.message = incomingMessage;
+        this.handlerFunction = handlerFunction;
         this._locals = {};
 
         // Bound methods

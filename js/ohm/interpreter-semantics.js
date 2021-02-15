@@ -37,8 +37,6 @@ const createInterpreterSemantics = (partContext, systemContext) => {
                 // the execution of this handler.
                 // We push it to the top of the current execution stack
                 // and set the argument variables to locals
-                let activation = new ActivationContext(messageName, this);
-                systemContext.executionStack.push(activation);
                 args.forEach((argValue, index) => {
                     let argName = parameters[index];
                     systemContext.executionStack.current.setLocal(
@@ -61,9 +59,6 @@ const createInterpreterSemantics = (partContext, systemContext) => {
                         let message = statementLine.interpret();
                     });
                 });
-
-                // Restore any previous execution context
-                systemContext.executionStack.pop();
             };
             
             partContext._commandHandlers[messageName] = handlerFunction;

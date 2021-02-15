@@ -33,7 +33,7 @@ import ButtonEditorView from './views/editors/ButtonEditorView.js';
 
 import ohm from 'ohm-js';
 import interpreterSemantics from '../ohm/interpreter-semantics.js';
-import {ExecutionStack} from './ExecutionStack.js';
+import {ExecutionStack, ActivationContext} from './ExecutionStack.js';
 
 const video = document.createElement('video');
 const canvas = document.createElement('canvas');
@@ -362,7 +362,16 @@ const System = {
         let handler = this._commandHandlers[aMessage.commandName];
         if(handler){
             let boundHandler = handler.bind(this);
-            return boundHandler(aMessage.senders, ...aMessage.args);
+            let activation = new ActivationContext(
+                aMessage.commandName,
+                this,
+                aMessage,
+                boundHandler
+            );
+            this.executionStack.push(activation);
+            var result = boundHandler(aMessage.senders, ...aMessage.args);
+            this.executionStack.pop();
+            return result;
         } else {
             return this.doesNotUnderstand(aMessage);
         }
@@ -914,7 +923,15 @@ System._commandHandlers['putInto'] = function(senders, value, variableName, glob
         System.executionStack.setGlobal(variableName, value);
         return;
     }
-    System.executionStack.current.setLocal(variableName, value);
+    // Because we push all handlers onto the execution stack,
+    // the putInto handler is currently at the top of the stack.
+    // In order to modify the caller's variables, we need to
+    // find the context that is one previous on the stack
+    if(System.executionStack.previous){
+        System.executionStack.previous.setLocal(variableName, value);
+    } else {
+        throw new Error(`ExecutionStack Error: #putInto on top of empty stack!`);
+    }
 };
 
 System._commandHandlers['answer'] = function(senders, value){
