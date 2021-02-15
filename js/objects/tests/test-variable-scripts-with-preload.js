@@ -58,15 +58,6 @@ describe('Basic Set Local Variable', () => {
         expect(sendFunction).to.not.throw(Error);
     });
 
-    it('Can find the execution context with correct variables', () => {
-        let buttonView = document.querySelector(`[part-id="${buttonModel.id}"]`);
-        assert.exists(buttonView);
-        buttonView.click();
-        assert.exists(buttonModel._executionContext);
-        let variableValue = buttonModel._executionContext.getLocal('myVariable');
-        assert.equal(variableValue, "hello");
-    });
-
     it('Throws an error if attempting to read an undefined variable', () => {
         let testScript = [
             "on click",
