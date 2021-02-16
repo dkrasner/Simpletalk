@@ -200,7 +200,7 @@ class Part {
             new BasicProperty(
                 'events',
                 new Set(),
-                true, // read only
+                false,
                 []
             ),
             // Styling

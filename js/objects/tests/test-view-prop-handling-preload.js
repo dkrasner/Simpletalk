@@ -76,9 +76,11 @@ describe('Test event partProperty handling', () => {
     let testModel;
     testView = document.createElement('st-test');
     testModel = new TestPart();
-    let defaultEvents = new Set();
-    defaultEvents.add("click");
-    testModel.partProperties.setPropertyNamed(testModel, "events", defaultEvents);
+    testModel.partProperties.setPropertyNamed(
+        testModel,
+        "events",
+        new Set(["click", "mouseover"])
+    );
     testView.setModel(testModel);
     // event callback helpers
     let clickResult = 0;
@@ -90,12 +92,16 @@ describe('Test event partProperty handling', () => {
     it('Initial "events" property is a Set with one element: "click"', () => {
         let events = testModel.partProperties.getPropertyNamed(testModel, "events");
         assert.isTrue(events.has("click"));
-        assert.equal(1, events.size);
+        assert.equal(2, events.size);
         assert.isTrue(events instanceof Set);
     });
     it('The "onclick" attribute is set on the view DOM element', () => {
         assert.isNotNull(testView["onclick"]);
         assert.equal("function", typeof testView["onclick"]);
+    });
+    it('The "mouseover" attribute is set on the view DOM element', () => {
+        assert.isNotNull(testView["onmouseover"]);
+        assert.equal("function", typeof testView["onmouseover"]);
     });
     it('Dispatching the "click" event', () => {
         let event = new window.MouseEvent('click');
