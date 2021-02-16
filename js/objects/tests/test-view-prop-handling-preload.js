@@ -102,43 +102,11 @@ describe('Test event partProperty handling', () => {
         assert.doesNotThrow(() => testView.dispatchEvent(event));
         assert.equal(1, clickResult);
     });
-    it('Setting an "eventRespond" property adds to the "events" property', () => {
-        testModel.partProperties.setPropertyNamed(
-            testModel,
-            'eventRespond',
-            "mouseover"
-        );
-        let events = testModel.partProperties.getPropertyNamed(testModel, "events");
-        // assert.exists(events.has("mouseover"));
-        assert.equal(2, events.size);
-    });
-    it('Setting an "eventRespond" property sets the "on[event]" attribute on the view DOM element', () => {
-        assert.isNotNull(testView["onmouseover"]);
-        assert.equal("function", typeof testView["onmouseover"]);
-    });
     it('Dispatching the event', () => {
         let mouseoverHandler = function(){
             mouseOverResult += 1;
         };
         testModel._commandHandlers["mouseover"] = mouseoverHandler;
-        let event = new window.MouseEvent('mouseover');
-        assert.doesNotThrow(() => testView.dispatchEvent(event));
-        assert.equal(1, mouseOverResult);
-    });
-    it('Setting an "eventIgnore" property removes from the "events" property', () => {
-        testModel.partProperties.setPropertyNamed(
-            testModel,
-            'eventIgnore',
-            "mouseover"
-        );
-        let events = testModel.partProperties.getPropertyNamed(testModel, "events");
-        assert.isFalse(events.has("mouseover"));
-        assert.equal(1, events.size);
-    });
-    it('Setting an "eventIgnore" property removes "on[event] attribute from the view DOM element', () => {
-        assert.isNull(testView["onmouseover"]);
-    });
-    it('Dispatching a removed event does not throw an error and does not do anything', () => {
         let event = new window.MouseEvent('mouseover');
         assert.doesNotThrow(() => testView.dispatchEvent(event));
         assert.equal(1, mouseOverResult);
