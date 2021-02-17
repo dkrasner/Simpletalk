@@ -14,6 +14,19 @@ function findNearestParentOfKind(aPart, aPartType){
     return found;
 }
 
+class STVariableReferenceError extends Error {
+    constructor(...args){
+        super(...args);
+    }
+};
+Object.defineProperty(
+    STVariableReferenceError.prototype,
+    'name',
+    {
+        value: 'STVariableReferenceError'
+    }
+);
+
 const createInterpreterSemantics = (partContext, systemContext) => {
     return {
         Script: function(scriptParts, _){
@@ -865,7 +878,8 @@ const createInterpreterSemantics = (partContext, systemContext) => {
             // been defined but is being looked up.
             let value = systemContext.executionStack.current.get(this.sourceString);
             if(value == undefined){
-                throw new Error(`Variable ${this.sourceString} has not been defined`);
+                throw new STVariableReferenceError(
+                    `Variable ${this.sourceString} has not been defined`);
             }
             return value;
         },
