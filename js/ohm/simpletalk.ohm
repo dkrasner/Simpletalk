@@ -208,6 +208,7 @@
 		| "ask" anyLiteral --ask
 		| "respond to" anyLiteral InClause? --eventRespond
 		| "ignore" anyLiteral InClause? --eventIgnore
+                | "tell" ObjectSpecifier "to" Command --tellCommand
 		| messageName CommandArgumentList? --arbitraryCommand
 
 	CommentLines
