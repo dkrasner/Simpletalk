@@ -256,6 +256,9 @@ class ButtonEditorView extends HTMLElement {
         colorWheelWidget = new ColorWheelWidget(event.target.name);
         // add an attribute describing the command
         colorWheelWidget.setAttribute("selector-command", event.target.name);
+        if(event.target.name == 'text-color'){
+            colorWheelWidget.options = false;
+        }
         // add a custom callback for the close button
         let closeButton = colorWheelWidget.shadowRoot.querySelector('#close-button');
         closeButton.addEventListener('click', () => {colorWheelWidget.remove();});
@@ -265,8 +268,10 @@ class ButtonEditorView extends HTMLElement {
         // colorWheelWidget event listener
         let colorWheel = this.shadowRoot.querySelector('color-wheel');
         colorWheel.addEventListener('color-selected', this.onColorSelected);
-        colorWheel.addEventListener('visible-checked', this.onVisibleChecked);
-        colorWheel.addEventListener('transparent-checked', this.onTransparentChecked);
+        if(event.target.name !== 'text-color'){
+            colorWheel.addEventListener('visible-checked', this.onVisibleChecked);
+            colorWheel.addEventListener('transparent-checked', this.onTransparentChecked);
+        }
     }
 
     onColorSelected(event){

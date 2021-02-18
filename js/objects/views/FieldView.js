@@ -350,6 +350,11 @@ class FieldView extends PartView {
 
     openColorWheelWidget(event, command){
         let colorWheelWidget = new ColorWheelWidget(command);
+        // we don't need the transparent and visible toggles on the color wheel
+        // if font color is selected
+        if(command === "color"){
+            colorWheelWidget.options = false;
+        };
         // add an attribute describing the command
         colorWheelWidget.setAttribute("selector-command", command);
         // add a custom callback for the close button
