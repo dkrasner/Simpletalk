@@ -61,6 +61,7 @@ class Part {
         this.closeEditorCmdHandler = this.closeEditorCmdHandler.bind(this);
         this.isSubpartOfCurrentCard = this.isSubpartOfCurrentCard.bind(this);
         this.isSubpartOfCurrentStack = this.isSubpartOfCurrentStack.bind(this);
+        this.toJSON = this.toJSON.bind(this);
         this.getOwnerBranch = this.getOwnerBranch.bind(this);
 
 
@@ -551,6 +552,15 @@ class Part {
         // Next, set the id based on the
         // incoming value
         this.id = anObject.id;
+    }
+
+    toJSON(){
+        let result = {properties: {}};
+        this.partProperties._properties.forEach(prop => {
+            result.properties[prop.name] = prop.getValue(this);
+        });
+        result.subparts = this.subparts.map(subpart =>  { return subpart.id });
+        return result;
     }
 };
 
