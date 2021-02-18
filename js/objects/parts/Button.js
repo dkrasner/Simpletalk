@@ -95,6 +95,10 @@ class Button extends Part {
             'rotate',
             null,
         );
+        this.partProperties.newStyleProp(
+            'transparent',
+            false,
+        );
         // TODO tbd props
         this.partProperties.newBasicProp(
             'autoHilite',

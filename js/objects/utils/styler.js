@@ -58,12 +58,20 @@ const cssStyler = (styleObj, propertyName, propertyValue) => {
         }
         break;
 
-    case "visible":
+    case "transparent":
         // TODO should this really be using the 'display' css prop
-        if(propertyValue === false){
+        if(propertyValue === true){
             styleObj["visibility"] = "hidden";
-        } else if(propertyValue === true){
+        } else if(propertyValue === false){
             styleObj["visibility"] = "visible";
+        }
+        break;
+
+    case "visible":
+        if(propertyValue === false){
+            styleObj["display"] = "none";
+        } else if(propertyValue === true){
+            styleObj["display"] = "initial";
         }
         break;
 

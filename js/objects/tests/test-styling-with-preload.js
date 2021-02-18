@@ -28,11 +28,17 @@ describe('CSS Styler Util', () => {
         cssStyler(stylerObj, "name-visible", false);
         assert.equal(stylerObj["color"], "transparent");
     });
+    it('Transparency', () => {
+        cssStyler(stylerObj, "transparent", false);
+        assert.equal(stylerObj["visibility"], "visible");
+        cssStyler(stylerObj, "transparent", true);
+        assert.equal(stylerObj["visibility"], "hidden");
+    });
     it('Visibility', () => {
         cssStyler(stylerObj, "visible", true);
-        assert.equal(stylerObj["visibility"], "visible");
+        assert.equal(stylerObj["display"], "initial");
         cssStyler(stylerObj, "visible", false);
-        assert.equal(stylerObj["visibility"], "hidden");
+        assert.equal(stylerObj["display"], "none");
     });
     it('Background Color style conversion', () => {
         cssStyler(stylerObj, "background-color", "red");
@@ -108,7 +114,7 @@ describe('Styling Properties', () => {
         assert.equal(buttonView.style['textAlign'], 'center');
     });
     it('Updating StyleProperty directly updates the "cssStyle" BasicProperty', () => {
-        buttonModel.partProperties.setPropertyNamed(buttonModel, "visible", false);
+        buttonModel.partProperties.setPropertyNamed(buttonModel, "transparent", true);
         let styleProp = buttonModel.partProperties.getPropertyNamed(buttonModel, "cssStyle");
         assert.equal(styleProp['visibility'], 'hidden');
     });
@@ -124,10 +130,10 @@ describe('Styling Properties', () => {
         };
         buttonModel.sendMessage(msg, buttonModel);
         let styleProp = buttonModel.partProperties.getPropertyNamed(buttonModel, "cssStyle");
-        assert.equal(styleProp['visibility'], 'visible');
+        assert.equal(styleProp['display'], 'initial');
     });
     it('Updating StyleProperty via "set" updates the DOM element style attribute', () => {
         let buttonView = window.System.findViewById(buttonModel.id);
-        assert.equal(buttonView.style['visibility'], 'visible');
+        assert.equal(buttonView.style['display'], 'initial');
     });
 });

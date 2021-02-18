@@ -230,6 +230,8 @@ class FieldView extends PartView {
         this.toggleModePartProperty = this.toggleModePartProperty.bind(this);
         this.openColorWheelWidget = this.openColorWheelWidget.bind(this);
         this.onColorSelected = this.onColorSelected.bind(this);
+        this.onVisibleChecked = this.onVisibleChecked.bind(this);
+        this.onTransparentChecked = this.onTransparentChecked.bind(this);
 
         this.setupPropHandlers();
     }
@@ -359,6 +361,8 @@ class FieldView extends PartView {
         // colorWheelWidget event listener
         let colorWheel = this.shadowRoot.querySelector('color-wheel');
         colorWheel.addEventListener('color-selected', this.onColorSelected);
+        colorWheel.addEventListener('visible-checked', this.onVisibleChecked);
+        colorWheel.addEventListener('transparent-checked', this.onTransparentChecked);
     }
 
     onColorSelected(event){
@@ -368,6 +372,22 @@ class FieldView extends PartView {
         // document.execCommand(command, false, colorStr);
         // TODO maybe this should be a partProperty
         this.textareaWrapper.style[command] = colorStr;
+    }
+
+    onVisibleChecked(event){
+        this.model.sendMessage({
+            type: "command",
+            commandName: "setProperty",
+            args: ["visible", event.detail]
+        }, this.model);
+    }
+
+    onTransparentChecked(event){
+        this.model.sendMessage({
+            type: "command",
+            commandName: "setProperty",
+            args: ["transparent", event.detail]
+        }, this.model);
     }
 
     // I set the selected editor mode, removing or adding corresponding

@@ -30,6 +30,14 @@ class Drawing extends Part {
             'rotate',
             null
         );
+        this.partProperties.newStyleProp(
+            'visible',
+            true,
+        );
+        this.partProperties.newStyleProp(
+            'transparent',
+            false,
+        );
         this.setupStyleProperties();
 
         // When drawing from a script/commands,

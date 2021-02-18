@@ -57,6 +57,8 @@ class DrawingView extends PartView {
             this.template.content.cloneNode(true)
         );
 
+        this.colorPickerTool = null;
+
         this.isCurrentlyDrawing = false;
 
         // Bind component methods
@@ -66,6 +68,8 @@ class DrawingView extends PartView {
         this.onMouseLeave = this.onMouseLeave.bind(this);
         this.onHaloResize = this.onHaloResize.bind(this);
         this.onClick = this.onClick.bind(this);
+        this.onTransparentChecked = this.onTransparentChecked.bind(this);
+        this.onVisibleChecked = this.onVisibleChecked.bind(this);
         this.initCustomHaloButton = this.initCustomHaloButton.bind(this);
         this.toggleMode = this.toggleMode.bind(this);
         this.afterDrawAction = this.afterDrawAction.bind(this);
@@ -118,6 +122,9 @@ class DrawingView extends PartView {
         if(!colorPickerChild){
             let newColorPicker = document.createElement('color-picker-tool');
             this.append(newColorPicker);
+            this.colorPickerTool = newColorPicker;
+            this.colorPickerTool.colorWheel.addEventListener('visible-checked', this.onVisibleChecked);
+            this.colorPickerTool.colorWheel.addEventListener('transparent-checked', this.onTransparentChecked);
         }
 
         if(!this.haloButton){
@@ -128,6 +135,8 @@ class DrawingView extends PartView {
     afterDisconnected(){
         this.canvas.removeEventListener('mouseup', this.onMouseUp);
         this.canvas.removeEventListener('mousedown', this.onMouseDown);
+        this.colorPickerTool.colorWheel.removeEventListener('visible-checked', this.onVisibleChecked);
+        this.colorPickerTool.colorWheel.removeEventListener('transparent-checked', this.onTransparentChecked);
         this.removeEventListener('click', this.onClick);
     }
 
@@ -319,6 +328,22 @@ class DrawingView extends PartView {
             'mode',
             nextMode
         );
+    }
+
+    onVisibleChecked(event){
+        this.model.sendMessage({
+            type: "command",
+            commandName: "setProperty",
+            args: ["visible", event.detail]
+        }, this.model);
+    }
+
+    onTransparentChecked(event){
+        this.model.sendMessage({
+            type: "command",
+            commandName: "setProperty",
+            args: ["transparent", event.detail]
+        }, this.model);
     }
 
     get inDrawingMode(){

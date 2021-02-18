@@ -143,6 +143,8 @@ class ColorPickerTool extends HTMLElement {
         this.ctx.fillStyle = colorStr;
     }
 
+
+
     toggleActive(event){
         let isActive = this.getAttribute('active');
         if(isActive == "true"){

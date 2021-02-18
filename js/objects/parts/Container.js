@@ -48,6 +48,14 @@ class Container extends Part {
             'rotate',
             null
         );
+        this.partProperties.newStyleProp(
+            'visible',
+            true,
+        );
+        this.partProperties.newStyleProp(
+            'transparent',
+            false,
+        );
         this.setupStyleProperties();
     }
 

@@ -58,6 +58,18 @@ const colorWheelTemplate = `
     width: 100%;
     height: 25px;
   }
+  #options {
+    display: flex;
+    width: 100%;
+    height: 25px;
+    margin-top: 5px;
+  }
+
+  #options > label{
+    font-size: .8rem;
+    display: flex;
+    align-items: center;
+  }
 
   #recent-colors {
     display: flex;
@@ -85,6 +97,12 @@ const colorWheelTemplate = `
 <div id="palette-wrapper">
   <div id="palette-bar"><div id="close-button">x</div><span id="palette-title"></span></div>
   <div id="palette-content">
+    <div id="options">
+      <input type="checkbox" id="transparent" name="transparent">
+      <label for="transparent">Transparent</label>
+      <input type="checkbox" id="visible" name="visible" checked>
+      <label for="visible">Visible</label>
+    </div>
     <ul id="recent-colors">
       <li class="recent-color-item selected"></li>
       <li class="recent-color-item"></li>
@@ -120,6 +138,9 @@ class ColorWheelWidget extends HTMLElement {
         this.onBarMouseUp = this.onBarMouseUp.bind(this);
         this.onBarMouseMove = this.onBarMouseMove.bind(this);
         this.onClose = this.onClose.bind(this);
+        this.onTransparentChange = this.onTransparentChange.bind(this);
+        this.onVisibleChange = this.onVisibleChange.bind(this);
+        // this.onMakeTransparent = this.onMakeTransparent.bind(this);
         this._drawWheel = this._drawWheel.bind(this);
     }
 
@@ -127,6 +148,8 @@ class ColorWheelWidget extends HTMLElement {
         if(this.isConnected){
             this.canvas = this.shadowRoot.querySelector('canvas');
             this.bar = this.shadowRoot.getElementById('palette-bar');
+            this.visibleCheckbox = this.shadowRoot.getElementById('visible');
+            this.transparentCheckbox = this.shadowRoot.getElementById('transparent');
             // give the widget a title if provided
             if(this.name){
                 this.shadowRoot.getElementById('palette-title').innerText = this.name;
@@ -139,6 +162,8 @@ class ColorWheelWidget extends HTMLElement {
             Array.from(this.shadowRoot.querySelectorAll('.recent-color-item')).forEach(el => {
                 el.addEventListener('click', this.onItemClick);
             });
+            this.visibleCheckbox.addEventListener("change", this.onVisibleChange);
+            this.transparentCheckbox.addEventListener("change", this.onTransparentChange);
 
             // Draw the color wheel to the canvas
             this._drawWheel();
@@ -152,6 +177,8 @@ class ColorWheelWidget extends HTMLElement {
         Array.from(this.shadowRoot.querySelector('.recent-color-item')).forEach(el => {
             el.removeEventListener('click', this.onItemClick);
         });
+        this.visibleCheckbox.RemoveEventListener("change", this.onVisibleChange);
+        this.transparentCheckbox.RemoveEventListener("change", this.onTransparentChange);
     }
 
 
@@ -214,6 +241,19 @@ class ColorWheelWidget extends HTMLElement {
             currentSwatchSelection.style.backgroundColor = `rgba(${colorInfo.r}, ${colorInfo.g}, ${colorInfo.b}, ${colorInfo.alpha})`;
             currentSwatchSelection.selectedColor = colorInfo;
         }
+    }
+    onVisibleChange(event){
+        let newEvent = new CustomEvent('visible-checked', {
+            detail: event.target.checked 
+        });
+        this.dispatchEvent(newEvent);
+    }
+
+    onTransparentChange(event){
+        let newEvent = new CustomEvent('transparent-checked', {
+            detail: event.target.checked
+        });
+        this.dispatchEvent(newEvent);
     }
 
     onItemClick(event){
