@@ -49,11 +49,11 @@ class Window extends Part {
         // Style
         this.partProperties.newStyleProp(
             'top',
-            "0",
+            0,
         );
         this.partProperties.newStyleProp(
             'left',
-            "0",
+            0,
         );
         this.partProperties.newStyleProp(
             'rotate',

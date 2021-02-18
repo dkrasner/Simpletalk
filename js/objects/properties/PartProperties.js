@@ -133,6 +133,7 @@ class StyleProperty extends BasicProperty {
             let style = styleProperty.getValue(owner);
             let newStyle = this.styler(style, this.name, val);
             styleProperty.setValue(owner, newStyle, notify);
+
             // set my value as well
             this._value = val;
         }

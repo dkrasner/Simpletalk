@@ -134,8 +134,15 @@ class WindowView extends PartView {
         this.setupClickAndDrag();
         this.setupBarButtons();
         this.setupExpanderAreas();
-        this.style.top = "50px";
-        this.style.left = "50px";
+    }
+
+    afterModelSet(){
+        this.setTitle(
+            this.model.partProperties.getPropertyNamed(
+                this.model,
+                'title'
+            )
+        );
     }
 
 
@@ -215,8 +222,10 @@ class WindowView extends PartView {
     onMouseMoveInBar(event){
         let currentTop = parseInt(this.style.top);
         let currentLeft = parseInt(this.style.left);
-        let newTop = `${currentTop + event.movementY}px`;
-        let newLeft = `${currentLeft + event.movementX}px`;
+        // let newTop = `${currentTop + event.movementY}px`;
+        // let newLeft = `${currentLeft + event.movementX}px`;
+        let newTop = currentTop + event.movementY;
+        let newLeft = currentLeft + event.movementX;
         this.model.partProperties.setPropertyNamed(this.model, "top", newTop);
         this.model.partProperties.setPropertyNamed(this.model, "left", newLeft);
     }

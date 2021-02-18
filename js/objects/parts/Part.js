@@ -55,13 +55,13 @@ class Part {
         this.addPropertySubscriber = this.addPropertySubscriber.bind(this);
         this.removePropertySubscriber = this.removePropertySubscriber.bind(this);
         this.serialize = this.serialize.bind(this);
+        this.toJSON = this.toJSON.bind(this);
         this.setFromDeserialized = this.setFromDeserialized.bind(this);
         this.deleteModelCmdHandler = this.deleteModelCmdHandler.bind(this);
         this.openEditorCmdHandler = this.openEditorCmdHandler.bind(this);
         this.closeEditorCmdHandler = this.closeEditorCmdHandler.bind(this);
         this.isSubpartOfCurrentCard = this.isSubpartOfCurrentCard.bind(this);
         this.isSubpartOfCurrentStack = this.isSubpartOfCurrentStack.bind(this);
-        this.toJSON = this.toJSON.bind(this);
         this.getOwnerBranch = this.getOwnerBranch.bind(this);
 
 
@@ -521,9 +521,14 @@ class Part {
         this.partProperties._properties.forEach(prop => {
             let name = prop.name;
             let value = prop.getValue(this);
+            // If this is the events set, transform
+            // it to an Array first (for serialization)
+            if(name == 'events'){
+                value = Array.from(value);
+            } 
             result.properties[name] = value;
         });
-        return JSON.stringify(result, null, 4);
+        return result;
     }
 
     /**
@@ -555,12 +560,7 @@ class Part {
     }
 
     toJSON(){
-        let result = {properties: {}};
-        this.partProperties._properties.forEach(prop => {
-            result.properties[prop.name] = prop.getValue(this);
-        });
-        result.subparts = this.subparts.map(subpart =>  { return subpart.id });
-        return result;
+        return this.serialize();
     }
 };
 

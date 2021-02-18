@@ -76,16 +76,12 @@ const System = {
     // to the view.
     initialLoad: function(){
 
-        // First, we look for an existing WorldView.
-        // If there is one, we try to find its model
-        // and corresponding state, recursively going
-        // through the model's parts and either creating
-        // or updating any existing views.
-        let worldView = document.querySelector(
-            this.tagNameForViewNamed('world')
-        );
-        if(worldView){
-            this.loadFromWorldView(worldView);
+        // If we have a serialization script tag
+        // containing JSON of serialized information,
+        // attempt to load from it
+        let serializationEl = document.getElementById('serialization');
+        if(serializationEl){
+            this.deserialize();
         } else {
             this.loadFromEmpty();
         }
@@ -160,7 +156,9 @@ const System = {
         this.newModel('stack', worldModel.id);
         document.querySelector('st-stack').classList.add('current-stack');
 
-        this.updateSerialization(worldModel.id);
+        // Update serialization
+        this.serialize();
+        
         let msg = {type: 'command', commandName: 'openToolbox', args:[]};
         this.receiveMessage(msg);
     },
@@ -278,10 +276,6 @@ const System = {
                     aMessage.viewType,
                     aMessage.modelId
                 );
-            case 'propertyChanged':
-                return this.updateSerialization(
-                    aMessage.partId
-                );
             case 'compile':
                 return this.compile(aMessage);
             case 'command':
@@ -355,7 +349,7 @@ const System = {
         // serialization for the target
         // part, thus adding the script to
         // its serialization
-        this.updateSerialization(aMessage.targetId);
+        this.serialize();
     },
 
     receiveCommand: function(aMessage){
@@ -377,7 +371,7 @@ const System = {
         }
     },
 
-    newModel(kind, ownerId, ownerKind, context, name, buildView=true){
+    newModel: function(kind, ownerId, ownerKind, context, name, buildView=true){
         // TODO This is an exception to the general newModel
         // message and method structure; potentially should be
         // reworked
@@ -426,7 +420,6 @@ const System = {
         // subparts list
         if(ownerPart){
             ownerPart.addPart(model);
-            this.updateSerialization(ownerPart.id);
         }
 
         // Add the System as a property subscriber to
@@ -434,12 +427,6 @@ const System = {
         // this System object whenever any of this model's
         // properties have changed
         model.addPropertySubscriber(this);
-
-        // Serialize the new model into the page
-        this.updateSerialization(model.id);
-        model.subparts.forEach(subpart => {
-            this.updateSerialization(subpart.id);
-        });
 
         if(buildView){
             // See if there is already a view for the model.
@@ -469,7 +456,6 @@ const System = {
         // add the new model to the owner's
         // subparts list
         ownerPart.addPart(model);
-        this.updateSerialization(ownerPart.id);
 
         // Add the System as a property subscriber to
         // the new model. This will send a message to
@@ -477,18 +463,15 @@ const System = {
         // properties have changed
         model.addPropertySubscriber(this);
 
-        // Serialize the new model into the page
-        this.updateSerialization(model.id);
-        model.subparts.forEach(subpart => {
-            this.updateSerialization(subpart.id);
-        });
-
         // See if there is already a view for the model.
         // If not, create and attach it.
         let viewForModel = this.findViewById(model.id);
         if(!viewForModel){
             this.newView(model.type, model.id);
         }
+
+        // Reserialize the world
+        this.serialize();
 
         return model;
     },
@@ -744,8 +727,10 @@ const System = {
             serializationScriptEl = document.createElement('script');
             serializationScriptEl.id = 'serialization';
             serializationScriptEl.type = 'application/json';
+            document.body.append(serializationScriptEl);
         }
         serializationScriptEl.innerText = JSON.stringify(result);
+        
     },
 
     deserialize: function(){
@@ -755,8 +740,15 @@ const System = {
         }
         let deserializedInfo = JSON.parse(serializationEl.innerText);
 
-        // Create the World model manually
-        let worldModel = new this.availableParts['world']();
+        // Start from the WorldStack and recursively
+        // create new Parts/Views from the deserialized
+        // dictionary
+        let worldJSON = deserializedInfo['world'];
+        if(!worldJSON){
+            throw new Error(`World not found in serialization!`);
+        }
+        this.deserializePart(worldJSON, null, deserializedInfo);
+
     },
 
     serializePart: function(aPart, aDict){
@@ -766,22 +758,50 @@ const System = {
         });
     },
 
-    deserializePart: function(aPartJSON, ownerId, ownerKind, fullJSON){
-        this.newModel(
-            aPartJSON.type,
-            ownerId,
-            ownerKind,
-            null,
-            aPartJSON.name
-        );
+    deserializePart: function(aPartJSON, ownerId, fullJSON){
+        let ownerPart = this.partsById[ownerId];
+        let newPartClass = this.availableParts[aPartJSON.type];
+        if(!newPartClass){
+            throw new Error(`Cannot deserialize Part of type ${aPartJSON.type}!`);
+        }
+        let newPart = new newPartClass(ownerPart);
+        newPart.setFromDeserialized(aPartJSON);
+        this.partsById[newPart.id] = newPart;
+
+        // Sometimes a new part will automatically
+        // create subparts on itself (stacks make initial card etc)
+        // For deserialization we want to undo this
+        newPart.subparts.forEach(subpart => {
+            newPart.removePart(subpart);
+        });
+
+        // Add the System as a prop subscriber
+        // to the new part model
+        newPart.addPropertySubscriber(this);
+
+        if(ownerPart){
+            ownerPart.addPart(newPart);
+        }
+
+        // Build a view for the part
+        if(newPart.type != 'world'){
+            this.newView(newPart.type, newPart.id);
+        } else {
+            let newView = document.createElement(
+                this.tagNameForViewNamed('world')
+            );
+            newView.setModel(newPart);
+            document.body.prepend(newView);
+        }
+
+        // Recursively deserialize any referenced
+        // subpart ids in the deserialization object
         aPartJSON.subparts.forEach(subpartId => {
             let subpartJSON = fullJSON[subpartId];
-            this.deserializePart(
-                subpartJSON,
-                aPartJSON.is,
-                aPartJSON.type,
-                fullJSON
-            );
+            if(!subpartJSON){
+                throw new Error(`Could not deserialize Part ${subpartId} -- not found in serialization!`);
+            }
+            this.deserializePart(subpartJSON, newPart.id, fullJSON);
         });
     },
 
@@ -1008,7 +1028,7 @@ System._commandHandlers['openToolbox'] = function(senders, targetId){
     windowCurrentCardModel.partProperties.setPropertyNamed(
         windowCurrentCardModel,
         'listDirection',
-        'row' //TODO sort out this bug!
+        'column' //TODO sort out this bug!
     );
 
     // Do more toolbox configuration here
@@ -1187,7 +1207,7 @@ System._commandHandlers['openWorldCatalog'] = function(senders, targetId){
     windowCurrentCardModel.partProperties.setPropertyNamed(
         windowCurrentCardModel,
         'listDirection',
-        'row'
+        'column'
     );
     windowCurrentCardModel.partProperties.setPropertyNamed(
         windowCurrentCardModel,
@@ -1478,12 +1498,18 @@ System._commandHandlers['openDebugger'] = function(senders, partId){
 };
 
 System._commandHandlers['saveHTML'] = function(senders){
+    let clonedDocument = document.cloneNode(true);
+    let world = clonedDocument.querySelector('st-world');
+    if(world){
+        world.remove();
+    }
+    
     let anchor = document.createElement('a');
     anchor.style.display = "none";
     document.body.append(anchor);
 
     let stamp = Date.now().toString();
-    let serializedPage = new XMLSerializer().serializeToString(document);
+    let serializedPage = new XMLSerializer().serializeToString(clonedDocument);
     let typeInfo = "data:text/plain;charset=utf-8";
     let url = `${typeInfo},${encodeURIComponent(serializedPage)}`;
     anchor.href = url;
