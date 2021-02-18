@@ -732,77 +732,59 @@ const System = {
         return scriptEditorField;
     },
 
-    /** Serialization / Deserialization **/
-    fromSerialization: function(aString, recursive=true){
-        let json = JSON.parse(aString);
-        let newPartClass = this.availableParts[json.type];
-        if(!newPartClass){
-            throw new Error(`System could not deserialize Part of type "${json.type}"`);
-        }
-        let newPart = newPartClass.setFromDeserialized(json);
-        this.partsById[newPart.id] = newPart;
+    serialize: function(){
+        let result = {};
+        let world = this.partsById['world'];
+        this.serializePart(world, result);
 
-        // If the deserialized object has a subparts
-        // array with ids, attempt to deserialize and
-        // instantiate models for those parts too,
-        // recursively
-        if(recursive){
-            json.subparts.forEach(subpartId => {
-                let serializationEl = document.querySelector(`script[data-part-id="${subpartId}"]`);
-                if(serializationEl){
-                    let content = serializationEl.innerHTML;
-                    this.fromSerialization(content);
-                }
-            });
+        // If there is not a script tag in the
+        // body for the serialization, create it
+        let serializationScriptEl = document.getElementById('serialization');
+        if(!serializationScriptEl){
+            serializationScriptEl = document.createElement('script');
+            serializationScriptEl.id = 'serialization';
+            serializationScriptEl.type = 'application/json';
         }
+        serializationScriptEl.innerText = JSON.stringify(result);
     },
 
-    updateSerialization: function(modelId){
-        let model = this.partsById[modelId];
-        if(!model){
-            throw new Error(`System could not serialize unknown model [${modelId}]`);
-        }
-        let serializationEl = document.querySelector(`script[data-part-id="${modelId}"]`);
+    deserialize: function(){
+        let serializationEl = document.getElementById('serialization');
         if(!serializationEl){
-            serializationEl = document.createElement('script');
-            serializationEl.setAttribute('data-part-id', modelId);
-            serializationEl.setAttribute('data-role', 'part-serialization');
-            serializationEl.setAttribute('type', 'application/json');
+            throw new Error(`No serialization found for this page`);
         }
+        let deserializedInfo = JSON.parse(serializationEl.innerText);
 
-        serializationEl.innerHTML = model.serialize();
-        this.serialScriptArea().appendChild(serializationEl);
+        // Create the World model manually
+        let worldModel = new this.availableParts['world']();
     },
 
-    removeSerializationFor: function(aPartId){
-        // Remove the script tag serialization for the given
-        // Part ID. This is usually done after a Part has been
-        // removed from the System, via deleteModel.
-        let element = document.querySelector(`script[data-part-id="${aPartId}"]`);
-        if(element){
-            element.parentElement.removeChild(element);
-        }
+    serializePart: function(aPart, aDict){
+        aDict[aPart.id] = aPart.toJSON();
+        aPart.subparts.forEach(subpart => {
+            this.serializePart(subpart, aDict);
+        });
     },
 
-    getSerializationFor: function(aPartId){
-        let element = document.querySelector(`script[data-part-id="${aPartId}"]`);
-        if(element){
-            return element.innerText;
-        }
-        return null;
+    deserializePart: function(aPartJSON, ownerId, ownerKind, fullJSON){
+        this.newModel(
+            aPartJSON.type,
+            ownerId,
+            ownerKind,
+            null,
+            aPartJSON.name
+        );
+        aPartJSON.subparts.forEach(subpartId => {
+            let subpartJSON = fullJSON[subpartId];
+            this.deserializePart(
+                subpartJSON,
+                aPartJSON.is,
+                aPartJSON.type,
+                fullJSON
+            );
+        });
     },
 
-    serialScriptArea: function(){
-        let area = document.getElementById('serialization-container');
-        if(area){
-            return area;
-        } else {
-            area = document.createElement('div');
-            area.id = 'serialization-container';
-            document.body.appendChild(area);
-            return area;
-        }
-    },
 
     /** Navigation of Current World **/
     goToNextStack: function(){
