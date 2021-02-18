@@ -101,7 +101,7 @@ describe('Button Editor tests', () => {
             let buttonFont = editorView._shadowRoot.querySelector('button.text-color');
             assert.isNotNull(buttonFont);
         });
-        it('All default button events are present', () => {
+        it.skip('All default button events are present', () => {
             let editorView = document.querySelector('st-button-editor');
             let eventList = editorView._shadowRoot.querySelector('div.event-list');
             let defaultEvents = button.partProperties.getPropertyNamed(button, 'events');
@@ -111,36 +111,6 @@ describe('Button Editor tests', () => {
                 eventList.querySelector(`#${e}`);
                 assert.isNotNull(e);
             });
-        });
-        it('Removing an event removes from the partProperties and the editor', () => {
-            let editorView = document.querySelector('st-button-editor');
-            let eventList = editorView._shadowRoot.querySelector('div.event-list');
-            let buttonEvents = button.partProperties.getPropertyNamed(button, 'events');
-            // here we are making an assumption that there is at least one button event
-            let anEventName = buttonEvents.values().next().value;
-            let eventEl = eventList.querySelector(`#${anEventName}`);
-            assert.isNotNull(eventEl);
-            let removeX = eventEl.querySelector('span.remove');
-            let clickEvent = new window.MouseEvent('click');
-            removeX.dispatchEvent(clickEvent);
-            eventEl = eventList.querySelector(`#${anEventName}`);
-            assert.isNull(eventEl);
-            buttonEvents = button.partProperties.getPropertyNamed(button, 'events');
-            assert.isFalse(buttonEvents.has(anEventName));
-        });
-        it('Adding an event adds to the partProperties and the editor', () => {
-            let newEvent = "MyNewEvent";
-            let editorView = document.querySelector('st-button-editor');
-            let eventList = editorView._shadowRoot.querySelector('div.event-list');
-            let inputEl = editorView._shadowRoot.querySelector('input.events');
-            inputEl.value = newEvent;
-            let keydownEvent = new window.MouseEvent('keydown');
-            keydownEvent.code = 'Enter';
-            inputEl.dispatchEvent(keydownEvent);
-            let eventEl = eventList.querySelector(`#${newEvent}`);
-            assert.isNotNull(eventEl);
-            let buttonEvents = button.partProperties.getPropertyNamed(button, 'events');
-            assert.isTrue(buttonEvents.has(newEvent));
         });
         it('Sending a second openEditor message does nothing', () => {
             let sendFunction = function(){

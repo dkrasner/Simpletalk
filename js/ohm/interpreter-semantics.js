@@ -73,10 +73,10 @@ const createInterpreterSemantics = (partContext, systemContext) => {
                     });
                 });
             };
-            
+
             partContext._commandHandlers[messageName] = handlerFunction;
         },
-        
+
         MessageHandlerOpen: function(literalOn, messageName, optionalParameterList, newLine){
             // Because the ParameterList here is optional, if
             // it is set it will be in the form of a size 1 array.
@@ -99,12 +99,12 @@ const createInterpreterSemantics = (partContext, systemContext) => {
                 return child.sourceString;
             });
         },
-        
-        
+
+
         InClause: function(inLiteral, objectSpecifier){
             return objectSpecifier.interpret();
         },
-        
+
         Command_answer: function(answer, expression){
             let msg = {
                 type: "command",
@@ -224,41 +224,6 @@ const createInterpreterSemantics = (partContext, systemContext) => {
             return msg;
         },
 
-        Command_eventRespond: function(respondToLiteral, eventNameAsLiteral, optionalInClause){
-            let clause = optionalInClause.interpret()[0] || {};
-            let args = [
-                "eventRespond", // The property name
-                eventNameAsLiteral.interpret(), // The value or a var representing the value
-                clause.objectId,
-                clause.objectType,
-                clause.thisOrCurrent
-            ];
-
-            let msg = {
-                type: "command",
-                commandName: "setProperty",
-                args: args
-            };
-            return msg;
-        },
-
-        Command_eventIgnore: function(ignoreLiteral, eventNameAsLiteral, optionalInClause){
-            let clause = optionalInClause.interpret()[0] || {};
-            let args = [
-                "eventIgnore", // The property name
-                eventNameAsLiteral.interpret(), // The value or a var representing the value
-                clause.objectId,
-                clause.objectType,
-                clause.thisOrCurrent
-            ];
-
-            let msg = {
-                type: "command",
-                commandName: "setProperty",
-                args: args
-            };
-            return msg;
-        },
         Command_ask: function(askLiteral, question){
             return {
                 type: "command",
@@ -286,7 +251,7 @@ const createInterpreterSemantics = (partContext, systemContext) => {
             if(optionalArguments.length > 0){
                 optionalArguments = optionalArguments[0];
             }
-            
+
             return {
                 type: "command",
                 commandName: commandName.sourceString,

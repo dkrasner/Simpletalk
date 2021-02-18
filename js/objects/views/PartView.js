@@ -85,7 +85,7 @@ class PartView extends HTMLElement {
         // NOTE: run here as opposed to in this.connectedCallback() because
         // the latter can technically be invoked before the model is set
         let events = this.model.partProperties.getPropertyNamed(this.model, "events");
-        events.forEach((eventRespond) => this.eventRespond(eventRespond));
+        events.forEach((eventName) => this.eventRespond(eventName));
         // load all the initial styling
         this.styleCSS();
         this.afterModelSet();
@@ -107,8 +107,6 @@ class PartView extends HTMLElement {
         // TODO: Implement the universals
         this.onPropChange('script', this.scriptChanged);
         this.onPropChange('cssStyle', this.styleCSS);
-        this.onPropChange('eventRespond', this.eventRespond);
-        this.onPropChange('eventIgnore', this.eventIgnore);
         this.onPropChange('editorOpen', (value) => {
             if(value === true){
                 this.openEditor();

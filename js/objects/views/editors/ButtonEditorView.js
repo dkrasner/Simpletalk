@@ -99,10 +99,6 @@ position: absolute;
         padding: 1px;
     }
 
-    .event-list .remove {
-        cursor: pointer;
-        margin-right: 1px;
-    }
 </style>
 <div class="editor-bar">
     <div class="editor-bar-button close-button"></div>
@@ -113,7 +109,6 @@ position: absolute;
 <div class="editor-main">
     <input class="name"></input>
     <div class="events-display">
-        <input class="events"></input>
         <div class="event-list"></div>
     </div>
     <button class="script">Script</button>
@@ -153,11 +148,7 @@ class ButtonEditorView extends HTMLElement {
         this.onScriptButtonClick = this.onScriptButtonClick.bind(this);
         this.onCloseButtonClick = this.onCloseButtonClick.bind(this);
         this.onNameInput = this.onNameInput.bind(this);
-        this.onIgnoreEvent = this.onIgnoreEvent.bind(this);
-        this.onEventInputKeydown = this.onEventInputKeydown.bind(this);
-        this.respondToEvent = this.respondToEvent.bind(this);
         this._displayEvent = this._displayEvent.bind(this);
-        this._removeEvent = this._removeEvent.bind(this);
     }
 
 
@@ -182,9 +173,6 @@ class ButtonEditorView extends HTMLElement {
         let backgroundButton = this._shadowRoot.querySelector('button.background-color');
         backgroundButton.removeEventListener('click', this.openColorWheelWidget);
         let colorButton = this._shadowRoot.querySelector('button.text-color');
-        let eventsDiv = this._shadowRoot.querySelector('.editor-main > div.events-display');
-        let eventsInput = eventsDiv.querySelector('input.events');
-        eventsInput.removeEventListener('keydown', this.onEventInputKeydown);
     }
 
     setTarget(partId){
@@ -207,8 +195,6 @@ class ButtonEditorView extends HTMLElement {
         // set up events editing interface
         let currentEvents = this.target.partProperties.getPropertyNamed(this.target, "events");
         let eventsDiv = this._shadowRoot.querySelector('.editor-main > div.events-display');
-        let eventsInput = eventsDiv.querySelector('input.events');
-        eventsInput.placeholder = "Add event name";
         currentEvents.forEach((e) => {
             this._displayEvent(e);
         });
@@ -230,9 +216,6 @@ class ButtonEditorView extends HTMLElement {
         backgroundButton.addEventListener('click', this.openColorWheelWidget);
         let colorButton = this._shadowRoot.querySelector('button.text-color');
         colorButton.addEventListener('click', this.openColorWheelWidget);
-        let eventsDiv = this._shadowRoot.querySelector('.editor-main > div.events-display');
-        let eventsInput = eventsDiv.querySelector('input.events');
-        eventsInput.addEventListener('keydown', this.onEventInputKeydown);
     }
 
     onNameInput(event){
@@ -293,30 +276,6 @@ class ButtonEditorView extends HTMLElement {
         }, this.target);
     }
 
-    onIgnoreEvent(event){
-        this.target.sendMessage({
-            type: "command",
-            commandName: "setProperty",
-            args: ["eventIgnore", event.target.name]
-        }, this.target);
-        this._removeEvent(event.target.name);
-    }
-
-    onEventInputKeydown(event){
-        if(event.code === "Enter"){
-            this.respondToEvent(event.target.value);
-        }
-    }
-
-    respondToEvent(eventName){
-        this.target.sendMessage({
-            type: "command",
-            commandName: "setProperty",
-            args: ["eventRespond", eventName]
-        }, this.target);
-        this._displayEvent(eventName);
-    }
-
     setupClickAndDrag(){
         let bar = this._shadowRoot.querySelector('.editor-bar');
         bar.addEventListener('mousedown', this.onMouseDownInBar);
@@ -355,14 +314,8 @@ class ButtonEditorView extends HTMLElement {
         }
         eventEl = document.createElement("div");
         let eventSpan = document.createElement("span");
-        let closeSpan = document.createElement("span");
-        closeSpan.name = eventName;
         eventEl.id = eventName;
-        closeSpan.addEventListener('click', this.onIgnoreEvent);
         eventSpan.textContent = eventName;
-        closeSpan.textContent = "-";
-        closeSpan.classList.add("remove");
-        eventEl.appendChild(closeSpan);
         eventEl.appendChild(eventSpan);
         eventListDiv.appendChild(eventEl);
     }

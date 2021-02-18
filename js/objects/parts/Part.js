@@ -6,7 +6,6 @@
  */
 import idMaker from '../utils/idMaker.js';
 import errorHandler from '../utils/errorHandler.js';
-import eventMessenger from '../utils/eventMessenger.js';
 import {
     PartProperties,
     BasicProperty,
@@ -227,30 +226,6 @@ class Part {
             [] // No aliases
         );
 
-        // eventResopnd and eventIgnore are "helper" dynamic props
-        // they add and delete eventNamed from the "events" basic property
-        // hence, they do not need getters
-        this.partProperties.newDynamicProp(
-            "eventRespond",
-            function(propOwner, propObject, value){
-                let eventsProperty = propOwner.partProperties.findPropertyNamed("events");
-                let events = eventsProperty.getValue(propOwner);
-                events.add(value);
-                eventsProperty.setValue(propOwner, events, false);
-            },
-            function(){return} // no getter
-        );
-
-        this.partProperties.newDynamicProp(
-            "eventIgnore",
-            function(propOwner, propObject, value){
-                let eventsProperty = propOwner.partProperties.findPropertyNamed("events");
-                let events = eventsProperty.getValue(propOwner);
-                events.delete(value);
-                eventsProperty.setValue(propOwner, events, false); // no need to notify
-            },
-            function(){return} // no getter
-        );
     }
 
     // To be called in each sub-class that has StyleProperties
