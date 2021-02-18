@@ -12,7 +12,6 @@
  * SimpleTalk environment.
  */
 import Part from './Part.js';
-import ExecutionContext from '../ExecutionContext.js';
 
 
 class WorldStack extends Part {
@@ -36,10 +35,6 @@ class WorldStack extends Part {
         // Set the id property to always
         // be 'world'
         this.id = 'world';
-
-        // global variables execution context
-        this._executionContext = new ExecutionContext();
-        this._executionContext.current = "global";
     }
 
     get type(){

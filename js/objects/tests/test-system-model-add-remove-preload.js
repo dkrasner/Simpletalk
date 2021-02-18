@@ -49,7 +49,7 @@ describe('newModel tests', () => {
         let msg = {
             type: 'command',
             commandName: 'newModel',
-            args: ['image', currentCard.id, "", "", "https://thomasnyberg.com/TsxxJJ9/translate.svg"]
+            args: ['image', currentCard.id, "", "", "https://www.svgrepo.com/show/9838/test.svg"]
         };
 
         let sendFunc = function(){
@@ -79,7 +79,7 @@ describe('newModel tests', () => {
         let msg = {
             type: 'command',
             commandName: 'newModel',
-            args: ['image', undefined, "", "", "https://thomasnyberg.com/TsxxJJ9/translate.svg"]
+            args: ['image', undefined, "", "", "https://www.svgrepo.com/show/9838/test.svg"]
         };
 
         let sendFunc = function(){
@@ -93,7 +93,7 @@ describe('newModel tests', () => {
         let msg = {
             type: 'command',
             commandName: 'newModel',
-            args: ['image', "", "card", "current", "https://thomasnyberg.com/TsxxJJ9/translate.svg"]
+            args: ['image', "", "card", "current", "https://www.svgrepo.com/show/9838/test.svg"]
         };
 
         let sendFunc = function(){

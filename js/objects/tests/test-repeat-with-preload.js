@@ -27,7 +27,7 @@ function getLocalVar(obj, varName){
     return obj._executionContext.getLocal(varName);
 };
 
-describe("Repeat Looping Tests", () => {
+describe.skip("Repeat Looping Tests", () => {
     describe("Model Setup", () => {
         it('Can find the current card model', () => {
             let currentCardView = document.querySelector('.current-stack > .current-card');

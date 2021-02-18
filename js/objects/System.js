@@ -33,6 +33,7 @@ import ButtonEditorView from './views/editors/ButtonEditorView.js';
 
 import ohm from 'ohm-js';
 import interpreterSemantics from '../ohm/interpreter-semantics.js';
+import {ExecutionStack, ActivationContext} from './ExecutionStack.js';
 
 const video = document.createElement('video');
 const canvas = document.createElement('canvas');
@@ -361,7 +362,16 @@ const System = {
         let handler = this._commandHandlers[aMessage.commandName];
         if(handler){
             let boundHandler = handler.bind(this);
-            return boundHandler(aMessage.senders, ...aMessage.args);
+            let activation = new ActivationContext(
+                aMessage.commandName,
+                this,
+                aMessage,
+                boundHandler
+            );
+            this.executionStack.push(activation);
+            var result = boundHandler(aMessage.senders, ...aMessage.args);
+            this.executionStack.pop();
+            return result;
         } else {
             return this.doesNotUnderstand(aMessage);
         }
@@ -910,14 +920,18 @@ System._commandHandlers['ask'] = function(senders, question){
 
 System._commandHandlers['putInto'] = function(senders, value, variableName, global){
     if(global){
-        System.getWorldStackModel()._executionContext.setLocal(variableName, value);
+        System.executionStack.setGlobal(variableName, value);
         return;
     }
-    let originalSender = this.partsById[senders[0].id];
-    if(!originalSender._executionContext){
-        throw new Error(`No ExecutionContext for ${originalSender.type}[${originalSender.id}]`);
+    // Because we push all handlers onto the execution stack,
+    // the putInto handler is currently at the top of the stack.
+    // In order to modify the caller's variables, we need to
+    // find the context that is one previous on the stack
+    if(System.executionStack.previous){
+        System.executionStack.previous.setLocal(variableName, value);
+    } else {
+        throw new Error(`ExecutionStack Error: #putInto on top of empty stack!`);
     }
-    originalSender._executionContext.setLocal(variableName, value);
 };
 
 System._commandHandlers['answer'] = function(senders, value){
@@ -1497,6 +1511,14 @@ System._commandHandlers['saveHTML'] = function(senders){
     anchor.parentElement.removeChild(anchor);
 };
 
+System._commandHandlers['tell'] = (senders, targetId, deferredMessage) => {
+    let targetPart = System.partsById[targetId];
+    if(!targetPart){
+        throw new Error(`Attempted to tell part id ${targetId}: no such part!`);
+    }
+    targetPart.sendMessage(deferredMessage, targetPart);
+};
+
 System._commandHandlers['startVideo'] = () => {
     if (video.srcObject !== null) {
         return;
@@ -1522,14 +1544,14 @@ System._commandHandlers['stopVideo'] = () => {
 // https://aaronsmith.online/easily-load-an-external-script-using-javascript/
 const loadScript = src => {
     return new Promise((resolve, reject) => {
-        const script = document.createElement('script')
-        script.type = 'text/javascript'
-        script.onload = resolve
-        script.onerror = reject
-        script.src = src
-        document.head.append(script)
-    })
-}
+        const script = document.createElement('script');
+        script.type = 'text/javascript';
+        script.onload = resolve;
+        script.onerror = reject;
+        script.src = src;
+        document.head.append(script);
+    });
+};
 
 const loadHandDetectionModel = () => {
     if (handDetectionModel === null) {
@@ -1628,7 +1650,7 @@ System._commandHandlers['detectHands'] = (senders, recipientId) => {
         }
     }
     detectHands(recipientId);
-}
+};
 
 
 /** Register the initial set of parts in the system **/
@@ -1678,6 +1700,10 @@ if (window.grammar){
 }
 
 System.grammar = languageGrammar;
+
+// Set the exection stack on the
+// System
+System.executionStack = new ExecutionStack();
 
 document.addEventListener('DOMContentLoaded', () => {
     // Add the System object to window so

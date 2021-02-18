@@ -12,6 +12,7 @@ import {
     DynamicProperty
 } from '../properties/PartProperties.js';
 
+import {ActivationContext} from '../ExecutionStack.js';
 
 class Part {
     constructor(anOwnerPart){
@@ -344,7 +345,16 @@ class Part {
             // instance as the 'this' context for
             // the handler
             let boundHandler = handler.bind(this);
-            return boundHandler(aMessage.senders, ...aMessage.args);
+            var activation = new ActivationContext(
+                aMessage.commandName,
+                this,
+                aMessage,
+                boundHandler
+            );
+            window.System.executionStack.push(activation);
+            var result = boundHandler(aMessage.senders, ...aMessage.args);
+            window.System.executionStack.pop();
+            return result;
         }
 
         let privateHandler = this._privateCommandHandlers[aMessage.commandName];
@@ -355,7 +365,17 @@ class Part {
             // instance as the 'this' context for
             // the handler
             let boundHandler = privateHandler.bind(this);
-            return boundHandler(aMessage.senders, ...aMessage.args);
+            var activation = new ActivationContext(
+                aMessage.commandName,
+                this,
+                aMessage,
+                boundHandler
+            );
+            window.System.executionStack.push(activation);
+            var result = boundHandler(aMessage.senders, ...aMessage.args);
+            window.System.executionStack.pop();
+            return result;
+            
         }
 
         // Otherwise, we have no handler for
