@@ -716,9 +716,13 @@ const System = {
     },
 
     serialize: function(){
-        let result = {};
+        let result = {
+            parts: {},
+            currentCardId: this.getCurrentCardModel().id,
+            currentStackId: this.getCurrentStackModel().id
+        };
         let world = this.partsById['world'];
-        this.serializePart(world, result);
+        this.serializePart(world, result.parts);
 
         // If there is not a script tag in the
         // body for the serialization, create it
@@ -743,13 +747,13 @@ const System = {
         // Start from the WorldStack and recursively
         // create new Parts/Views from the deserialized
         // dictionary
-        let worldJSON = deserializedInfo['world'];
+        let worldJSON = deserializedInfo.parts['world'];
         if(!worldJSON){
             throw new Error(`World not found in serialization!`);
         }
-        this.deserializePart(worldJSON, null, deserializedInfo);
+        this.deserializePart(worldJSON, null, deserializedInfo.parts);
 
-        // Finally, compile all of the scripts on
+        // Compile all of the scripts on
         // the available Part models
         Object.keys(this.partsById).forEach(partId => {
             let targetPart = this.partsById[partId];
@@ -770,6 +774,13 @@ const System = {
                 );
             }
         });
+
+        // Restore the correct current card
+        // and current stack
+        let currentStackView = document.querySelector(`[part-id="${deserializedInfo.currentStackId}"]`);
+        let currentCardView = document.querySelector(`[part-id="${deserializedInfo.currentCardId}"]`);
+        currentStackView.classList.add('current-stack');
+        currentCardView.classList.add('current-card');
     },
 
     serializePart: function(aPart, aDict){
