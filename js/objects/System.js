@@ -555,6 +555,9 @@ const System = {
         // in case the model/partView was in the toolbox
         // remove the id reference
         this.removeFromToolbox(modelId);
+
+        // Serialize the state
+        this.serialize();
         return true;
     },
 
@@ -575,15 +578,6 @@ const System = {
         if(!partName){
             partName = model.type;
         }
-
-        // If there is alreay a view for this model,
-        // simply return the instance of that view object
-        /*
-        let existingView = this.findViewById(modelId);
-        if(existingView){
-            return existingView;
-        }
-        */
 
         // Find the parent model id. This will
         // help us find the parent view element for
@@ -753,6 +747,13 @@ const System = {
         }
         this.deserializePart(worldJSON, null, deserializedInfo.parts);
 
+        // Restore the correct current card
+        // and current stack
+        let currentStackView = document.querySelector(`[part-id="${deserializedInfo.currentStackId}"]`);
+        let currentCardView = document.querySelector(`[part-id="${deserializedInfo.currentCardId}"]`);
+        currentStackView.classList.add('current-stack');
+        currentCardView.classList.add('current-card');
+
         // Compile all of the scripts on
         // the available Part models
         Object.keys(this.partsById).forEach(partId => {
@@ -774,13 +775,6 @@ const System = {
                 );
             }
         });
-
-        // Restore the correct current card
-        // and current stack
-        let currentStackView = document.querySelector(`[part-id="${deserializedInfo.currentStackId}"]`);
-        let currentCardView = document.querySelector(`[part-id="${deserializedInfo.currentCardId}"]`);
-        currentStackView.classList.add('current-stack');
-        currentCardView.classList.add('current-card');
     },
 
     serializePart: function(aPart, aDict){
