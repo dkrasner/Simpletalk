@@ -113,8 +113,14 @@ describe('Styling Properties', () => {
         assert.equal(buttonView.style['visibility'], 'visible');
         assert.equal(buttonView.style['textAlign'], 'center');
     });
+    it('Updating StyleProperty directly updates the style property value', () => {
+        let styleProp = buttonModel.partProperties.getPropertyNamed(buttonModel, "visible");
+        assert.equal(styleProp, true);
+        buttonModel.partProperties.setPropertyNamed(buttonModel, "visible", false);
+        styleProp = buttonModel.partProperties.getPropertyNamed(buttonModel, "visible");
+        assert.equal(styleProp, false);
+    });
     it('Updating StyleProperty directly updates the "cssStyle" BasicProperty', () => {
-        buttonModel.partProperties.setPropertyNamed(buttonModel, "transparent", true);
         let styleProp = buttonModel.partProperties.getPropertyNamed(buttonModel, "cssStyle");
         assert.equal(styleProp['visibility'], 'hidden');
     });
