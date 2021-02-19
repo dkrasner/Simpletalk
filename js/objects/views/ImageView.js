@@ -191,8 +191,18 @@ class ImageView extends PartView {
         let heightLimit = document.documentElement.clientHeight - padding;
         if((rect.height + top) > heightLimit){
             let ratio = (heightLimit - top) / rect.height;
-            this.style.height = `${rect.height * ratio}px`;
-            this.style.width = `${rect.width * ratio}px`;
+            // this.style.height = `${rect.height * ratio}px`;
+            // this.style.width = `${rect.width * ratio}px`;
+            this.model.partProperties.setPropertyNamed(
+                this.model,
+                'width',
+                (rect.width * ratio)
+            );
+            this.model.partProperties.setPropertyNamed(
+                this.model,
+                'height',
+                (rect.height * ratio)
+            );
         }
     }
 
@@ -253,8 +263,18 @@ class ImageView extends PartView {
         }
 
         if(newWidth && newHeight){
-            this.style.width = `${newWidth}px`;
-            this.style.height = `${newHeight}px`;
+            // this.style.width = `${newWidth}px`;
+            // this.style.height = `${newHeight}px`;
+            this.model.partProperties.setPropertyNamed(
+                this.model,
+                'width',
+                newWidth
+            );
+            this.model.partProperties.setPropertyNamed(
+                this.model,
+                'height',
+                newHeight
+            );
         }
         
     }

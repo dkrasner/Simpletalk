@@ -52,6 +52,14 @@ const cssStyler = (styleObj, propertyName, propertyValue) => {
         _setOrNot(styleObj, "left",  _intToPx(propertyValue));
         break;
 
+    case "width":
+        _setOrNot(styleObj, "width",  _intToPx(propertyValue));
+        break;
+
+    case "height":
+        _setOrNot(styleObj, "height",  _intToPx(propertyValue));
+        break;
+
     case "text-style":
         _setOrNot(styleObj, "textStyle",  propertyValue);
         break;
