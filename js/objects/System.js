@@ -749,6 +749,27 @@ const System = {
         }
         this.deserializePart(worldJSON, null, deserializedInfo);
 
+        // Finally, compile all of the scripts on
+        // the available Part models
+        Object.keys(this.partsById).forEach(partId => {
+            let targetPart = this.partsById[partId];
+            let scriptText = targetPart.partProperties.getPropertyNamed(
+                targetPart,
+                'script'
+            );
+            if(scriptText){
+                // Here we just re-set the script
+                // to its original value. This should trigger
+                // all prop change subscribers that listen
+                // for script changes, which will trigger
+                // a compilation step
+                targetPart.partProperties.setPropertyNamed(
+                    targetPart,
+                    'script',
+                    scriptText
+                );
+            }
+        });
     },
 
     serializePart: function(aPart, aDict){

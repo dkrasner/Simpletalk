@@ -145,7 +145,6 @@ class WindowView extends PartView {
         );
     }
 
-
     setupClickAndDrag(){
         let bar = this._shadowRoot.querySelector('.st-window-bar');
         bar.addEventListener('mousedown', this.onMouseDownInBar);
