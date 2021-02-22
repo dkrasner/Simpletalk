@@ -730,7 +730,7 @@ const System = {
             serializationScriptEl.type = 'application/json';
             document.body.append(serializationScriptEl);
         }
-        serializationScriptEl.innerText = JSON.stringify(result);
+        serializationScriptEl.innerText = JSON.stringify(result, null, 4);
         
     },
 
