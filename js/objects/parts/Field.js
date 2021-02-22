@@ -110,8 +110,16 @@ class Field extends Part {
             1.0,
         );
         this.partProperties.newStyleProp(
+            'text-transparency',
+            1.0,
+        );
+        this.partProperties.newStyleProp(
             'text-font',
             'default',
+        );
+        this.partProperties.newStyleProp(
+            'text-transparency',
+            1.0,
         );
         this.partProperties.newStyleProp(
             'background-color',

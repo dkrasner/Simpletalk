@@ -65,7 +65,7 @@ class Button extends Part {
             'plain',
         );
         this.partProperties.newStyleProp(
-            'text-tranparency',
+            'text-transparency',
             1,
         );
         this.partProperties.newStyleProp(

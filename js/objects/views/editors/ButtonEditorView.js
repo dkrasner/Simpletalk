@@ -142,8 +142,7 @@ class ButtonEditorView extends HTMLElement {
         // this.setupExpanderAreas = this.setupExpanderAreas.bind(this);
         this.openColorWheelWidget = this.openColorWheelWidget.bind(this);
         this.onColorSelected = this.onColorSelected.bind(this);
-        this.onVisibleChecked = this.onVisibleChecked.bind(this);
-        this.onTransparentChecked = this.onTransparentChecked.bind(this);
+        this.onTransparencySlider = this.onTransparencySlider.bind(this);
         this.onMouseDownInBar = this.onMouseDownInBar.bind(this);
         this.onMouseUpAfterDrag = this.onMouseUpAfterDrag.bind(this);
         this.onMouseMoveInBar = this.onMouseMoveInBar.bind(this);
@@ -256,9 +255,6 @@ class ButtonEditorView extends HTMLElement {
         colorWheelWidget = new ColorWheelWidget(event.target.name);
         // add an attribute describing the command
         colorWheelWidget.setAttribute("selector-command", event.target.name);
-        if(event.target.name == 'text-color'){
-            colorWheelWidget.options = false;
-        }
         // add a custom callback for the close button
         let closeButton = colorWheelWidget.shadowRoot.querySelector('#close-button');
         closeButton.addEventListener('click', () => {colorWheelWidget.remove();});
@@ -268,10 +264,7 @@ class ButtonEditorView extends HTMLElement {
         // colorWheelWidget event listener
         let colorWheel = this.shadowRoot.querySelector('color-wheel');
         colorWheel.addEventListener('color-selected', this.onColorSelected);
-        if(event.target.name !== 'text-color'){
-            colorWheel.addEventListener('visible-checked', this.onVisibleChecked);
-            colorWheel.addEventListener('transparent-checked', this.onTransparentChecked);
-        }
+        colorWheel.addEventListener('transparency-changed', this.onTransparencySlider);
     }
 
     onColorSelected(event){
@@ -285,19 +278,19 @@ class ButtonEditorView extends HTMLElement {
         }, this.target);
     }
 
-    onVisibleChecked(event){
+    onTransparencySlider(event){
+        let command = event.target.getAttribute("selector-command");
+        let propName = "transparency";
+        // if the colorwheel is set to update the text-color
+        // (as opposed background) then update the propName
+        // to "text-transparency"
+        if(command === "text-color"){
+            propName = "text-transparency";
+        }
         this.target.sendMessage({
             type: "command",
             commandName: "setProperty",
-            args: ["visible", event.detail]
-        }, this.target);
-    }
-
-    onTransparentChecked(event){
-        this.target.sendMessage({
-            type: "command",
-            commandName: "setProperty",
-            args: ["transparent", event.detail]
+            args: [propName, event.detail]
         }, this.target);
     }
 

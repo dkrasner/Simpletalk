@@ -39,7 +39,6 @@ const templateString = `
 .field-textarea-wrapper {
     width: 100%;
     height: 100%;
-    background-color: var(--palette-cornsik);
     overflow: auto;
 }
 
@@ -63,6 +62,7 @@ const templateString = `
 .field-toolbar > * {
     margin-right: 2px;
     margin-left: 2px;
+    color: initial;
 }
 
 .field-toolbar > *:active {
@@ -177,7 +177,7 @@ const templateString = `
           <line x1="9.15" y1="14.85" x2="18" y2="4" />
           <line x1="6" y1="4" x2="14.85" y2="14.85" />
         </svg>
-        <svg id="field-color" xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-color-picker" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+        <svg id="field-textColor" xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-color-picker" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
           <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
           <line x1="11" y1="7" x2="17" y2="13" />
           <path d="M5 19v-4l9.7 -9.7a1 1 0 0 1 1.4 0l2.6 2.6a1 1 0 0 1 0 1.4l-9.7 9.7h-4" />
@@ -230,8 +230,7 @@ class FieldView extends PartView {
         this.toggleModePartProperty = this.toggleModePartProperty.bind(this);
         this.openColorWheelWidget = this.openColorWheelWidget.bind(this);
         this.onColorSelected = this.onColorSelected.bind(this);
-        this.onVisibleChecked = this.onVisibleChecked.bind(this);
-        this.onTransparentChecked = this.onTransparentChecked.bind(this);
+        this.onTransparencySlider = this.onTransparencySlider.bind(this);
 
         this.setupPropHandlers();
     }
@@ -322,8 +321,10 @@ class FieldView extends PartView {
             return true;
         } else if(["fontsize", "fontname"].indexOf(command) > -1){
             value = event.target.value;
-        } else if(["color", "backgroundColor"].indexOf(command) > -1){
-            this.openColorWheelWidget(event, command);
+        } else if(command === "textColor"){
+            this.openColorWheelWidget(event, "text-color");
+        } else if(command === "backgroundColor"){
+            this.openColorWheelWidget(event, "background-color");
         } else if(command === "mode"){
             this.setEditorMode(event.target.value);
             return true;
@@ -350,11 +351,6 @@ class FieldView extends PartView {
 
     openColorWheelWidget(event, command){
         let colorWheelWidget = new ColorWheelWidget(command);
-        // we don't need the transparent and visible toggles on the color wheel
-        // if font color is selected
-        if(command === "color"){
-            colorWheelWidget.options = false;
-        };
         // add an attribute describing the command
         colorWheelWidget.setAttribute("selector-command", command);
         // add a custom callback for the close button
@@ -366,32 +362,33 @@ class FieldView extends PartView {
         // colorWheelWidget event listener
         let colorWheel = this.shadowRoot.querySelector('color-wheel');
         colorWheel.addEventListener('color-selected', this.onColorSelected);
-        colorWheel.addEventListener('visible-checked', this.onVisibleChecked);
-        colorWheel.addEventListener('transparent-checked', this.onTransparentChecked);
+        colorWheel.addEventListener('transparency-changed', this.onTransparencySlider);
     }
 
     onColorSelected(event){
         let command = event.target.getAttribute("selector-command");
         let colorInfo = event.detail;
         let colorStr = `rgba(${colorInfo.r}, ${colorInfo.g}, ${colorInfo.b}, ${colorInfo.alpha})`;
-        // document.execCommand(command, false, colorStr);
-        // TODO maybe this should be a partProperty
-        this.textareaWrapper.style[command] = colorStr;
-    }
-
-    onVisibleChecked(event){
         this.model.sendMessage({
             type: "command",
             commandName: "setProperty",
-            args: ["visible", event.detail]
+            args: [command, colorStr]
         }, this.model);
     }
 
-    onTransparentChecked(event){
+    onTransparencySlider(event){
+        let command = event.target.getAttribute("selector-command");
+        let propName = "transparency";
+        // if the colorwheel is set to update the text-color
+        // (as opposed background) then update the propName
+        // to "text-transparency"
+        if(command === "text-color"){
+            propName = "text-transparency";
+        }
         this.model.sendMessage({
             type: "command",
             commandName: "setProperty",
-            args: ["transparent", event.detail]
+            args: [propName, event.detail]
         }, this.model);
     }
 
