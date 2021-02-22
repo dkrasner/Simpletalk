@@ -12,18 +12,6 @@ const assert = chai.assert;
 const expect = chai.expect;
 
 describe('Opening a WorldCatalog', () => {
-    describe('Existing Toolbox window', () => {
-        it('There is exactly one open window (toolbox) in the world', () => {
-            let foundWindows = document.querySelectorAll('st-window');
-            assert.equal(foundWindows.length, 1);
-        });
-        it('Can remove the existing toolbox for further testing', () => {
-            let foundWindows = document.querySelectorAll('st-window');
-            foundWindows.forEach(el => { el.remove(); });
-            foundWindows = document.querySelectorAll('st-window');
-            assert.equal(foundWindows.length, 0);
-        });
-    });
     describe('Sending openWorldCatalog message', () => {
         /**
          * this test is currently being skipped due to the

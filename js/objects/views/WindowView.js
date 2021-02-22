@@ -200,8 +200,12 @@ class WindowView extends PartView {
     }
 
     onClose(event){
-        // Remove from the DOM
-        this.onHaloDelete();
+        let msg = {
+            type: 'command',
+            commandName: 'windowClose',
+            args: []
+        };
+        this.model.sendMessage(msg, this.model);
     }
 
     onMouseDownInBar(event){

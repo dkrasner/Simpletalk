@@ -158,9 +158,6 @@ const System = {
 
         // Update serialization
         this.serialize();
-        
-        let msg = {type: 'command', commandName: 'openToolbox', args:[]};
-        this.receiveMessage(msg);
     },
 
     attachSubPartsFromDeserialized: function(aModel, aSerialization){
@@ -751,7 +748,12 @@ const System = {
         if(!worldJSON){
             throw new Error(`World not found in serialization!`);
         }
-        this.deserializePart(worldJSON, null, deserializedInfo.parts);
+        this.deserializePart(
+            worldJSON,
+            null,
+            deserializedInfo.parts,
+            deserializedInfo
+        );
 
         // Restore the correct current card
         // and current stack
@@ -790,7 +792,7 @@ const System = {
         });
     },
 
-    deserializePart: function(aPartJSON, ownerId, fullJSON){
+    deserializePart: function(aPartJSON, ownerId, fullJSON, deserializedInfo){
         let ownerPart = this.partsById[ownerId];
         let newPartClass = this.availableParts[aPartJSON.type];
         if(!newPartClass){
@@ -826,6 +828,16 @@ const System = {
             document.body.prepend(newView);
         }
 
+        // If this part represents the current card
+        // or current stack, we need to set the fullJSON's
+        // respective IDs for those parts to the new IDs
+        // generated for the deserialized versions
+        if(aPartJSON.id == deserializedInfo.currentCardId){
+            deserializedInfo.currentCardId = newPart.id;
+        } else if(aPartJSON.id == deserializedInfo.currentStackId){
+            deserializedInfo.currentStackId = newPart.id;
+        }
+
         // Recursively deserialize any referenced
         // subpart ids in the deserialization object
         aPartJSON.subparts.forEach(subpartId => {
@@ -833,7 +845,7 @@ const System = {
             if(!subpartJSON){
                 throw new Error(`Could not deserialize Part ${subpartId} -- not found in serialization!`);
             }
-            this.deserializePart(subpartJSON, newPart.id, fullJSON);
+            this.deserializePart(subpartJSON, newPart.id, fullJSON, deserializedInfo);
         });
     },
 
@@ -1039,174 +1051,25 @@ System._commandHandlers['openToolbox'] = function(senders, targetId){
         throw new Error(`Could not locate current Stack or Part with id ${targetId}`);
     }
 
-    let windowModel = this.newModel('window', targetPart.id);
-    let windowStack = this.newModel('stack', windowModel.id);
-    windowModel.partProperties.setPropertyNamed(
-        windowModel,
-        'title',
-        'Toolbox'
-    );
-
-    // Get the current card on the window stack etc
-    let windowStackView = this.findViewById(windowStack.id);
-    let windowCurrentCardModel = windowStackView.querySelector('.current-card').model;
-
-    // Set the current card of the window to have a list layout,
-    // which defaults to a column listDirection
-    windowCurrentCardModel.partProperties.setPropertyNamed(
-        windowCurrentCardModel,
-        'layout',
-        'list'
-    );
-    windowCurrentCardModel.partProperties.setPropertyNamed(
-        windowCurrentCardModel,
-        'listDirection',
-        'column' //TODO sort out this bug!
-    );
-
-    // Do more toolbox configuration here
-    // like making the buttons with their
-    // scripts, etc
-    windowStackView.classList.add('window-stack');
-    let addBtnBtn = this.newModel('button', windowCurrentCardModel.id);
-    addBtnBtn.partProperties.setPropertyNamed(
-        addBtnBtn,
-        'name',
-        'Add Button to Card'
-    );
-
-    let addBtnScript = 'on click\n    add button to current card\nend click';
-    addBtnBtn.partProperties.setPropertyNamed(
-        addBtnBtn,
-        'script',
-        addBtnScript
-    );
-    System.sendMessage(
-        {type: "compile", codeString: addBtnScript, targetId: addBtnBtn.id},
-        System,
-        System
-    );
-
-    // Add a button to add a new Container
-    let addContainerBtn = this.newModel('button', windowCurrentCardModel.id);
-    addContainerBtn.partProperties.setPropertyNamed(
-        addContainerBtn,
-        'name',
-        'Add Container to Card'
-    );
-    let addContainerScript = 'on click\n    add container to current card\nend click';
-    addContainerBtn.partProperties.setPropertyNamed(
-        addContainerBtn,
-        'script',
-        addContainerScript
-    );
-    System.sendMessage(
-        {type: "compile", codeString: addContainerScript, targetId: addContainerBtn.id},
-        System,
-        System
-    );
-
-    let addBtnToStackBtn = this.newModel('button', windowCurrentCardModel.id);
-    addBtnToStackBtn.partProperties.setPropertyNamed(
-        addBtnToStackBtn,
-        'name',
-        'Add Button to Stack'
-    );
-    let addBtnToStackScript = 'on click\n    add button to current stack\nend click';
-    addBtnToStackBtn.partProperties.setPropertyNamed(
-        addBtnToStackBtn,
-        'script',
-        addBtnToStackScript
-    );
-    System.sendMessage(
-        {type: "compile", codeString: addBtnToStackScript, targetId: addBtnToStackBtn.id},
-        System,
-        System
-    );
-
-    let addBtnToToolboxBtn = this.newModel('button', windowCurrentCardModel.id);
-    addBtnToToolboxBtn.partProperties.setPropertyNamed(
-        addBtnToToolboxBtn,
-        'name',
-        'Add Button to Toolbox'
-    );
-    let addBtnToToolboxScript = 'on click\n    add button "New Button" to this card\nend click';
-    addBtnToToolboxBtn.partProperties.setPropertyNamed(
-        addBtnToToolboxBtn,
-        'script',
-        addBtnToToolboxScript
-    );
-    System.sendMessage(
-        {type: "compile", codeString: addBtnToToolboxScript, targetId: addBtnToToolboxBtn.id},
-        System,
-        System
-    );
-
-    // Add a button to add a Drawing
-    let addDrawingBtn = this.newModel('button', windowCurrentCardModel.id);
-    addDrawingBtn.partProperties.setPropertyNamed(
-        addDrawingBtn,
-        'name',
-        'Add Drawing to Card'
-    );
-    addDrawingBtn._commandHandlers['click'] = function(){
-        let currentCardView = document.querySelector('.current-stack > .current-card');
-        let cardModel = currentCardView.model;
-        let newDrawing = System.newModel('drawing', cardModel.id);
-        newDrawing.partProperties.setPropertyNamed(
-            newDrawing,
-            'name',
-            `Drawing ${newDrawing.id}`
+    // Find the existing toolbox
+    let toolboxPart = targetPart.subparts.find(subpart => {
+        let name = subpart.partProperties.getPropertyNamed(
+            subpart,
+            'name'
         );
+        return subpart.type == 'window' && name == 'Toolbox';
+    });
 
-        // By default, we open the drawing in
-        // drawing mode, so user can immediately
-        // begin to paint
-        newDrawing.partProperties.setPropertyNamed(
-            newDrawing,
-            'mode',
-            'drawing'
-        );
-    };
+    if(!toolboxPart){
+        throw new Error(`Could not locate Toolbox!`);
+    }
 
-    // Add a button to add a Image
-    let addImageBtn = this.newModel('button', windowCurrentCardModel.id);
-    addImageBtn.partProperties.setPropertyNamed(
-        addImageBtn,
-        'name',
-        'Add Image to Card'
+    // Unhide it if it isn't shown already
+    toolboxPart.partProperties.setPropertyNamed(
+        toolboxPart,
+        'hide',
+        false
     );
-    let addImageBtnScript = 'on click\n    add image to current card\nend click';
-    addImageBtn.partProperties.setPropertyNamed(
-        addImageBtn,
-        'script',
-        addImageBtnScript
-    );
-    System.sendMessage(
-        {type: "compile", codeString: addImageBtnScript, targetId: addImageBtn.id},
-        System,
-        System
-    );
-
-    // Add a button to add a Field
-    let addFieldBtn = this.newModel('button', windowCurrentCardModel.id);
-    addFieldBtn.partProperties.setPropertyNamed(
-        addFieldBtn,
-        'name',
-        'Add Field to Card'
-    );
-    let addFieldBtnScript = 'on click\n    add field to current card\nend click';
-    addFieldBtn.partProperties.setPropertyNamed(
-        addFieldBtn,
-        'script',
-        addFieldBtnScript
-    );
-    System.sendMessage(
-        {type: "compile", codeString: addFieldBtnScript, targetId: addFieldBtn.id},
-        System,
-        System
-    );
-
 };
 
 System._commandHandlers['openWorldCatalog'] = function(senders, targetId){
@@ -1327,8 +1190,7 @@ System._commandHandlers['openScriptEditor'] = function(senders, targetId){
 
     // The stack where the window will be inserted will
     // be the current stack
-    let currentStackView = document.querySelector('.current-stack');
-    let insertStack = currentStackView.model;
+    let insertStack = this.getCurrentStackModel();
 
 
     if(!insertStack){
@@ -1348,8 +1210,9 @@ System._commandHandlers['openScriptEditor'] = function(senders, targetId){
     let winStackModel = this.newModel('stack', winModel.id);
     let winStackView = this.findViewById(winStackModel.id);
     winStackView.classList.add('window-stack');
-    let currentCardView = winView.querySelector('.current-stack .current-card');
-    let currentCard = currentCardView.model;
+    let currentCard = winStackModel.subparts.find(subpart => {
+        return subpart.type == 'card';
+    });
 
     // Set the current card's layout to be a column list
     currentCard.partProperties.setPropertyNamed(

@@ -69,8 +69,13 @@ class Window extends Part {
         );
         this.setupStyleProperties();
 
+
         // Bind methods
         this.setTarget = this.setTarget.bind(this);
+        this.onWindowClose = this.onWindowClose.bind(this);
+
+        // Add private handlers
+        this.setPrivateCommandHandler('windowClose', this.onWindowClose);
     }
 
     setTarget(aPart){
@@ -112,6 +117,20 @@ class Window extends Part {
         });
         this.subparts.push(aPart);
         aPart._owner = this;
+    }
+
+    onWindowClose(senders, ...args){
+        // Default behavior is to delete
+        // the window model from the System.
+        // Scripts can override this handler
+        this.sendMessage(
+            {
+                type: 'command',
+                commandName: 'deleteModel',
+                args: [ this.id ]
+            },
+            window.System
+        );
     }
 
     get type(){

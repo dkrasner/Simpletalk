@@ -22,7 +22,10 @@ let originalScript = `on click\n\tanswer "hello"\nend click`;
 
 
 describe('Opening a Script Editor', () => {
-    it('There is exactly one window (toolbox) in the world', () => {
+
+    // Toolbox is a result of bootstrap serialization and no
+    // longer hard coded into the init of the System
+    it.skip('There is exactly one window (toolbox) in the world', () => {
         let foundWindows = document.querySelectorAll('st-window');
         assert.equal(1, foundWindows.length);
     });

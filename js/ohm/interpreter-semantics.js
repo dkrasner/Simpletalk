@@ -151,7 +151,6 @@ const createInterpreterSemantics = (partContext, systemContext) => {
             ];
 
             let optionalName = optionalPartName.interpret();
-            console.log(optionalName);
             if(optionalName && optionalName.length){
                 args.push(optionalName[0]);
             }
@@ -707,7 +706,9 @@ const createInterpreterSemantics = (partContext, systemContext) => {
             if(!found){
                 throw new Error(`Cannot find ${objectType.sourceString} with id ${objectId}`);
             }
-            return found;
+            return function(context){
+                return found;
+            };
         },
 
         /**
@@ -743,6 +744,8 @@ const createInterpreterSemantics = (partContext, systemContext) => {
          * expected of all interpreted ObjectSpecifiers
          */
         ObjectSpecifier_singleTerminal: function(terminalSpecifier){
+            console.log(terminalSpecifier.sourceString);
+            console.log(terminalSpecifier.interpret());
             let found = terminalSpecifier.interpret()();
             return found.id;
         },
@@ -859,6 +862,12 @@ const createInterpreterSemantics = (partContext, systemContext) => {
                     `Variable ${this.sourceString} has not been defined`);
             }
             return value;
+        },
+
+        comment: function(dashesLiteral, nonLineTerminatorChars){
+            // Interpret doesn't do anything
+            // with comments.
+            return null;
         },
 
         _terminal(){

@@ -541,22 +541,21 @@ class Part {
         // to the incoming values
         let incomingProps = anObject.properties;
         Object.keys(incomingProps).forEach(propName => {
-            let property = this.partProperties.findPropertyNamed(propName);
-            if(!property){
-                throw new Error(`Invalid deserialized property: ${propName}`);
+            if(propName != 'id'){
+                let property = this.partProperties.findPropertyNamed(propName);
+                if(!property){
+                    throw new Error(`Invalid deserialized property: ${propName}`);
+                }
+                if(!property.readOnly){
+                    // Last arg is false, which tells the property
+                    // not to notify its owner's subscribers of
+                    // property changes. We don't need that when
+                    // deserializing
+                    property.setValue(this, incomingProps[propName], false);
+                }
             }
-            if(!property.readOnly){
-                // Last arg is false, which tells the property
-                // not to notify its owner's subscribers of
-                // property changes. We don't need that when
-                // deserializing
-                property.setValue(this, incomingProps[propName], false);
-            }
-        });
 
-        // Next, set the id based on the
-        // incoming value
-        this.id = anObject.id;
+        });
     }
 
     toJSON(){

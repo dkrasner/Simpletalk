@@ -176,18 +176,13 @@ describe('newModel tests', () => {
 describe('copyModel tests', () => {
     it('Can send copyModel message ', () => {
         let cards = document.querySelectorAll('st-card');
-        assert.isAtLeast(cards.length, 2);
+        assert.isAtLeast(cards.length, 1);
         let card1 = cards[0];
-        let card2 = cards[1];
 
         let card1Buttons = card1.model.subparts.filter(item => {
             return item.type === 'button';
         });
         assert.isAtLeast(card1Buttons.length, 1);
-
-        let card2ButtonsBefore = card2.model.subparts.filter(item => {
-            return item.type === 'button';
-        });
 
         let button = card1Buttons[0];
 
@@ -195,19 +190,18 @@ describe('copyModel tests', () => {
         let msg = {
             type: 'command',
             commandName: 'copyModel',
-            args: [button.id, card2.model.id]
+            args: [button.id, card1.model.id]
         };
         let sendFunc = function(){
             currentCard.sendMessage(msg, currentCard);
         };
         expect(sendFunc).to.not.throw(Error);
 
-
-        let card2ButtonsAfter = card2.model.subparts.filter(item => {
+        let card1ButtonsAfter = card1.model.subparts.filter(item => {
             return item.type === 'button';
         });
 
-        assert.equal(card2ButtonsAfter.length, card2ButtonsBefore.length + 1);
+        assert.equal(card1ButtonsAfter.length, card1Buttons.length + 1);
 
     });
 

@@ -89,7 +89,8 @@ class CardView extends PartView {
             if (event.altKey){
                 this.openWorldCatalog();
             } else {
-                this.openToolbox();
+                // Disabling for now
+                //this.openToolbox();
             }
         }
     }
