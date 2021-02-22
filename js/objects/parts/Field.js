@@ -102,12 +102,24 @@ class Field extends Part {
             null
         );
         this.partProperties.newStyleProp(
-            'visible',
-            true,
+            'hide',
+            false,
         );
         this.partProperties.newStyleProp(
-            'transparent',
-            false,
+            'transparency',
+            1.0,
+        );
+        this.partProperties.newStyleProp(
+            'text-font',
+            'default',
+        );
+        this.partProperties.newStyleProp(
+            'background-color',
+            null,
+        );
+        this.partProperties.newStyleProp(
+            'text-color',
+            "rgba(0, 0, 0, 1)",
         );
         this.setupStyleProperties();
     }

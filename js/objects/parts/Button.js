@@ -58,19 +58,19 @@ class Button extends Part {
         );
         this.partProperties.newStyleProp(
             'text-color',
-            null,
+            "rgba(0, 0, 0, 1)",
         );
         this.partProperties.newStyleProp(
             'text-style',
             'plain',
         );
         this.partProperties.newStyleProp(
-            'name-visible',
-            true,
+            'text-tranparency',
+            1,
         );
         this.partProperties.newStyleProp(
-            'visible',
-            true,
+            'hide',
+            false,
         );
         // setting width and height to null
         // effectively forces to the default size
@@ -96,8 +96,8 @@ class Button extends Part {
             null,
         );
         this.partProperties.newStyleProp(
-            'transparent',
-            false,
+            'transparency',
+            1.0,
         );
         // TODO tbd props
         this.partProperties.newBasicProp(

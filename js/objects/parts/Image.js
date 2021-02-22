@@ -54,12 +54,12 @@ class Image extends Part {
             null
         );
         this.partProperties.newStyleProp(
-            'visible',
-            true,
+            'hide',
+            false,
         );
         this.partProperties.newStyleProp(
-            'transparent',
-            false,
+            'transparency',
+            1.0,
         );
         this.setupStyleProperties();
 
