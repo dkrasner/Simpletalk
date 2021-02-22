@@ -183,7 +183,7 @@
         
 
         ObjectSpecifier (a object specifier)
-                = TerminalSpecifier
+                = TerminalSpecifier --singleTerminal
                 | QueriedSpecifier TerminalSpecifier --compoundQueryWithTerminal
                 | QueriedSpecifier PartialSpecifier --compoundQueryWithoutTerminal
                 | PartialSpecifier --singleNonTerminal
@@ -203,7 +203,7 @@
 		| "go to" systemObject objectId --goToByReference
 		| "answer" Expression --answer
 		| "delete" "this"? systemObject objectId? --deleteModel
-		| "add" systemObject stringLiteral? "to"? ("this" | "current")? systemObject? objectId? --addModel
+		| "add" systemObject stringLiteral? "to"? ObjectSpecifier --addModel
 		| "set" stringLiteral "to" (stringLiteral | variableName | integerLiteral ) InClause? --setProperty
 		| "put" Expression "into" "global"? variableName --putVariable
 		| "ask" anyLiteral --ask

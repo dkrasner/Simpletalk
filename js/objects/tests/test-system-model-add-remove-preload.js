@@ -49,7 +49,7 @@ describe('newModel tests', () => {
         let msg = {
             type: 'command',
             commandName: 'newModel',
-            args: ['image', currentCard.id, "", "", "https://www.svgrepo.com/show/9838/test.svg"]
+            args: ['image', currentCard.id, "https://www.svgrepo.com/show/9838/test.svg"]
         };
 
         let sendFunc = function(){
@@ -79,7 +79,7 @@ describe('newModel tests', () => {
         let msg = {
             type: 'command',
             commandName: 'newModel',
-            args: ['image', undefined, "", "", "https://www.svgrepo.com/show/9838/test.svg"]
+            args: ['image', undefined, "https://www.svgrepo.com/show/9838/test.svg"]
         };
 
         let sendFunc = function(){
@@ -93,7 +93,7 @@ describe('newModel tests', () => {
         let msg = {
             type: 'command',
             commandName: 'newModel',
-            args: ['image', "", "card", "current", "https://www.svgrepo.com/show/9838/test.svg"]
+            args: ['image', undefined, "https://www.svgrepo.com/show/9838/test.svg"]
         };
 
         let sendFunc = function(){
@@ -112,7 +112,7 @@ describe('newModel tests', () => {
         let msg = {
             type: 'command',
             commandName: 'newModel',
-            args: ['button', '', '', '', '']
+            args: ['button']
         };
         let sendFunc = function(){
             currentCard.sendMessage(msg, currentCard);
@@ -128,15 +128,16 @@ describe('newModel tests', () => {
 
     it('There should be a serialization for the new button', () => {
         let button = currentCardView.querySelector('st-button').model;
-        let serializationEl = document.querySelector(`script[data-part-id="${button.id}"]`);
-        assert.exists(serializationEl);
+        let serializationEl = document.getElementById('serialization');
+        let serialization = JSON.parse(serializationEl.innerText);
+        assert.include(Object.keys(serialization.parts), button.id.toString());
     });
 
     it('Can send newModel message in a context (without targetId, current)', () => {
         let msg = {
             type: 'command',
             commandName: 'newModel',
-            args: ['button', "", "card", "current"]
+            args: ['button']
         };
         let sendFunc = function(){
             currentCard.sendMessage(msg, currentCard);
@@ -149,7 +150,7 @@ describe('newModel tests', () => {
         let msg = {
             type: 'command',
             commandName: 'newModel',
-            args: ['button', "", "card", "this"]
+            args: ['button']
         };
         let sendFunc = function(){
             currentCard.sendMessage(msg, currentCard);
@@ -162,26 +163,13 @@ describe('newModel tests', () => {
         let msg = {
             type: 'command',
             commandName: 'newModel',
-            args: ['button', "", "", ""]
+            args: ['button']
         };
         let sendFunc = function(){
             currentCard.sendMessage(msg, currentCard);
         };
 
         expect(sendFunc).to.not.throw(Error);
-    });
-
-    it('Throws error if context and target id are provided', () => {
-        let msg = {
-            type: 'command',
-            commandName: 'newModel',
-            args: ['button', "20", "", "this"]
-        };
-        let sendFunc = function(){
-            currentCard.sendMessage(msg, currentCard);
-        };
-
-        expect(sendFunc).to.throw(Error);
     });
 });
 

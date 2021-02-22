@@ -364,7 +364,7 @@ describe("SimpleTalk Grammar", () => {
                     "toolbox", "drawing", "image"
                 ];
                 objects.forEach((d) => {
-                    const s = `add ${d} to card`;
+                    const s = `add ${d} to current card`;
                     semanticMatchTest(s, "Command");
                     semanticMatchTest(s, "Command_addModel");
                     semanticMatchTest(s, "Statement");
@@ -412,7 +412,7 @@ describe("SimpleTalk Grammar", () => {
                     "toolbox", "drawing", "image"
                 ];
                 objects.forEach((d) => {
-                    const s = `add ${d} "newPart 123" to card`;
+                    const s = `add ${d} "newPart 123" to current card`;
                     semanticMatchTest(s, "Command");
                     semanticMatchTest(s, "Command_addModel");
                     semanticMatchTest(s, "Statement");
@@ -454,7 +454,11 @@ describe("SimpleTalk Grammar", () => {
                     semanticMatchTest(s, "Statement");
                 });
             });
-            it ("Add (no target or context)", () => {
+
+            /**
+             * Skipping: Do we want to allow this?
+             */
+            it.skip("Add (no target or context)", () => {
                 const objects = [
                     "background", "card", "container", "field", "button", "stack", "window",
                     "toolbox", "drawing", "image"
@@ -466,7 +470,11 @@ describe("SimpleTalk Grammar", () => {
                     semanticMatchTest(s, "Statement");
                 });
             });
-            it ("Add named (no target or context)", () => {
+
+            /**
+             * Skipping: Do we want to allow this?
+             */
+            it.skip("Add named (no target or context)", () => {
                 const objects = [
                     "background", "card", "container", "field", "button", "stack", "window",
                     "toolbox", "drawing", "image"

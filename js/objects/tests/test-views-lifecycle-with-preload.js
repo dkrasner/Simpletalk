@@ -22,7 +22,7 @@ describe('Button Views', () => {
         let newButtonMsg = {
             type: 'command',
             commandName: 'newModel',
-            args: ['button', currentCardModel.id, "", "", "New Button"]
+            args: ['button', currentCardModel.id,"New Button"]
         };
         System.receiveMessage(newButtonMsg);
         let buttonViews = cardViews[0].querySelectorAll('st-button');

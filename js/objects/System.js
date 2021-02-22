@@ -371,21 +371,27 @@ const System = {
         }
     },
 
-    newModel: function(kind, ownerId, ownerKind, context, name, buildView=true){
+    newModel: function(kind, ownerId, name, buildView=true){
+        // If no ownerId is provided, we assume
+        // current card to be the owner of the new part
+        if(!ownerId){
+            ownerId = this.getCurrentCardModel().id;
+        }
+
+        // Lookup the instance of the model that
+        // matches the owner's id        
+        let ownerPart = this.partsById[ownerId];
+        if(!ownerPart || ownerPart == undefined){
+            throw new Error(`System could not locate owner part with id ${ownerId}`);
+        }
+
         // TODO This is an exception to the general newModel
         // message and method structure; potentially should be
         // reworked
-        if (!ownerId && ownerKind === "toolbox"){
-            this.addToToolbox(kind, context, name);
-            return true;
-        }
-        // Lookup the instance of the model that
-        // matches the owner's id
-        let ownerPart = this.partsById[ownerId];
-        if(!ownerPart || ownerPart == undefined){
-            let inner = `kind(${kind}), ownerId(${ownerId}), ownerKind(${ownerKind}), context(${context}), name(${name})`;
-            throw new Error(`System could not locate owner part with id ${ownerId} -- ${inner}`);
-        }
+        // if (ownerPart === "toolbox"){
+        //     this.addToToolbox(kind, context, name);
+        //     return true;
+        // }
 
         // Find the class constructor for the kind of
         // part requested as a new model. If not known,
@@ -612,7 +618,7 @@ const System = {
 
     addToToolbox(kind, context, name){
         let toolboxModel = this.findToolbox();
-        let model = this.newModel(kind, toolboxModel.id, "", context, name);
+        let model = this.newModel(kind, toolboxModel.id, name);
         this.toolbox.push(model.id);
     },
 
@@ -927,6 +933,7 @@ System._commandHandlers['deleteModel'] = function(senders, ...rest){
 //System._commandHandlers['newModel'] = System.newModel;
 System._commandHandlers['newModel'] = function(senders, ...rest){
     System.newModel(...rest);
+    this.serialize();
 };
 //System._commandHandlers['copyModel'] = System.copyModel;
 System._commandHandlers['copyModel'] = function(senders, ...rest){
@@ -1253,8 +1260,6 @@ System._commandHandlers['openWorldCatalog'] = function(senders, targetId){
                 partModel = this.newModel(
                     "image",
                     windowCurrentCardModel.id,
-                    "",
-                    "",
                     '/images/stack.svg'
                 );
             } else if (partName === "card"){
@@ -1262,8 +1267,6 @@ System._commandHandlers['openWorldCatalog'] = function(senders, targetId){
                 partModel = this.newModel(
                     "image",
                     windowCurrentCardModel.id,
-                    "",
-                    "",
                     '/images/card.svg'
                 );
             } else if (partName === "window"){
@@ -1271,8 +1274,6 @@ System._commandHandlers['openWorldCatalog'] = function(senders, targetId){
                 partModel = this.newModel(
                     "image",
                     windowCurrentCardModel.id,
-                    "",
-                    "",
                     '/images/window.svg'
                 );
             } else if (partName === "container"){
@@ -1280,8 +1281,6 @@ System._commandHandlers['openWorldCatalog'] = function(senders, targetId){
                 partModel = this.newModel(
                     "image",
                     windowCurrentCardModel.id,
-                    "",
-                    "",
                     '/images/container.svg'
                 );
             } else if (partName === "button"){
@@ -1292,8 +1291,6 @@ System._commandHandlers['openWorldCatalog'] = function(senders, targetId){
                 partModel = this.newModel(
                     "image",
                     windowCurrentCardModel.id,
-                    "",
-                    "",
                     '/images/drawing.svg'
                 );
             } else if (partName === "image"){

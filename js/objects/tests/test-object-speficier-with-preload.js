@@ -24,43 +24,31 @@ function setupCardsAndParts(){
         window.System.newModel(
             'button',
             currentCard.id,
-            'card',
-            null,
             `Button ${1}`
         );
         window.System.newModel(
             'field',
             currentCard.id,
-            'card',
-            null,
             `Field ${1}`
         );
         window.System.newModel(
             'button',
             currentCard.id,
-            'card',
-            null,
             `Button ${2}`
         );
         window.System.newModel(
             'field',
             currentCard.id,
-            'card',
-            null,
             `Field ${2}`
         );
         window.System.newModel(
             'button',
             currentCard.id,
-            'card',
-            null,
             `Button ${3}`
         );
         window.System.newModel(
             'field',
             currentCard.id,
-            'card',
-            null,
             `Field ${3}`
         );
         if(i < 2){

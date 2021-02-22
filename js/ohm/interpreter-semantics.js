@@ -144,26 +144,17 @@ const createInterpreterSemantics = (partContext, systemContext) => {
             return msg;
         },
 
-        Command_addModel: function(addLiteral, newObject, name, toLiteral, context, targetObjectType, targetObjectId){
-            // TODO: a command like "add card to this stack 20" does not make sense, since you should either designate
-            // the target by context "this" or by id. Here we should throw some sort of uniform error.
-            let args = [];
-            if(context.sourceString && targetObjectId.sourceString){
-                throw "Semantic Error (Add model rule): only one of context or targetObjectId can be provided";
+        Command_addModel: function(addLiteral, newPartType, optionalPartName, toLiteral, objectSpecifier){
+            let args = [
+                newPartType.sourceString, // The kind of part to add
+                objectSpecifier.interpret() // id of the parent model part
+            ];
+
+            let optionalName = optionalPartName.interpret();
+            console.log(optionalName);
+            if(optionalName && optionalName.length){
+                args.push(optionalName[0]);
             }
-            if(context.sourceString === "current" && !["card", "stack"].includes(targetObjectType.sourceString.toLowerCase())){
-                throw "Semantic Error (Add model rule): context 'current' can only apply to 'card' or 'stack' models";
-            }
-            args.push(newObject.sourceString);
-            args.push(targetObjectId.sourceString);
-            args.push(targetObjectType.sourceString);
-            args.push(context.sourceString);
-            name = name.sourceString || "";
-            // remove the string literal wrapping quotes
-            if (name){
-                name =name.slice(1, name.length - 1);
-            }
-            args.push(name);;
 
             let msg = {
                 type: "command",
@@ -741,6 +732,19 @@ const createInterpreterSemantics = (partContext, systemContext) => {
                 let outer = firstQuery.interpret()(inner);
                 return outer;
             };
+        },
+
+        /**
+         * An ObjectSpecifier without an annotated
+         * rule means it was interpreted as just
+         * a TerminalSpecifier of some sort.
+         * However, we need to extract the id
+         * and return that result, since that is what is
+         * expected of all interpreted ObjectSpecifiers
+         */
+        ObjectSpecifier_singleTerminal: function(terminalSpecifier){
+            let found = terminalSpecifier.interpret()();
+            return found.id;
         },
 
         /**
