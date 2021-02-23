@@ -220,7 +220,6 @@ class FieldView extends PartView {
         this.onInput = this.onInput.bind(this);
         this.onClick = this.onClick.bind(this);
         this.onKeydown = this.onKeydown.bind(this);
-        this.onMouseup = this.onMouseup.bind(this);
         this.openContextMenu = this.openContextMenu.bind(this);
         this.closeContextMenu = this.closeContextMenu.bind(this);
         this.doIt = this.doIt.bind(this);
@@ -266,7 +265,6 @@ class FieldView extends PartView {
         this.textareaWrapper = this._shadowRoot.querySelector('.field-textarea-wrapper');
         this.textarea.addEventListener('input', this.onInput);
         this.textarea.addEventListener('keydown', this.onKeydown);
-        this.textareaWrapper.addEventListener('mouseup', this.onMouseup);
         this.textarea.focus();
         // document.execCommand("defaultParagraphSeparator", false, "br");
         this.setUpToolbar();
@@ -278,7 +276,6 @@ class FieldView extends PartView {
 
     afterDisconnected(){
         this.textarea.removeEventListener('input', this.onInput);
-        this.textareaWrapper.removeEventListener('mouseup', this.onMouseup);
         this.textarea.removeEventListener('keydown', this.onKeydown);
         this.removeEventListener('click', this.onClick);
     }
@@ -485,22 +482,6 @@ class FieldView extends PartView {
             event.preventDefault();
             document.execCommand('insertHTML', false, '&#x9');
         };
-        // make sure we clear the context menu
-        if(this.contextMenuOpen){
-            // the context menu interaction can prevent backspace from
-            // removing text as it intuitively should
-            if(event.key==="Backspace"){
-                document.getSelection().deleteFromDocument();
-                let innerHTML = this.textarea.innerHTML;
-                this.model.partProperties.setPropertyNamed(
-                    this.model,
-                    'htmlContent',
-                    innerHTML
-                );
-            };
-            this.closeContextMenu();
-        }
-        this.textarea.focus();
     }
 
     onClick(event){
@@ -518,20 +499,14 @@ class FieldView extends PartView {
                     // toolbar.style.top = `-${toolbar.clientHeight + 5}px`;
                     // toolbar.style.visibility = "unset";
                 }
+            } else if(event.altKey){
+                let text = document.getSelection().toString();
+                if(text && !this.contextMenuOpen){
+                    this.openContextMenu();
+                }
             }
         }
-
     }
-
-    // I am responsible for handling selected text. Selection
-    // is triggered by mousep, since there is no document.selectionend
-    onMouseup(event){
-        let text = document.getSelection().toString();
-        if(text && !this.contextMenuOpen){
-            this.openContextMenu();
-        }
-    }
-
 
     openContextMenu(){
         let text = document.getSelection().toString();
@@ -556,7 +531,8 @@ class FieldView extends PartView {
         this.contextMenuOpen = false;
     }
 
-    doIt(){
+    doIt(event){
+        event.stopPropagation();
         let text = document.getSelection().toString();
         this.closeContextMenu();
         // send message to compile the prepped script
