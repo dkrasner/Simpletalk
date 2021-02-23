@@ -207,6 +207,7 @@ class FieldView extends PartView {
 
         // this.editorCompleter = this.simpleTalkCompleter;
         this.editorCompleter = null;
+        this.contextMenuOpen = false;
 
         this.template = document.createElement('template');
         this.template.innerHTML = templateString;
@@ -218,6 +219,8 @@ class FieldView extends PartView {
         // Bind methods
         this.onInput = this.onInput.bind(this);
         this.onClick = this.onClick.bind(this);
+        this.onMouseup = this.onMouseup.bind(this);
+        this.openContextMenu = this.openContextMenu.bind(this);
         this.textToHtml = this.textToHtml.bind(this);
         this.setTextValue = this.setTextValue.bind(this);
         this.setupPropHandlers = this.setupPropHandlers.bind(this);
@@ -251,6 +254,11 @@ class FieldView extends PartView {
     }
 
     afterConnected(){
+        // The events here are added via the .addEventListener() API which is
+        // distinct from the this.eventRespond() which uses the DOM element
+        // element.onEvent API. This allows us to distnguish between "core"
+        // system-web events that we don't want meddled with at the moment, like
+        // entering text in a field, and ones exposed in the environemnt for scripting
         this.textarea = this._shadowRoot.querySelector('.field-textarea');
         this.textareaWrapper = this._shadowRoot.querySelector('.field-textarea-wrapper');
         this.textarea.addEventListener('input', this.onInput);
@@ -268,11 +276,13 @@ class FieldView extends PartView {
         if(!this.haloModeButton){
             this.initCustomHaloButton();
         }
+        this.addEventListener("mouseup", this.onMouseup);
     }
 
     afterDisconnected(){
         this.textarea.removeEventListener('input', this.onInput);
         this.removeEventListener('click', this.onClick);
+        this.removeEventListener('mouseup', this.onMouseup);
     }
 
     afterModelSet(){
@@ -491,6 +501,54 @@ class FieldView extends PartView {
         }
 
     }
+
+    // I am responsible for handling selected text. Selection
+    // is triggered by mousep, since there is no document.selectionend
+    onMouseup(event){
+        let text = document.getSelection().toString();
+        if(text && !this.contextMenuOpen){
+            this.openContextMenu();
+        }
+    }
+
+
+    openContextMenu(){
+        let text = document.getSelection().toString();
+        let focusNode = document.getSelection().focusNode;
+        let button = document.createElement("button");
+        button.style.marginLeft = "10px";
+        button.style.backgroundColor = "var(--palette-green)";
+        button.textContent = "Do it!";
+        button.addEventListener("click", () => {
+            console.log("do it");
+            console.log(text);
+            button.remove();
+            // clear the selection and set the context menu to closed
+            document.getSelection().removeAllRanges();
+            this.contextMenuOpen = false;
+            // send message to compile the prepped script
+            let script = `on doIt\n   ${text}\nend doIt`;
+            this.sendMessage(
+                {
+                    type: "compile",
+                    codeString: script,
+                    targetId: this.model.id
+                },
+                this.model
+            );
+            this.sendMessage(
+                {
+                    type: "command",
+                    commandName: "doIt",
+                    args: [],
+                },
+                this.model
+            );
+        });
+        focusNode.after(button);
+        this.contextMenuOpen = true; 
+    };
+
     initCustomHaloButton(){
         this.haloModeButton = document.createElement('div');
         this.haloModeButton.id = "halo-field-toggle-mode";
