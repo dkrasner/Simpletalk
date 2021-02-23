@@ -230,7 +230,7 @@ class FieldView extends PartView {
         this.toggleModePartProperty = this.toggleModePartProperty.bind(this);
         this.openColorWheelWidget = this.openColorWheelWidget.bind(this);
         this.onColorSelected = this.onColorSelected.bind(this);
-        this.onTransparencySlider = this.onTransparencySlider.bind(this);
+        this.onTransparencyChanged = this.onTransparencyChanged.bind(this);
 
         this.setupPropHandlers();
     }
@@ -362,7 +362,7 @@ class FieldView extends PartView {
         // colorWheelWidget event listener
         let colorWheel = this.shadowRoot.querySelector('color-wheel');
         colorWheel.addEventListener('color-selected', this.onColorSelected);
-        colorWheel.addEventListener('transparency-changed', this.onTransparencySlider);
+        colorWheel.addEventListener('transparency-changed', this.onTransparencyChanged);
     }
 
     onColorSelected(event){
@@ -376,7 +376,7 @@ class FieldView extends PartView {
         }, this.model);
     }
 
-    onTransparencySlider(event){
+    onTransparencyChanged(event){
         let command = event.target.getAttribute("selector-command");
         let propName = "transparency";
         // if the colorwheel is set to update the text-color
