@@ -219,8 +219,11 @@ class FieldView extends PartView {
         // Bind methods
         this.onInput = this.onInput.bind(this);
         this.onClick = this.onClick.bind(this);
+        this.onKeydown = this.onKeydown.bind(this);
         this.onMouseup = this.onMouseup.bind(this);
         this.openContextMenu = this.openContextMenu.bind(this);
+        this.closeContextMenu = this.closeContextMenu.bind(this);
+        this.doIt = this.doIt.bind(this);
         this.textToHtml = this.textToHtml.bind(this);
         this.setTextValue = this.setTextValue.bind(this);
         this.setupPropHandlers = this.setupPropHandlers.bind(this);
@@ -262,27 +265,22 @@ class FieldView extends PartView {
         this.textarea = this._shadowRoot.querySelector('.field-textarea');
         this.textareaWrapper = this._shadowRoot.querySelector('.field-textarea-wrapper');
         this.textarea.addEventListener('input', this.onInput);
+        this.textarea.addEventListener('keydown', this.onKeydown);
+        this.textareaWrapper.addEventListener('mouseup', this.onMouseup);
         this.textarea.focus();
         // document.execCommand("defaultParagraphSeparator", false, "br");
         this.setUpToolbar();
-        // prevent the default tab key to leave focus on the field
-        this.addEventListener("keydown", (event) => {
-            if(event.key==="Tab"){
-                event.preventDefault();
-                document.execCommand('insertHTML', false, '&#x9');
-            };
-        });
         this.addEventListener('click', this.onClick);
         if(!this.haloModeButton){
             this.initCustomHaloButton();
         }
-        this.addEventListener("mouseup", this.onMouseup);
     }
 
     afterDisconnected(){
         this.textarea.removeEventListener('input', this.onInput);
+        this.textareaWrapper.removeEventListener('mouseup', this.onMouseup);
+        this.textarea.removeEventListener('keydown', this.onKeydown);
         this.removeEventListener('click', this.onClick);
-        this.removeEventListener('mouseup', this.onMouseup);
     }
 
     afterModelSet(){
@@ -468,7 +466,6 @@ class FieldView extends PartView {
     onInput(event){
         event.stopPropagation();
         event.preventDefault();
-
         let innerHTML = event.target.innerHTML;
 
         if(this.editorCompleter){
@@ -480,6 +477,29 @@ class FieldView extends PartView {
             'htmlContent',
             innerHTML
         );
+    }
+
+    onKeydown(event){
+        // prevent the default tab key to leave focus on the field
+        if(event.key==="Tab"){
+            event.preventDefault();
+            document.execCommand('insertHTML', false, '&#x9');
+        };
+        // make sure we clear the context menu
+        if(this.contextMenuOpen){
+            // the context menu interaction can prevent backspace from
+            // removing text as it intuitively should
+            if(event.key==="Backspace"){
+                this.textarea.innerHTML = "";
+                this.model.partProperties.setPropertyNamed(
+                    this.model,
+                    'htmlContent',
+                    ""
+                );
+            };
+            this.closeContextMenu();
+        }
+        this.textarea.focus();
     }
 
     onClick(event){
@@ -516,38 +536,47 @@ class FieldView extends PartView {
         let text = document.getSelection().toString();
         let focusNode = document.getSelection().focusNode;
         let button = document.createElement("button");
+        button.id = "doIt";
         button.style.marginLeft = "10px";
         button.style.backgroundColor = "var(--palette-green)";
         button.textContent = "Do it!";
-        button.addEventListener("click", () => {
-            console.log("do it");
-            console.log(text);
-            button.remove();
-            // clear the selection and set the context menu to closed
-            document.getSelection().removeAllRanges();
-            this.contextMenuOpen = false;
-            // send message to compile the prepped script
-            let script = `on doIt\n   ${text}\nend doIt`;
-            this.sendMessage(
-                {
-                    type: "compile",
-                    codeString: script,
-                    targetId: this.model.id
-                },
-                this.model
-            );
-            this.sendMessage(
-                {
-                    type: "command",
-                    commandName: "doIt",
-                    args: [],
-                },
-                this.model
-            );
-        });
+        button.addEventListener("click", this.doIt);
         focusNode.after(button);
         this.contextMenuOpen = true; 
     };
+
+    closeContextMenu(){
+        let button = this._shadowRoot.querySelector('#doIt');
+        if(button){
+            button.remove();
+        }
+        // clear the selection and set the context menu to closed
+        document.getSelection().removeAllRanges();
+        this.contextMenuOpen = false;
+    }
+
+    doIt(){
+        let text = document.getSelection().toString();
+        this.closeContextMenu();
+        // send message to compile the prepped script
+        let script = `on doIt\n   ${text}\nend doIt`;
+        this.sendMessage(
+            {
+                type: "compile",
+                codeString: script,
+                targetId: this.model.id
+            },
+            this.model
+        );
+        this.sendMessage(
+            {
+                type: "command",
+                commandName: "doIt",
+                args: [],
+            },
+            this.model
+        );
+    }
 
     initCustomHaloButton(){
         this.haloModeButton = document.createElement('div');
