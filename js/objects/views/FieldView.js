@@ -490,11 +490,12 @@ class FieldView extends PartView {
             // the context menu interaction can prevent backspace from
             // removing text as it intuitively should
             if(event.key==="Backspace"){
-                this.textarea.innerHTML = "";
+                document.getSelection().deleteFromDocument();
+                let innerHTML = this.textarea.innerHTML;
                 this.model.partProperties.setPropertyNamed(
                     this.model,
                     'htmlContent',
-                    ""
+                    innerHTML
                 );
             };
             this.closeContextMenu();
