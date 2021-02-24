@@ -201,7 +201,7 @@
 	Command (a command statement)
 		= "go to" ("next" | "previous") systemObject --goToDirection
 		| "go to" systemObject objectId --goToByReference
-		| "answer" (stringLiteral | variableName) --answer
+		| "answer" Expression --answer
 		| "delete" "this"? systemObject objectId? --deleteModel
 		| "add" systemObject stringLiteral? "to"? ("this" | "current")? systemObject? objectId? --addModel
 		| "set" stringLiteral "to" (stringLiteral | variableName | integerLiteral ) InClause? --setProperty
