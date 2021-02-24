@@ -207,6 +207,7 @@ class FieldView extends PartView {
 
         // this.editorCompleter = this.simpleTalkCompleter;
         this.editorCompleter = null;
+        this.contextMenuOpen = false;
 
         this.template = document.createElement('template');
         this.template.innerHTML = templateString;
@@ -218,6 +219,10 @@ class FieldView extends PartView {
         // Bind methods
         this.onInput = this.onInput.bind(this);
         this.onClick = this.onClick.bind(this);
+        this.onKeydown = this.onKeydown.bind(this);
+        this.openContextMenu = this.openContextMenu.bind(this);
+        this.closeContextMenu = this.closeContextMenu.bind(this);
+        this.doIt = this.doIt.bind(this);
         this.textToHtml = this.textToHtml.bind(this);
         this.setTextValue = this.setTextValue.bind(this);
         this.setupPropHandlers = this.setupPropHandlers.bind(this);
@@ -251,19 +256,18 @@ class FieldView extends PartView {
     }
 
     afterConnected(){
+        // The events here are added via the .addEventListener() API which is
+        // distinct from the this.eventRespond() which uses the DOM element
+        // element.onEvent API. This allows us to distnguish between "core"
+        // system-web events that we don't want meddled with at the moment, like
+        // entering text in a field, and ones exposed in the environemnt for scripting
         this.textarea = this._shadowRoot.querySelector('.field-textarea');
         this.textareaWrapper = this._shadowRoot.querySelector('.field-textarea-wrapper');
         this.textarea.addEventListener('input', this.onInput);
+        this.textarea.addEventListener('keydown', this.onKeydown);
         this.textarea.focus();
         // document.execCommand("defaultParagraphSeparator", false, "br");
         this.setUpToolbar();
-        // prevent the default tab key to leave focus on the field
-        this.addEventListener("keydown", (event) => {
-            if(event.key==="Tab"){
-                event.preventDefault();
-                document.execCommand('insertHTML', false, '&#x9');
-            };
-        });
         this.addEventListener('click', this.onClick);
         if(!this.haloModeButton){
             this.initCustomHaloButton();
@@ -272,6 +276,7 @@ class FieldView extends PartView {
 
     afterDisconnected(){
         this.textarea.removeEventListener('input', this.onInput);
+        this.textarea.removeEventListener('keydown', this.onKeydown);
         this.removeEventListener('click', this.onClick);
     }
 
@@ -458,7 +463,6 @@ class FieldView extends PartView {
     onInput(event){
         event.stopPropagation();
         event.preventDefault();
-
         let innerHTML = event.target.innerHTML;
 
         if(this.editorCompleter){
@@ -470,6 +474,14 @@ class FieldView extends PartView {
             'htmlContent',
             innerHTML
         );
+    }
+
+    onKeydown(event){
+        // prevent the default tab key to leave focus on the field
+        if(event.key==="Tab"){
+            event.preventDefault();
+            document.execCommand('insertHTML', false, '&#x9');
+        };
     }
 
     onClick(event){
@@ -487,10 +499,62 @@ class FieldView extends PartView {
                     // toolbar.style.top = `-${toolbar.clientHeight + 5}px`;
                     // toolbar.style.visibility = "unset";
                 }
+            } else if(event.altKey){
+                let text = document.getSelection().toString();
+                if(text && !this.contextMenuOpen){
+                    this.openContextMenu();
+                }
             }
         }
-
     }
+
+    openContextMenu(){
+        let text = document.getSelection().toString();
+        let focusNode = document.getSelection().focusNode;
+        let button = document.createElement("button");
+        button.id = "doIt";
+        button.style.marginLeft = "10px";
+        button.style.backgroundColor = "var(--palette-green)";
+        button.textContent = "Do it!";
+        button.addEventListener("click", this.doIt);
+        focusNode.after(button);
+        this.contextMenuOpen = true; 
+    };
+
+    closeContextMenu(){
+        let button = this._shadowRoot.querySelector('#doIt');
+        if(button){
+            button.remove();
+        }
+        // clear the selection and set the context menu to closed
+        document.getSelection().removeAllRanges();
+        this.contextMenuOpen = false;
+    }
+
+    doIt(event){
+        event.stopPropagation();
+        let text = document.getSelection().toString();
+        this.closeContextMenu();
+        // send message to compile the prepped script
+        let script = `on doIt\n   ${text}\nend doIt`;
+        this.sendMessage(
+            {
+                type: "compile",
+                codeString: script,
+                targetId: this.model.id
+            },
+            this.model
+        );
+        this.sendMessage(
+            {
+                type: "command",
+                commandName: "doIt",
+                args: [],
+            },
+            this.model
+        );
+    }
+
     initCustomHaloButton(){
         this.haloModeButton = document.createElement('div');
         this.haloModeButton.id = "halo-field-toggle-mode";
