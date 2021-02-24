@@ -117,7 +117,6 @@ class Image extends Part {
         filePicker.style.display = 'none';
         filePicker.addEventListener('change', (event) => {
             // Handle the file here
-            console.log(event);
             let reader = new FileReader();
             reader.onloadend = () => {
                 this.partProperties.setPropertyNamed(
@@ -131,7 +130,12 @@ class Image extends Part {
                     reader.result
                 );
             };
-            reader.readAsDataURL(filePicker.files[0]);
+            let imageFile = filePicker.files[0];
+            if(imageFile.type.includes('svg')){
+                reader.readAsText(imageFile);
+            } else {
+                reader.readAsDataURL(imageFile);
+            }
             filePicker.remove();
         });
         document.body.append(filePicker);
