@@ -300,6 +300,14 @@ const createInterpreterSemantics = (partContext, systemContext) => {
             let second = secondExpression.interpret();
             return first * second;
         },
+
+        Expression_stringConcatExpr: function(firstExpression, operation, secondExpression){
+            // When we encounter the "&" operator, we coerce both expressions into
+            // a string
+            let first = firstExpression.interpret().toString();
+            let second = secondExpression.interpret().toString();
+            return `${first}${second}`;
+        },
         
         Factor_parenFactor: function(leftParen, expression, rightParen){
             return expression.interpret();
