@@ -77,7 +77,8 @@
         Expression
                = Expression "+" Expression --addExpr
                | Expression "*" Expression --timesExpr
-			   | Expression "-" Expression --minusExpr
+	       | Expression "-" Expression --minusExpr
+               | Expression "&" Expression --stringConcatExpr
                | Factor
 
 
@@ -204,7 +205,7 @@
 		| "delete" "this"? systemObject objectId? --deleteModel
 		| "add" systemObject stringLiteral? "to"? ("this" | "current")? systemObject? objectId? --addModel
 		| "set" stringLiteral "to" (stringLiteral | variableName | integerLiteral ) InClause? --setProperty
-		| "put" Factor "into" "global"? variableName --putVariable
+		| "put" Expression "into" "global"? variableName --putVariable
 		| "ask" anyLiteral --ask
     | "tell" ObjectSpecifier "to" Command --tellCommand
 		| messageName CommandArgumentList? --arbitraryCommand
