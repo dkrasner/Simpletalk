@@ -744,8 +744,6 @@ const createInterpreterSemantics = (partContext, systemContext) => {
          * expected of all interpreted ObjectSpecifiers
          */
         ObjectSpecifier_singleTerminal: function(terminalSpecifier){
-            console.log(terminalSpecifier.sourceString);
-            console.log(terminalSpecifier.interpret());
             let found = terminalSpecifier.interpret()();
             return found.id;
         },

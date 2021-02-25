@@ -1384,6 +1384,7 @@ System._commandHandlers['openDebugger'] = function(senders, partId){
 };
 
 System._commandHandlers['saveHTML'] = function(senders){
+    this.serialize();
     let clonedDocument = document.cloneNode(true);
     let world = clonedDocument.querySelector('st-world');
     if(world){
