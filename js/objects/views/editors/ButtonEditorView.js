@@ -142,6 +142,7 @@ class ButtonEditorView extends HTMLElement {
         // this.setupExpanderAreas = this.setupExpanderAreas.bind(this);
         this.openColorWheelWidget = this.openColorWheelWidget.bind(this);
         this.onColorSelected = this.onColorSelected.bind(this);
+        this.onTransparencyChanged = this.onTransparencyChanged.bind(this);
         this.onMouseDownInBar = this.onMouseDownInBar.bind(this);
         this.onMouseUpAfterDrag = this.onMouseUpAfterDrag.bind(this);
         this.onMouseMoveInBar = this.onMouseMoveInBar.bind(this);
@@ -263,6 +264,7 @@ class ButtonEditorView extends HTMLElement {
         // colorWheelWidget event listener
         let colorWheel = this.shadowRoot.querySelector('color-wheel');
         colorWheel.addEventListener('color-selected', this.onColorSelected);
+        colorWheel.addEventListener('transparency-changed', this.onTransparencyChanged);
     }
 
     onColorSelected(event){
@@ -273,6 +275,14 @@ class ButtonEditorView extends HTMLElement {
             type: "command",
             commandName: "setProperty",
             args: [command, colorStr]
+        }, this.target);
+    }
+
+    onTransparencyChanged(event){
+        this.target.sendMessage({
+            type: "command",
+            commandName: "setProperty",
+            args: [event.detail.propName, event.detail.value]
         }, this.target);
     }
 

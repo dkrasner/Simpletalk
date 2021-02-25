@@ -85,6 +85,7 @@ class ColorPickerTool extends HTMLElement {
         this.onMove = this.onMove.bind(this);
         this.toggleActive = this.toggleActive.bind(this);
         this.onColorSelected = this.onColorSelected.bind(this);
+        this.onTransparencyChanged = this.onTransparencyChanged.bind(this);
         this.setContextFromAttributes = this.setContextFromAttributes.bind(this);
     }
 
@@ -111,6 +112,7 @@ class ColorPickerTool extends HTMLElement {
             this.button.addEventListener('click', this.toggleActive);
             this.colorWheel = this.shadowRoot.querySelector('color-wheel');
             this.colorWheel.addEventListener('color-selected', this.onColorSelected);
+            this.colorWheel.addEventListener('transparency-changed', this.onTransparencyChanged);
         }
     }
 
@@ -118,6 +120,7 @@ class ColorPickerTool extends HTMLElement {
         this.ctx = null;
         this.button.removeEventListener('click', this.toggleActive);
         this.colorWheel.removeEventListener('color-selected', this.onColorSelected);
+        this.colorWheel.removeEventListener('transparency-changed', this.onTransparencyChanged);
     }
 
     start(x, y){
@@ -141,6 +144,14 @@ class ColorPickerTool extends HTMLElement {
         let colorStr = `rgba(${colorInfo.r}, ${colorInfo.g}, ${colorInfo.b}, ${colorInfo.alpha})`;
         this.ctx.strokeStyle = colorStr;
         this.ctx.fillStyle = colorStr;
+    }
+
+    onTransparencyChanged(event){
+        this.parentElement.model.sendMessage({
+            type: "command",
+            commandName: "setProperty",
+            args: ["transparency", event.detail]
+        }, this.parentElement.model);
     }
 
     toggleActive(event){

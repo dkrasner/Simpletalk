@@ -59,6 +59,14 @@ class Window extends Part {
             'rotate',
             null
         );
+        this.partProperties.newStyleProp(
+            'hide',
+            false,
+        );
+        this.partProperties.newStyleProp(
+            'transparency',
+            1.0,
+        );
         this.setupStyleProperties();
 
         // Bind methods

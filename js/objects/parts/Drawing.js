@@ -30,6 +30,14 @@ class Drawing extends Part {
             'rotate',
             null
         );
+        this.partProperties.newStyleProp(
+            'hide',
+            false,
+        );
+        this.partProperties.newStyleProp(
+            'transparency',
+            1.0,
+        );
         this.setupStyleProperties();
 
         // When drawing from a script/commands,
@@ -182,7 +190,6 @@ class Drawing extends Part {
         );
         this.activeCanvas = null;
         this.activeContext = null;
-        
     }
 
     /* Utility Methods for Scriptable Drawing */

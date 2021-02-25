@@ -101,6 +101,34 @@ class Field extends Part {
             'rotate',
             null
         );
+        this.partProperties.newStyleProp(
+            'hide',
+            false,
+        );
+        this.partProperties.newStyleProp(
+            'transparency',
+            1.0,
+        );
+        this.partProperties.newStyleProp(
+            'text-transparency',
+            1.0,
+        );
+        this.partProperties.newStyleProp(
+            'text-font',
+            'default',
+        );
+        this.partProperties.newStyleProp(
+            'background-color',
+            "rgb(255, 248, 220, 1)", // var(--palette-cornsik)
+        );
+        this.partProperties.newStyleProp(
+            'background-transparency',
+            1.0,
+        );
+        this.partProperties.newStyleProp(
+            'text-color',
+            "rgba(0, 0, 0, 1)",
+        );
         this.setupStyleProperties();
     }
 

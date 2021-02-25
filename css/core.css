@@ -157,6 +157,7 @@ st-field {
     width: var(--field-default-width);
     height: var(--field-default-height);
     position: absolute;
+    background-color: var(--palette-cornsik);
 }
 
 

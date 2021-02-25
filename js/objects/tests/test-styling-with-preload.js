@@ -16,23 +16,37 @@ describe('CSS Styler Util', () => {
     before(() => {
         stylerObj = {};
     });
-    it('Text styles conversion', () => {
-        cssStyler(stylerObj, "text-color", "red");
-        assert.equal(stylerObj["color"], "red");
-        cssStyler(stylerObj, "font", "Times");
-        assert.equal(stylerObj["fontFamily"], "Times");
+    describe('Text', () => {
+        it('Text font conversion', () => {
+            cssStyler(stylerObj, "text-font", "Times");
+            assert.equal(stylerObj["fontFamily"], "Times");
+        });
+        it('Text color conversion', () => {
+            cssStyler(stylerObj, "text-color", "rgb(255, 0, 0)");
+            assert.equal(stylerObj["color"], "rgba(255, 0, 0, 1)");
+            cssStyler(stylerObj, "text-color", "rgba(255, 0, 0, 1)");
+            assert.equal(stylerObj["color"], "rgba(255, 0, 0, 1)");
+            cssStyler(stylerObj, "text-color", "red");
+            assert.equal(stylerObj["color"], "rgba(255, 0, 0, 1)");
+        });
+        it('Text transparency', () => {
+            cssStyler(stylerObj, "text-transparency", .5);
+            assert.equal(stylerObj["color"], "rgba(255, 0, 0, 0.5)");
+            cssStyler(stylerObj, "text-transparency", ".5");
+            assert.equal(stylerObj["color"], "rgba(255, 0, 0, .5)");
+        });
     });
-    it('Name visibility', () => {
-        cssStyler(stylerObj, "name-visible", true);
-        assert.equal(stylerObj["color"], "initial");
-        cssStyler(stylerObj, "name-visible", false);
-        assert.equal(stylerObj["color"], "transparent");
+    it('Transparency', () => {
+        cssStyler(stylerObj, "transparency", 0.5);
+        assert.equal(stylerObj["opacity"], 0.5);
+        cssStyler(stylerObj, "transparency", "0.5");
+        assert.equal(stylerObj["opacity"], "0.5");
     });
-    it('Visibility', () => {
-        cssStyler(stylerObj, "visible", true);
-        assert.equal(stylerObj["visibility"], "visible");
-        cssStyler(stylerObj, "visible", false);
-        assert.equal(stylerObj["visibility"], "hidden");
+    it('Hide', () => {
+        cssStyler(stylerObj, "hide", false);
+        assert.equal(stylerObj["display"], "initial");
+        cssStyler(stylerObj, "hide", true);
+        assert.equal(stylerObj["display"], "none");
     });
     it('Background Color style conversion', () => {
         cssStyler(stylerObj, "background-color", "red");
@@ -66,7 +80,7 @@ describe('CSS Styler Util', () => {
         cssStyler(stylerObj, "background-color", "black");
         assert.equal(stylerObj["backgroundColor"], "black");
         cssStyler(stylerObj, "text-color", "black");
-        assert.equal(stylerObj["color"], "black");
+        assert.equal(stylerObj["color"], "rgba(0, 0, 0, 1)");
     });
 });
 
@@ -97,43 +111,43 @@ describe('Styling Properties', () => {
         // Note we just test for some of the core style props as the
         // complete list is likely to change in the future
         let styleProp = buttonModel.partProperties.getPropertyNamed(buttonModel, "cssStyle");
-        assert.equal(styleProp['visibility'], 'visible');
+        assert.equal(styleProp['opacity'], 1.0);
         assert.equal(styleProp['textAlign'], 'center');
     });
     it('Initial button DOM element style attribute is properly set', () => {
         // Note we just test for some of the core style props as the
         // complete list is likely to change in the future
         let buttonView = window.System.findViewById(buttonModel.id);
-        assert.equal(buttonView.style['visibility'], 'visible');
+        assert.equal(buttonView.style['opacity'], 1.0);
         assert.equal(buttonView.style['textAlign'], 'center');
     });
     it('Updating StyleProperty directly updates the style property value', () => {
-        let styleProp = buttonModel.partProperties.getPropertyNamed(buttonModel, "visible");
-        assert.equal(styleProp, true);
-        buttonModel.partProperties.setPropertyNamed(buttonModel, "visible", false);
-        styleProp = buttonModel.partProperties.getPropertyNamed(buttonModel, "visible");
+        let styleProp = buttonModel.partProperties.getPropertyNamed(buttonModel, "hide");
         assert.equal(styleProp, false);
+        buttonModel.partProperties.setPropertyNamed(buttonModel, "hide", true);
+        styleProp = buttonModel.partProperties.getPropertyNamed(buttonModel, "hide");
+        assert.equal(styleProp, true);
     });
     it('Updating StyleProperty directly updates the "cssStyle" BasicProperty', () => {
         let styleProp = buttonModel.partProperties.getPropertyNamed(buttonModel, "cssStyle");
-        assert.equal(styleProp['visibility'], 'hidden');
+        assert.equal(styleProp['display'], 'none');
     });
     it('Updating StyleProperty directly updates the DOM element style attribute', () => {
         let buttonView = window.System.findViewById(buttonModel.id);
-        assert.equal(buttonView.style['visibility'], 'hidden');
+        assert.equal(buttonView.style['display'], 'none');
     });
     it('Updating StyleProperty via "set" message updates the "cssStyle" BasicProperty', () => {
         let msg  = {
             type: "command",
             commandName: "setProperty",
-            args: ["visible", true]
+            args: ["hide", false]
         };
         buttonModel.sendMessage(msg, buttonModel);
         let styleProp = buttonModel.partProperties.getPropertyNamed(buttonModel, "cssStyle");
-        assert.equal(styleProp['visibility'], 'visible');
+        assert.equal(styleProp['display'], 'initial');
     });
     it('Updating StyleProperty via "set" updates the DOM element style attribute', () => {
         let buttonView = window.System.findViewById(buttonModel.id);
-        assert.equal(buttonView.style['visibility'], 'visible');
+        assert.equal(buttonView.style['display'], 'initial');
     });
 });

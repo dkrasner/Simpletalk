@@ -53,6 +53,14 @@ class Image extends Part {
             'rotate',
             null
         );
+        this.partProperties.newStyleProp(
+            'hide',
+            false,
+        );
+        this.partProperties.newStyleProp(
+            'transparency',
+            1.0,
+        );
         this.setupStyleProperties();
 
         // Private command handlers

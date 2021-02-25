@@ -54,23 +54,27 @@ class Button extends Part {
         );
         this.partProperties.newStyleProp(
             'background-color',
-            null,
+            "rgba(255, 234, 149, 1)", // var(--palette-yellow)
+        );
+        this.partProperties.newStyleProp(
+            'background-transparency',
+            1,
         );
         this.partProperties.newStyleProp(
             'text-color',
-            null,
+            "rgba(0, 0, 0, 1)", // black
         );
         this.partProperties.newStyleProp(
             'text-style',
             'plain',
         );
         this.partProperties.newStyleProp(
-            'name-visible',
-            true,
+            'text-transparency',
+            1,
         );
         this.partProperties.newStyleProp(
-            'visible',
-            true,
+            'hide',
+            false,
         );
         // setting width and height to null
         // effectively forces to the default size
@@ -94,6 +98,10 @@ class Button extends Part {
         this.partProperties.newStyleProp(
             'rotate',
             null,
+        );
+        this.partProperties.newStyleProp(
+            'transparency',
+            1.0,
         );
         // TODO tbd props
         this.partProperties.newBasicProp(

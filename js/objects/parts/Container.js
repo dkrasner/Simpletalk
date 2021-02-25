@@ -29,6 +29,10 @@ class Container extends Part {
             null,
         );
         this.partProperties.newStyleProp(
+            'background-transparency',
+            1,
+        );
+        this.partProperties.newStyleProp(
             'width',
             "300px",
         );
@@ -44,9 +48,17 @@ class Container extends Part {
             'left',
             "0",
         );
-        this.partProperties.newStuyleProp(
+        this.partProperties.newStyleProp(
             'rotate',
             null
+        );
+        this.partProperties.newStyleProp(
+            'hide',
+            false,
+        );
+        this.partProperties.newStyleProp(
+            'transparency',
+            1.0,
         );
         this.setupStyleProperties();
     }

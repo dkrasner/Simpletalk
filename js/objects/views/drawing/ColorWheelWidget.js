@@ -13,7 +13,8 @@
 const colorWheelTemplate = `
 <style>
   :host {
-    display: flex;
+    display: initial !important;
+    visibility: visible !important;
     position: relative;
     flex-direction: column;
     align-items: center;
@@ -58,6 +59,19 @@ const colorWheelTemplate = `
     width: 100%;
     height: 25px;
   }
+  #options {
+    display: flex;
+    width: 100%;
+    height: 25px;
+    margin-top: 5px;
+    justify-content: center;
+  }
+
+  #options > label{
+    font-size: .8rem;
+    display: flex;
+    align-items: center;
+  }
 
   #recent-colors {
     display: flex;
@@ -85,6 +99,10 @@ const colorWheelTemplate = `
 <div id="palette-wrapper">
   <div id="palette-bar"><div id="close-button">x</div><span id="palette-title"></span></div>
   <div id="palette-content">
+    <div id="options">
+      <input type="range" id="transparency" name="transparency" min="0" max="1" step="0.1" value="1">
+      <!-- <label for="transparency">Transparency</label>-->
+    </div>
     <ul id="recent-colors">
       <li class="recent-color-item selected"></li>
       <li class="recent-color-item"></li>
@@ -120,6 +138,7 @@ class ColorWheelWidget extends HTMLElement {
         this.onBarMouseUp = this.onBarMouseUp.bind(this);
         this.onBarMouseMove = this.onBarMouseMove.bind(this);
         this.onClose = this.onClose.bind(this);
+        this.onTransparencyChange = this.onTransparencyChange.bind(this);
         this._drawWheel = this._drawWheel.bind(this);
     }
 
@@ -139,6 +158,8 @@ class ColorWheelWidget extends HTMLElement {
             Array.from(this.shadowRoot.querySelectorAll('.recent-color-item')).forEach(el => {
                 el.addEventListener('click', this.onItemClick);
             });
+            this.transparencySlider = this.shadowRoot.getElementById('transparency');
+            this.transparencySlider.addEventListener("input", this.onTransparencyChange);
 
             // Draw the color wheel to the canvas
             this._drawWheel();
@@ -152,6 +173,7 @@ class ColorWheelWidget extends HTMLElement {
         Array.from(this.shadowRoot.querySelector('.recent-color-item')).forEach(el => {
             el.removeEventListener('click', this.onItemClick);
         });
+        this.transparencySlider.removeEventListener("change", this.onTransparencyChange);
     }
 
 
@@ -214,6 +236,21 @@ class ColorWheelWidget extends HTMLElement {
             currentSwatchSelection.style.backgroundColor = `rgba(${colorInfo.r}, ${colorInfo.g}, ${colorInfo.b}, ${colorInfo.alpha})`;
             currentSwatchSelection.selectedColor = colorInfo;
         }
+    }
+
+    onTransparencyChange(event){
+        let command = this.getAttribute("selector-command");
+        // update the corresponding transparency - text or background
+        // depending on what this color wheel is setup to update
+        let propName = "background-transparency";
+        if(command === "text-color"){
+            propName = "text-transparency";
+        }
+        let eventDetail = {propName: propName, value: event.target.value};
+        let newEvent = new CustomEvent('transparency-changed', {
+            detail: eventDetail,
+        });
+        this.dispatchEvent(newEvent);
     }
 
     onItemClick(event){

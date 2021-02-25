@@ -57,6 +57,8 @@ class DrawingView extends PartView {
             this.template.content.cloneNode(true)
         );
 
+        this.colorPickerTool = null;
+
         this.isCurrentlyDrawing = false;
 
         // Bind component methods
@@ -117,7 +119,10 @@ class DrawingView extends PartView {
         let colorPickerChild = this.querySelector('color-picker-tool');
         if(!colorPickerChild){
             let newColorPicker = document.createElement('color-picker-tool');
+            // TODO this is a total hack since drawing does not work well with styles at the moment
             this.append(newColorPicker);
+            newColorPicker.colorWheel.shadowRoot.querySelector('div#options').style.display = "none";
+            this.colorPickerTool = newColorPicker;
         }
 
         if(!this.haloButton){
