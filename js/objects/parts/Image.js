@@ -57,9 +57,11 @@ class Image extends Part {
 
         // Private command handlers
         this.setPrivateCommandHandler("loadImageFrom", this.loadImageFromSource);
+        this.setPrivateCommandHandler("loadImageFromFile", this.loadImageFromFile);
 
         // Bind component methods
         this.loadImageFromSource = this.loadImageFromSource.bind(this);
+        this.loadImageFromFile = this.loadImageFromFile.bind(this);
     }
 
 
@@ -108,9 +110,43 @@ class Image extends Part {
             });
     }
 
+    loadImageFromFile(){
+        let filePicker = document.createElement('input');
+        filePicker.type = 'file';
+        filePicker.setAttribute('accept', 'image/*');
+        filePicker.style.display = 'none';
+        filePicker.addEventListener('change', (event) => {
+            // Handle the file here
+            let reader = new FileReader();
+            reader.onloadend = () => {
+                this.partProperties.setPropertyNamed(
+                    this,
+                    'mimeType',
+                    filePicker.files[0].type
+                );
+                this.partProperties.setPropertyNamed(
+                    this,
+                    'imageData',
+                    reader.result
+                );
+            };
+            let imageFile = filePicker.files[0];
+            if(imageFile.type.includes('svg')){
+                reader.readAsText(imageFile);
+            } else {
+                reader.readAsDataURL(imageFile);
+            }
+            filePicker.remove();
+        });
+        document.body.append(filePicker);
+        filePicker.click();
+    }
+
     setSource(owner, property, value){
         owner._src = value;
-        owner.loadImageFromSource([this], value);
+        if(value){
+            owner.loadImageFromSource([this], value);
+        }
         
     }
 
