@@ -546,6 +546,9 @@ const createInterpreterSemantics = (partContext, systemContext) => {
         PropertyValue_withSpecifier: function(theLiteral, propName, ofLiteral, objectSpecifier){
             let targetId = objectSpecifier.interpret();
             let target = systemContext.partsById[targetId];
+            if(!target){
+                throw new Error(`Could not find part with id ${targetId} (${this.sourceString})`);
+            }
             return target.partProperties.getPropertyNamed(
                 target,
                 propName.interpret()
@@ -809,6 +812,11 @@ const createInterpreterSemantics = (partContext, systemContext) => {
                 finalPart = findNearestParentOfKind(partContext, 'card');
             }
             let result = partialSpecifier.interpret()(finalPart);
+            return result.id;
+        },
+
+        ObjectSpecifier_singleTerminal: function(terminalSpecifier){
+            let result = terminalSpecifier.interpret()(partContext);
             return result.id;
         },
 
