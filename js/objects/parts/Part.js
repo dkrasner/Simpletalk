@@ -33,6 +33,7 @@ class Part {
         this._functionHandlers = {};
         this._scriptSemantics = {};
         this._propertySubscribers = new Set();
+        this._steppingIntervalId = null;
 
         this.isPart = true;
 
@@ -62,6 +63,8 @@ class Part {
         this.isSubpartOfCurrentCard = this.isSubpartOfCurrentCard.bind(this);
         this.isSubpartOfCurrentStack = this.isSubpartOfCurrentStack.bind(this);
         this.getOwnerBranch = this.getOwnerBranch.bind(this);
+        this.startStepping = this.startStepping.bind(this);
+        this.stopStepping = this.stopStepping.bind(this);
 
 
         // Finally, we finish initialization
@@ -224,6 +227,35 @@ class Part {
             },
             true, // Is readOnly,
             [] // No aliases
+        );
+
+
+        // Stepping related props
+
+        this.partProperties.newBasicProp(
+            // The time in milliseconds between
+            // sends of the step command if the
+            // stepping property is set to true
+            'stepTime',
+            500 // Default to half a second
+        );
+
+        this.partProperties.newDynamicProp(
+            'stepping',
+            // Dynamic setter
+            function(propOwner, propObject, value){
+                if(value === false && propOwner.isStepping){
+                    propOwner.stopStepping();
+                } else if(value === true && !propOwner.isStepping){
+                    propOwner.startStepping();
+                }
+            },
+            // Dynamic getter
+            function(propOwner, propObject){
+                // If the intervalId is set, then
+                // the Part is currently stepping
+                return propOwner.isStepping;
+            },
         );
 
     }
@@ -494,6 +526,37 @@ class Part {
         this._propertySubscribers.forEach(subscriber => {
             this.sendMessage(message, subscriber);
         });
+    }
+
+    startStepping(){
+        if(this._stepIntervalId){
+            this.stopStepping();
+        }
+        let stepTime = this.partProperties.getPropertyNamed(
+            this,
+            'stepTime'
+        );
+        if(stepTime > 0){
+            this._stepIntervalId = setInterval(() => {
+                this.sendMessage({
+                    type: 'command',
+                    commandName: 'step',
+                    args: []
+                }, this);
+            }, stepTime);
+        }
+    }
+
+    stopStepping(){
+        clearInterval(this._stepIntervalId);
+        this._stepIntervalId = null;
+    }
+
+    get isStepping(){
+        // We know the Part is currently stepping
+        // of the stored intervalId is set to
+        // something besides null
+        return this._stepIntervalId !== null;
     }
 
     /**
