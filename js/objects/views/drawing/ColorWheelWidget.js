@@ -239,8 +239,16 @@ class ColorWheelWidget extends HTMLElement {
     }
 
     onTransparencyChange(event){
+        let command = this.getAttribute("selector-command");
+        // update the corresponding transparency - text or background
+        // depending on what this color wheel is setup to update
+        let propName = "background-transparency";
+        if(command === "text-color"){
+            propName = "text-transparency";
+        }
+        let eventDetail = {propName: propName, value: event.target.value};
         let newEvent = new CustomEvent('transparency-changed', {
-            detail: event.target.value,
+            detail: eventDetail,
         });
         this.dispatchEvent(newEvent);
     }

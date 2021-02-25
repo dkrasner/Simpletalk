@@ -118,12 +118,12 @@ class Field extends Part {
             'default',
         );
         this.partProperties.newStyleProp(
-            'text-transparency',
-            1.0,
+            'background-color',
+            "rgb(255, 248, 220, 1)", // var(--palette-cornsik)
         );
         this.partProperties.newStyleProp(
-            'background-color',
-            null,
+            'background-transparency',
+            1.0,
         );
         this.partProperties.newStyleProp(
             'text-color',

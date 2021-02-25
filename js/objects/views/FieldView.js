@@ -377,25 +377,17 @@ class FieldView extends PartView {
     }
 
     onTransparencyChanged(event){
-        let command = event.target.getAttribute("selector-command");
-        let propName = "transparency";
-        // if the colorwheel is set to update the text-color
-        // (as opposed background) then update the propName
-        // to "text-transparency"
-        if(command === "text-color"){
-            propName = "text-transparency";
-        }
         this.model.sendMessage({
             type: "command",
             commandName: "setProperty",
-            args: [propName, event.detail]
+            args: [event.detail.propName, event.detail.value]
         }, this.model);
     }
 
     // I set the selected editor mode, removing or adding corresponding
     // toolbard elements, as well as adding editor helpers/utilities.
     setEditorMode(mode){
-        let toolbarElementNames = ["insertorderedlist", "insertunorderedlist", "justifyleft", "justifycenter", "justifyright"];
+        let toolbarElementNames = ["insertunorderedlist", "justifyleft", "justifycenter", "justifyright"];
         let display = "inherit";
         this.editorCompleter = undefined;
         // spellcheck

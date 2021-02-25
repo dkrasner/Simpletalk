@@ -18,6 +18,11 @@ const cssStyler = (styleObj, propertyName, propertyValue) => {
         _setOrNot(styleObj, "backgroundColor",  propertyValue);
         break;
 
+    case "background-transparency":
+        // here we set the Alpha value of the current styleObj["backgroundColor"] rgba
+        _setOrNot(styleObj, "backgroundColor",  _colorToRGBA(styleObj["backgroundColor"], propertyValue));
+        break;
+
     case "text-color":
         _setOrNot(styleObj, "color",  _colorToRGBA(propertyValue));
         break;

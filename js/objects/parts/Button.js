@@ -54,11 +54,15 @@ class Button extends Part {
         );
         this.partProperties.newStyleProp(
             'background-color',
-            null,
+            "rgba(255, 234, 149, 1)", // var(--palette-yellow)
+        );
+        this.partProperties.newStyleProp(
+            'background-transparency',
+            1,
         );
         this.partProperties.newStyleProp(
             'text-color',
-            "rgba(0, 0, 0, 1)",
+            "rgba(0, 0, 0, 1)", // black
         );
         this.partProperties.newStyleProp(
             'text-style',

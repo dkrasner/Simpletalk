@@ -279,18 +279,10 @@ class ButtonEditorView extends HTMLElement {
     }
 
     onTransparencyChanged(event){
-        let command = event.target.getAttribute("selector-command");
-        let propName = "transparency";
-        // if the colorwheel is set to update the text-color
-        // (as opposed background) then update the propName
-        // to "text-transparency"
-        if(command === "text-color"){
-            propName = "text-transparency";
-        }
         this.target.sendMessage({
             type: "command",
             commandName: "setProperty",
-            args: [propName, event.detail]
+            args: [event.detail.propName, event.detail.value]
         }, this.target);
     }
 

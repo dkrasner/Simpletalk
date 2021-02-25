@@ -190,7 +190,6 @@ class Drawing extends Part {
         );
         this.activeCanvas = null;
         this.activeContext = null;
-        
     }
 
     /* Utility Methods for Scriptable Drawing */
