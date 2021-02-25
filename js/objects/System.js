@@ -80,7 +80,7 @@ const System = {
         // containing JSON of serialized information,
         // attempt to load from it
         let serializationEl = document.getElementById('serialization');
-        if(serializationEl){
+        if(serializationEl && serializationEl.text != ""){
             this.deserialize();
         } else {
             this.loadFromEmpty();
