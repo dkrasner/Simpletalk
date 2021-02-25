@@ -33,7 +33,7 @@ class Part {
         this._functionHandlers = {};
         this._scriptSemantics = {};
         this._propertySubscribers = new Set();
-        this._steppingIntervalId = null;
+        this._stepIntervalId = null;
 
         this.isPart = true;
 
