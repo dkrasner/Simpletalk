@@ -543,6 +543,22 @@ const createInterpreterSemantics = (partContext, systemContext) => {
             return null;
         },
 
+        PropertyValue_withSpecifier: function(theLiteral, propName, ofLiteral, objectSpecifier){
+            let targetId = objectSpecifier.interpret();
+            let target = systemContext.partsById[targetId];
+            return target.partProperties.getPropertyNamed(
+                target,
+                propName.interpret()
+            );
+        },
+
+        PropertyValue_withoutSpecifier: function(theLiteral, propName){
+            return partContext.partProperties.getPropertyNamed(
+                partContext,
+                propName.interpret()
+            );
+        },
+
         /** Object Specifiers **/
 
         /**

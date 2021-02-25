@@ -66,6 +66,7 @@
         Factor (a factor)
                = "(" Expression ")" --parenFactor
                | "not" Expression --notFactor
+               | PropertyValue
                | anyLiteral
                | variableName
 
@@ -164,6 +165,12 @@
         CommandArgumentList
                 = NonemptyListOf<Expression, ",">
 
+
+        // Reading property values of parts is the same
+        // as asking for such value on an ObjectSpecifier
+        PropertyValue
+                = "the" propertyName "of" ObjectSpecifier --withSpecifier
+                | "the" propertyName --withoutSpecifier
 
         // A "terminal" specifier is one that cannot have
         // "of" attached to the end of it because it's the
@@ -284,6 +291,11 @@
 	// closing quotes
 	stringLiteral
 		= quoteMark (~lineTerminator ~quoteMark any)* quoteMark
+
+        // For now, a property name is wrapped in quotes, ie it
+        // is the same as a stringLiteral
+        propertyName
+                = stringLiteral
 
 	quoteMark = "\""
 
