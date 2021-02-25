@@ -15,7 +15,7 @@ const cssStyler = (styleObj, propertyName, propertyValue) => {
     switch(propertyName){
 
     case "background-color":
-        _setOrNot(styleObj, "backgroundColor",  propertyValue);
+        _setOrNot(styleObj, "backgroundColor",  _colorToRGBA(propertyValue));
         break;
 
     case "background-transparency":
