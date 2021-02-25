@@ -77,6 +77,8 @@
         Expression
                = Expression "+" Expression --addExpr
                | Expression "*" Expression --timesExpr
+               | Expression "/" Expression --divideExpr
+               | Expression "%" Expression --moduloDivideExpr
 	       | Expression "-" Expression --minusExpr
                | Expression "&" Expression --stringConcatExpr
                | Factor
@@ -161,7 +163,6 @@
         // to a given command handler
         CommandArgumentList
                 = NonemptyListOf<Expression, ",">
-
 
 
         // A "terminal" specifier is one that cannot have

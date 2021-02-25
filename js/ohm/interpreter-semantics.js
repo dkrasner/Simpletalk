@@ -35,7 +35,7 @@ const createInterpreterSemantics = (partContext, systemContext) => {
         MessageHandler: function(handlerOpen, optionalStatementList, handlerClose){
             let {messageName, parameters} = handlerOpen.interpret();
             let handlerFunction = function(senders, ...args){
-                
+
                 // In the grammar, the StatementList is
                 // an optional rule, meaning the result of the rule
                 // is an empty array (no statementlist) or a single
@@ -115,14 +115,14 @@ const createInterpreterSemantics = (partContext, systemContext) => {
             };
             return msg;
         },
-        
+
         Command_goToDirection: function(goToLiteral, nextPrevious, systemObject){
             let args = [];
             args.push(nextPrevious.sourceString);
             if (systemObject.sourceString){
                 args.push(systemObject.sourceString);
             }
-            
+
             let msg = {
                 type: "command",
                 commandName: "go to direction",
@@ -293,6 +293,18 @@ const createInterpreterSemantics = (partContext, systemContext) => {
             let first = firstExpr.interpret();
             let second = secondExpr.interpret();
             return first - second;
+        },
+
+        Expression_divideExpr: function(firstExpr, operation, secondExpr){
+            let first = firstExpr.interpret();
+            let second = secondExpr.interpret();
+            return first / second;
+        },
+
+        Expression_moduloDivideExpr: function(firstExpr, operation, secondExpr){
+            let first = firstExpr.interpret();
+            let second = secondExpr.interpret();
+            return first % second;
         },
 
         Expression_timesExpr: function(firstExpression, operation, secondExpression){
