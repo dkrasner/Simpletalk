@@ -33,16 +33,48 @@ String.prototype.unCapitalize = function() {
 }
 
 
-describe('Basic addition', () => {
-    it('Can parse a basic literal addition as Expression', () => {
-        let str = "2 + 2";
-        semanticMatchTest(str, "Expression");
-        semanticMatchTest(str, "Expression_addExpr");
-    });
-    it('Can parse a parens addition as a Factor and Expression', () => {
-        let str = "(2 + 2)";
-        semanticMatchTest(str, "Factor");
-        semanticMatchTest(str, "Expression");
+describe('Arithmetic', () => {
+    describe('Basic addition', () => {
+        it('Can parse a basic literal addition as Expression', () => {
+            let str = "2 + 2";
+            semanticMatchTest(str, "Expression");
+            semanticMatchTest(str, "Expression_addExpr");
+        });
+        it('Can parse a parens addition as a Factor and Expression', () => {
+            let str = "(2 + 2)";
+            semanticMatchTest(str, "Factor");
+            semanticMatchTest(str, "Expression");
+        });
+        it('Can parse a basic literal subtraction as Expression', () => {
+            let str = "2 - 2";
+            semanticMatchTest(str, "Expression");
+            semanticMatchTest(str, "Expression_minusExpr");
+        });
+        it('Can parse a parens subtraction as a Factor and Expression', () => {
+            let str = "(2 - 2)";
+            semanticMatchTest(str, "Factor");
+            semanticMatchTest(str, "Expression");
+        });
+        it('Can parse a basic literal division as Expression', () => {
+            let str = "2 / 2";
+            semanticMatchTest(str, "Expression");
+            semanticMatchTest(str, "Expression_divideExpr");
+        });
+        it('Can parse a parens division as a Factor and Expression', () => {
+            let str = "(2 / 2)";
+            semanticMatchTest(str, "Factor");
+            semanticMatchTest(str, "Expression");
+        });
+        it('Can parse a basic literal modulo division as Expression', () => {
+            let str = "2 % 2";
+            semanticMatchTest(str, "Expression");
+            semanticMatchTest(str, "Expression_moduloDivideExpr");
+        });
+        it('Can parse a parens modulo division as a Factor and Expression', () => {
+            let str = "(2 % 2)";
+            semanticMatchTest(str, "Factor");
+            semanticMatchTest(str, "Expression");
+        });
     });
 });
 

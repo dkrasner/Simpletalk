@@ -10,8 +10,6 @@ const expect = chai.expect;
 
 describe('Button Views', () => {
     it('Can setup world with a stack, card and button', () => {
-        let foundWindows = document.querySelectorAll('st-window');
-        assert.equal(foundWindows.length, 1);
         let currentStackViews = document.querySelectorAll('st-stack.current-stack');
         assert.equal(currentStackViews.length, 1);
         let currentStackModel = currentStackViews[0].model;
@@ -22,7 +20,7 @@ describe('Button Views', () => {
         let newButtonMsg = {
             type: 'command',
             commandName: 'newModel',
-            args: ['button', currentCardModel.id, "", "", "New Button"]
+            args: ['button', currentCardModel.id,"New Button"]
         };
         System.receiveMessage(newButtonMsg);
         let buttonViews = cardViews[0].querySelectorAll('st-button');

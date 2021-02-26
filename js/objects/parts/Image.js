@@ -50,6 +50,14 @@ class Image extends Part {
             "0",
         );
         this.partProperties.newStyleProp(
+            'height',
+            null
+        );
+        this.partProperties.newStyleProp(
+            'width',
+            null
+        );
+        this.partProperties.newStyleProp(
             'rotate',
             null
         );

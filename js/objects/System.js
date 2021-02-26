@@ -76,16 +76,12 @@ const System = {
     // to the view.
     initialLoad: function(){
 
-        // First, we look for an existing WorldView.
-        // If there is one, we try to find its model
-        // and corresponding state, recursively going
-        // through the model's parts and either creating
-        // or updating any existing views.
-        let worldView = document.querySelector(
-            this.tagNameForViewNamed('world')
-        );
-        if(worldView){
-            this.loadFromWorldView(worldView);
+        // If we have a serialization script tag
+        // containing JSON of serialized information,
+        // attempt to load from it
+        let serializationEl = document.getElementById('serialization');
+        if(serializationEl && serializationEl.text != ""){
+            this.deserialize();
         } else {
             this.loadFromEmpty();
         }
@@ -160,9 +156,8 @@ const System = {
         this.newModel('stack', worldModel.id);
         document.querySelector('st-stack').classList.add('current-stack');
 
-        this.updateSerialization(worldModel.id);
-        let msg = {type: 'command', commandName: 'openToolbox', args:[]};
-        this.receiveMessage(msg);
+        // Update serialization
+        this.serialize();
     },
 
     attachSubPartsFromDeserialized: function(aModel, aSerialization){
@@ -278,10 +273,6 @@ const System = {
                     aMessage.viewType,
                     aMessage.modelId
                 );
-            case 'propertyChanged':
-                return this.updateSerialization(
-                    aMessage.partId
-                );
             case 'compile':
                 return this.compile(aMessage);
             case 'command':
@@ -355,7 +346,7 @@ const System = {
         // serialization for the target
         // part, thus adding the script to
         // its serialization
-        this.updateSerialization(aMessage.targetId);
+        this.serialize();
     },
 
     receiveCommand: function(aMessage){
@@ -377,21 +368,27 @@ const System = {
         }
     },
 
-    newModel(kind, ownerId, ownerKind, context, name, buildView=true){
+    newModel: function(kind, ownerId, name, buildView=true){
+        // If no ownerId is provided, we assume
+        // current card to be the owner of the new part
+        if(!ownerId){
+            ownerId = this.getCurrentCardModel().id;
+        }
+
+        // Lookup the instance of the model that
+        // matches the owner's id        
+        let ownerPart = this.partsById[ownerId];
+        if(!ownerPart || ownerPart == undefined){
+            throw new Error(`System could not locate owner part with id ${ownerId}`);
+        }
+
         // TODO This is an exception to the general newModel
         // message and method structure; potentially should be
         // reworked
-        if (!ownerId && ownerKind === "toolbox"){
-            this.addToToolbox(kind, context, name);
-            return true;
-        }
-        // Lookup the instance of the model that
-        // matches the owner's id
-        let ownerPart = this.partsById[ownerId];
-        if(!ownerPart || ownerPart == undefined){
-            let inner = `kind(${kind}), ownerId(${ownerId}), ownerKind(${ownerKind}), context(${context}), name(${name})`;
-            throw new Error(`System could not locate owner part with id ${ownerId} -- ${inner}`);
-        }
+        // if (ownerPart === "toolbox"){
+        //     this.addToToolbox(kind, context, name);
+        //     return true;
+        // }
 
         // Find the class constructor for the kind of
         // part requested as a new model. If not known,
@@ -426,7 +423,6 @@ const System = {
         // subparts list
         if(ownerPart){
             ownerPart.addPart(model);
-            this.updateSerialization(ownerPart.id);
         }
 
         // Add the System as a property subscriber to
@@ -434,12 +430,6 @@ const System = {
         // this System object whenever any of this model's
         // properties have changed
         model.addPropertySubscriber(this);
-
-        // Serialize the new model into the page
-        this.updateSerialization(model.id);
-        model.subparts.forEach(subpart => {
-            this.updateSerialization(subpart.id);
-        });
 
         if(buildView){
             // See if there is already a view for the model.
@@ -469,7 +459,6 @@ const System = {
         // add the new model to the owner's
         // subparts list
         ownerPart.addPart(model);
-        this.updateSerialization(ownerPart.id);
 
         // Add the System as a property subscriber to
         // the new model. This will send a message to
@@ -477,18 +466,15 @@ const System = {
         // properties have changed
         model.addPropertySubscriber(this);
 
-        // Serialize the new model into the page
-        this.updateSerialization(model.id);
-        model.subparts.forEach(subpart => {
-            this.updateSerialization(subpart.id);
-        });
-
         // See if there is already a view for the model.
         // If not, create and attach it.
         let viewForModel = this.findViewById(model.id);
         if(!viewForModel){
             this.newView(model.type, model.id);
         }
+
+        // Reserialize the world
+        this.serialize();
 
         return model;
     },
@@ -577,6 +563,9 @@ const System = {
         // in case the model/partView was in the toolbox
         // remove the id reference
         this.removeFromToolbox(modelId);
+
+        // Serialize the state
+        this.serialize();
         return true;
     },
 
@@ -597,15 +586,6 @@ const System = {
         if(!partName){
             partName = model.type;
         }
-
-        // If there is alreay a view for this model,
-        // simply return the instance of that view object
-        /*
-        let existingView = this.findViewById(modelId);
-        if(existingView){
-            return existingView;
-        }
-        */
 
         // Find the parent model id. This will
         // help us find the parent view element for
@@ -640,7 +620,7 @@ const System = {
 
     addToToolbox(kind, context, name){
         let toolboxModel = this.findToolbox();
-        let model = this.newModel(kind, toolboxModel.id, "", context, name);
+        let model = this.newModel(kind, toolboxModel.id, name);
         this.toolbox.push(model.id);
     },
 
@@ -737,77 +717,143 @@ const System = {
         return scriptEditorField;
     },
 
-    /** Serialization / Deserialization **/
-    fromSerialization: function(aString, recursive=true){
-        let json = JSON.parse(aString);
-        let newPartClass = this.availableParts[json.type];
-        if(!newPartClass){
-            throw new Error(`System could not deserialize Part of type "${json.type}"`);
+    serialize: function(){
+        let result = {
+            parts: {},
+            currentCardId: this.getCurrentCardModel().id,
+            currentStackId: this.getCurrentStackModel().id
+        };
+        let world = this.partsById['world'];
+        this.serializePart(world, result.parts);
+
+        // If there is not a script tag in the
+        // body for the serialization, create it
+        let serializationScriptEl = document.getElementById('serialization');
+        if(!serializationScriptEl){
+            serializationScriptEl = document.createElement('script');
+            serializationScriptEl.id = 'serialization';
+            serializationScriptEl.type = 'application/json';
+            document.body.append(serializationScriptEl);
         }
-        let newPart = newPartClass.setFromDeserialized(json);
+        serializationScriptEl.textContent = JSON.stringify(result, null, 4);
+        
+    },
+
+    deserialize: function(){
+        let serializationEl = document.getElementById('serialization');
+        if(!serializationEl){
+            throw new Error(`No serialization found for this page`);
+        }
+        let deserializedInfo = JSON.parse(serializationEl.innerText);
+
+        // Start from the WorldStack and recursively
+        // create new Parts/Views from the deserialized
+        // dictionary
+        let worldJSON = deserializedInfo.parts['world'];
+        if(!worldJSON){
+            throw new Error(`World not found in serialization!`);
+        }
+        this.deserializePart(
+            worldJSON,
+            null,
+            deserializedInfo.parts,
+            deserializedInfo
+        );
+
+        // Restore the correct current card
+        // and current stack
+        let currentStackView = document.querySelector(`[part-id="${deserializedInfo.currentStackId}"]`);
+        let currentCardView = document.querySelector(`[part-id="${deserializedInfo.currentCardId}"]`);
+        currentStackView.classList.add('current-stack');
+        currentCardView.classList.add('current-card');
+
+        // Compile all of the scripts on
+        // the available Part models
+        Object.keys(this.partsById).forEach(partId => {
+            let targetPart = this.partsById[partId];
+            let scriptText = targetPart.partProperties.getPropertyNamed(
+                targetPart,
+                'script'
+            );
+            if(scriptText){
+                // Here we just re-set the script
+                // to its original value. This should trigger
+                // all prop change subscribers that listen
+                // for script changes, which will trigger
+                // a compilation step
+                targetPart.partProperties.setPropertyNamed(
+                    targetPart,
+                    'script',
+                    scriptText
+                );
+            }
+        });
+    },
+
+    serializePart: function(aPart, aDict){
+        aDict[aPart.id] = aPart.toJSON();
+        aPart.subparts.forEach(subpart => {
+            this.serializePart(subpart, aDict);
+        });
+    },
+
+    deserializePart: function(aPartJSON, ownerId, fullJSON, deserializedInfo){
+        let ownerPart = this.partsById[ownerId];
+        let newPartClass = this.availableParts[aPartJSON.type];
+        if(!newPartClass){
+            throw new Error(`Cannot deserialize Part of type ${aPartJSON.type}!`);
+        }
+        let newPart = new newPartClass(ownerPart);
+        newPart.setFromDeserialized(aPartJSON);
         this.partsById[newPart.id] = newPart;
 
-        // If the deserialized object has a subparts
-        // array with ids, attempt to deserialize and
-        // instantiate models for those parts too,
-        // recursively
-        if(recursive){
-            json.subparts.forEach(subpartId => {
-                let serializationEl = document.querySelector(`script[data-part-id="${subpartId}"]`);
-                if(serializationEl){
-                    let content = serializationEl.innerHTML;
-                    this.fromSerialization(content);
-                }
-            });
-        }
-    },
+        // Sometimes a new part will automatically
+        // create subparts on itself (stacks make initial card etc)
+        // For deserialization we want to undo this
+        newPart.subparts.forEach(subpart => {
+            newPart.removePart(subpart);
+        });
 
-    updateSerialization: function(modelId){
-        let model = this.partsById[modelId];
-        if(!model){
-            throw new Error(`System could not serialize unknown model [${modelId}]`);
-        }
-        let serializationEl = document.querySelector(`script[data-part-id="${modelId}"]`);
-        if(!serializationEl){
-            serializationEl = document.createElement('script');
-            serializationEl.setAttribute('data-part-id', modelId);
-            serializationEl.setAttribute('data-role', 'part-serialization');
-            serializationEl.setAttribute('type', 'application/json');
+        // Add the System as a prop subscriber
+        // to the new part model
+        newPart.addPropertySubscriber(this);
+
+        if(ownerPart){
+            ownerPart.addPart(newPart);
         }
 
-        serializationEl.innerHTML = model.serialize();
-        this.serialScriptArea().appendChild(serializationEl);
-    },
-
-    removeSerializationFor: function(aPartId){
-        // Remove the script tag serialization for the given
-        // Part ID. This is usually done after a Part has been
-        // removed from the System, via deleteModel.
-        let element = document.querySelector(`script[data-part-id="${aPartId}"]`);
-        if(element){
-            element.parentElement.removeChild(element);
-        }
-    },
-
-    getSerializationFor: function(aPartId){
-        let element = document.querySelector(`script[data-part-id="${aPartId}"]`);
-        if(element){
-            return element.innerText;
-        }
-        return null;
-    },
-
-    serialScriptArea: function(){
-        let area = document.getElementById('serialization-container');
-        if(area){
-            return area;
+        // Build a view for the part
+        if(newPart.type != 'world'){
+            this.newView(newPart.type, newPart.id);
         } else {
-            area = document.createElement('div');
-            area.id = 'serialization-container';
-            document.body.appendChild(area);
-            return area;
+            let newView = document.createElement(
+                this.tagNameForViewNamed('world')
+            );
+            newView.setModel(newPart);
+            document.body.prepend(newView);
         }
+
+        // If this part represents the current card
+        // or current stack, we need to set the fullJSON's
+        // respective IDs for those parts to the new IDs
+        // generated for the deserialized versions
+        if(aPartJSON.id == deserializedInfo.currentCardId){
+            deserializedInfo.currentCardId = newPart.id;
+        } else if(aPartJSON.id == deserializedInfo.currentStackId){
+            deserializedInfo.currentStackId = newPart.id;
+        }
+
+        // Recursively deserialize any referenced
+        // subpart ids in the deserialization object
+        aPartJSON.subparts.forEach(subpartId => {
+            let subpartJSON = fullJSON[subpartId];
+            if(!subpartJSON){
+                throw new Error(`Could not deserialize Part ${subpartId} -- not found in serialization!`);
+            }
+            this.deserializePart(subpartJSON, newPart.id, fullJSON, deserializedInfo);
+        });
     },
+
 
     /** Navigation of Current World **/
     goToNextStack: function(){
@@ -904,6 +950,7 @@ System._commandHandlers['deleteModel'] = function(senders, ...rest){
 //System._commandHandlers['newModel'] = System.newModel;
 System._commandHandlers['newModel'] = function(senders, ...rest){
     System.newModel(...rest);
+    this.serialize();
 };
 //System._commandHandlers['copyModel'] = System.copyModel;
 System._commandHandlers['copyModel'] = function(senders, ...rest){
@@ -1009,174 +1056,25 @@ System._commandHandlers['openToolbox'] = function(senders, targetId){
         throw new Error(`Could not locate current Stack or Part with id ${targetId}`);
     }
 
-    let windowModel = this.newModel('window', targetPart.id);
-    let windowStack = this.newModel('stack', windowModel.id);
-    windowModel.partProperties.setPropertyNamed(
-        windowModel,
-        'title',
-        'Toolbox'
-    );
-
-    // Get the current card on the window stack etc
-    let windowStackView = this.findViewById(windowStack.id);
-    let windowCurrentCardModel = windowStackView.querySelector('.current-card').model;
-
-    // Set the current card of the window to have a list layout,
-    // which defaults to a column listDirection
-    windowCurrentCardModel.partProperties.setPropertyNamed(
-        windowCurrentCardModel,
-        'layout',
-        'list'
-    );
-    windowCurrentCardModel.partProperties.setPropertyNamed(
-        windowCurrentCardModel,
-        'listDirection',
-        'row' //TODO sort out this bug!
-    );
-
-    // Do more toolbox configuration here
-    // like making the buttons with their
-    // scripts, etc
-    windowStackView.classList.add('window-stack');
-    let addBtnBtn = this.newModel('button', windowCurrentCardModel.id);
-    addBtnBtn.partProperties.setPropertyNamed(
-        addBtnBtn,
-        'name',
-        'Add Button to Card'
-    );
-
-    let addBtnScript = 'on click\n    add button to current card\nend click';
-    addBtnBtn.partProperties.setPropertyNamed(
-        addBtnBtn,
-        'script',
-        addBtnScript
-    );
-    System.sendMessage(
-        {type: "compile", codeString: addBtnScript, targetId: addBtnBtn.id},
-        System,
-        System
-    );
-
-    // Add a button to add a new Container
-    let addContainerBtn = this.newModel('button', windowCurrentCardModel.id);
-    addContainerBtn.partProperties.setPropertyNamed(
-        addContainerBtn,
-        'name',
-        'Add Container to Card'
-    );
-    let addContainerScript = 'on click\n    add container to current card\nend click';
-    addContainerBtn.partProperties.setPropertyNamed(
-        addContainerBtn,
-        'script',
-        addContainerScript
-    );
-    System.sendMessage(
-        {type: "compile", codeString: addContainerScript, targetId: addContainerBtn.id},
-        System,
-        System
-    );
-
-    let addBtnToStackBtn = this.newModel('button', windowCurrentCardModel.id);
-    addBtnToStackBtn.partProperties.setPropertyNamed(
-        addBtnToStackBtn,
-        'name',
-        'Add Button to Stack'
-    );
-    let addBtnToStackScript = 'on click\n    add button to current stack\nend click';
-    addBtnToStackBtn.partProperties.setPropertyNamed(
-        addBtnToStackBtn,
-        'script',
-        addBtnToStackScript
-    );
-    System.sendMessage(
-        {type: "compile", codeString: addBtnToStackScript, targetId: addBtnToStackBtn.id},
-        System,
-        System
-    );
-
-    let addBtnToToolboxBtn = this.newModel('button', windowCurrentCardModel.id);
-    addBtnToToolboxBtn.partProperties.setPropertyNamed(
-        addBtnToToolboxBtn,
-        'name',
-        'Add Button to Toolbox'
-    );
-    let addBtnToToolboxScript = 'on click\n    add button "New Button" to this card\nend click';
-    addBtnToToolboxBtn.partProperties.setPropertyNamed(
-        addBtnToToolboxBtn,
-        'script',
-        addBtnToToolboxScript
-    );
-    System.sendMessage(
-        {type: "compile", codeString: addBtnToToolboxScript, targetId: addBtnToToolboxBtn.id},
-        System,
-        System
-    );
-
-    // Add a button to add a Drawing
-    let addDrawingBtn = this.newModel('button', windowCurrentCardModel.id);
-    addDrawingBtn.partProperties.setPropertyNamed(
-        addDrawingBtn,
-        'name',
-        'Add Drawing to Card'
-    );
-    addDrawingBtn._commandHandlers['click'] = function(){
-        let currentCardView = document.querySelector('.current-stack > .current-card');
-        let cardModel = currentCardView.model;
-        let newDrawing = System.newModel('drawing', cardModel.id);
-        newDrawing.partProperties.setPropertyNamed(
-            newDrawing,
-            'name',
-            `Drawing ${newDrawing.id}`
+    // Find the existing toolbox
+    let toolboxPart = targetPart.subparts.find(subpart => {
+        let name = subpart.partProperties.getPropertyNamed(
+            subpart,
+            'name'
         );
+        return subpart.type == 'window' && name == 'Toolbox';
+    });
 
-        // By default, we open the drawing in
-        // drawing mode, so user can immediately
-        // begin to paint
-        newDrawing.partProperties.setPropertyNamed(
-            newDrawing,
-            'mode',
-            'drawing'
-        );
-    };
+    if(!toolboxPart){
+        throw new Error(`Could not locate Toolbox!`);
+    }
 
-    // Add a button to add a Image
-    let addImageBtn = this.newModel('button', windowCurrentCardModel.id);
-    addImageBtn.partProperties.setPropertyNamed(
-        addImageBtn,
-        'name',
-        'Add Image to Card'
+    // Unhide it if it isn't shown already
+    toolboxPart.partProperties.setPropertyNamed(
+        toolboxPart,
+        'hide',
+        false
     );
-    let addImageBtnScript = 'on click\n    add image to current card\nend click';
-    addImageBtn.partProperties.setPropertyNamed(
-        addImageBtn,
-        'script',
-        addImageBtnScript
-    );
-    System.sendMessage(
-        {type: "compile", codeString: addImageBtnScript, targetId: addImageBtn.id},
-        System,
-        System
-    );
-
-    // Add a button to add a Field
-    let addFieldBtn = this.newModel('button', windowCurrentCardModel.id);
-    addFieldBtn.partProperties.setPropertyNamed(
-        addFieldBtn,
-        'name',
-        'Add Field to Card'
-    );
-    let addFieldBtnScript = 'on click\n    add field to current card\nend click';
-    addFieldBtn.partProperties.setPropertyNamed(
-        addFieldBtn,
-        'script',
-        addFieldBtnScript
-    );
-    System.sendMessage(
-        {type: "compile", codeString: addFieldBtnScript, targetId: addFieldBtn.id},
-        System,
-        System
-    );
-
 };
 
 System._commandHandlers['openWorldCatalog'] = function(senders, targetId){
@@ -1210,7 +1108,7 @@ System._commandHandlers['openWorldCatalog'] = function(senders, targetId){
     windowCurrentCardModel.partProperties.setPropertyNamed(
         windowCurrentCardModel,
         'listDirection',
-        'row'
+        'column'
     );
     windowCurrentCardModel.partProperties.setPropertyNamed(
         windowCurrentCardModel,
@@ -1230,8 +1128,6 @@ System._commandHandlers['openWorldCatalog'] = function(senders, targetId){
                 partModel = this.newModel(
                     "image",
                     windowCurrentCardModel.id,
-                    "",
-                    "",
                     '/images/stack.svg'
                 );
             } else if (partName === "card"){
@@ -1239,8 +1135,6 @@ System._commandHandlers['openWorldCatalog'] = function(senders, targetId){
                 partModel = this.newModel(
                     "image",
                     windowCurrentCardModel.id,
-                    "",
-                    "",
                     '/images/card.svg'
                 );
             } else if (partName === "window"){
@@ -1248,8 +1142,6 @@ System._commandHandlers['openWorldCatalog'] = function(senders, targetId){
                 partModel = this.newModel(
                     "image",
                     windowCurrentCardModel.id,
-                    "",
-                    "",
                     '/images/window.svg'
                 );
             } else if (partName === "container"){
@@ -1257,8 +1149,6 @@ System._commandHandlers['openWorldCatalog'] = function(senders, targetId){
                 partModel = this.newModel(
                     "image",
                     windowCurrentCardModel.id,
-                    "",
-                    "",
                     '/images/container.svg'
                 );
             } else if (partName === "button"){
@@ -1269,8 +1159,6 @@ System._commandHandlers['openWorldCatalog'] = function(senders, targetId){
                 partModel = this.newModel(
                     "image",
                     windowCurrentCardModel.id,
-                    "",
-                    "",
                     '/images/drawing.svg'
                 );
             } else if (partName === "image"){
@@ -1307,8 +1195,7 @@ System._commandHandlers['openScriptEditor'] = function(senders, targetId){
 
     // The stack where the window will be inserted will
     // be the current stack
-    let currentStackView = document.querySelector('.current-stack');
-    let insertStack = currentStackView.model;
+    let insertStack = this.getCurrentStackModel();
 
 
     if(!insertStack){
@@ -1328,8 +1215,9 @@ System._commandHandlers['openScriptEditor'] = function(senders, targetId){
     let winStackModel = this.newModel('stack', winModel.id);
     let winStackView = this.findViewById(winStackModel.id);
     winStackView.classList.add('window-stack');
-    let currentCardView = winView.querySelector('.current-stack .current-card');
-    let currentCard = currentCardView.model;
+    let currentCard = winStackModel.subparts.find(subpart => {
+        return subpart.type == 'card';
+    });
 
     // Set the current card's layout to be a column list
     currentCard.partProperties.setPropertyNamed(
@@ -1501,12 +1389,19 @@ System._commandHandlers['openDebugger'] = function(senders, partId){
 };
 
 System._commandHandlers['saveHTML'] = function(senders){
+    this.serialize();
+    let clonedDocument = document.cloneNode(true);
+    let world = clonedDocument.querySelector('st-world');
+    if(world){
+        world.remove();
+    }
+    
     let anchor = document.createElement('a');
     anchor.style.display = "none";
     document.body.append(anchor);
 
     let stamp = Date.now().toString();
-    let serializedPage = new XMLSerializer().serializeToString(document);
+    let serializedPage = new XMLSerializer().serializeToString(clonedDocument);
     let typeInfo = "data:text/plain;charset=utf-8";
     let url = `${typeInfo},${encodeURIComponent(serializedPage)}`;
     anchor.href = url;

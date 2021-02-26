@@ -56,6 +56,7 @@ class Part {
         this.addPropertySubscriber = this.addPropertySubscriber.bind(this);
         this.removePropertySubscriber = this.removePropertySubscriber.bind(this);
         this.serialize = this.serialize.bind(this);
+        this.toJSON = this.toJSON.bind(this);
         this.setFromDeserialized = this.setFromDeserialized.bind(this);
         this.deleteModelCmdHandler = this.deleteModelCmdHandler.bind(this);
         this.openEditorCmdHandler = this.openEditorCmdHandler.bind(this);
@@ -599,9 +600,14 @@ class Part {
         this.partProperties._properties.forEach(prop => {
             let name = prop.name;
             let value = prop.getValue(this);
+            // If this is the events set, transform
+            // it to an Array first (for serialization)
+            if(name == 'events'){
+                value = Array.from(value);
+            } 
             result.properties[name] = value;
         });
-        return JSON.stringify(result, null, 4);
+        return result;
     }
 
     /**
@@ -614,22 +620,25 @@ class Part {
         // to the incoming values
         let incomingProps = anObject.properties;
         Object.keys(incomingProps).forEach(propName => {
-            let property = this.partProperties.findPropertyNamed(propName);
-            if(!property){
-                throw new Error(`Invalid deserialized property: ${propName}`);
+            if(propName != 'id'){
+                let property = this.partProperties.findPropertyNamed(propName);
+                if(!property){
+                    throw new Error(`Invalid deserialized property: ${propName}`);
+                }
+                if(!property.readOnly){
+                    // Last arg is false, which tells the property
+                    // not to notify its owner's subscribers of
+                    // property changes. We don't need that when
+                    // deserializing
+                    property.setValue(this, incomingProps[propName], false);
+                }
             }
-            if(!property.readOnly){
-                // Last arg is false, which tells the property
-                // not to notify its owner's subscribers of
-                // property changes. We don't need that when
-                // deserializing
-                property.setValue(this, incomingProps[propName], false);
-            }
-        });
 
-        // Next, set the id based on the
-        // incoming value
-        this.id = anObject.id;
+        });
+    }
+
+    toJSON(){
+        return this.serialize();
     }
 };
 

@@ -77,6 +77,8 @@
         Expression
                = Expression "+" Expression --addExpr
                | Expression "*" Expression --timesExpr
+               | Expression "/" Expression --divideExpr
+               | Expression "%" Expression --moduloDivideExpr
 	       | Expression "-" Expression --minusExpr
                | Expression "&" Expression --stringConcatExpr
                | Factor
@@ -163,7 +165,6 @@
                 = NonemptyListOf<Expression, ",">
 
 
-
         // A "terminal" specifier is one that cannot have
         // "of" attached to the end of it because it's the
         // last possible query one can do in a chain.
@@ -183,7 +184,7 @@
         
 
         ObjectSpecifier (a object specifier)
-                = TerminalSpecifier
+                = TerminalSpecifier --singleTerminal
                 | QueriedSpecifier TerminalSpecifier --compoundQueryWithTerminal
                 | QueriedSpecifier PartialSpecifier --compoundQueryWithoutTerminal
                 | PartialSpecifier --singleNonTerminal
@@ -203,8 +204,8 @@
 		| "go to" systemObject objectId --goToByReference
 		| "answer" Expression --answer
 		| "delete" "this"? systemObject objectId? --deleteModel
-		| "add" systemObject stringLiteral? "to"? ("this" | "current")? systemObject? objectId? --addModel
 		| "set" stringLiteral "to" Expression InClause? --setProperty
+		| "add" systemObject stringLiteral? "to"? ObjectSpecifier --addModel
 		| "put" Expression "into" "global"? variableName --putVariable
 		| "ask" anyLiteral --ask
     | "tell" ObjectSpecifier "to" Command --tellCommand

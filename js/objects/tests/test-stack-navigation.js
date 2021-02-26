@@ -235,7 +235,7 @@ describe('Stack Navigation Tests', () => {
             assert.exists(first);
             assert.exists(second);
             assert.exists(third);
-            assert.equal('current-card', first.getAttribute('class'));
+            assert.include(Array.from(first.classList), 'current-card');
             assert.equal(
                 3,
                 stackView.querySelectorAll('st-card').length
