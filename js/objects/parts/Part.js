@@ -232,11 +232,28 @@ class Part {
 
         // Stepping related props
 
-        this.partProperties.newBasicProp(
+        this.partProperties.newDynamicProp(
             // The time in milliseconds between
             // sends of the step command if the
             // stepping property is set to true
             'stepTime',
+            // Dynamic setter
+            function(propOwner, propObject, value){
+                if(propOwner.isStepping){
+                    // Interrupt the current interval
+                    // and restart with new stepTime
+                    propOwner.stopStepping();
+                    this._value = value;
+                    propOwner.startStepping();
+                } else{
+                    this._value = value;
+                }
+            },
+            // Dynamic getter
+            function(propOwner, propObject){
+                return this._value;
+            },
+            false, // can read and write
             500 // Default to half a second
         );
 
@@ -407,7 +424,6 @@ class Part {
             var result = boundHandler(aMessage.senders, ...aMessage.args);
             window.System.executionStack.pop();
             return result;
-            
         }
 
         // Otherwise, we have no handler for

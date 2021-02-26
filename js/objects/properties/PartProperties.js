@@ -84,8 +84,8 @@ class BasicProperty {
 };
 
 class DynamicProperty extends BasicProperty {
-    constructor(name, setter, getter, readOnly=false, aliases=[]){
-        super(name, null, readOnly, aliases);
+    constructor(name, setter, getter, readOnly=false, defaultValue=null, aliases=[]){
+        super(name, defaultValue, readOnly, aliases);
         this.valueSetter = setter;
         this.valueGetter = getter;
     }
