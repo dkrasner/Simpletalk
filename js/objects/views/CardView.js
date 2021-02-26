@@ -70,6 +70,16 @@ class CardView extends PartView {
         this['ondrop'] = null;
     }
 
+    afterModelSet(){
+        // We force update the layout after the
+        // model has been set.
+        let currentLayout = this.model.partProperties.getPropertyNamed(
+            this.model,
+            'layout'
+        );
+        this.layoutChanged(currentLayout);
+    }
+
     onClick(event){
         if(event.button == 0 && event.shiftKey){
             event.preventDefault();
@@ -79,7 +89,8 @@ class CardView extends PartView {
             if (event.altKey){
                 this.openWorldCatalog();
             } else {
-                this.openToolbox();
+                // Disabling for now
+                //this.openToolbox();
             }
         }
     }

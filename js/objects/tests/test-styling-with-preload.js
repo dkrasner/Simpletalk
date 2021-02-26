@@ -50,7 +50,7 @@ describe('CSS Styler Util', () => {
     });
     it('Background Color style conversion', () => {
         cssStyler(stylerObj, "background-color", "red");
-        assert.equal(stylerObj["backgroundColor"], "red");
+        assert.equal(stylerObj["backgroundColor"], "rgba(255, 0, 0, 1)");
     });
     it('Unit px properties (top, left) conversion', () => {
         cssStyler(stylerObj, "top", 2);
@@ -72,13 +72,13 @@ describe('CSS Styler Util', () => {
     });
     it('Null or undefined value styles do not update the style object', () => {
         cssStyler(stylerObj, "background-color", null);
-        assert.equal(stylerObj["backgroundColor"], "red");
+        assert.equal(stylerObj["backgroundColor"], "rgba(255, 0, 0, 1)");
         cssStyler(stylerObj, "background-color", undefined);
-        assert.equal(stylerObj["backgroundColor"], "red");
+        assert.equal(stylerObj["backgroundColor"], "rgba(255, 0, 0, 1)");
     });
     it('Styles updated properly', () => {
         cssStyler(stylerObj, "background-color", "black");
-        assert.equal(stylerObj["backgroundColor"], "black");
+        assert.equal(stylerObj["backgroundColor"], "rgba(0, 0, 0, 1)");
         cssStyler(stylerObj, "text-color", "black");
         assert.equal(stylerObj["color"], "rgba(0, 0, 0, 1)");
     });

@@ -134,10 +134,16 @@ class WindowView extends PartView {
         this.setupClickAndDrag();
         this.setupBarButtons();
         this.setupExpanderAreas();
-        this.style.top = "50px";
-        this.style.left = "50px";
     }
 
+    afterModelSet(){
+        this.setTitle(
+            this.model.partProperties.getPropertyNamed(
+                this.model,
+                'title'
+            )
+        );
+    }
 
     setupClickAndDrag(){
         let bar = this._shadowRoot.querySelector('.st-window-bar');
@@ -194,8 +200,12 @@ class WindowView extends PartView {
     }
 
     onClose(event){
-        // Remove from the DOM
-        this.onHaloDelete();
+        let msg = {
+            type: 'command',
+            commandName: 'windowClose',
+            args: []
+        };
+        this.model.sendMessage(msg, this.model);
     }
 
     onMouseDownInBar(event){
@@ -215,8 +225,10 @@ class WindowView extends PartView {
     onMouseMoveInBar(event){
         let currentTop = parseInt(this.style.top);
         let currentLeft = parseInt(this.style.left);
-        let newTop = `${currentTop + event.movementY}px`;
-        let newLeft = `${currentLeft + event.movementX}px`;
+        // let newTop = `${currentTop + event.movementY}px`;
+        // let newLeft = `${currentLeft + event.movementX}px`;
+        let newTop = currentTop + event.movementY;
+        let newLeft = currentLeft + event.movementX;
         this.model.partProperties.setPropertyNamed(this.model, "top", newTop);
         this.model.partProperties.setPropertyNamed(this.model, "left", newLeft);
     }

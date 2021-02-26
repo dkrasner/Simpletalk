@@ -136,6 +136,16 @@ class DrawingView extends PartView {
         this.removeEventListener('click', this.onClick);
     }
 
+    afterModelSet(){
+        let currentImage = this.model.partProperties.getPropertyNamed(
+            this.model,
+            'image'
+        );
+        if(currentImage){
+            this.restoreImageFromModel(currentImage);
+        }
+    }
+
     onMouseDown(event){
         if(event.shiftKey){
             return;

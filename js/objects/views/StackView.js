@@ -58,6 +58,14 @@ class StackView extends PartView {
         }
     }
 
+    afterModelSet(){
+        // If the model's owner is a window, we need to
+        // add a window-stack class to the element
+        if(this.model._owner && this.model._owner.type == 'window'){
+            this.classList.add('window-stack');
+        }
+    }
+
     goToPrevCard(){
         let cardChildren = Array.from(this.querySelectorAll(':scope > st-card'));
         if(cardChildren.length > 1){

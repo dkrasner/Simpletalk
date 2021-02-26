@@ -13,7 +13,13 @@ import chai from 'chai';
 const assert = chai.assert;
 const expect = chai.expect;
 
-describe('Opening a Toolbox', () => {
+/** IMPORTANT: Toolbox is now a serialized part, so
+    we are skipping these tests for now and might
+    remove altogether
+**/
+
+
+describe.skip('Opening a Toolbox', () => {
     it('There is exactly one open window (toolbox) in the world', () => {
         let foundWindows = document.querySelectorAll('st-window');
         assert.equal(foundWindows.length, 1 );
@@ -54,7 +60,7 @@ describe('Opening a Toolbox', () => {
     });
 });
 
-describe('Toolbox functionality', () => {
+describe.skip('Toolbox functionality', () => {
     /* Note: For now we only have
        the add button to card functionality
     */

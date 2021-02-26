@@ -78,7 +78,7 @@ class WorldStack extends Part {
             let value = prop.getValue(this);
             result.properties[name] = value;
         });
-        return JSON.stringify(result, null, 4);
+        return result;
     }
 
     // Override for delegation.
