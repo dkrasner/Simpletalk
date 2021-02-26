@@ -147,10 +147,15 @@ class PartView extends HTMLElement {
     }
 
     primHandlePropChange(name, value, partId){
+        // We notify the model that the property change so that
+        // on propertyChanged command handlers could be invoked
+        // but we make sure that this stops at the said model and
+        // does not go up the delegation chain
         let commandMessage = {
             type: 'command',
             commandName: 'propertyChanged',
             args: [name, value],
+            shouldNotDelegate:true, // do not send this up the delegation chain
             shouldIgnore: true
         };
         this.sendMessage(commandMessage, this.model);
