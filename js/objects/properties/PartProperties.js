@@ -136,6 +136,12 @@ class StyleProperty extends BasicProperty {
 
             // set my value as well
             this._value = val;
+            if(notify){
+                owner.propertyChanged(
+                    this.name,
+                    val
+                );
+            }
         }
     }
 };

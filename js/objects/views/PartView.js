@@ -147,6 +147,13 @@ class PartView extends HTMLElement {
     }
 
     primHandlePropChange(name, value, partId){
+        let commandMessage = {
+            type: 'command',
+            commandName: 'propertyChanged',
+            args: [name, value],
+            shouldIgnore: true
+        };
+        this.sendMessage(commandMessage, this.model);
         // Find the handler for the given named
         // property. If it does not exist, do nothing
         let handler = this.propChangeHandlers[name];
