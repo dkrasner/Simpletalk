@@ -50,6 +50,7 @@ class PartView extends HTMLElement {
         this.onHaloDelete = this.onHaloDelete.bind(this);
         this.onHaloOpenEditor = this.onHaloOpenEditor.bind(this);
         this.onHaloResize = this.onHaloResize.bind(this);
+        this.onAuxClick = this.onAuxClick.bind(this);
 
         // Bind editor related methods
         this.openEditor = this.openEditor.bind(this);
@@ -67,6 +68,10 @@ class PartView extends HTMLElement {
             // when attached to a parent element, like
             // registering event listeners etc
 
+            // Register middle mouse button click
+            // to toggle the halo
+            this.addEventListener('auxclick', this.onAuxClick);
+
             // Call the lifecycle method when done
             // with the above
             this.afterConnected();
@@ -74,6 +79,7 @@ class PartView extends HTMLElement {
     }
 
     disconnectedCallback(){
+        this.removeEventListener('auxclick', this.onAuxClick);
         this.afterDisconnected();
     }
 
@@ -306,6 +312,20 @@ class PartView extends HTMLElement {
         }
         this.model.partProperties.setPropertyNamed(this.model, "width", `${newWidth}px`);
         this.model.partProperties.setPropertyNamed(this.model, "height", `${newHeight}px`);
+    }
+
+    onAuxClick(event){
+        // Should only open halo when middle
+        // mouse button is clicked
+        if(event.button == 1){
+            event.preventDefault();
+            event.stopPropagation();
+            if(this.hasOpenHalo){
+                this.closeHalo();
+            } else {
+                this.openHalo();
+            }
+        }
     }
 
     get wantsHaloMove(){
