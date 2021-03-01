@@ -204,7 +204,7 @@
 		| "go to" systemObject objectId --goToByReference
 		| "answer" Expression --answer
 		| "delete" "this"? systemObject objectId? --deleteModel
-		| "set" stringLiteral "to" Expression InClause? --setProperty
+    | "set" Expression "to" Expression InClause? --setProperty
 		| "add" systemObject stringLiteral? "to"? ObjectSpecifier --addModel
 		| "put" Expression "into" "global"? variableName --putVariable
 		| "ask" anyLiteral --ask

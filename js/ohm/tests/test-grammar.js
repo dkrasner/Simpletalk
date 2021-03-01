@@ -539,10 +539,6 @@ describe("SimpleTalk Grammar", () => {
                     });
                 });
             });
-            it ("Bad construction (no quotes)", () => {
-                const s = `set backgroundColor to "blue" in card 10`;
-                semanticMatchFailTest(s, "Command");
-            });
         });
         describe("Arbitrary", () => {
             it ("arbitrary command", () => {

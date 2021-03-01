@@ -428,10 +428,14 @@ class Part {
         }
 
         // Otherwise, we have no handler for
-        // it, so we delegate along the
+        // it. Unless the message indicates shouldNotDelegate
+        // we delegate along the
         // message delegation chain. It is up
         // to Parts to properly implement delegation
         // for themselves!
+        if(aMessage.shouldNotDelegate){
+            return aMessage;
+        }
         return this.delegateMessage(aMessage);
     }
 

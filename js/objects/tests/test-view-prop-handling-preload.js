@@ -70,6 +70,65 @@ describe('Test use of #onPropChange registration', () => {
         );
     });
 });
+describe('Test #onPropChange command delegation', () => {
+    var buttonModel;
+    let buttonView;
+    var buttonPropertyName;
+    var buttonPropertyValue;
+    var ownerPropertyName;
+    var ownerPropertyValue;
+    before('Can create View/Model pair', () => {
+        let stackEl = document.querySelector('.current-stack');
+        let cardEl = stackEl.querySelector('st-card');
+        let msg = {
+            type: "command",
+            commandName: "newModel",
+            args: ["button", cardEl.model.id]
+        };
+        System.receiveMessage(msg);
+        buttonView = cardEl.querySelector('st-button');
+        assert.exists(buttonView);
+        buttonModel = buttonView.model;
+        assert.exists(buttonModel);
+        // add a command propertyChanged command handler to the button
+        buttonModel._commandHandlers["propertyChanged"] = function(_, name, value){
+            buttonPropertyName = name;
+            buttonPropertyValue = value;
+        };
+        // add a command propertyChanged command handler to the button owner
+        buttonModel._owner._commandHandlers["propertyChanged"] = function(_, name, value){
+            ownerPropertyName = name;
+            ownerPropertyValue = value;
+        };
+    });
+    it('A #propertyChanged message triggers a property change command + handler', () => {
+        assert.equal(buttonPropertyName, null);
+        assert.equal(buttonPropertyValue, null);
+        let msg = {
+            type: "propertyChanged",
+            propertyName: "background-color",
+            value: "red",
+            partId: buttonModel.id
+        };
+        buttonModel.sendMessage(msg, buttonView);
+        assert.equal(buttonPropertyName, "background-color");
+        assert.equal(buttonPropertyValue, "red");
+    });
+    it('A #propertyChanged command does not delegate up the chain', () => {
+        // remove the propertyChange handler from button; in general this should
+        // delegate to its owner which is what we test not to happen
+        buttonModel._commandHandlers = [];
+        let msg = {
+            type: "propertyChanged",
+            propertyName: "background-color",
+            value: "red",
+            partId: buttonModel.id
+        };
+        buttonModel.sendMessage(msg, buttonView);
+        assert.equal(ownerPropertyName, null);
+        assert.equal(ownerPropertyValue, null);
+    });
+});
 
 describe('Test event partProperty handling', () => {
     let testView;
