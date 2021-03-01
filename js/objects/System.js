@@ -35,6 +35,8 @@ import ohm from 'ohm-js';
 import interpreterSemantics from '../ohm/interpreter-semantics.js';
 import {ExecutionStack, ActivationContext} from './ExecutionStack.js';
 
+import idMaker from './utils/idMaker.js';
+
 const video = document.createElement('video');
 const canvas = document.createElement('canvas');
 var handDetectionModel = null;
@@ -739,7 +741,7 @@ const System = {
         if(!serializationEl){
             throw new Error(`No serialization found for this page`);
         }
-        let deserializedInfo = JSON.parse(serializationEl.innerText);
+        let deserializedInfo = JSON.parse(serializationEl.textContent);
 
         // Start from the WorldStack and recursively
         // create new Parts/Views from the deserialized
@@ -783,6 +785,19 @@ const System = {
                 );
             }
         });
+
+        // Finally, we reset the idMaker to start its
+        // count at the highest current id
+        let numericIds = Object.keys(System.partsById).filter(id => {
+            return id !== 'world';
+        }).map(id => {
+            return parseInt(id);
+        });
+        let currentId = Math.max(...numericIds);
+        idMaker.count = currentId;
+
+        // And serialize
+        this.serialize();
     },
 
     serializePart: function(aPart, aDict){
@@ -793,29 +808,18 @@ const System = {
     },
 
     deserializePart: function(aPartJSON, ownerId, fullJSON, deserializedInfo){
-        let ownerPart = this.partsById[ownerId];
         let newPartClass = this.availableParts[aPartJSON.type];
         if(!newPartClass){
             throw new Error(`Cannot deserialize Part of type ${aPartJSON.type}!`);
         }
-        let newPart = new newPartClass(ownerPart);
-        newPart.setFromDeserialized(aPartJSON);
+        //let newPart = new newPartClass(ownerPart, null, true);
+        //newPart.setFromDeserialized(aPartJSON);
+        let newPart = newPartClass.fromSerialized(ownerId, aPartJSON);
         this.partsById[newPart.id] = newPart;
-
-        // Sometimes a new part will automatically
-        // create subparts on itself (stacks make initial card etc)
-        // For deserialization we want to undo this
-        newPart.subparts.forEach(subpart => {
-            newPart.removePart(subpart);
-        });
 
         // Add the System as a prop subscriber
         // to the new part model
         newPart.addPropertySubscriber(this);
-
-        if(ownerPart){
-            ownerPart.addPart(newPart);
-        }
 
         // Build a view for the part
         if(newPart.type != 'world'){
@@ -847,6 +851,18 @@ const System = {
             }
             this.deserializePart(subpartJSON, newPart.id, fullJSON, deserializedInfo);
         });
+    },
+
+    // Return a *complete* HTML
+    // representation of the current application
+    // that can later be saved to a file
+    getFullHTMLString: function(){
+        let clonedDocument = document.cloneNode(true);
+        let world = clonedDocument.querySelector('st-world');
+        if(world){
+            world.remove();
+        }
+        return new window.XMLSerializer().serializeToString(clonedDocument);
     },
 
 
@@ -1385,18 +1401,13 @@ System._commandHandlers['openDebugger'] = function(senders, partId){
 
 System._commandHandlers['saveHTML'] = function(senders){
     this.serialize();
-    let clonedDocument = document.cloneNode(true);
-    let world = clonedDocument.querySelector('st-world');
-    if(world){
-        world.remove();
-    }
     
     let anchor = document.createElement('a');
     anchor.style.display = "none";
     document.body.append(anchor);
 
     let stamp = Date.now().toString();
-    let serializedPage = new XMLSerializer().serializeToString(clonedDocument);
+    let serializedPage = this.getFullHTMLString();
     let typeInfo = "data:text/plain;charset=utf-8";
     let url = `${typeInfo},${encodeURIComponent(serializedPage)}`;
     anchor.href = url;

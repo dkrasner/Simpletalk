@@ -136,7 +136,18 @@ class Window extends Part {
     get type(){
         return 'window';
     }
-};
+
+    static fromSerialized(ownerId, json){
+        let ownerPart = window.System.partsById[ownerId];
+        if(!ownerPart){
+            throw new Error(`Could not find owner part id ${ownerId} on deserialization!`);
+        }
+        let instance = new this(ownerPart);
+        instance.setFromDeserialized(json);
+        ownerPart.addPart(instance);
+        return instance;
+    };
+}
 
 export {
     Window,

@@ -15,7 +15,7 @@ import {
 import {ActivationContext} from '../ExecutionStack.js';
 
 class Part {
-    constructor(anOwnerPart){
+    constructor(anOwnerPart, name, deserializing=false){
 
         this.name = this.constructor.name;
 
@@ -541,26 +541,34 @@ class Part {
         // to the incoming values
         let incomingProps = anObject.properties;
         Object.keys(incomingProps).forEach(propName => {
-            if(propName != 'id'){
-                let property = this.partProperties.findPropertyNamed(propName);
-                if(!property){
-                    throw new Error(`Invalid deserialized property: ${propName}`);
-                }
-                if(!property.readOnly){
-                    // Last arg is false, which tells the property
-                    // not to notify its owner's subscribers of
-                    // property changes. We don't need that when
-                    // deserializing
-                    property.setValue(this, incomingProps[propName], false);
-                }
+            let property = this.partProperties.findPropertyNamed(propName);
+            if(!property){
+                throw new Error(`Invalid deserialized property: ${propName}`);
             }
-
+            if(!property.readOnly){
+                // Last arg is false, which tells the property
+                // not to notify its owner's subscribers of
+                // property changes. We don't need that when
+                // deserializing
+                property.setValue(this, incomingProps[propName], false);
+            }
         });
     }
 
     toJSON(){
         return this.serialize();
     }
+
+    static fromSerialized(ownerId, json){
+        let ownerPart = window.System.partsById[ownerId];
+        if(!ownerPart){
+            throw new Error(`Could not find owner part id ${ownerId} on deserialization!`);
+        }
+        let instance = new this(ownerPart, null, true);
+        instance.setFromDeserialized(json);
+        ownerPart.addPart(instance);
+        return instance;
+    };
 };
 
 export {

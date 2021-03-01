@@ -34,10 +34,3 @@ global.window.System = System;
 // object -- which here is already defined
 // in jsdom -- it will call those automatically.
 // Calling them twice will produce errors!
-
-/*import { Window } from 'happy-dom';
-const window = new Window();
-const document = window.document;
-global.window = window;
-global.document = document;
-global.HTMLElement = window.HTMLElement;*/

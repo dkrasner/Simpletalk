@@ -88,19 +88,16 @@ class WorldStack extends Part {
     delegateMessage(aMessage){
         return this.sendMessage(aMessage, window.System);
     }
-};
 
-
-/**
- * Constructs the appropriate Part based
- * on the incoming serialization string, which
- * should be JSON valid
- */
-WorldStack.fromSerialization = function(aString){
-    let json = JSON.parse(aString);
-    let newPart = new WorldStack();
-    newPart.setFromDeserialized(json);
-    return newPart;
+    static fromSerialized(ownerId, json){
+        // Unlike the default Part.js implementation,
+        // the WorldStack will not have any ownerId
+        // since it is the root in the hierarchy.
+        // so it ignores the first value passed in
+        let instance = new this();
+        instance.setFromDeserialized(json);
+        return instance;
+    }
 };
 
 export {
