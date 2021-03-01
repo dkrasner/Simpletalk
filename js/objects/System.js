@@ -548,6 +548,11 @@ const System = {
             return false;
         }
 
+        // Make sure to stop all stepping
+        // on the Part, otherwise stepping
+        // intervals will error infinitely
+        foundModel.stopStepping();
+
         let ownerModel = foundModel._owner;
         if(ownerModel){
             ownerModel.removePart(foundModel);
