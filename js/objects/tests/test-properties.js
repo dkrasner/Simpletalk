@@ -312,6 +312,7 @@ describe('PartProperties tests', () => {
                 function(owner){
                     return owner.dynamicValue;
                 },
+                null,
                 false,
                 ['myDynamicProperty', 'myDynaProp', 'dynamic']
             );
@@ -368,6 +369,7 @@ describe('PartProperties tests', () => {
                 function(owner, context){
                     return owner.dynamicValue;
                 },
+                null,
                 false,
                 ['myDynamicProperty', 'myDynaProp', 'dynamic']
             );
@@ -431,6 +433,7 @@ describe('PartProperties tests', () => {
                 function(owner, context){
                     return owner.dynamicValue;
                 },
+                null,
                 false,
                 ['myDynamicProperty', 'myDynaProp', 'dynamic']
             );
