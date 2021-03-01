@@ -36,4 +36,8 @@ describe("PropertyValue grammar tests", () => {
         semanticMatchTest(str, "PropertyValue");
         semanticMatchTest(str, "PropertyValue_withSpecifier");
     });
+    it("Can parse a PropertyValue as a part of a Factored Expression", () => {
+        let str = `(the "top" of this card + 5)`;
+        semanticMatchTest(str, "Expression");
+    });
 });
