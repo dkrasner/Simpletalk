@@ -39,6 +39,18 @@ const cssStyler = (styleObj, propertyName, propertyValue) => {
         _setOrNot(styleObj, "textAlign",  propertyValue);
         break;
 
+    case "text-underline":
+        if(propertyValue === true){
+            _setOrNot(styleObj, "textDecoration",  "underline");
+        }
+        break;
+
+    case "text-strikethrough":
+        if(propertyValue === true){
+            _setOrNot(styleObj, "textDecoration",  "line-through");
+        }
+        break;
+
     case "text-transparency":
         // here we set the Alpha value of the current styleObj["color"] rgba
         _setOrNot(styleObj, "color",  _colorToRGBA(styleObj["color"], propertyValue));
