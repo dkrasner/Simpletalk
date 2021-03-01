@@ -25,6 +25,7 @@
   },
   "homepage": "https://github.com/UnitedLexCorp/SimpleTalk#readme",
   "dependencies": {
+    "canvas": "^2.7.0",
     "chai": "^4.2.0",
     "esm": "^3.2.25",
     "happy-dom": "^0.14.1",
