@@ -48,10 +48,9 @@ class Field extends Part {
             'textContent',
             ''
         );
-        // TODO this should replace mode
         this.partProperties.newBasicProp(
-            'lockText',
-            false
+            'editable',
+            true
         );
         // A number of the props deal with direct text editing,
         // and so they are like commands. Examples include "undo"
