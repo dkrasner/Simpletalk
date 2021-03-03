@@ -11,7 +11,6 @@ import Button from './parts/Button.js';
 import Field from './parts/Field.js';
 import WorldStack from './parts/WorldStack.js';
 import Window from './parts/Window.js';
-import Container from './parts/Container.js';
 import Drawing from './parts/Drawing.js';
 import Image from './parts/Image.js';
 
@@ -24,7 +23,6 @@ import ButtonView from './views/ButtonView.js';
 import CardView from './views/CardView.js';
 import WindowView from './views/WindowView';
 import FieldView from './views/FieldView.js';
-import ContainerView from './views/ContainerView.js';
 import DrawingView from './views/drawing/DrawingView.js';
 import ImageView from './views/ImageView.js';
 
@@ -602,6 +600,7 @@ const System = {
 
         // Create the new view instance,
         // append to parent, and set the model
+        
         let newView = document.createElement(
             this.tagNameForViewNamed(partName)
         );
@@ -1118,12 +1117,10 @@ System._commandHandlers['openWorldCatalog'] = function(senders, targetId){
     let windowCurrentCardModel = windowStackView.querySelector('.current-card').model;
 
     // Set the current card of the window to have a list layout,
-    // which defaults to a column listDirection
-    // NOTE!!! listDirection is not subscribed to, so it must come before layout
-    // TODO!!!
+    // which defaults to a column list-direction
     windowCurrentCardModel.partProperties.setPropertyNamed(
         windowCurrentCardModel,
-        'listDirection',
+        'list-direction',
         'column'
     );
     windowCurrentCardModel.partProperties.setPropertyNamed(
@@ -1572,7 +1569,6 @@ System.registerPart('button', Button);
 System.registerPart('world', WorldStack);
 System.registerPart('window', Window);
 System.registerPart('field', Field);
-System.registerPart('container', Container);
 System.registerPart('drawing', Drawing);
 System.registerPart('image', Image);
 
@@ -1583,7 +1579,6 @@ System.registerView('world', WorldView);
 System.registerView('card', CardView);
 System.registerView('window', WindowView);
 System.registerView('field', FieldView);
-System.registerView('container', ContainerView);
 System.registerView('drawing', DrawingView);
 System.registerView('image', ImageView);
 

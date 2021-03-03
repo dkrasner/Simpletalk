@@ -1,5 +1,10 @@
 import {Part} from './Part.js';
 
+import {
+    addBasicStyleProps,
+    addPositioningStyleProps
+} from '../utils/styleProperties.js';
+
 class Image extends Part {
     constructor(owner, src, name) {
         super(owner);
@@ -41,34 +46,10 @@ class Image extends Part {
             'draggable',
             false
         );
-        this.partProperties.newStyleProp(
-            'top',
-            "0",
-        );
-        this.partProperties.newStyleProp(
-            'left',
-            "0",
-        );
-        this.partProperties.newStyleProp(
-            'height',
-            null
-        );
-        this.partProperties.newStyleProp(
-            'width',
-            null
-        );
-        this.partProperties.newStyleProp(
-            'rotate',
-            null
-        );
-        this.partProperties.newStyleProp(
-            'hide',
-            false,
-        );
-        this.partProperties.newStyleProp(
-            'transparency',
-            1.0,
-        );
+
+        // Style properties
+        addBasicStyleProps(this);
+        addPositioningStyleProps(this);
         this.setupStyleProperties();
 
         // Private command handlers

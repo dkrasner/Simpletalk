@@ -126,13 +126,6 @@ describe('newModel tests', () => {
         assert.equal(buttonViews.length, 2);
     });
 
-    it('There should be a serialization for the new button', () => {
-        let button = currentCardView.querySelector('st-button').model;
-        let serializationEl = document.getElementById('serialization');
-        let serialization = JSON.parse(serializationEl.innerText);
-        assert.include(Object.keys(serialization.parts), button.id.toString());
-    });
-
     it('Can send newModel message in a context (without targetId, current)', () => {
         let msg = {
             type: 'command',

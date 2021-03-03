@@ -11,6 +11,12 @@ import {
     DynamicProperty
 } from '../properties/PartProperties.js';
 
+import {
+    addBasicStyleProps,
+    addPositioningStyleProps,
+    addTextStyleProps
+} from '../utils/styleProperties.js';
+
 class Field extends Part {
     constructor(owner, name){
         super(owner);
@@ -81,54 +87,9 @@ class Field extends Part {
         // setting width and height to null
         // effectively forces to the default size
         // of the button to fit the button name
-        this.partProperties.newStyleProp(
-            'width',
-            null,
-        );
-        this.partProperties.newStyleProp(
-            'height',
-            null,
-        );
-        this.partProperties.newStyleProp(
-            'top',
-            "0",
-        );
-        this.partProperties.newStyleProp(
-            'left',
-            "0",
-        );
-        this.partProperties.newStyleProp(
-            'rotate',
-            null
-        );
-        this.partProperties.newStyleProp(
-            'hide',
-            false,
-        );
-        this.partProperties.newStyleProp(
-            'transparency',
-            1.0,
-        );
-        this.partProperties.newStyleProp(
-            'text-transparency',
-            1.0,
-        );
-        this.partProperties.newStyleProp(
-            'text-font',
-            'default',
-        );
-        this.partProperties.newStyleProp(
-            'background-color',
-            "rgb(255, 248, 220, 1)", // var(--palette-cornsik)
-        );
-        this.partProperties.newStyleProp(
-            'background-transparency',
-            1.0,
-        );
-        this.partProperties.newStyleProp(
-            'text-color',
-            "rgba(0, 0, 0, 1)",
-        );
+        addBasicStyleProps(this);
+        addPositioningStyleProps(this);
+        addTextStyleProps(this);
         this.setupStyleProperties();
     }
 

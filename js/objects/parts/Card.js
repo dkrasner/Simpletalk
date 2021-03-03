@@ -12,9 +12,11 @@ import {Part} from './Part.js';
 import {
     BasicProperty
 } from '../properties/PartProperties.js';
+
 import {
-    addLayoutProperties
-} from '../properties/LayoutProperties.js';
+    addBasicStyleProps,
+    addLayoutStyleProps
+} from '../utils/styleProperties.js';
 
 class Card extends Part {
     constructor(owner, name){
@@ -62,17 +64,9 @@ class Card extends Part {
         );
 
         // Styling
-        this.partProperties.newStyleProp(
-            'background-color',
-            null,
-        );
-
+        addBasicStyleProps(this);
+        addLayoutStyleProps(this);
         this.setupStyleProperties();
-
-        // Cards have the layout set
-        // of properties, so we add
-        // those
-        addLayoutProperties(this);
     }
 
     get type(){

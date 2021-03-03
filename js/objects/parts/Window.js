@@ -13,6 +13,10 @@
  * will be visible on top of everything else.
  */
 import Part from './Part.js';
+import {
+    addBasicStyleProps,
+    addPositioningStyleProps
+} from '../utils/styleProperties.js';
 
 class Window extends Part {
     constructor(owner, name, target){
@@ -47,26 +51,8 @@ class Window extends Part {
             true
         );
         // Style
-        this.partProperties.newStyleProp(
-            'top',
-            0,
-        );
-        this.partProperties.newStyleProp(
-            'left',
-            0,
-        );
-        this.partProperties.newStyleProp(
-            'rotate',
-            null
-        );
-        this.partProperties.newStyleProp(
-            'hide',
-            false,
-        );
-        this.partProperties.newStyleProp(
-            'transparency',
-            1.0,
-        );
+        addBasicStyleProps(this);
+        addPositioningStyleProps(this);
         this.setupStyleProperties();
 
 

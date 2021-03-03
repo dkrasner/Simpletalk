@@ -2,6 +2,10 @@
  * Basic User Drawing Part
  */
 import {Part} from './Part.js';
+import {
+    addBasicStyleProps,
+    addPositioningStyleProps
+} from '../utils/styleProperties.js';
 
 class Drawing extends Part {
     constructor(owner){
@@ -18,26 +22,8 @@ class Drawing extends Part {
             'drawing'
         );
         // Style
-        this.partProperties.newStyleProp(
-            'top',
-            "0",
-        );
-        this.partProperties.newStyleProp(
-            'left',
-            "0",
-        );
-        this.partProperties.newStyleProp(
-            'rotate',
-            null
-        );
-        this.partProperties.newStyleProp(
-            'hide',
-            false,
-        );
-        this.partProperties.newStyleProp(
-            'transparency',
-            1.0,
-        );
+        addBasicStyleProps(this);
+        addPositioningStyleProps(this);
         this.setupStyleProperties();
 
         // When drawing from a script/commands,

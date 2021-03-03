@@ -27,15 +27,6 @@ class CardView extends PartView {
         // Bind component methods
         this.onClick = this.onClick.bind(this);
         this.onDrop = this.onDrop.bind(this);
-        this.setupPropHandlers = this.setupPropHandlers.bind(this);
-        this.layoutChanged = this.layoutChanged.bind(this);
-
-        // Setup prop handlers
-        this.setupPropHandlers();
-    }
-
-    setupPropHandlers(){
-        this.onPropChange('layout', this.layoutChanged);
     }
 
     afterConnected(){
@@ -70,16 +61,6 @@ class CardView extends PartView {
         this['ondrop'] = null;
     }
 
-    afterModelSet(){
-        // We force update the layout after the
-        // model has been set.
-        let currentLayout = this.model.partProperties.getPropertyNamed(
-            this.model,
-            'layout'
-        );
-        this.layoutChanged(currentLayout);
-    }
-
     onClick(event){
         if(event.button == 0 && event.shiftKey){
             event.preventDefault();
@@ -109,30 +90,6 @@ class CardView extends PartView {
             this.sendMessage(msg, sourceModel);
         }
     }
-
-    layoutChanged(value, partId){
-        // Layout stuff
-        let layout = value;
-        if(layout == 'list'){
-            this.classList.add('list-layout');
-        } else {
-            this.classList.remove('list-layout');
-        }
-        let listDirection = this.model.partProperties.getPropertyNamed(
-            this.model,
-            'listDirection'
-        );
-        this.classList.remove(
-            'list-row',
-            'list-column'
-        );
-        if(layout && listDirection == 'row'){
-            this.classList.add('list-row');
-        } else if(layout && listDirection){
-            this.classList.add('list-column');
-        }
-    }
-
 };
 
 export {

@@ -11,6 +11,11 @@ import {
     BasicProperty,
     DynamicProperty
 } from '../properties/PartProperties.js';
+import {
+    addBasicStyleProps,
+    addPositioningStyleProps,
+    addTextStyleProps
+} from '../utils/styleProperties.js';
 
 class Button extends Part {
     constructor(owner, name){
@@ -44,75 +49,9 @@ class Button extends Part {
         );
 
         // Styling
-        this.partProperties.newStyleProp(
-            'text-align',
-            'center',
-        );
-        this.partProperties.newStyleProp(
-            'text-font',
-            'default',
-        );
-        this.partProperties.newStyleProp(
-            'background-color',
-            "rgba(255, 234, 149, 1)", // var(--palette-yellow)
-        );
-        this.partProperties.newStyleProp(
-            'background-transparency',
-            1,
-        );
-        this.partProperties.newStyleProp(
-            'text-color',
-            "rgba(0, 0, 0, 1)", // black
-        );
-        this.partProperties.newStyleProp(
-            'text-style',
-            'plain',
-        );
-        this.partProperties.newStyleProp(
-            'text-transparency',
-            1,
-        );
-        this.partProperties.newStyleProp(
-            'hide',
-            false,
-        );
-        // setting width and height to null
-        // effectively forces to the default size
-        // of the button to fit the button name
-        this.partProperties.newStyleProp(
-            'width',
-            null,
-        );
-        this.partProperties.newStyleProp(
-            'height',
-            null,
-        );
-        this.partProperties.newStyleProp(
-            'top',
-            "0",
-        );
-        this.partProperties.newStyleProp(
-            'left',
-            "0",
-        );
-        this.partProperties.newStyleProp(
-            'rotate',
-            null,
-        );
-        this.partProperties.newStyleProp(
-            'transparency',
-            1.0,
-        );
-        // TODO tbd props
-        this.partProperties.newBasicProp(
-            'autoHilite',
-            true
-        );
-        this.partProperties.newBasicProp(
-            'draggable',
-            true
-        );
-
+        addBasicStyleProps(this);
+        addPositioningStyleProps(this);
+        addTextStyleProps(this);
         this.setupStyleProperties();
 
     }
