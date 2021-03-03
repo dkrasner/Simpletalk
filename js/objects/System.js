@@ -1401,15 +1401,15 @@ System._commandHandlers['openDebugger'] = function(senders, partId){
 
 System._commandHandlers['saveHTML'] = function(senders){
     this.serialize();
-    
-    let anchor = document.createElement('a');
-    anchor.style.display = "none";
-    document.body.append(anchor);
 
     let stamp = Date.now().toString();
     let serializedPage = this.getFullHTMLString();
     let typeInfo = "data:text/plain;charset=utf-8";
     let url = `${typeInfo},${encodeURIComponent(serializedPage)}`;
+
+    let anchor = document.createElement('a');
+    anchor.style.display = "none";
+    document.body.append(anchor);
     anchor.href = url;
     anchor.download = `SimpleTalkSnapshot_${stamp}.html`;
     anchor.click();
