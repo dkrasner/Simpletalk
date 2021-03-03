@@ -120,17 +120,16 @@ st-window:active {
     z-index: 100;
 }
 
- *---------------------------------------
-/* =Container Styles
+/* =Area Styles
  *---------------------------------------------------------*/
-st-container {
+st-area {
     position: absolute;
     border: 1px solid rgb(150, 150, 150);
     width: var(--container-default-width);
     height: var(--container-default-height);
 }
 
-st-container:empty {
+st-area:empty {
     display: block;
     position: absolute;
     border: 1px solid rgb(150, 150, 150);
@@ -190,16 +189,38 @@ st-button-editor:active {
     flex-direction: row;
 }
 
+.list-column {
+    flex-direction: column;
+}
+
 .list-layout > * {
     position: relative !important;
     top: auto !important;
     left: auto !important;
+    width: unset !important;
+    height: unset !important;
 }
 
-
-.list-column {
-    flex-direction: column;
+:not(.list-layout) > .h-space-fill {
+    width: 100%;
 }
+
+:not(.list-layout) > .v-space-fill {
+    height: 100%;
+}
+
+.list-layout.list-column > .h-space-fill,
+.list-layout:not(.list-column) > .v-space-fill {
+    background-color: green !important;
+    width: 100%;
+}
+
+.list-layout.list-column > .v-space-fill,
+.list-layout:not(.list-column) > .h-space-fill {
+    flex: 1;
+    height: auto;
+}
+
 
 /* =Utility Classes
  * --------------------------------------------------------*/

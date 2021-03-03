@@ -76,23 +76,7 @@ const cssStyler = (styleObj, propertyName, propertyValue) => {
         if(propertyValue === true){
             styleObj["display"] = "none";
         } else if(propertyValue === false){
-            styleObj["display"] = "initial";
-        }
-        break;
-
-    case "horizontal-resizing":
-        if(propertyValue == 'space-fill'){
-            _setOrNot(styleObj, 'width', '100%');
-        } else if(propertyValue == 'shrink-wrap'){
-            _setOrNot(styleObj, 'width', 'auto');
-        }
-        break;
-
-    case "vertical-resizing":
-        if(propertyValue == 'space-fill'){
-            _setOrNot(styleObj, 'height', '100%');
-        } else if(propertyValue == 'shrink-wrap'){
-            _setOrNot(styleObj, 'height', 'auto');
+            styleObj["display"] = null;
         }
         break;
 

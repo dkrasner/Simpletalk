@@ -13,6 +13,7 @@ import WorldStack from './parts/WorldStack.js';
 import Window from './parts/Window.js';
 import Drawing from './parts/Drawing.js';
 import Image from './parts/Image.js';
+import Area from './parts/Area.js';
 
 import ButtonEditor from './parts/editors/ButtonEditor.js';
 
@@ -25,6 +26,7 @@ import WindowView from './views/WindowView';
 import FieldView from './views/FieldView.js';
 import DrawingView from './views/drawing/DrawingView.js';
 import ImageView from './views/ImageView.js';
+import AreaView from './views/AreaView.js';
 
 import Halo from './views/Halo.js';
 import ButtonEditorView from './views/editors/ButtonEditorView.js';
@@ -1224,6 +1226,7 @@ System._commandHandlers['openScriptEditor'] = function(senders, targetId){
         'title',
         winTitle
     );
+    
     let winView = this.findViewById(winModel.id);
     let winStackModel = this.newModel('stack', winModel.id);
     let winStackView = this.findViewById(winStackModel.id);
@@ -1238,10 +1241,25 @@ System._commandHandlers['openScriptEditor'] = function(senders, targetId){
         'layout',
         'list'
     );
+    currentCard.partProperties.setPropertyNamed(
+        currentCard,
+        'list-direction',
+        'column'
+    );
 
     // Create the Field model and attach to current card
     // of the new window.
     let fieldModel = this.newModel('field', currentCard.id);
+    fieldModel.partProperties.setPropertyNamed(
+        fieldModel,
+        'vertical-resizing',
+        'space-fill'
+    );
+    fieldModel.partProperties.setPropertyNamed(
+        fieldModel,
+        'horizontal-resizing',
+        'space-fill'
+    );
     let fieldView = this.findViewById(fieldModel.id);
     // Set the field's htmlContent to be the textToHtml converted
     // script of the given target part.
@@ -1571,6 +1589,7 @@ System.registerPart('window', Window);
 System.registerPart('field', Field);
 System.registerPart('drawing', Drawing);
 System.registerPart('image', Image);
+System.registerPart('area', Area);
 
 /** Register the initial set of views in the system **/
 System.registerView('button', ButtonView);
@@ -1581,6 +1600,7 @@ System.registerView('window', WindowView);
 System.registerView('field', FieldView);
 System.registerView('drawing', DrawingView);
 System.registerView('image', ImageView);
+System.registerView('area', AreaView);
 
 
 // Convenience method for adding all of the

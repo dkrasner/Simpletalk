@@ -15,7 +15,7 @@ const addBasicStyleProps = (target) => {
     );
     target.partProperties.newStyleProp(
         'background-color',
-        "rgba(255, 234, 149, 1)", // var(--palette-yellow)
+        null
     );
     target.partProperties.newStyleProp(
         'transparency',
@@ -120,7 +120,7 @@ const addPositioningStyleProps = (target) => {
 const addTextStyleProps = (target) => {
     target.partProperties.newStyleProp(
         'text-align',
-        'center',
+        'left',
     );
     target.partProperties.newStyleProp(
         'text-font',

@@ -42,6 +42,8 @@ class PartView extends HTMLElement {
         this.scriptChanged = this.scriptChanged.bind(this);
         this.layoutChanged = this.layoutChanged.bind(this);
         this.listDirectionChanged = this.listDirectionChanged.bind(this);
+        this.vResizingChanged = this.vResizingChanged.bind(this);
+        this.hResizingChanged = this.hResizingChanged.bind(this);
         this.eventRespond = this.eventRespond.bind(this);
         this.eventIgnore = this.eventIgnore.bind(this);
 
@@ -126,12 +128,15 @@ class PartView extends HTMLElement {
         });
         this.onPropChange('layout', this.layoutChanged);
         this.onPropChange('list-direction', this.listDirectionChanged);
+        this.onPropChange('horizontal-resizing', this.hResizingChanged);
+        this.onPropChange('vertical-resizing', this.vResizingChanged);
     }
 
     initLayout(){
         // Not all Part/PartView pairs have the layout
         // properties. Ensure they exist first
         let hasLayout = this.model.partProperties.findPropertyNamed('layout');
+        let hasBoxResizing = this.model.partProperties.findPropertyNamed('vertical-resizing');
         if(hasLayout){
             let initialLayout = this.model.partProperties.getPropertyNamed(
                 this.model,
@@ -140,9 +145,22 @@ class PartView extends HTMLElement {
             let initialListDirection = this.model.partProperties.getPropertyNamed(
                 this.model,
                 'list-direction'
-            );
+            );            
             this.layoutChanged(initialLayout);
             this.listDirectionChanged(initialListDirection);
+        }
+
+        if(hasBoxResizing){
+            let initialVResizing = this.model.partProperties.getPropertyNamed(
+                this.model,
+                'vertical-resizing'
+            );
+            let initialHResizing = this.model.partProperties.getPropertyNamed(
+                this.model,
+                'horizontal-resizing'
+            );
+            this.vResizingChanged(initialVResizing);
+            this.hResizingChanged(initialHResizing);
         }
     }
 
@@ -221,6 +239,50 @@ class PartView extends HTMLElement {
             this.classList.remove('list-column');
         } else if(value == 'column'){
             this.classList.add('list-column');
+        }
+    }
+
+    hResizingChanged(value){
+        if(value == 'space-fill'){
+            this.classList.add('h-space-fill');
+            this.classList.remove(
+                'h-rigid',
+                'h-shrink-wrap'
+            );
+        } else if(value == 'shrink-wrap'){
+            this.classList.add('h-shrink-wrap');
+            this.classList.remove(
+                'h-rigid',
+                'h-space-fill'
+            );
+        } else if(value == 'rigid'){
+            this.classList.add('h-rigid');
+            this.classList.remove(
+                'h-space-fill',
+                'h-shrink-wrap'
+            );
+        }
+    }
+
+    vResizingChanged(value){
+        if(value == 'space-fill'){
+            this.classList.add('v-space-fill');
+            this.classList.remove(
+                'v-rigid',
+                'v-shrink-wrap'
+            );
+        } else if(value == 'shrink-wrap'){
+            this.classList.add('v-shrink-wrap');
+            this.classList.remove(
+                'v-rigid',
+                'v-space-fill'
+            );
+        } else if(value == 'rigid'){
+            this.classList.add('v-rigid');
+            this.classList.remove(
+                'v-space-fill',
+                'v-shrink-wrap'
+            );
         }
     }
 
