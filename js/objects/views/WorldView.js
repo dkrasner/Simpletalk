@@ -39,7 +39,7 @@ class WorldView extends PartView {
         this.onPropChange('currentStack', this.updateCurrentStack);
     }
 
-    afterConnected(){
+    afterModelSet(){
         // If the model specifies a current stack,
         // update it.
         let currStackId = this.model.partProperties.getPropertyNamed(

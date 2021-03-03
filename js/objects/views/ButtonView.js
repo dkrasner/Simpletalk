@@ -64,11 +64,6 @@ class ButtonView extends PartView {
         this['onclick'] = this.onClick;
         this['ondragstart'] = this.onDragstart;
         this['ondragend'] = this.onDragend;
-
-        let buttonName = this.model.partProperties.getPropertyNamed(this, "name");
-        if(buttonName){
-            this.innerText = buttonName;
-        };
     }
 
     afterDisconnected(){
@@ -78,6 +73,13 @@ class ButtonView extends PartView {
         this['onclick'] = null;
         this['ondragstart'] = null;
         this['ondragend'] = null;
+    }
+
+    afterModelSet(){
+        let buttonName = this.model.partProperties.getPropertyNamed(this, "name");
+        if(buttonName){
+            this.innerText = buttonName;
+        };
     }
 
     // We overwrite the PartView.onHaloOpenEditor for the moment
