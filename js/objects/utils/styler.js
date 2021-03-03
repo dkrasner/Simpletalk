@@ -80,6 +80,22 @@ const cssStyler = (styleObj, propertyName, propertyValue) => {
         }
         break;
 
+    case "horizontal-resizing":
+        if(propertyValue == 'space-fill'){
+            _setOrNot(styleObj, 'width', '100%');
+        } else if(propertyValue == 'shrink-wrap'){
+            _setOrNot(styleObj, 'width', 'auto');
+        }
+        break;
+
+    case "vertical-resizing":
+        if(propertyValue == 'space-fill'){
+            _setOrNot(styleObj, 'height', '100%');
+        } else if(propertyValue == 'shrink-wrap'){
+            _setOrNot(styleObj, 'height', 'auto');
+        }
+        break;
+
     default:
         // for the default we simply allow ST style names to map 1-1
         // to CSS/JS style names. This is only somewhat safe, since the DOM

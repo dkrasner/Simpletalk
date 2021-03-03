@@ -31,6 +31,7 @@ class PartView extends HTMLElement {
         this.unsetModel = this.unsetModel.bind(this);
         this.sendMessage = this.sendMessage.bind(this);
         this.setupBasePropHandlers = this.setupBasePropHandlers.bind(this);
+        this.initLayout = this.initLayout.bind(this);
 
         // Bind initial property method
         this.styleCSS = this.styleCSS.bind(this);
@@ -39,6 +40,8 @@ class PartView extends HTMLElement {
         this.primHandlePropChange = this.primHandlePropChange.bind(this);
         this.onPropChange = this.onPropChange.bind(this);
         this.scriptChanged = this.scriptChanged.bind(this);
+        this.layoutChanged = this.layoutChanged.bind(this);
+        this.listDirectionChanged = this.listDirectionChanged.bind(this);
         this.eventRespond = this.eventRespond.bind(this);
         this.eventIgnore = this.eventIgnore.bind(this);
 
@@ -94,6 +97,7 @@ class PartView extends HTMLElement {
         events.forEach((eventName) => this.eventRespond(eventName));
         // load all the initial styling
         this.styleCSS();
+        this.initLayout();
         this.afterModelSet();
     }
 
@@ -120,6 +124,26 @@ class PartView extends HTMLElement {
                 this.closeEditor();
             }
         });
+        this.onPropChange('layout', this.layoutChanged);
+        this.onPropChange('list-direction', this.listDirectionChanged);
+    }
+
+    initLayout(){
+        // Not all Part/PartView pairs have the layout
+        // properties. Ensure they exist first
+        let hasLayout = this.model.partProperties.findPropertyNamed('layout');
+        if(hasLayout){
+            let initialLayout = this.model.partProperties.getPropertyNamed(
+                this.model,
+                'layout'
+            );
+            let initialListDirection = this.model.partProperties.getPropertyNamed(
+                this.model,
+                'list-direction'
+            );
+            this.layoutChanged(initialLayout);
+            this.listDirectionChanged(initialListDirection);
+        }
     }
 
     styleCSS(){
@@ -179,6 +203,25 @@ class PartView extends HTMLElement {
             codeString: value,
             targetId: partId
         }, window.System);
+    }
+
+    layoutChanged(value, partId){
+        if(value == 'list'){
+            this.classList.add('list-layout');
+        } else {
+            this.classList.remove('list-layout');
+        }
+    }
+
+    listDirectionChanged(value, partId){
+        // Row is the default configuration
+        // for a list layout, so only one extra
+        // CSS class needs to be toggled
+        if(value == 'row'){
+            this.classList.remove('list-column');
+        } else if(value == 'column'){
+            this.classList.add('list-column');
+        }
     }
 
     // add the event to "event" property and an event listener to the DOM

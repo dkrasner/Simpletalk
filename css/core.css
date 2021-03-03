@@ -52,7 +52,11 @@ st-world {
 /* =Stack Styles
  *----------------------------------------------------*/
 st-stack {
+    display: block;
     visibility: hidden;
+    position: relative;
+    width: 100%;
+    height: 100%;
 }
 
 
@@ -183,20 +187,19 @@ st-button-editor:active {
  * --------------------------------------------------------*/
 .list-layout {
     display: flex;
+    flex-direction: row;
 }
 
 .list-layout > * {
     position: relative !important;
+    top: auto !important;
+    left: auto !important;
 }
 
-.list-row {
-    flex-direction: row;
-}
 
 .list-column {
     flex-direction: column;
 }
-
 
 /* =Utility Classes
  * --------------------------------------------------------*/

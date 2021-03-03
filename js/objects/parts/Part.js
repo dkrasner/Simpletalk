@@ -624,16 +624,20 @@ class Part {
         // to the incoming values
         let incomingProps = anObject.properties;
         Object.keys(incomingProps).forEach(propName => {
-            let property = this.partProperties.findPropertyNamed(propName);
-            if(!property){
-                throw new Error(`Invalid deserialized property: ${propName}`);
-            }
-            if(!property.readOnly){
-                // Last arg is false, which tells the property
-                // not to notify its owner's subscribers of
-                // property changes. We don't need that when
-                // deserializing
-                property.setValue(this, incomingProps[propName], false);
+            if(propName != 'id'){
+                let property = this.partProperties.findPropertyNamed(propName);
+                if(!property){
+                    // If some old or invalid property is
+                    // present in the deserialization, simply provide
+                    // a warning and then skip this one.
+                    console.warn(`Deserialized property "${propName}" is not a valid property name for ${this.type} (id ${this.id}) and will be ignored`);
+                } else if(!property.readOnly){
+                    // Last arg is false, which tells the property
+                    // not to notify its owner's subscribers of
+                    // property changes. We don't need that when
+                    // deserializing
+                    property.setValue(this, incomingProps[propName], false);
+                }
             }
         });
     }

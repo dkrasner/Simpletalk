@@ -134,6 +134,10 @@ const addTextStyleProps = (target) => {
         'text-transparency',
         1,
     );
+    target.partProperties.newStyleProp(
+        'text-style',
+        'plain',
+    );
 };
 
 /**
