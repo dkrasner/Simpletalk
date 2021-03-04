@@ -12,7 +12,7 @@ const templateString = `
                 <style>
                 #area-wrapper {
                     display: block;
-                    position: relative;
+                    position: relative; 
                     width: 100%;
                     height: 100%;
                 }

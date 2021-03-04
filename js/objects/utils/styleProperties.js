@@ -166,6 +166,13 @@ const addLayoutStyleProps = (target) => {
         'row'
     );
 
+    // Wrapping specifies whether a list should
+    // wrap along its dominant dimension (row or column)
+    target.partProperties.newStyleProp(
+        'list-wrapping',
+        false
+    );
+
     // Padding specifies some space from the
     // border of the target Part to the beginning
     // of the layout of any subparts.

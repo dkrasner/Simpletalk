@@ -42,6 +42,7 @@ class PartView extends HTMLElement {
         this.scriptChanged = this.scriptChanged.bind(this);
         this.layoutChanged = this.layoutChanged.bind(this);
         this.listDirectionChanged = this.listDirectionChanged.bind(this);
+        this.listWrappingChanged = this.listWrappingChanged.bind(this);
         this.vResizingChanged = this.vResizingChanged.bind(this);
         this.hResizingChanged = this.hResizingChanged.bind(this);
         this.eventRespond = this.eventRespond.bind(this);
@@ -128,6 +129,7 @@ class PartView extends HTMLElement {
         });
         this.onPropChange('layout', this.layoutChanged);
         this.onPropChange('list-direction', this.listDirectionChanged);
+        this.onPropChange('list-wrapping', this.listWrappingChanted);
         this.onPropChange('horizontal-resizing', this.hResizingChanged);
         this.onPropChange('vertical-resizing', this.vResizingChanged);
     }
@@ -145,9 +147,14 @@ class PartView extends HTMLElement {
             let initialListDirection = this.model.partProperties.getPropertyNamed(
                 this.model,
                 'list-direction'
-            );            
+            );
+            let initialListWrapping = this.model.partProperties.getPropertyNamed(
+                this.model,
+                'list-wrapping'
+            );
             this.layoutChanged(initialLayout);
             this.listDirectionChanged(initialListDirection);
+            this.listWrappingChanged(initialListWrapping);
         }
 
         if(hasBoxResizing){
@@ -239,6 +246,14 @@ class PartView extends HTMLElement {
             this.classList.remove('list-column');
         } else if(value == 'column'){
             this.classList.add('list-column');
+        }
+    }
+
+    listWrappingChanged(value, partId){
+        if(value == true){
+            this.classList.add('wrap-list');
+        } else {
+            this.classList.remove('wrap-list');
         }
     }
 
