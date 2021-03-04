@@ -66,6 +66,7 @@
         Factor (a factor)
                = "(" Expression ")" --parenFactor
                | "not" Expression --notFactor
+               | PropertyValue
                | anyLiteral
                | variableName
 
@@ -165,6 +166,12 @@
                 = NonemptyListOf<Expression, ",">
 
 
+        // Reading property values of parts is the same
+        // as asking for such value on an ObjectSpecifier
+        PropertyValue
+                = "the" propertyName "of" ObjectSpecifier --withSpecifier
+                | "the" propertyName --withoutSpecifier
+
         // A "terminal" specifier is one that cannot have
         // "of" attached to the end of it because it's the
         // last possible query one can do in a chain.
@@ -204,11 +211,11 @@
 		| "go to" systemObject objectId --goToByReference
 		| "answer" Expression --answer
 		| "delete" "this"? systemObject objectId? --deleteModel
-    | "set" Expression "to" Expression InClause? --setProperty
+                | "set" propertyName "to" Expression InClause? --setProperty
 		| "add" systemObject stringLiteral? "to"? ObjectSpecifier --addModel
 		| "put" Expression "into" "global"? variableName --putVariable
 		| "ask" anyLiteral --ask
-    | "tell" ObjectSpecifier "to" Command --tellCommand
+                | "tell" ObjectSpecifier "to" Command --tellCommand
 		| messageName CommandArgumentList? --arbitraryCommand
 
 	CommentLines
@@ -284,6 +291,11 @@
 	// closing quotes
 	stringLiteral
 		= quoteMark (~lineTerminator ~quoteMark any)* quoteMark
+
+        // For now, a property name is wrapped in quotes, ie it
+        // is the same as a stringLiteral
+        propertyName
+                = stringLiteral
 
 	quoteMark = "\""
 
