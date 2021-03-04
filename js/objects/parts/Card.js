@@ -21,7 +21,7 @@ class Card extends Part {
         super(owner);
         this.stack = this._owner;
         this.acceptedSubpartTypes = [
-            "button", "button-editor", "field", "field", "container", "drawing", "image"
+            "button", "button-editor", "field", "field", "container", "drawing", "image", "audio"
         ];
         this.isCard = true;
 

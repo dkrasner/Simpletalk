@@ -13,6 +13,7 @@ import WorldStack from './parts/WorldStack.js';
 import Window from './parts/Window.js';
 import Container from './parts/Container.js';
 import Drawing from './parts/Drawing.js';
+import Audio from './parts/Audio.js';
 import Image from './parts/Image.js';
 
 import ButtonEditor from './parts/editors/ButtonEditor.js';
@@ -27,6 +28,7 @@ import FieldView from './views/FieldView.js';
 import ContainerView from './views/ContainerView.js';
 import DrawingView from './views/drawing/DrawingView.js';
 import ImageView from './views/ImageView.js';
+import AudioView from './views/AudioView.js';
 
 import Halo from './views/Halo.js';
 import ButtonEditorView from './views/editors/ButtonEditorView.js';
@@ -1564,6 +1566,7 @@ System.registerPart('field', Field);
 System.registerPart('container', Container);
 System.registerPart('drawing', Drawing);
 System.registerPart('image', Image);
+System.registerPart('audio', Audio);
 
 /** Register the initial set of views in the system **/
 System.registerView('button', ButtonView);
@@ -1575,6 +1578,7 @@ System.registerView('field', FieldView);
 System.registerView('container', ContainerView);
 System.registerView('drawing', DrawingView);
 System.registerView('image', ImageView);
+System.registerView('audio', AudioView);
 
 
 // Convenience method for adding all of the
