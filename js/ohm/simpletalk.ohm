@@ -250,7 +250,7 @@
         // These are convenience keywords used in place of indexing
         numericalKeyword (a number in English)
                 = "first" | "second" | "third" | "fourth" | "fifth" | "sixth"
-                | "seventh" | "eighth" | "ninth" | "tenth"
+                | "seventh" | "eighth" | "ninth" | "tenth" | "last"
 
 	objectId (an identifier of an object, string, numeric or mixed)
 		= ~systemObject (letter | digit)+

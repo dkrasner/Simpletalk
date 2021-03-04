@@ -612,7 +612,14 @@ const createInterpreterSemantics = (partContext, systemContext) => {
                     if(index > contextPart.subparts.length){
                         throw new Error(`${contextPart.type}[${contextPart.id}] does not have a part numbered ${index}`);
                     }
-                    return contextPart.subparts[index-1];
+                    if(index < 0){
+                        // An index of -1 indicates the "last"
+                        // item of the desired collection was
+                        // specified
+                        return contextPart.subparts[contextPart.subparts.length - 1];
+                    } else {
+                        return contextPart.subparts[index-1];
+                    }
                 } else {
                     let partsOfType = contextPart.subparts.filter(subpart => {
                         return subpart.type == objectType.sourceString;
@@ -620,7 +627,14 @@ const createInterpreterSemantics = (partContext, systemContext) => {
                     if(index > partsOfType.length){
                         throw new Error(`${contextPart.type}[${contextPart.id}] does not have a ${objectType.sourceString} numbered ${index}`);
                     }
-                    return partsOfType[index-1];
+                    if(index < 0){
+                        // An index of -1 indicates the "last"
+                        // item of the desired collection was
+                        // specified
+                        return partsOfType[partsOfType.length - 1];
+                    } else {
+                        return partsOfType[index-1];
+                    }
                 }
             };
         },

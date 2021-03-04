@@ -22,14 +22,14 @@ const semanticMatchFailTest = (str, semanticType) => {
 
 const partTypes = [
     "card",
-    "container",
     "button",
     "field",
     "stack",
     "window",
     "toolbox",
     "drawing",
-    "image"
+    "image",
+    "area"
 ];
 
 const numbers = [
@@ -43,6 +43,7 @@ const numbers = [
     "eighth",
     "ninth",
     "tenth",
+    "last"
 ];
 
 describe("Terminal Specifier Tests", () => {
