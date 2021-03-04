@@ -458,7 +458,8 @@ class PartView extends HTMLElement {
             parentModel,
             'layout'
         );
-        if(parentLayout === 'absolute' | !parentLayout || parentLayout == ""){
+        console.log(parentLayout);
+        if(parentLayout === 'strict' | !parentLayout || parentLayout == ""){
             return true;
         }
 

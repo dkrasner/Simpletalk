@@ -10,8 +10,21 @@ import PartView from './PartView.js';
 
 const templateString = `
                 <style>
+                #area-wrapper {
+                    display: block;
+                    width: 100%;
+                    height: 100%;
+                }
+                .clip {
+                    overflow: hidden;  
+                }
+                .allow-scroll {
+                    overflow: auto;
+                }
                 </style>
+                <div id="area-wrapper">
                 <slot></slot>
+                </div>
 `;
 
 class AreaView extends PartView {
@@ -25,6 +38,34 @@ class AreaView extends PartView {
         this._shadowRoot.appendChild(
             template.content.cloneNode(true)
         );
+
+        // Bound methods
+        this.clippingChanged = this.clippingChanged.bind(this);
+        this.allowScrollingChanged = this.allowScrollingChanged.bind(this);
+
+        // Prop change handlers
+        this.onPropChange('clipping', this.clippingChanged);
+        this.onPropChange('allow-scrolling', this.allowScrollingChanged);
+    }
+
+    clippingChanged(newVal, id){
+        let wrapper = this._shadowRoot.getElementById('area-wrapper');
+        if(newVal == true){
+            wrapper.classList.remove('allow-scroll');
+            wrapper.classList.add('clip');
+        } else {
+            wrapper.classList.remove('clip');
+        }
+    }
+
+    allowScrollingChanged(newVal, id){
+        let wrapper = this._shadowRoot.getElementById('area-wrapper');
+        if(newVal == true){
+            wrapper.classList.remove('clip');
+            wrapper.classList.add('allow-scroll');
+        } else {
+            wrapper.classList.remove('allow-scroll');
+        }
     }
 };
 

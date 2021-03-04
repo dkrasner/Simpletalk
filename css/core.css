@@ -210,7 +210,7 @@ st-button-editor:active {
 
 .list-layout.list-column > .h-space-fill,
 .list-layout:not(.list-column) > .v-space-fill {
-    width: 100% !important;
+    width: calc(100% - left) !important;
 }
 
 .list-layout.list-column > .v-space-fill,

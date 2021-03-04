@@ -47,6 +47,14 @@ class Area extends Part {
             'height',
             50
         );
+        this.partProperties.newBasicProp(
+            'clipping',
+            false
+        );
+        this.partProperties.newBasicProp(
+            'allow-scrolling',
+            false
+        );
         this.setupStyleProperties();
     }
 
