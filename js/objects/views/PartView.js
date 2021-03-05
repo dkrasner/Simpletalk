@@ -473,7 +473,6 @@ class PartView extends HTMLElement {
             parentModel,
             'layout'
         );
-        console.log(parentLayout);
         if(parentLayout === 'strict' | !parentLayout || parentLayout == ""){
             return true;
         }

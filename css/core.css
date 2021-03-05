@@ -212,17 +212,16 @@ st-button-editor:active {
     left: auto !important;
 }
 
-:not(.list-layout) > .h-space-fill {
-    width: 100% !important;
-}
-
-:not(.list-layout) > .v-space-fill {
-    height: 100% !important;
+.list-layout > st-window,
+.list-layout > st-button-editor {
+    position: absolute;
+    top: unset;
+    left: unset;
 }
 
 .list-layout.list-column > .h-space-fill,
 .list-layout:not(.list-column) > .v-space-fill {
-    width: calc(100% - left) !important;
+    width: 100% !important;
 }
 
 .list-layout.list-column > .v-space-fill,

@@ -11,7 +11,9 @@ import PartView from './PartView.js';
 const templateString = `
                 <style>
                 #area-wrapper {
-                    display: block;
+                    display: inherit;
+                    flex-direction: inherit;
+                    flex-wrap: inherit;
                     position: relative; 
                     width: 100%;
                     height: 100%;
