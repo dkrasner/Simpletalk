@@ -129,7 +129,7 @@ class PartView extends HTMLElement {
         });
         this.onPropChange('layout', this.layoutChanged);
         this.onPropChange('list-direction', this.listDirectionChanged);
-        this.onPropChange('list-wrapping', this.listWrappingChanted);
+        this.onPropChange('list-wrapping', this.listWrappingChanged);
         this.onPropChange('horizontal-resizing', this.hResizingChanged);
         this.onPropChange('vertical-resizing', this.vResizingChanged);
     }

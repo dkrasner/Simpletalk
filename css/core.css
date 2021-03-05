@@ -231,6 +231,10 @@ st-button-editor:active {
     height: auto !important;
 }
 
+.list-layout:not(.list-column) > .h-rigid {
+    flex: none;
+}
+
 
 /* =Utility Classes
  * --------------------------------------------------------*/
