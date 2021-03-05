@@ -23,12 +23,23 @@ class Audio extends Part {
             false
         );
 
+        this.partProperties.newBasicProp(
+            "load",
+            null
+        );
+
 
         // Private command handlers
         this.setPrivateCommandHandler("loadAudioFromSource", this.loadAudioFromSource);
+        this.setPrivateCommandHandler("play", () => {this.play(true);});
+        this.setPrivateCommandHandler("pause", () => {this.play(false);});
+        this.setPrivateCommandHandler("stop", this.stop);
 
         // Bind component methods
         this.loadAudioFromSource = this.loadAudioFromSource.bind(this);
+        this.play = this.play.bind(this);
+        this.stop = this.stop.bind(this);
+
 
         // load the src if provided
         if(src){
@@ -42,6 +53,14 @@ class Audio extends Part {
 
     loadAudioFromSource(senders, sourceUrl){
         this.partProperties.setPropertyNamed(this, "src", sourceUrl);
+    }
+
+    play(value){
+        this.partProperties.setPropertyNamed(this, "play", value);
+    }
+
+    stop(){
+        this.partProperties.setPropertyNamed(this, "load", true);
     }
 };
 

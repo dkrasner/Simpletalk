@@ -10,6 +10,16 @@ const templateString = `
 </style>
 `;
 
+// HTMLMediaElementStates copied from
+// https://developer.mozilla.org/en-US/docs/Web/API/HTMLMediaElement/readyState
+const mediaStates = {
+    0: "HAVE_NOTHING",
+    1: "HAVE_METADATA",
+    2: "HAVE_CURRENT_DATA",
+    3: "HAVE_FUTURE_DATA",
+    4: "HAVE_ENOUGH_DATA"
+};
+
 class AudioView extends PartView {
     constructor(){
         super();
@@ -34,9 +44,15 @@ class AudioView extends PartView {
                 this.pause();
             }
         });
+        this.onPropChange("load", (value) => {
+            if(value === true){
+                // audio.load() reloads to the beginning
+                this._shadowRoot.querySelector("audio").load();
+            }
+        });
         this.onPropChange("src", (url) => {
             try{
-                // resource load is auto-checked by the <audio> element
+                // resource load is auto-loaded by the <audio> element
                 this._shadowRoot.querySelector("audio").src = url;
             } catch(error){
                 let errorMsg = {
@@ -53,13 +69,23 @@ class AudioView extends PartView {
     }
 
     play(){
-        this._shadowRoot.querySelector("audio").play();
+        // first make sure that the resource is ready
+        let audio = this._shadowRoot.querySelector("audio");
+        if(audio.readyState > 2){
+            audio.play();
+        } else {
+            alert(`audio is not ready; current state: ${audio.readyState}, ${mediaStates[audio.readyState]}`);
+        }
     }
 
     pause(){
         this._shadowRoot.querySelector("audio").pause();
     }
 
+    // re-loads the media, setting it back to the beggning
+    stop(){
+        this._shadowRoot.querySelector("audio").load();
+    }
     afterConnected(){
     }
 

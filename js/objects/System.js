@@ -738,7 +738,6 @@ const System = {
             document.body.append(serializationScriptEl);
         }
         serializationScriptEl.textContent = JSON.stringify(result, null, 4);
-        
     },
 
     deserialize: function(){
