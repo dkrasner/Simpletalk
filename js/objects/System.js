@@ -867,7 +867,7 @@ const System = {
         if(world){
             world.remove();
         }
-        return new window.XMLSerializer().serializeToString(clonedDocument);
+        return clonedDocument.documentElement.outerHTML;
     },
 
 
