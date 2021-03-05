@@ -129,18 +129,21 @@
         EndIfLine
               = "end if" comment?
         
+        ControlStatementLine
+        	   = ~"else" ~"end if" StatementLine
+        
         IfThenSingleline
                = IfLine lineTerminator ThenLine lineTerminator ElseLine --withElse
                | IfLine lineTerminator ThenLine --withoutElse
 
         MultiThen
-               = "then" comment? lineTerminator StatementLine+
+               = "then" comment? lineTerminator ControlStatementLine+
         MultiElse
-               = "else" comment? lineTerminator StatementLine+
+               = "else" comment? lineTerminator ControlStatementLine+
 
         IfThenMultiline
-               = IfLine lineTerminator MultiThen EndIfLine --withoutElse
-               | IfLine lineTerminator MultiThen MultiElse --withElse
+               = IfLine lineTerminator MultiThen MultiElse EndIfLine --withElse
+               | IfLine lineTerminator MultiThen EndIfLine --withoutElse 
 
 		// Looping (repeat)
 		RepeatControlForm

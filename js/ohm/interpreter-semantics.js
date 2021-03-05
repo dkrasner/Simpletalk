@@ -378,6 +378,23 @@ const createInterpreterSemantics = (partContext, systemContext) => {
             }
         },
 
+        IfThenMultiline_withElse: function(ifLine, lineTerm, multiThen, multiElse, endIfLine){
+            let condition = ifLine.interpret();
+            if(condition){
+                return multiThen.interpret();
+            } else {
+                return multiElse.interpret();
+            }
+        },
+
+        IfThenMultiline_withoutElse: function(ifLine, lineTerm, multiThen, endIfLine){
+            let condition = ifLine.interpret();
+            if(condition){
+                return multiThen.interpret();
+            }
+            return null;
+        },
+
         IfLine: function(ifLiteral, conditional, optionalComment){
             return conditional.interpret();
         },
@@ -388,6 +405,18 @@ const createInterpreterSemantics = (partContext, systemContext) => {
 
         ElseLine: function(elseLiteral, statement, optionalComment){
             return statement.interpret();
+        },
+
+        ControlStatementLine: function(statementLine){
+            return statementLine.interpret();
+        },
+
+        MultiThen: function(thenLiteral, optionalComment, lintTerm, controlStatementLines){
+            return controlStatementLines.interpret();
+        },
+
+        MultiElse: function(elseLiteral, optionalComment, lineTerm, controlStatementLines){
+            return controlStatementLines.interpret();
         },
 
         KindConditional: function(expr1, comparatorLiteral, expr2){
