@@ -159,66 +159,7 @@ const addPositioningStyleProps = (target) => {
                 });
                 return;
             }
-            if(value.startsWith('top')){
-                propOwner.partProperties.setPropertyNamed(
-                    propOwner,
-                    'pinning-bottom',
-                    false
-                );
-                propOwner.partProperties.setPropertyNamed(
-                    propOwner,
-                    'pinning-top',
-                    true
-                );
-            }
-            if(value.startsWith('bottom')){
-                propOwner.partProperties.setPropertyNamed(
-                    propOwner,
-                    'pinning-top',
-                    false
-                );
-                propOwner.partProperties.setPropertyNamed(
-                    propOwner,
-                    'pinning-bottom',
-                    true
-                );
-            }
-            if(value.endsWith('left')){
-                propOwner.partProperties.setPropertyNamed(
-                    propOwner,
-                    'pinning-right',
-                    false
-                );
-                propOwner.partProperties.setPropertyNamed(
-                    propOwner,
-                    'pinning-left',
-                    true
-                );
-            } else {
-                propOwner.partProperties.setPropertyNamed(
-                    propOwner,
-                    'pinning-left',
-                    false
-                );
-            }
-            if(value.endsWith('right')){
-                propOwner.partProperties.setPropertyNamed(
-                    propOwner,
-                    'pinning-left',
-                    false
-                );
-                propOwner.partProperties.setPropertyNamed(
-                    propOwner,
-                    'pinning-right',
-                    true
-                );
-            } else {
-                propOwner.partProperties.setPropertyNamed(
-                    propOwner,
-                    'pinning-right',
-                    false
-                );
-            }
+            pinningAdjust(propOwner, value);
         },
 
         // Getter
@@ -335,6 +276,52 @@ const addLayoutStyleProps = (target) => {
         'left-padding',
         null
     );
+};
+
+
+const pinningAdjust = (owner, value) => {
+    let sides = ['top', 'left', 'right', 'bottom'];
+    sides.forEach(side => {
+        if(value.startsWith(side)){
+            owner.partProperties.setPropertyNamed(
+                owner,
+                `pinning-${side}`,
+                true
+            );
+        } else {
+            owner.partProperties.setPropertyNamed(
+                owner,
+                `pinning-${side}`,
+                false
+            );
+        }
+    });
+
+    if(value.includes("-")){
+        if(value.endsWith('left')){
+            owner.partProperties.setPropertyNamed(
+                owner,
+                'pinning-left',
+                true
+            );
+            owner.partProperties.setPropertyNamed(
+                owner,
+                'pinning-right',
+                false
+            );
+        } else if(value.endsWith('right')){
+            owner.partProperties.setPropertyNamed(
+                owner,
+                'pinning-left',
+                false
+            );
+            owner.partProperties.setPropertyNamed(
+                owner,
+                'pinning-right',
+                true
+            );
+        }
+    }
 };
 
 export {
