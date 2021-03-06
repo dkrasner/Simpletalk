@@ -219,9 +219,12 @@ st-button-editor:active {
     left: unset;
 }
 
-.list-layout.list-column > .h-space-fill,
-.list-layout:not(.list-column) > .v-space-fill {
+.list-layout.list-column > .h-space-fill {
     width: 100% !important;
+}
+
+.list-layout:not(.list-column) > .v-space-fill {
+    height: 100% !important;
 }
 
 .list-layout.list-column > .v-space-fill,
