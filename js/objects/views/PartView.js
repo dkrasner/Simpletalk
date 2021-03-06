@@ -24,6 +24,7 @@ class PartView extends HTMLElement {
         this.wantsHaloResize = true;
         this.wantsHaloScriptEdit = true;
         this.wantsHaloDelete = true;
+        this.wantsHalo = true;
         // Note: see getter for wantsHaloMove
 
         // Bind component methods
@@ -449,12 +450,12 @@ class PartView extends HTMLElement {
     onAuxClick(event){
         // Should only open halo when middle
         // mouse button is clicked
-        if(event.button == 1){
+        if(event.button == 1 && this.wantsHalo){
             event.preventDefault();
-            event.stopPropagation();
             if(this.hasOpenHalo){
                 this.closeHalo();
             } else {
+                event.stopPropagation();
                 this.openHalo();
             }
         }

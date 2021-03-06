@@ -24,6 +24,10 @@ class CardView extends PartView {
             template.content.cloneNode(true)
         );
 
+        // Halo settings. Cards don't want
+        //a halo to open
+        this.wantsHalo = false;
+
         // Bind component methods
         this.onClick = this.onClick.bind(this);
         this.onDrop = this.onDrop.bind(this);
