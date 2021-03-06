@@ -111,6 +111,149 @@ const addPositioningStyleProps = (target) => {
         'left-margin',
         null
     );
+
+    // Pinning specifies whether or not
+    // a given part should "stick" to a
+    // particular side of its owner Part.
+    // Pinning properties only have effect
+    // inside of Parts with a strict layout
+    target.partProperties.newBasicProp(
+        'pinning-top',
+        false
+    );
+    target.partProperties.newBasicProp(
+        'pinning-left',
+        false
+    );
+    target.partProperties.newBasicProp(
+        'pinning-bottom',
+        false
+    );
+    target.partProperties.newBasicProp(
+        'pinning-right',
+        false
+    );
+    target.partProperties.newDynamicProp(
+        // Possible values for the compound
+        // 'pinning' property are:
+        // *"none" or null
+        // *top
+        // *top-right
+        // *top-left
+        // *bottom
+        // *bottom-right
+        // *bottom-left
+        // *left
+        // *right
+        'pinning',
+        // Setter
+        function(propOwner, propObject, value){
+            if(!value || value == "none"){
+                ['top', 'left', 'right', 'bottom'].forEach(side => {
+                    let pin = `pinning-${side}`;
+                    propOwner.partProperties.setPropertyNamed(
+                        propOwner,
+                        pin,
+                        false
+                    );
+                });
+                return;
+            }
+            if(value.startsWith('top')){
+                propOwner.partProperties.setPropertyNamed(
+                    propOwner,
+                    'pinning-bottom',
+                    false
+                );
+                propOwner.partProperties.setPropertyNamed(
+                    propOwner,
+                    'pinning-top',
+                    true
+                );
+            }
+            if(value.startsWith('bottom')){
+                propOwner.partProperties.setPropertyNamed(
+                    propOwner,
+                    'pinning-top',
+                    false
+                );
+                propOwner.partProperties.setPropertyNamed(
+                    propOwner,
+                    'pinning-bottom',
+                    true
+                );
+            }
+            if(value.endsWith('left')){
+                propOwner.partProperties.setPropertyNamed(
+                    propOwner,
+                    'pinning-right',
+                    false
+                );
+                propOwner.partProperties.setPropertyNamed(
+                    propOwner,
+                    'pinning-left',
+                    true
+                );
+            } else {
+                propOwner.partProperties.setPropertyNamed(
+                    propOwner,
+                    'pinning-left',
+                    false
+                );
+            }
+            if(value.endsWith('right')){
+                propOwner.partProperties.setPropertyNamed(
+                    propOwner,
+                    'pinning-left',
+                    false
+                );
+                propOwner.partProperties.setPropertyNamed(
+                    propOwner,
+                    'pinning-right',
+                    true
+                );
+            } else {
+                propOwner.partProperties.setPropertyNamed(
+                    propOwner,
+                    'pinning-right',
+                    false
+                );
+            }
+        },
+
+        // Getter
+        function(propOwner, propObject){
+            let top = propOwner.partProperties.getPropertyNamed(
+                propOwner,
+                'pinning-top'
+            );
+            let bottom = propOwner.partProperties.getPropertyNamed(
+                propOwner,
+                'pinning-bottom'
+            );
+            let left = propOwner.partProperties.getPropertyNamed(
+                propOwner,
+                'pinning-left'
+            );
+            let right = propOwner.partProperties.getPropertyNamed(
+                propOwner,
+                'pinning-right'
+            );
+            let result = [];
+            if(top){
+                result.push('top');
+            } else if(bottom){
+                result.push('bottom');
+            }
+            if(left){
+                result.push('left');
+            } else if(right){
+                result.push('right');
+            }
+
+            return result.join('-');
+        }
+    );
 };
 
 /**

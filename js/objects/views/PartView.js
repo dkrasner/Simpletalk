@@ -46,6 +46,10 @@ class PartView extends HTMLElement {
         this.listWrappingChanged = this.listWrappingChanged.bind(this);
         this.vResizingChanged = this.vResizingChanged.bind(this);
         this.hResizingChanged = this.hResizingChanged.bind(this);
+        this.pinningLeftChanged = this.pinningLeftChanged.bind(this);
+        this.pinningTopChanged = this.pinningTopChanged.bind(this);
+        this.pinningBottomChanged = this.pinningBottomChanged.bind(this);
+        this.pinningRightChanged = this.pinningRightChanged.bind(this);
         this.eventRespond = this.eventRespond.bind(this);
         this.eventIgnore = this.eventIgnore.bind(this);
 
@@ -133,6 +137,10 @@ class PartView extends HTMLElement {
         this.onPropChange('list-wrapping', this.listWrappingChanged);
         this.onPropChange('horizontal-resizing', this.hResizingChanged);
         this.onPropChange('vertical-resizing', this.vResizingChanged);
+        this.onPropChange('pinning-top', this.pinningTopChanged);
+        this.onPropChange('pinning-right', this.pinningRightChanged);
+        this.onPropChange('pinning-left', this.pinningLeftChanged);
+        this.onPropChange('pinning-bottom', this.pinningBottomChanged);
     }
 
     initLayout(){
@@ -140,6 +148,7 @@ class PartView extends HTMLElement {
         // properties. Ensure they exist first
         let hasLayout = this.model.partProperties.findPropertyNamed('layout');
         let hasBoxResizing = this.model.partProperties.findPropertyNamed('vertical-resizing');
+        let hasPinning = this.model.partProperties.findPropertyNamed('pinning');
         if(hasLayout){
             let initialLayout = this.model.partProperties.getPropertyNamed(
                 this.model,
@@ -169,6 +178,13 @@ class PartView extends HTMLElement {
             );
             this.vResizingChanged(initialVResizing);
             this.hResizingChanged(initialHResizing);
+        }
+
+        if(hasPinning){
+            this.pinningTopChanged();
+            this.pinningBottomChanged();
+            this.pinningLeftChanged();
+            this.pinningRightChanged();
         }
     }
 
@@ -299,6 +315,54 @@ class PartView extends HTMLElement {
                 'v-space-fill',
                 'v-shrink-wrap'
             );
+        }
+    }
+
+    pinningTopChanged(){
+        let top = this.model.partProperties.getPropertyNamed(
+            this.model,
+            'pinning-top'
+        );
+        if(top){
+            this.classList.add('pin-top');
+        } else {
+            this.classList.remove('pin-top');
+        }
+    }
+
+    pinningLeftChanged(){
+        let left = this.model.partProperties.getPropertyNamed(
+            this.model,
+            'pinning-left'
+        );
+        if(left){
+            this.classList.add('pin-left');
+        } else {
+            this.classList.remove('pin-left');
+        }
+    }
+
+    pinningRightChanged(){
+        let right = this.model.partProperties.getPropertyNamed(
+            this.model,
+            'pinning-right'
+        );
+        if(right){
+            this.classList.add('pin-right');
+        } else {
+            this.classList.remove('pin-right');
+        }
+    }
+
+    pinningBottomChanged(){
+        let bottom = this.model.partProperties.getPropertyNamed(
+            this.model,
+            'pinning-bottom'
+        );
+        if(bottom){
+            this.classList.add('pin-bottom');
+        } else {
+            this.classList.remove('pin-bottom');
         }
     }
 

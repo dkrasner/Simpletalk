@@ -80,6 +80,7 @@ const cssStyler = (styleObj, propertyName, propertyValue) => {
         }
         break;
 
+
     default:
         // for the default we simply allow ST style names to map 1-1
         // to CSS/JS style names. This is only somewhat safe, since the DOM

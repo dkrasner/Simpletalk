@@ -198,6 +198,10 @@ st-button-editor:active {
     flex-direction: row;
 }
 
+st-world > st-stack > :not(.current-card).list-layout {
+    display: none;
+}
+
 .list-column {
     flex-direction: column;
 }
@@ -237,6 +241,25 @@ st-button-editor:active {
     flex: none;
 }
 
+.pin-top {
+    top: 0 !important;
+    bottom: unset !important;
+}
+
+.pin-bottom {
+    bottom: 0 !important;
+    top: unset !important;
+}
+
+.pin-left {
+    left: 0 !important;
+    right: unset !important;
+}
+
+.pin-right {
+    right: 0 !important;
+    left: unset !important;
+}
 
 /* =Utility Classes
  * --------------------------------------------------------*/
