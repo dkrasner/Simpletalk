@@ -276,6 +276,15 @@ const addLayoutStyleProps = (target) => {
         'left-padding',
         null
     );
+
+    // List alignment describes how elements in
+    // a list layout should align themselves along
+    // the dominant dimension (row or column)
+    // They are essentially proxies for align-items
+    target.partProperties.newBasicProp(
+        'list-alignment',
+        null
+    );
 };
 
 

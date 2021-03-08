@@ -50,6 +50,7 @@ class PartView extends HTMLElement {
         this.pinningTopChanged = this.pinningTopChanged.bind(this);
         this.pinningBottomChanged = this.pinningBottomChanged.bind(this);
         this.pinningRightChanged = this.pinningRightChanged.bind(this);
+        this.listAlignmentChanged = this.listAlignmentChanged.bind(this);
         this.eventRespond = this.eventRespond.bind(this);
         this.eventIgnore = this.eventIgnore.bind(this);
 
@@ -135,6 +136,7 @@ class PartView extends HTMLElement {
         this.onPropChange('layout', this.layoutChanged);
         this.onPropChange('list-direction', this.listDirectionChanged);
         this.onPropChange('list-wrapping', this.listWrappingChanged);
+        this.onPropChange('list-alignment', this.listAlignmentChanged);
         this.onPropChange('horizontal-resizing', this.hResizingChanged);
         this.onPropChange('vertical-resizing', this.vResizingChanged);
         this.onPropChange('pinning-top', this.pinningTopChanged);
@@ -165,6 +167,7 @@ class PartView extends HTMLElement {
             this.layoutChanged(initialLayout);
             this.listDirectionChanged(initialListDirection);
             this.listWrappingChanged(initialListWrapping);
+            this.listAlignmentChanged();
         }
 
         if(hasBoxResizing){
@@ -363,6 +366,26 @@ class PartView extends HTMLElement {
             this.classList.add('pin-bottom');
         } else {
             this.classList.remove('pin-bottom');
+        }
+    }
+
+    listAlignmentChanged(){
+        let value = this.model.partProperties.getPropertyNamed(
+            this.model,
+            'list-alignment'
+        );
+        let valid = [
+            'top',
+            'bottom',
+            'left',
+            'right',
+            'center'
+        ];
+        if(valid.includes(value)){
+            valid.forEach(side => {
+                this.classList.remove(`list-align-${side}`);
+            });
+            this.classList.add(`list-align-${value}`);
         }
     }
 

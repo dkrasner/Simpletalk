@@ -206,6 +206,26 @@ st-world > st-stack > :not(.current-card).list-layout {
     flex-direction: column;
 }
 
+.list-layout:not(.list-column).list-align-top {
+    align-items: start;
+}
+
+.list-layout:not(.list-column).list-align-bottom {
+    align-items: end;
+}
+
+.list-layout.list-column.list-align-left {
+    align-items: start;
+}
+
+.list-layout.list-column.list-align-right {
+    align-items: end;
+}
+
+.list-layout.list-align-center {
+    align-items: center;
+}
+
 .wrap-list {
     flex-wrap: wrap;
 }

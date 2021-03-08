@@ -14,6 +14,8 @@ const templateString = `
                     display: inherit;
                     flex-direction: inherit;
                     flex-wrap: inherit;
+                    align-items: inherit;
+                    justify-content: inherit;
                     position: relative; 
                     width: 100%;
                     height: 100%;
