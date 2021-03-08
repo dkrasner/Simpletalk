@@ -51,6 +51,7 @@ class PartView extends HTMLElement {
         this.pinningBottomChanged = this.pinningBottomChanged.bind(this);
         this.pinningRightChanged = this.pinningRightChanged.bind(this);
         this.listAlignmentChanged = this.listAlignmentChanged.bind(this);
+        this.listDistributionChanged = this.listDistributionChanged.bind(this);
         this.eventRespond = this.eventRespond.bind(this);
         this.eventIgnore = this.eventIgnore.bind(this);
 
@@ -137,6 +138,7 @@ class PartView extends HTMLElement {
         this.onPropChange('list-direction', this.listDirectionChanged);
         this.onPropChange('list-wrapping', this.listWrappingChanged);
         this.onPropChange('list-alignment', this.listAlignmentChanged);
+        this.onPropChange('list-distribution', this.listDistributionChanged);
         this.onPropChange('horizontal-resizing', this.hResizingChanged);
         this.onPropChange('vertical-resizing', this.vResizingChanged);
         this.onPropChange('pinning-top', this.pinningTopChanged);
@@ -168,6 +170,7 @@ class PartView extends HTMLElement {
             this.listDirectionChanged(initialListDirection);
             this.listWrappingChanged(initialListWrapping);
             this.listAlignmentChanged();
+            this.listDistributionChanged();
         }
 
         if(hasBoxResizing){
@@ -386,6 +389,26 @@ class PartView extends HTMLElement {
                 this.classList.remove(`list-align-${side}`);
             });
             this.classList.add(`list-align-${value}`);
+        }
+    }
+
+    listDistributionChanged(){
+        let value = this.model.partProperties.getPropertyNamed(
+            this.model,
+            'list-distribution'
+        );
+        let valid = [
+            'start',
+            'end',
+            'space-between',
+            'space-around',
+            'center'
+        ];
+        if(valid.includes(value)){
+            valid.forEach(side => {
+                this.classList.remove(`list-distribution-${side}`);
+            });
+            this.classList.add(`list-distribution-${value}`);
         }
     }
 

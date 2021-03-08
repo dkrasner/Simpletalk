@@ -226,6 +226,26 @@ st-world > st-stack > :not(.current-card).list-layout {
     align-items: center;
 }
 
+.list-layout.list-distribution-center {
+    justify-content: center;
+}
+
+.list-layout.list-distribution-start {
+    justify-content: start;
+}
+
+.list-layout.list-distribution-end {
+    justify-content: end;
+}
+
+.list-layout.list-distribution-space-between {
+    justify-content: space-between;
+}
+
+.list-layout.list-distribution-space-around {
+    justify-content: space-around;
+}
+
 .wrap-list {
     flex-wrap: wrap;
 }

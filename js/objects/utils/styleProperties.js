@@ -285,6 +285,16 @@ const addLayoutStyleProps = (target) => {
         'list-alignment',
         null
     );
+
+    // List distribution describes how elements
+    // in a list layout should distribute themselves
+    // across or along the dominant dimension
+    // (row or column)
+    // This is essentially a wrapper for justify-content
+    target.partProperties.newBasicProp(
+        'list-distribution',
+        null
+    );
 };
 
 
