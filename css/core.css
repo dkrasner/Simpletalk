@@ -241,6 +241,14 @@ st-world > st-stack > :not(.current-card).list-layout {
     flex: none;
 }
 
+.v-shrink-wrap {
+    height: max-content !important;
+}
+
+.h-shrink-wrap {
+    width: max-content !important;
+}
+
 .pin-top {
     top: 0 !important;
     bottom: unset !important;
