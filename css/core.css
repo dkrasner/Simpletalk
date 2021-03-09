@@ -248,6 +248,7 @@ st-world > st-stack > :not(.current-card).list-layout {
 
 .wrap-list {
     flex-wrap: wrap;
+    align-content: start;
 }
 
 .list-layout > * {

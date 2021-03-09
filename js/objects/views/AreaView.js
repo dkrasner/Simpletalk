@@ -15,6 +15,7 @@ const templateString = `
                     flex-direction: inherit;
                     flex-wrap: inherit;
                     align-items: inherit;
+                    align-content: inherit;
                     justify-content: inherit;
                     position: relative; 
                     width: 100%;
