@@ -360,7 +360,7 @@ describe("SimpleTalk Grammar", () => {
         describe("Add Model", () => {
             it ("Basic Add (no id)", () => {
                 const objects = [
-                    "background", "card", "container", "field", "button", "stack", "window",
+                    "background", "card", "area", "field", "button", "stack", "window",
                     "toolbox", "drawing", "image"
                 ];
                 objects.forEach((d) => {
@@ -372,7 +372,7 @@ describe("SimpleTalk Grammar", () => {
             });
             it ("Basic Add (wth id)", () => {
                 const objects = [
-                    "background", "card", "container", "field", "button", "stack", "window",
+                    "background", "card", "area", "field", "button", "stack", "window",
                     "toolbox", "drawing", "image"
                 ];
                 objects.forEach((d) => {
@@ -384,7 +384,7 @@ describe("SimpleTalk Grammar", () => {
             });
             it ("Add to 'this'", () => {
                 const objects = [
-                    "background", "card", "container", "field", "button", "stack", "window",
+                    "background", "card", "area", "field", "button", "stack", "window",
                     "toolbox", "drawing", "image"
                 ];
                 objects.forEach((d) => {
@@ -396,7 +396,7 @@ describe("SimpleTalk Grammar", () => {
             });
             it ("Add to 'current'", () => {
                 const objects = [
-                    "background", "card", "container", "field", "button", "stack", "window",
+                    "background", "card", "area", "field", "button", "stack", "window",
                     "toolbox", "drawing", "image"
                 ];
                 objects.forEach((d) => {
@@ -408,7 +408,7 @@ describe("SimpleTalk Grammar", () => {
             });
             it ("Basic Add (with name, no id)", () => {
                 const objects = [
-                    "background", "card", "container", "field", "button", "stack", "window",
+                    "background", "card", "area", "field", "button", "stack", "window",
                     "toolbox", "drawing", "image"
                 ];
                 objects.forEach((d) => {
@@ -420,7 +420,7 @@ describe("SimpleTalk Grammar", () => {
             });
             it ("Basic Add (with name, wth id)", () => {
                 const objects = [
-                    "background", "card", "container", "field", "button", "stack", "window",
+                    "background", "card", "area", "field", "button", "stack", "window",
                     "toolbox", "drawing", "image"
                 ];
                 objects.forEach((d) => {
@@ -432,7 +432,7 @@ describe("SimpleTalk Grammar", () => {
             });
             it ("Add named to 'this'", () => {
                 const objects = [
-                    "background", "card", "container", "field", "button", "stack", "window",
+                    "background", "card", "area", "field", "button", "stack", "window",
                     "toolbox", "drawing", "image"
                 ];
                 objects.forEach((d) => {
@@ -444,7 +444,7 @@ describe("SimpleTalk Grammar", () => {
             });
             it ("Add named to 'current'", () => {
                 const objects = [
-                    "background", "card", "container", "field", "button", "stack", "window",
+                    "background", "card", "area", "field", "button", "stack", "window",
                     "toolbox", "drawing", "image"
                 ];
                 objects.forEach((d) => {
@@ -460,7 +460,7 @@ describe("SimpleTalk Grammar", () => {
              */
             it.skip("Add (no target or context)", () => {
                 const objects = [
-                    "background", "card", "container", "field", "button", "stack", "window",
+                    "background", "card", "area", "field", "button", "stack", "window",
                     "toolbox", "drawing", "image"
                 ];
                 objects.forEach((d) => {
@@ -476,7 +476,7 @@ describe("SimpleTalk Grammar", () => {
              */
             it.skip("Add named (no target or context)", () => {
                 const objects = [
-                    "background", "card", "container", "field", "button", "stack", "window",
+                    "background", "card", "area", "field", "button", "stack", "window",
                     "toolbox", "drawing", "image"
                 ];
                 objects.forEach((d) => {
@@ -511,7 +511,7 @@ describe("SimpleTalk Grammar", () => {
         });
         describe("Set", () => {
             it.skip ("Set backgroundColor with id", () => {
-                const objects = ["background", "card", "container", "field", "button", "stack", "window"];
+                const objects = ["background", "card", "area", "field", "button", "stack", "window"];
                 objects.forEach((d) => {
                     const s = `set "backgroundColor" to "blue" in ${d} 10`;
                     semanticMatchTest(s, "Command");
@@ -520,7 +520,7 @@ describe("SimpleTalk Grammar", () => {
                 });
             });
             it ("Set backgroundColor (no target)", () => {
-                const objects = ["background", "card", "container", "field", "button", "stack", "window"];
+                const objects = ["background", "card", "area", "field", "button", "stack", "window"];
                 objects.forEach((d) => {
                     const s = `set "backgroundColor" to "blue"`;
                     semanticMatchTest(s, "Command");
@@ -529,7 +529,7 @@ describe("SimpleTalk Grammar", () => {
                 });
             });
             it.skip("Set background color in this or current", () => {
-                const objects = ["background", "card", "container", "field", "button", "stack", "window"];
+                const objects = ["background", "card", "area", "field", "button", "stack", "window"];
                 ["this", "current"].forEach((context) => {
                     objects.forEach((d) => {
                         const s = `set "backgroundColor" to "blue" in ${context} ${d}`;

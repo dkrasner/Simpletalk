@@ -28,13 +28,21 @@ class CardView extends PartView {
         //a halo to open
         this.wantsHalo = false;
 
+        // Handle current-ness prop changes
+        this.onPropChange('current', (newVal) => {
+            if(newVal){
+                this.classList.add('current-card');
+            } else {
+                this.classList.remove('current-card');
+            }
+        });
+
         // Bind component methods
         this.onClick = this.onClick.bind(this);
         this.onDrop = this.onDrop.bind(this);
     }
 
     afterConnected(){
-
         // Add event listeners
         this['onclick'] = this.onClick;
         this['ondragenter'] = (event) => {
@@ -53,6 +61,16 @@ class CardView extends PartView {
         this['ondragenter'] = null;
         this['ondragover'] = null;
         this['ondrop'] = null;
+    }
+
+    afterModelSet(){
+        let initCurrentness = this.model.partProperties.getPropertyNamed(
+            this.model,
+            'current'
+        );
+        if(initCurrentness){
+            this.classList.add('current-card');
+        }
     }
 
     onClick(event){
