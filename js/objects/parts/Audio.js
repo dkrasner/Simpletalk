@@ -61,6 +61,7 @@ class Audio extends Part {
 
     stop(){
         this.partProperties.setPropertyNamed(this, "load", true);
+        this.partProperties.setPropertyNamed(this, "play", false);
     }
 };
 

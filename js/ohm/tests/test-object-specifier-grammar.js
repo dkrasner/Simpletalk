@@ -29,6 +29,7 @@ const partTypes = [
     "window",
     "toolbox",
     "drawing",
+    "audio",
     "image"
 ];
 
