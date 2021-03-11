@@ -10,7 +10,7 @@
 import PartView from './PartView.js';
 import ColorWheelWidget from './drawing/ColorWheelWidget.js';
 
-const haloModeButtonSVG = `
+const haloEditButtonSVG = `
 <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-tools" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
   <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
   <path d="M3 21h4l13 -13a1.5 1.5 0 0 0 -4 -4l-13 13v4" />
@@ -19,6 +19,24 @@ const haloModeButtonSVG = `
   <line x1="7" y1="8" x2="5.5" y2="9.5" />
   <polyline points="16 12 21 17 17 21 12 16" />
   <line x1="16" y1="17" x2="14.5" y2="18.5" />
+</svg>
+`;
+
+const haloLockButtonSVG = `
+<svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-lock" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+   <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
+   <rect x="5" y="11" width="14" height="10" rx="2"></rect>
+   <circle cx="12" cy="16" r="1"></circle>
+   <path d="M8 11v-4a4 4 0 0 1 8 0v4"></path>
+</svg>
+`;
+
+const haloUnlockButtonSVG = `
+<svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-lock-open" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+   <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
+   <rect x="5" y="11" width="14" height="10" rx="2"></rect>
+   <circle cx="12" cy="16" r="1"></circle>
+   <path d="M8 11v-5a4 4 0 0 1 8 0"></path>
 </svg>
 `;
 
@@ -45,6 +63,7 @@ const fieldTemplateString = `
             white-space: pre-wrap;
             overflow-wrap: anywhere;
         }
+
     </style>
     <div class="field">
         <div class="field-textarea" spellcheck="false"></div>
@@ -62,6 +81,7 @@ class FieldView extends PartView {
         // this.editorCompleter = this.simpleTalkCompleter;
         this.editorCompleter = null;
         this.contextMenuOpen = false;
+        this.haloLockUnlockButton = null;
 
         this.template = document.createElement('template');
         this.template.innerHTML = fieldTemplateString;
@@ -81,7 +101,7 @@ class FieldView extends PartView {
         this.setTextValue = this.setTextValue.bind(this);
         this.setupPropHandlers = this.setupPropHandlers.bind(this);
         this.simpleTalkCompleter = this.simpleTalkCompleter.bind(this);
-        this.initCustomHaloButton = this.initCustomHaloButton.bind(this);
+        this.initCustomHaloButtons = this.initCustomHaloButtons.bind(this);
         this.openColorWheelWidget = this.openColorWheelWidget.bind(this);
         this.onColorSelected = this.onColorSelected.bind(this);
         this.onTransparencyChanged = this.onTransparencyChanged.bind(this);
@@ -92,6 +112,13 @@ class FieldView extends PartView {
     setupPropHandlers(){
         this.onPropChange('editable', (value, id) => {
             this.textarea.setAttribute('contenteditable', value);
+            if(value === true){
+                this.haloLockUnlockButton = this.haloLockButton;
+                this.classList.add("editable");
+            } else if (value === false){
+                this.haloLockUnlockButton = this.haloUnlockButton;
+                this.classList.remove("editable");
+            }
         });
     }
 
@@ -109,9 +136,6 @@ class FieldView extends PartView {
         this.textarea.focus();
         // document.execCommand("defaultParagraphSeparator", false, "br");
         this.addEventListener('click', this.onClick);
-        if(!this.haloModeButton){
-            this.initCustomHaloButton();
-        }
     }
 
     afterDisconnected(){
@@ -129,6 +153,17 @@ class FieldView extends PartView {
             'textContent'
         );
         document.execCommand("insertHTML", false, textContent);
+        // setup the lock/unlock halo button
+        this.initCustomHaloButtons();
+        let editable = this.model.partProperties.getPropertyNamed(
+            this.model,
+            'editable'
+        );
+        if(editable === true){
+            this.haloLockUnlockButton = this.haloLockButton;
+        } else if (editable === false){
+            this.haloLockUnlockButton = this.haloUnlockButton;
+        }
     }
 
     setTextValue(text){
@@ -301,22 +336,34 @@ class FieldView extends PartView {
         );
     }
 
-    initCustomHaloButton(){
-        this.haloModeButton = document.createElement('div');
-        this.haloModeButton.id = "halo-field-toggle-mode";
-        this.haloModeButton.classList.add('halo-button');
-        this.haloModeButton.innerHTML = haloModeButtonSVG;
-        this.haloModeButton.style.marginRight = "6px";
-        this.haloModeButton.setAttribute('slot', 'bottom-row');
-        this.haloModeButton.setAttribute('title', 'Toggle field tools');
-        this.haloModeButton.addEventListener('click', () => {
-            let isEditable = this.model.partProperties.getPropertyNamed(this.model, "editable");
-            this.model.partProperties.setPropertyNamed(
-                this.model,
-                'editable',
-                isEditable
-            );
-
+    initCustomHaloButtons(){
+        this.haloLockButton = document.createElement('div');
+        this.haloLockButton.id = "halo-field-lock-editor";
+        this.haloLockButton.classList.add('halo-button');
+        this.haloLockButton.innerHTML = haloLockButtonSVG;
+        this.haloLockButton.style.marginRight = "6px";
+        this.haloLockButton.setAttribute('slot', 'bottom-row');
+        this.haloLockButton.setAttribute('title', 'Lock Editing');
+        this.haloLockButton.addEventListener('click', () => {
+            this.model.sendMessage({
+                type: 'command',
+                commandName: 'setProperty',
+                args: ["editable", false],
+            }, this.model);
+        });
+        this.haloUnlockButton = document.createElement('div');
+        this.haloUnlockButton.id = "halo-field-unlock-editor";
+        this.haloUnlockButton.classList.add('halo-button');
+        this.haloUnlockButton.innerHTML = haloUnlockButtonSVG;
+        this.haloUnlockButton.style.marginRight = "6px";
+        this.haloUnlockButton.setAttribute('slot', 'bottom-row');
+        this.haloUnlockButton.setAttribute('title', 'Unlock Editing');
+        this.haloUnlockButton.addEventListener('click', () => {
+            this.model.sendMessage({
+                type: 'command',
+                commandName: 'setProperty',
+                args: ["editable", true],
+            }, this.model);
         });
     }
 
@@ -328,7 +375,7 @@ class FieldView extends PartView {
             foundHalo = document.createElement('st-halo');
             this.shadowRoot.appendChild(foundHalo);
         }
-        foundHalo.append(this.haloModeButton);
+        foundHalo.append(this.haloLockUnlockButton);
     }
 
     openColorWheelWidget(event, command){
@@ -365,6 +412,30 @@ class FieldView extends PartView {
             args: [event.detail.propName, event.detail.value]
         }, this.model);
     }
+
+    // Overwriting the base class open/close editor methods
+    openEditor(){
+        window.System.openEditorForPart("field", this.model.id);
+    }
+
+    closeEditor(){
+        window.System.closeEditorForPart("field", this.model.id);
+    }
+
+    // We overwrite the PartView.onHaloOpenEditor for the moment
+    // TODO when all editors are properly established this can
+    // be moved back to the base class, and remove from here
+    onHaloOpenEditor(){
+        // Send the message to open a script editor
+        // with this view's model as the target
+        this.model.sendMessage({
+            type: 'command',
+            commandName: 'openEditor',
+            args: [this.model.id],
+            shouldIgnore: true // Should ignore if System DNU
+        }, this.model);
+    }
+
 
 };
 
