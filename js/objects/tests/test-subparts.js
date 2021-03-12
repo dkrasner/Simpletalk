@@ -18,6 +18,9 @@ import Card from '../parts/Card.js';
 import Background from '../parts/Background.js';
 import Button from '../parts/Button.js';
 import Field from '../parts/Field.js';
+import Image from '../parts/Image.js';
+import Drawing from '../parts/Drawing.js';
+import Audio from '../parts/Audio.js';
 
 
 /*describe('Subpart Validity Tests', () => {
@@ -57,9 +60,24 @@ describe('Subpart Validity Tests', () => {
             assert.isTrue(card.acceptsSubpart(button.type));
         });
         it('Accepts Field', () => {
-            let ericField = new Field();
+            let field = new Field();
             let card = new Card();
-            assert.isTrue(card.acceptsSubpart(ericField.type));
+            assert.isTrue(card.acceptsSubpart(field.type));
+        });
+        it('Accepts Image', () => {
+            let image = new Image();
+            let card = new Card();
+            assert.isTrue(card.acceptsSubpart(image.type));
+        });
+        it('Accepts Drawing', () => {
+            let drawing = new Drawing();
+            let card = new Card();
+            assert.isTrue(card.acceptsSubpart(drawing.type));
+        });
+        it('Accepts Audio', () => {
+            let audio = new Audio();
+            let card = new Card();
+            assert.isTrue(card.acceptsSubpart(audio.type));
         });
         it('Rejects Stack', () => {
             let stack = new Stack();
@@ -94,6 +112,21 @@ describe('Subpart Validity Tests', () => {
             let card = new Card();
             let stack = new Stack();
             assert.isTrue(stack.acceptsSubpart(card.type));
+        });
+        it('Accepts Button', () => {
+            let button = new Button();
+            let card = new Card();
+            assert.isTrue(card.acceptsSubpart(button.type));
+        });
+        it.skip('Accepts Image', () => {
+            let image = new Image();
+            let card = new Card();
+            assert.isTrue(card.acceptsSubpart(image.type));
+        });
+        it.skip('Accepts Audio', () => {
+            let audio = new Audio();
+            let card = new Card();
+            assert.isTrue(card.acceptsSubpart(audio.type));
         });
         it('Accepts Window', () => {
             let win = new Window();

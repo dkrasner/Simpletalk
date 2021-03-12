@@ -110,6 +110,7 @@ st-window {
     background-color: var(--palette-blue);
     border: 1px solid rgba(100, 100, 100, 0.2);
     box-shadow: 3px 4px 4px 0px rgba(50, 50, 50, 0.3);
+    z-index: 100;  /* We probably don't want this */
 }
 
 st-window:active {
