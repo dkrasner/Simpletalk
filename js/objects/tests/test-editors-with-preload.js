@@ -8,22 +8,22 @@ const assert = chai.assert;
 const expect = chai.expect;
 
 
-describe('Button Editor tests', () => {
+describe('Editor tests', () => {
     let currentCard = System.getCurrentCardModel();
-    let button = System.newModel("button", currentCard.id);
-    let buttonScript = 'on click\n    answer "ok"\nend click';
-    let buttonName = 'a cool button';
-    button.partProperties.setPropertyNamed(
-        button,
-        'script',
-        buttonScript
-    );
-    button.partProperties.setPropertyNamed(
-        button,
-        'name',
-        buttonName
-    );
-    describe('System initialialization', () => {
+    describe('Button Editor Tests', () => {
+        let button = System.newModel("button", currentCard.id);
+        let buttonScript = 'on click\n    answer "ok"\nend click';
+        let buttonName = 'a cool button';
+        button.partProperties.setPropertyNamed(
+            button,
+            'script',
+            buttonScript
+        );
+        button.partProperties.setPropertyNamed(
+            button,
+            'name',
+            buttonName
+        );
         it('All parts are present', () => {
             assert.exists(currentCard);
             assert.exists(button);
@@ -69,7 +69,7 @@ describe('Button Editor tests', () => {
         });
         it('Script editor target is correct (has the correct script)', () => {
             // TODO return to this when we have better script editor target attribution
-            let fieldView = document.querySelector('st-field');
+            let fieldView = document.querySelector('st-window st-field');
             let textArea = fieldView._shadowRoot.querySelector('.field-textarea');
             // you can't use textArea.innerText here so we need to replace the newlines
             // to check for equivalence
@@ -157,6 +157,63 @@ describe('Button Editor tests', () => {
             let editorView = document.querySelector('st-button-editor');
             assert.isNull(editorView);
         });
-
+        after("", () => {
+            System.deleteModel(button.id);
+        });
     });
+    describe('Field Editor Tests', () => {
+        let field = System.newModel("field", currentCard.id);
+        let fieldName = 'a cool field';
+        field.partProperties.setPropertyNamed(
+            field,
+            'name',
+            fieldName
+        );
+        before('All parts are present', () => {
+            assert.exists(currentCard);
+            assert.exists(field);
+        });
+        it('editorOpen prop is false and no editor is present', () => {
+            let editorOpenProp = field.partProperties.getPropertyNamed(field, "editorOpen");
+            assert.isFalse(editorOpenProp);
+            let editorView = document.querySelector('st-field-editor');
+            assert.isNull(editorView);
+        });
+        it('Sending an openEditor message opens the editor', () => {
+            let sendFunction = function(){
+                let msg = {
+                    type: 'command',
+                    commandName: 'openEditor',
+                    args: []
+                };
+                field.sendMessage(msg, field);
+            };
+            expect(sendFunction).to.not.throw();
+            let editorView = document.querySelector('st-field-editor');
+            assert.isNotNull(editorView);
+        });
+        it('Editor title bar has the proper name', () => {
+            let editorView = document.querySelector('st-field-editor');
+            let title = editorView._shadowRoot.querySelector('.editor-title > span');
+            assert.equal(title.textContent, `Field Editor [${fieldName}]`);
+        });
+        it('Editor has the proper target id', () => {
+            let editorView = document.querySelector('st-field-editor');
+            assert.equal(field.id, editorView.getAttribute("target-id"));
+        });
+        it.skip('Clicking the Editor script field opens field', () => {
+            // TODO the script st-window really needs a propert target set here
+            // then update the test
+            let editorView = document.querySelector('st-field-editor');
+            let field = editorView._shadowRoot.querySelector('button.script');
+            let clickEvent = new window.MouseEvent('click');
+            field.dispatchEvent(clickEvent);
+            let fieldView = document.querySelector('st-field');
+            assert.isNotNull(fieldView);
+        });
+        after("", () => {
+            System.deleteModel(field.id);
+        });
+    });
+
 });

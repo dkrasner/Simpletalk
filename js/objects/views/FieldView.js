@@ -82,6 +82,7 @@ class FieldView extends PartView {
         this.editorCompleter = null;
         this.contextMenuOpen = false;
         this.haloLockUnlockButton = null;
+        this.selectionRanges = {};
 
         this.template = document.createElement('template');
         this.template.innerHTML = fieldTemplateString;
@@ -102,9 +103,6 @@ class FieldView extends PartView {
         this.setupPropHandlers = this.setupPropHandlers.bind(this);
         this.simpleTalkCompleter = this.simpleTalkCompleter.bind(this);
         this.initCustomHaloButtons = this.initCustomHaloButtons.bind(this);
-        this.openColorWheelWidget = this.openColorWheelWidget.bind(this);
-        this.onColorSelected = this.onColorSelected.bind(this);
-        this.onTransparencyChanged = this.onTransparencyChanged.bind(this);
 
         this.setupPropHandlers();
     }
@@ -161,8 +159,10 @@ class FieldView extends PartView {
         );
         if(editable === true){
             this.haloLockUnlockButton = this.haloLockButton;
+            this.classList.add("editable");
         } else if (editable === false){
             this.haloLockUnlockButton = this.haloUnlockButton;
+            this.classList.remove("editable");
         }
     }
 
@@ -280,12 +280,45 @@ class FieldView extends PartView {
                     // toolbar.style.top = `-${toolbar.clientHeight + 5}px`;
                     // toolbar.style.visibility = "unset";
                 }
-            } else if(event.altKey){
-                let text = document.getSelection().toString();
-                if(text && !this.contextMenuOpen){
-                    this.openContextMenu();
+            } else{
+                let text = window.getSelection().toString();
+                // if no text is selected we do nothing
+                if(text){
+                    // if the altKey is pressed we open the context ("do it") menu
+                    if(event.altKey){
+                        if(!this.contextMenuOpen){
+                            this.openContextMenu();
+                        }
+                    } else {
+                        this.handleSelection();
+                    }
+                } else {
+                    // clear all the selections
+                    this.selectionRanges = {};
                 }
+                console.log(this.selectionRanges);
             }
+        }
+    }
+
+    /* I handle selected text, creating a new field model/view
+     * for every range in the selection, keeping track of every range
+     * in this.selection Object/dict so that modification can be inserted
+     * back into the corresponding ranges.
+     */
+    handleSelection(){
+        let selection = window.getSelection();
+        for(let i=0; i < selection.rangeCount; i++){
+            // make sure this is not a continuing selection
+            // and that the range is not already registered
+            let range = selection.getRangeAt(i);
+            if(Object.values(this.selectionRanges).indexOf(range) >= 0){
+                continue;
+            }
+            // we generate our own range ids, since we want this to correspond to
+            // selection order which is not respected by the browser selection object
+            let rangeId = Object.keys(this.selectionRanges).length;
+            this.selectionRanges[rangeId] = range;
         }
     }
 
@@ -378,41 +411,6 @@ class FieldView extends PartView {
         foundHalo.append(this.haloLockUnlockButton);
     }
 
-    openColorWheelWidget(event, command){
-        let colorWheelWidget = new ColorWheelWidget(command);
-        // add an attribute describing the command
-        colorWheelWidget.setAttribute("selector-command", command);
-        // add a custom callback for the close button
-        let closeButton = colorWheelWidget.shadowRoot.querySelector('#close-button');
-        closeButton.addEventListener('click', () => {colorWheelWidget.remove();});
-        // add the colorWheelWidget
-        event.target.parentNode.after(colorWheelWidget);
-        // add a color-selected event callback
-        // colorWheelWidget event listener
-        let colorWheel = this.shadowRoot.querySelector('color-wheel');
-        colorWheel.addEventListener('color-selected', this.onColorSelected);
-        colorWheel.addEventListener('transparency-changed', this.onTransparencyChanged);
-    }
-
-    onColorSelected(event){
-        let command = event.target.getAttribute("selector-command");
-        let colorInfo = event.detail;
-        let colorStr = `rgba(${colorInfo.r}, ${colorInfo.g}, ${colorInfo.b}, ${colorInfo.alpha})`;
-        this.model.sendMessage({
-            type: "command",
-            commandName: "setProperty",
-            args: [command, colorStr]
-        }, this.model);
-    }
-
-    onTransparencyChanged(event){
-        this.model.sendMessage({
-            type: "command",
-            commandName: "setProperty",
-            args: [event.detail.propName, event.detail.value]
-        }, this.model);
-    }
-
     // Overwriting the base class open/close editor methods
     openEditor(){
         window.System.openEditorForPart("field", this.model.id);
@@ -440,6 +438,6 @@ class FieldView extends PartView {
 };
 
 export {
-FieldView,
-FieldView as default
+    FieldView,
+    FieldView as default
 };
