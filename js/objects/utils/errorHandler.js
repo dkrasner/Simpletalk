@@ -44,7 +44,7 @@ const errorHandler = {
         // replace said text line with an error marker
         textLines[errorLineNum] += ` --<<<[Expected:${expectedText}; ruleName: "${ruleName}"]`;
         textContent = textLines.join("\n");
-        scriptEditor.setTextValue(textContent);
+        scriptEditor.model.partProperties.setPropertyNamed(scriptEditor.model, "textContent", textContent);
         // open the grammar
         this._openGrammar(aMessage.partId, ruleName);
     },
@@ -74,7 +74,7 @@ const errorHandler = {
             textLines.forEach((line) => {
             });
             textContent = textLines.join("\n");
-            scriptEditor.setTextValue(textContent);
+            scriptEditor.model.partProperties.setPropertyNamed(scriptEditor.model, "textContent", textContent);
 
             // finally open the debugger (or current version thereof)
             // NOTE: this is a bit dangerous, b/c if the System doesn't

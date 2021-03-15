@@ -206,12 +206,12 @@ class PartProperties {
     // with the given name or alias.
     // If the property is not found, we throw an
     // error
-    setPropertyNamed(owner, aName, aValue){
+    setPropertyNamed(owner, aName, aValue, notify=true){
         let found = this.findPropertyNamed(aName);
         if(!found){
             throw new Error(`${owner} does not have property "${aName}"`);
         }
-        return found.setValue(owner, aValue);
+        return found.setValue(owner, aValue, notify);
     }
 
     // If you add a property with a name or alias

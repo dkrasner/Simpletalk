@@ -50,7 +50,7 @@ describe('Error Handling', () => {
             ].join('\n');
             let scriptEditor = window.System.findScriptEditorByTargetId(button.id);
             let textContent = scriptEditor.model.partProperties.getPropertyNamed(scriptEditor, "textContent");
-            assert.equal(markedUpScript, textContent);
+            assert.equal(textContent, markedUpScript);
         });
     });
     describe('MessageNotUnderstood', () => {
@@ -92,7 +92,7 @@ describe('Error Handling', () => {
             ].join('\n');
             let scriptEditor = window.System.findScriptEditorByTargetId(anotherButton.id);
             let textContent = scriptEditor.model.partProperties.getPropertyNamed(scriptEditor, "textContent");
-            assert.equal(markedUpScript, textContent);
+            assert.equal(textContent, markedUpScript);
         });
     });
 });

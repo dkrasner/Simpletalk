@@ -324,5 +324,5 @@ st-world > st-stack > :not(.current-card).list-layout {
 }
 
 .editable {
-    border: solid 1px var(--palette-orange);
+    outline: solid 1px var(--palette-orange);
 }

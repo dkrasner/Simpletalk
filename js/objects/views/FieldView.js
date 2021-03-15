@@ -98,6 +98,8 @@ class FieldView extends PartView {
         this.openContextMenu = this.openContextMenu.bind(this);
         this.closeContextMenu = this.closeContextMenu.bind(this);
         this.doIt = this.doIt.bind(this);
+        this.handleSelection = this.handleSelection.bind(this);
+        this.openField = this.openField.bind(this);
         this.textToHtml = this.textToHtml.bind(this);
         this.setTextValue = this.setTextValue.bind(this);
         this.setupPropHandlers = this.setupPropHandlers.bind(this);
@@ -117,6 +119,10 @@ class FieldView extends PartView {
                 this.haloLockUnlockButton = this.haloUnlockButton;
                 this.classList.remove("editable");
             }
+        });
+        this.onPropChange('textContent', (value, id) => {
+            this.textarea.innerHTML = "";
+            document.execCommand("insertHTML", false, value);
         });
     }
 
@@ -253,7 +259,8 @@ class FieldView extends PartView {
         this.model.partProperties.setPropertyNamed(
             this.model,
             'textContent',
-            event.target.innerText
+            event.target.innerText,
+            false // do not notify, to preserve contenteditable context
         );
     }
 
@@ -319,7 +326,30 @@ class FieldView extends PartView {
             // selection order which is not respected by the browser selection object
             let rangeId = Object.keys(this.selectionRanges).length;
             this.selectionRanges[rangeId] = range;
+            // open a field for each new selection and populate it with the range html
+            this.openField(range);
         }
+    }
+
+    openField(range){
+        // create an HTML document fragment from the range to avoid dealing wiht start/end
+        // and offset calculations
+        let docFragment = range.cloneContents();
+        // fragments don't have the full html DOM element API so we need to create the inner HTML
+        let html = "";
+        docFragment.childNodes.forEach((node) => {
+            if(node.nodeName === "#text"){
+                html += node.textContent;
+            } else {
+                html += node.innerHTML;
+            }
+        });
+
+        // TODO these should all be messages and correspnding command handler definitions
+        // should be part of the field's own script
+        let fieldModel = window.System.newModel("field", this.model._owner.id, "selection XYZ");
+        fieldModel.partProperties.setPropertyNamed(fieldModel, "htmlContent", html);
+
     }
 
     openContextMenu(){
@@ -383,6 +413,9 @@ class FieldView extends PartView {
                 commandName: 'setProperty',
                 args: ["editable", false],
             }, this.model);
+            this.closeHalo();
+            this.openHalo();
+            // close/open the halo to update the editing state toggle button
         });
         this.haloUnlockButton = document.createElement('div');
         this.haloUnlockButton.id = "halo-field-unlock-editor";
@@ -397,6 +430,9 @@ class FieldView extends PartView {
                 commandName: 'setProperty',
                 args: ["editable", true],
             }, this.model);
+            // close/open the halo to update the editing state toogle button
+            this.closeHalo();
+            this.openHalo();
         });
     }
 

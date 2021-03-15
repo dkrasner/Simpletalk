@@ -1253,17 +1253,11 @@ System._commandHandlers['openScriptEditor'] = function(senders, targetId){
         targetPart,
         'script'
     );
-
-    let htmlContent = fieldView.textToHtml(currentScript);
-    // set the inner html of the textarea with the proper htmlContent
-    // NOTE: at the moment fieldView does not subscribe to htmlContent
-    // change due to cursor focus and other issues
     let textArea = fieldView._shadowRoot.querySelector(".field-textarea");
-    textArea.innerHTML = htmlContent;
     fieldModel.partProperties.setPropertyNamed(
         fieldModel,
-        'htmlContent',
-        htmlContent
+        'textContent',
+        currentScript
     );
 
     let saveBtnModel = this.newModel('button', currentCard.id);
