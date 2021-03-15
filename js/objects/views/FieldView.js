@@ -140,6 +140,15 @@ class FieldView extends PartView {
         this.textarea.focus();
         // document.execCommand("defaultParagraphSeparator", false, "br");
         this.addEventListener('click', this.onClick);
+        if(this.model){
+            // If we have a model, set the value of the textarea
+            // to the current text of the field model
+            let textContent = this.model.partProperties.getPropertyNamed(
+                this.model,
+                'textContent'
+            );
+            document.execCommand("insertHTML", false, textContent);
+        }
     }
 
     afterDisconnected(){
@@ -151,7 +160,6 @@ class FieldView extends PartView {
     afterModelSet(){
         // If we have a model, set the value of the textarea
         // to the current text of the field model
-        this.textarea = this._shadowRoot.querySelector('.field-textarea');
         let textContent = this.model.partProperties.getPropertyNamed(
             this.model,
             'textContent'

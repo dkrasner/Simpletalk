@@ -1319,20 +1319,12 @@ System._commandHandlers['openSimpletalkGrammar'] = function(senders, ruleName){
     // of the new window.
     let fieldModel = this.newModel('field', currentCard.id);
     let fieldView = this.findViewById(fieldModel.id);
-    // Set the field's htmlContent to be the textToHtml converted
-    // Simpletalk grammar.
     let grammar = System.grammar.source.sourceString;
 
-    let htmlContent = fieldView.textToHtml(grammar);
-    // set the inner html of the textarea with the proper htmlContent
-    // NOTE: at the moment fieldView does not subscribe to htmlContent
-    // change due to cursor focus and other issues
-    let textArea = fieldView._shadowRoot.querySelector(".field-textarea");
-    textArea.innerHTML = htmlContent;
     fieldModel.partProperties.setPropertyNamed(
         fieldModel,
-        'htmlContent',
-        htmlContent
+        'textContent',
+        textContent
     );
 
     // if the ruleName has been provided, scroll that into view
@@ -1394,16 +1386,10 @@ System._commandHandlers['openDebugger'] = function(senders, partId){
         let info = target.commandHandlerRegistry[name];
         textContent += `${name}: ${JSON.stringify(info)}\n`;
     });
-    let htmlContent = fieldView.textToHtml(textContent);
-    // set the inner html of the textarea with the proper htmlContent
-    // NOTE: at the moment fieldView does not subscribe to htmlContent
-    // change due to cursor focus and other issues
-    let textArea = fieldView._shadowRoot.querySelector(".field-textarea");
-    textArea.innerHTML = htmlContent;
     fieldModel.partProperties.setPropertyNamed(
         fieldModel,
-        'htmlContent',
-        htmlContent
+        'textContent',
+        textContent
     );
 };
 

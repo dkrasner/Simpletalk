@@ -24,34 +24,23 @@ describe('Field Part/Model Tests', () =>{
         assert.exists(fieldModel);
         assert.equal(fieldModel.type, 'field');
     });
-    it('Can set the htmlContent property', () => {
-        let htmlToSet = "<div>on message</div><div>   some command</div><div>end message<br></div>";
-        fieldModel.partProperties.setPropertyNamed(
-            fieldModel,
-            'htmlContent',
-            htmlToSet
-        );
-
-        let accessedValue = fieldModel.partProperties.getPropertyNamed(
-            fieldModel,
-            'htmlContent'
-        );
-
-        assert.equal(accessedValue, htmlToSet);
-    });
 });
 
 let fieldView;
 describe('FieldView tests', () => {
+    before('', () => {
+        let text = "on message\n   some command\nend message";
+        fieldModel.partProperties.setPropertyNamed(
+            fieldModel,
+            'textContent',
+            text
+        );
+    });
     it('Can create a view element', () => {
         fieldView = document.createElement('st-field');
         assert.exists(fieldView);
     });
     it('Can set the view model', () => {
-        let accessedValue = fieldModel.partProperties.getPropertyNamed(
-            fieldModel,
-            'htmlContent'
-        );
         fieldView.setModel(fieldModel);
         assert.equal(fieldView.model, fieldModel);
     });
@@ -64,23 +53,25 @@ describe('FieldView tests', () => {
         let found = document.querySelector('st-field');
         assert.equal(fieldView, found);
     });
-    it('Mounted shadow textarea has current model value', () => {
+    it('Mounted shadow textarea has current model textContent value', () => {
         let textArea = fieldView._shadowRoot.querySelector('.field-textarea');
         let modelValue = fieldModel.partProperties.getPropertyNamed(
-            fieldModel,
-            'htmlContent'
-        );
-
-        assert.equal(textArea.innerHTML, modelValue);
-    });
-    it('textContent property is updated after the model is set', () => {
-        let textContent = `on message\n   some command\nend message`;
-        let accessedValue = fieldModel.partProperties.getPropertyNamed(
             fieldModel,
             'textContent'
         );
 
-        assert.equal(accessedValue, textContent);
+        assert.equal(textArea.textContent, modelValue);
+    });
+    it('textContent is updated after the model is set', () => {
+        let textArea = fieldView._shadowRoot.querySelector('.field-textarea');
+        let newText = `on message\n   something NEW\nend message`;
+        fieldModel.partProperties.setPropertyNamed(
+            fieldModel,
+            'textContent',
+            newText
+        );
+
+        assert.equal(textArea.textContent, newText);
     });
     it('textToHtml and htmlToText are idempotent 1 (empty)', () => {
         let fieldView = document.querySelector('st-field');
@@ -115,7 +106,7 @@ describe('FieldView tests', () => {
         assert.equal(newContentText, fieldView.htmlToText(textContainer));
         // assert.equal(newContentHtml, fieldView.textToHtml(newContentText));
     });
-    it('Entering text into the shadow textarea changes the model htmlContent and textContent prop', () => {
+    it.skip('Entering text into the shadow textarea changes the model htmlContent and textContent prop', () => {
         let textArea = fieldView._shadowRoot.querySelector('.field-textarea');
         let newHTMLContent = "<div>on message</div><div>   something new</div><div>end message<br></div>";
         let newTextContent = `on message\n   something new\nend message`;
