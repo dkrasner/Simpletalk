@@ -101,7 +101,6 @@ class FieldView extends PartView {
         this.handleSelection = this.handleSelection.bind(this);
         this.openField = this.openField.bind(this);
         this.textToHtml = this.textToHtml.bind(this);
-        this.setTextValue = this.setTextValue.bind(this);
         this.setupPropHandlers = this.setupPropHandlers.bind(this);
         this.simpleTalkCompleter = this.simpleTalkCompleter.bind(this);
         this.initCustomHaloButtons = this.initCustomHaloButtons.bind(this);
@@ -121,8 +120,13 @@ class FieldView extends PartView {
             }
         });
         this.onPropChange('textContent', (value, id) => {
-            this.textarea.innerHTML = "";
-            document.execCommand("insertHTML", false, value);
+            this.textarea.textContent = value;
+            // TODO make 'textContent' a dynamic prop?
+            this.model.partProperties.setPropertyNamed(
+                this.model,
+                'htmlContent',
+                value
+            );
         });
     }
 
@@ -140,15 +144,6 @@ class FieldView extends PartView {
         this.textarea.focus();
         // document.execCommand("defaultParagraphSeparator", false, "br");
         this.addEventListener('click', this.onClick);
-        if(this.model){
-            // If we have a model, set the value of the textarea
-            // to the current text of the field model
-            let textContent = this.model.partProperties.getPropertyNamed(
-                this.model,
-                'textContent'
-            );
-            document.execCommand("insertHTML", false, textContent);
-        }
     }
 
     afterDisconnected(){
@@ -158,13 +153,15 @@ class FieldView extends PartView {
     }
 
     afterModelSet(){
+        this.textarea = this._shadowRoot.querySelector('.field-textarea');
         // If we have a model, set the value of the textarea
-        // to the current text of the field model
-        let textContent = this.model.partProperties.getPropertyNamed(
+        // to the current html of the field model
+        let htmlContent = this.model.partProperties.getPropertyNamed(
             this.model,
-            'textContent'
+            'htmlContent'
         );
-        document.execCommand("insertHTML", false, textContent);
+        this.textarea.innerHTML = htmlContent;
+
         // setup the lock/unlock halo button
         this.initCustomHaloButtons();
         let editable = this.model.partProperties.getPropertyNamed(
@@ -178,15 +175,6 @@ class FieldView extends PartView {
             this.haloLockUnlockButton = this.haloUnlockButton;
             this.classList.remove("editable");
         }
-    }
-
-    setTextValue(text){
-        this.model.partProperties.setPropertyNamed(
-            this.model,
-            'textContent',
-            text
-        );
-        document.execCommand("insertHTML", false, textContent);
     }
 
     simpleTalkCompleter(element){
@@ -269,6 +257,12 @@ class FieldView extends PartView {
             'textContent',
             event.target.innerText,
             false // do not notify, to preserve contenteditable context
+        );
+        this.model.partProperties.setPropertyNamed(
+            this.model,
+            'htmlContent',
+            event.target.innerHTML,
+            false // do not notify
         );
     }
 
