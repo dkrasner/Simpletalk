@@ -58,13 +58,17 @@ const detectHands = async () => {
     // Update hand location
     const vw = Math.max(document.documentElement.clientWidth || 0, window.innerWidth || 0)
     const vh = Math.max(document.documentElement.clientHeight || 0, window.innerHeight || 0)
-    const [p1, p2] = [0.5 * (x1 + x2) * vw, 0.5 * (y1 + y2) * vh];
+    const p = [0.5 * (x1 + x2) * vw, 0.5 * (y1 + y2) * vh];
+    handInterface.positions = [].concat(handInterface.positions.slice(-2), p);
     var target = handInterface.targetElement;
     if (target === null) {
         target = handInterface.leninHand;
     }
-    target.partProperties.setPropertyNamed(target, "left", p1);
-    target.partProperties.setPropertyNamed(target, "top", p2);
+    // Compute average position
+    const [p1, p2, p3] = handInterface.positions;
+    const [ap1, ap2] = [(1/3)*(p1[0] + p2[0] + p3[0]), (1/3)*(p1[1] + p2[1] + p3[1])];
+    target.partProperties.setPropertyNamed(target, "left", ap1);
+    target.partProperties.setPropertyNamed(target, "top", ap2);
     // Extract area information without any timestamps
     var justAreas = [];
     for (var i = 0; i < handInterface.handDetectionAreas.length; ++i) {
@@ -249,6 +253,7 @@ class HandInterface {
         this.handMasked = false;
         this.targetElement = null;
         this.handDetectionAreas = [];
+        this.positions = [[0, 0], [0, 0], [0, 0]];
         // XXX - Only here to ignore the tensorflow warnings
         console.warn = () => {};
     }
