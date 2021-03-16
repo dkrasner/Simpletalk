@@ -119,8 +119,22 @@ class FieldView extends PartView {
                 this.classList.remove("editable");
             }
         });
+        // 'text' is a DynamicProp whose setter will set the corresponding
+        // value for `innerHTML`. This way we can have programmatic content
+        // setting and still allow to not loose markup.
+        // 'innerHTML' is not a BasicProp. See how these are set, without
+        // notification in this.onInput()
         this.onPropChange('text', (value, id) => {
             this.textarea.textContent = value;
+        });
+        this.onPropChange('innerHTML', (value, id) => {
+            this.textarea.innerHTML = value;
+            this.model.partProperties.setPropertyNamed(
+                this.model,
+                "text",
+                this.textarea.innerText,
+                false // do not notify, to avoid an infinite loop
+            );
         });
     }
 
@@ -292,8 +306,8 @@ class FieldView extends PartView {
                         if(!this.contextMenuOpen){
                             this.openContextMenu();
                         }
-                    } else {
-                        // this.handleSelection();
+                    } else if(event.metaKey){
+                        this.handleSelection();
                     }
                 } else {
                     // clear all the selections
@@ -330,21 +344,17 @@ class FieldView extends PartView {
     openField(range){
         // create an HTML document fragment from the range to avoid dealing wiht start/end
         // and offset calculations
-        let docFragment = range.cloneContents();
-        // fragments don't have the full html DOM element API so we need to create the inner HTML
-        let html = "";
+        // fragments don't have the full html DOM element API so we need to create one
+        let span = document.createElement('span');
+        span.appendChild(range.cloneContents());
         docFragment.childNodes.forEach((node) => {
-            if(node.nodeName === "#text"){
-                html += node.textContent;
-            } else {
-                html += node.innerHTML;
-            }
+            span.appendChild(node);
         });
 
         // TODO these should all be messages and correspnding command handler definitions
         // should be part of the field's own script
         let fieldModel = window.System.newModel("field", this.model._owner.id, "selection XYZ");
-        fieldModel.partProperties.setPropertyNamed(fieldModel, "innerHTML", html);
+        fieldModel.partProperties.setPropertyNamed(fieldModel, "innerHTML", span.innerHTML);
 
     }
 

@@ -51,9 +51,9 @@ class Field extends Part {
         // is changed the 'innerHTML' property should follow.
         this.partProperties.newDynamicProp(
             'text',
-            (owner, prop, value) => {
+            (owner, prop, value, notify) => {
                 prop._value = value;
-                owner.partProperties.setPropertyNamed(owner, 'innerHTML', value);
+                owner.partProperties.setPropertyNamed(owner, 'innerHTML', value, notify);
             },
             (owner, prop) => {
                 return prop._value;

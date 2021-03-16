@@ -102,7 +102,7 @@ class DynamicProperty extends BasicProperty {
     // incoming value
     setValue(owner, val, notify=true){
         if(!this.readOnly){
-            this.valueSetter(owner, this, val);
+            this.valueSetter(owner, this, val, notify);
             if(notify){
                 owner.propertyChanged(
                     this.name,
