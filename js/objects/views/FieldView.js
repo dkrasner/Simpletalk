@@ -293,7 +293,7 @@ class FieldView extends PartView {
                             this.openContextMenu();
                         }
                     } else {
-                        this.handleSelection();
+                        // this.handleSelection();
                     }
                 } else {
                     // clear all the selections
