@@ -27,6 +27,11 @@ String.prototype.unCapitalize = function() {
     return this.charAt(0).toLowerCase() + this.slice(1);
 };
 
+const objects = [
+    "background", "card", "area", "field", "button", "stack", "window",
+    "toolbox", "drawing", "audio", "image"
+];
+
 describe("SimpleTalk Grammar", () => {
     describe("Basic lexical", () => {
         it("`space` does not include any newline chars", () => {
@@ -359,10 +364,6 @@ describe("SimpleTalk Grammar", () => {
         });
         describe("Add Model", () => {
             it ("Basic Add (no id)", () => {
-                const objects = [
-                    "background", "card", "area", "field", "button", "stack", "window",
-                    "toolbox", "drawing", "image"
-                ];
                 objects.forEach((d) => {
                     const s = `add ${d} to current card`;
                     semanticMatchTest(s, "Command");
@@ -371,10 +372,6 @@ describe("SimpleTalk Grammar", () => {
                 });
             });
             it ("Basic Add (wth id)", () => {
-                const objects = [
-                    "background", "card", "area", "field", "button", "stack", "window",
-                    "toolbox", "drawing", "image"
-                ];
                 objects.forEach((d) => {
                     const s = `add ${d} to card 20`;
                     semanticMatchTest(s, "Command");
@@ -383,10 +380,6 @@ describe("SimpleTalk Grammar", () => {
                 });
             });
             it ("Add to 'this'", () => {
-                const objects = [
-                    "background", "card", "area", "field", "button", "stack", "window",
-                    "toolbox", "drawing", "image"
-                ];
                 objects.forEach((d) => {
                     const s = `add ${d} to this stack`;
                     semanticMatchTest(s, "Command");
@@ -395,10 +388,6 @@ describe("SimpleTalk Grammar", () => {
                 });
             });
             it ("Add to 'current'", () => {
-                const objects = [
-                    "background", "card", "area", "field", "button", "stack", "window",
-                    "toolbox", "drawing", "image"
-                ];
                 objects.forEach((d) => {
                     const s = `add ${d} to current stack`;
                     semanticMatchTest(s, "Command");
@@ -407,10 +396,6 @@ describe("SimpleTalk Grammar", () => {
                 });
             });
             it ("Basic Add (with name, no id)", () => {
-                const objects = [
-                    "background", "card", "area", "field", "button", "stack", "window",
-                    "toolbox", "drawing", "image"
-                ];
                 objects.forEach((d) => {
                     const s = `add ${d} "newPart 123" to current card`;
                     semanticMatchTest(s, "Command");
@@ -419,10 +404,6 @@ describe("SimpleTalk Grammar", () => {
                 });
             });
             it ("Basic Add (with name, wth id)", () => {
-                const objects = [
-                    "background", "card", "area", "field", "button", "stack", "window",
-                    "toolbox", "drawing", "image"
-                ];
                 objects.forEach((d) => {
                     const s = `add ${d} "newPart 123" to card 20`;
                     semanticMatchTest(s, "Command");
@@ -431,10 +412,6 @@ describe("SimpleTalk Grammar", () => {
                 });
             });
             it ("Add named to 'this'", () => {
-                const objects = [
-                    "background", "card", "area", "field", "button", "stack", "window",
-                    "toolbox", "drawing", "image"
-                ];
                 objects.forEach((d) => {
                     const s = `add ${d} "newPart 123" to this stack`;
                     semanticMatchTest(s, "Command");
@@ -443,10 +420,6 @@ describe("SimpleTalk Grammar", () => {
                 });
             });
             it ("Add named to 'current'", () => {
-                const objects = [
-                    "background", "card", "area", "field", "button", "stack", "window",
-                    "toolbox", "drawing", "image"
-                ];
                 objects.forEach((d) => {
                     const s = `add ${d} "newPart123" to current stack`;
                     semanticMatchTest(s, "Command");
@@ -459,10 +432,6 @@ describe("SimpleTalk Grammar", () => {
              * Skipping: Do we want to allow this?
              */
             it.skip("Add (no target or context)", () => {
-                const objects = [
-                    "background", "card", "area", "field", "button", "stack", "window",
-                    "toolbox", "drawing", "image"
-                ];
                 objects.forEach((d) => {
                     const s = `add ${d}`;
                     semanticMatchTest(s, "Command");
@@ -475,10 +444,6 @@ describe("SimpleTalk Grammar", () => {
              * Skipping: Do we want to allow this?
              */
             it.skip("Add named (no target or context)", () => {
-                const objects = [
-                    "background", "card", "area", "field", "button", "stack", "window",
-                    "toolbox", "drawing", "image"
-                ];
                 objects.forEach((d) => {
                     const s = `add ${d} "newPart123"`;
                     semanticMatchTest(s, "Command");
@@ -510,29 +475,27 @@ describe("SimpleTalk Grammar", () => {
             });
         });
         describe("Set", () => {
-            it.skip ("Set backgroundColor with id", () => {
-                const objects = ["background", "card", "area", "field", "button", "stack", "window"];
+            it.skip ("Set someProperty with id", () => {
+
                 objects.forEach((d) => {
-                    const s = `set "backgroundColor" to "blue" in ${d} 10`;
+                    const s = `set "someProperty" to "blue" in ${d} 10`;
                     semanticMatchTest(s, "Command");
                     semanticMatchTest(s, "Command_setProperty");
                     semanticMatchTest(s, "Statement");
                 });
             });
-            it ("Set backgroundColor (no target)", () => {
-                const objects = ["background", "card", "area", "field", "button", "stack", "window"];
+            it ("Set someProperty (no target)", () => {
                 objects.forEach((d) => {
-                    const s = `set "backgroundColor" to "blue"`;
+                    const s = `set "someProperty" to "blue"`;
                     semanticMatchTest(s, "Command");
                     semanticMatchTest(s, "Command_setProperty");
                     semanticMatchTest(s, "Statement");
                 });
             });
             it.skip("Set background color in this or current", () => {
-                const objects = ["background", "card", "area", "field", "button", "stack", "window"];
                 ["this", "current"].forEach((context) => {
                     objects.forEach((d) => {
-                        const s = `set "backgroundColor" to "blue" in ${context} ${d}`;
+                        const s = `set "someProperty" to "blue" in ${context} ${d}`;
                         semanticMatchTest(s, "Command");
                         semanticMatchTest(s, "Command_setProperty");
                         semanticMatchTest(s, "Statement");

@@ -12,6 +12,7 @@ import Field from './parts/Field.js';
 import WorldStack from './parts/WorldStack.js';
 import Window from './parts/Window.js';
 import Drawing from './parts/Drawing.js';
+import Audio from './parts/Audio.js';
 import Image from './parts/Image.js';
 import Area from './parts/Area.js';
 
@@ -27,6 +28,8 @@ import FieldView from './views/FieldView.js';
 import DrawingView from './views/drawing/DrawingView.js';
 import ImageView from './views/ImageView.js';
 import AreaView from './views/AreaView.js';
+import AudioView from './views/AudioView.js';
+
 
 import Halo from './views/Halo.js';
 import ButtonEditorView from './views/editors/ButtonEditorView.js';
@@ -37,9 +40,7 @@ import {ExecutionStack, ActivationContext} from './ExecutionStack.js';
 
 import idMaker from './utils/idMaker.js';
 
-const video = document.createElement('video');
-const canvas = document.createElement('canvas');
-var handDetectionModel = null;
+import handInterface from './utils/handInterface.js'
 
 const System = {
     name: "System",
@@ -148,10 +149,6 @@ const System = {
         );
         worldView.setModel(worldModel);
         document.body.appendChild(worldView);
-
-        // Uncomment the following to see hand detection frames.
-        //document.body.appendChild(video);
-        //document.body.appendChild(canvas);
 
         // Create an initial blank Stack in this
         // case
@@ -731,7 +728,6 @@ const System = {
             document.body.append(serializationScriptEl);
         }
         serializationScriptEl.textContent = JSON.stringify(result, null, 4);
-        
     },
 
     deserialize: function(){
@@ -1428,139 +1424,13 @@ System._commandHandlers['tell'] = (senders, targetId, deferredMessage) => {
     targetPart.sendMessage(deferredMessage, targetPart);
 };
 
-System._commandHandlers['startVideo'] = () => {
-    if (video.srcObject !== null) {
-        return;
-    }
-    navigator.mediaDevices.getUserMedia({ video: true }).then(stream => {
-        video.srcObject = stream;
-        video.play();
-    });
-};
-
-System._commandHandlers['stopVideo'] = () => {
-    if (video.srcObject === null) {
-        return;
-    }
-    video.pause();
-    const tracks = video.srcObject.getTracks();
-    for (var i = 0; i < tracks.length; i++) {
-        tracks[i].stop();
-    }
-    video.srcObject = null;
-};
-
-// https://aaronsmith.online/easily-load-an-external-script-using-javascript/
-const loadScript = src => {
-    return new Promise((resolve, reject) => {
-        const script = document.createElement('script');
-        script.type = 'text/javascript';
-        script.onload = resolve;
-        script.onerror = reject;
-        script.src = src;
-        document.head.append(script);
-    });
-};
-
-const loadHandDetectionModel = () => {
-    if (handDetectionModel === null) {
-        window.tf.loadFrozenModel(
-            "https://cdn.jsdelivr.net/npm/handtrackjs/models/web/ssdlitemobilenetv2/tensorflowjs_model.pb",
-            "https://cdn.jsdelivr.net/npm/handtrackjs/models/web/ssdlitemobilenetv2/weights_manifest.json"
-        ).then(model => {
-            console.log("hand detection model loaded");
-            handDetectionModel = model;
-        }).catch(err => {
-            console.log("error loading hand detection model");
-            console.log(err);
-        });
-    }
-}
-
-System._commandHandlers['startHandDetectionModel'] = () => {
-    if (typeof window.tf === 'undefined') {
-        loadScript("https://cdn.jsdelivr.net/npm/@tensorflow/tfjs@0.13.5/dist/tf.js").then(() => {
-            loadHandDetectionModel();
-        });
+System._commandHandlers['toggleHandDetection'] = () => {
+    if (handInterface.handDetectionModel === null) {
+        handInterface.start();
     } else {
-        loadHandDetectionModel();
+        handInterface.stop();
     }
 };
-
-const unloadHandDetectionModel = () => {
-    console.log(handDetectionModel);
-    handDetectionModel = null;
-}
-
-System._commandHandlers['stopHandDetectionModel'] = () => {
-    unloadHandDetectionModel();
-};
-
-const scaleDim = (dim) => {
-    const scale = 0.7;
-    const stride = 16;
-    const evenRes = dim * scale - 1;
-    return evenRes - (evenRes % stride) + 1;
-};
-
-const detectHands = async (recipientId) => {
-    canvas.width = video.videoWidth;
-    canvas.height = video.videoHeight;
-    const ctx = canvas.getContext('2d');
-    ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
-    const scaledWidth = scaleDim(canvas.width);
-    const scaledHeight = scaleDim(canvas.height);
-    const image = tf.fromPixels(canvas).resizeBilinear([scaledHeight, scaledWidth]).expandDims(0);
-    const bboxes = await handDetectionModel.executeAsync(image).then(result => {
-        const [scores, boxes] = result;
-        const indices = tf.image.nonMaxSuppression(
-            boxes.reshape([boxes.shape[1], boxes.shape[3]]),
-            scores.reshape([scores.shape[1]]),
-            20,
-            0.5,
-            0.80).dataSync();
-        var bboxes = [];
-        var idx;
-        for (let i = 0; i < indices.length; i++) {
-            idx = indices[i];
-            var score = scores.get(0, idx, 0);
-            // Original order is [minY, minX, maxY, maxX] so we reorder.
-            var box = {
-                upperLeft: [boxes.get(0, idx, 0, 1), boxes.get(0, idx, 0, 0)],
-                lowerRight: [boxes.get(0, idx, 0, 3), boxes.get(0, idx, 0, 2)]
-            };
-            bboxes.push({score: score, box: box});
-        }
-        return bboxes;
-    });
-    if (recipientId === null) {
-        console.log(bboxes);
-    } else {
-        let recipient = System.partsById[recipientId];
-        let msg = {
-            type: 'command',
-            commandName: 'detectedHands',
-            args: [JSON.stringify(bboxes, null, 4)]
-        };
-        System.sendMessage(msg, System, recipient);
-    }
-};
-
-System._commandHandlers['detectHands'] = (senders, recipientId) => {
-    if (handDetectionModel === null) {
-        console.log("Error: no hand detection model loaded");
-        return;
-    }
-    if (recipientId === undefined) {
-        if (senders !== undefined && senders.length) {
-            recipientId = senders[0].id;
-        } else {
-            recipientId = null;
-        }
-    }
-    detectHands(recipientId);
-};
-
 
 /** Register the initial set of parts in the system **/
 System.registerPart('card', Card);
@@ -1573,6 +1443,7 @@ System.registerPart('field', Field);
 System.registerPart('drawing', Drawing);
 System.registerPart('image', Image);
 System.registerPart('area', Area);
+System.registerPart('audio', Audio);
 
 /** Register the initial set of views in the system **/
 System.registerView('button', ButtonView);
@@ -1584,6 +1455,7 @@ System.registerView('field', FieldView);
 System.registerView('drawing', DrawingView);
 System.registerView('image', ImageView);
 System.registerView('area', AreaView);
+System.registerView('audio', AudioView);
 
 
 // Convenience method for adding all of the

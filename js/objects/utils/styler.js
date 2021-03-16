@@ -116,6 +116,9 @@ const _intToRotateDeg = (n) => {
 const _intToPx = (n) => {
     if(n !== null && n !== undefined){
         if(typeof(n) === "string"){
+            if(n == "fill"){
+                return "100%";
+            }
             n = n.split("px")[0];
         }
         return `${n}px`;
