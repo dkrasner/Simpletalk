@@ -73,7 +73,7 @@ describe('Editor tests', () => {
             let textArea = fieldView._shadowRoot.querySelector('.field-textarea');
             // you can't use textArea.innerText here so we need to replace the newlines
             // to check for equivalence
-            assert.equal(textArea.textContent, buttonScript.replace(/\n/g, ''));
+            assert.equal(textArea.textContent, buttonScript);
 
         });
         it('Button name is default displayed', () => {

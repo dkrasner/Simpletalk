@@ -32,13 +32,13 @@ describe('FieldView tests', () => {
         let text = "some text";
         fieldModel.partProperties.setPropertyNamed(
             fieldModel,
-            'textContent',
+            'text',
             text
         );
         let html = "<div>some text</div>";
         fieldModel.partProperties.setPropertyNamed(
             fieldModel,
-            'htmlContent',
+            'innerHTML',
             html
         );
     });
@@ -59,26 +59,26 @@ describe('FieldView tests', () => {
         let found = document.querySelector('st-field');
         assert.equal(fieldView, found);
     });
-    it('Mounted shadow textarea has current model textContent value', () => {
+    it('Mounted shadow textarea has current model text value', () => {
         let textArea = fieldView._shadowRoot.querySelector('.field-textarea');
         let modelValue = fieldModel.partProperties.getPropertyNamed(
             fieldModel,
-            'textContent'
+            'text'
         );
 
         assert.equal(textArea.textContent, modelValue);
     });
-    it('htmlContent is updated after textContent is', () => {
+    it('innerHTML is updated after text is', () => {
         let textArea = fieldView._shadowRoot.querySelector('.field-textarea');
         let newText = `on message\n   something NEW\nend message`;
         fieldModel.partProperties.setPropertyNamed(
             fieldModel,
-            'textContent',
+            'text',
             newText
         );
         let htmlValue = fieldModel.partProperties.getPropertyNamed(
             fieldModel,
-            'htmlContent'
+            'innerHTML'
         );
 
         assert.equal(htmlValue, newText);
@@ -116,7 +116,7 @@ describe('FieldView tests', () => {
         assert.equal(newContentText, fieldView.htmlToText(textContainer));
         // assert.equal(newContentHtml, fieldView.textToHtml(newContentText));
     });
-    it('Entering text into the shadow textarea changes the model htmlContent and textContent prop', () => {
+    it('Entering text into the shadow textarea changes the model innerHTML and text prop', () => {
         let textArea = fieldView._shadowRoot.querySelector('.field-textarea');
         let newHTMLContent = "<div>on message</div><div>   something new</div><div>end message<br></div>";
         let newTextContent = `on message\n   something new\nend message`;
@@ -131,13 +131,13 @@ describe('FieldView tests', () => {
 
         let foundHTMLContent = fieldModel.partProperties.getPropertyNamed(
             fieldModel,
-            'htmlContent'
+            'innerHTML'
         );
         assert.equal(newHTMLContent, foundHTMLContent);
 
         let foundTextContent = fieldModel.partProperties.getPropertyNamed(
             fieldModel,
-            'textContent'
+            'text'
         );
         assert.equal(newTextContent, foundTextContent);
     });

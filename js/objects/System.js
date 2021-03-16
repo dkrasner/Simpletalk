@@ -1247,8 +1247,6 @@ System._commandHandlers['openScriptEditor'] = function(senders, targetId){
         'space-fill'
     );
     let fieldView = this.findViewById(fieldModel.id);
-    // Set the field's htmlContent to be the textToHtml converted
-    // script of the given target part.
     let currentScript = targetPart.partProperties.getPropertyNamed(
         targetPart,
         'script'
@@ -1256,7 +1254,7 @@ System._commandHandlers['openScriptEditor'] = function(senders, targetId){
     let textArea = fieldView._shadowRoot.querySelector(".field-textarea");
     fieldModel.partProperties.setPropertyNamed(
         fieldModel,
-        'textContent',
+        'text',
         currentScript
     );
 
@@ -1272,14 +1270,14 @@ System._commandHandlers['openScriptEditor'] = function(senders, targetId){
     // Set the save button's action to be to save the script
     // on the part
     saveBtnModel._commandHandlers['click'] = function(){
-        let textContent = fieldModel.partProperties.getPropertyNamed(
+        let text = fieldModel.partProperties.getPropertyNamed(
             fieldModel,
-            'textContent'
+            'text'
         );
         targetPart.partProperties.setPropertyNamed(
             targetPart,
             'script',
-            textContent
+            text
         );
     };
 };
@@ -1323,11 +1321,13 @@ System._commandHandlers['openSimpletalkGrammar'] = function(senders, ruleName){
 
     fieldModel.partProperties.setPropertyNamed(
         fieldModel,
-        'textContent',
-        textContent
+        'text',
+        grammar
     );
 
     // if the ruleName has been provided, scroll that into view
+    // TODO this doesn't work properly
+    let textArea = fieldView._shadowRoot.querySelector(".field-textarea");
     if(ruleName){
         let regex = `${ruleName}`;
         for(var i = 0; i < textArea.children.length; i++){
@@ -1381,15 +1381,15 @@ System._commandHandlers['openDebugger'] = function(senders, partId){
     let fieldModel = this.newModel('field', currentCard.id);
     let fieldView = this.findViewById(fieldModel.id);
 
-    let textContent = "";
+    let text = "";
     Object.keys(target.commandHandlerRegistry).forEach((name) =>{
         let info = target.commandHandlerRegistry[name];
-        textContent += `${name}: ${JSON.stringify(info)}\n`;
+        text += `${name}: ${JSON.stringify(info)}\n`;
     });
     fieldModel.partProperties.setPropertyNamed(
         fieldModel,
-        'textContent',
-        textContent
+        'text',
+        text
     );
 };
 

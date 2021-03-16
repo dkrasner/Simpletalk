@@ -49,8 +49,8 @@ describe('Error Handling', () => {
                 'end doSomethingFirst',
             ].join('\n');
             let scriptEditor = window.System.findScriptEditorByTargetId(button.id);
-            let textContent = scriptEditor.model.partProperties.getPropertyNamed(scriptEditor, "textContent");
-            assert.equal(textContent, markedUpScript);
+            let text = scriptEditor.model.partProperties.getPropertyNamed(scriptEditor, "text");
+            assert.equal(text, markedUpScript);
         });
     });
     describe('MessageNotUnderstood', () => {
@@ -91,8 +91,8 @@ describe('Error Handling', () => {
                 'end click',
             ].join('\n');
             let scriptEditor = window.System.findScriptEditorByTargetId(anotherButton.id);
-            let textContent = scriptEditor.model.partProperties.getPropertyNamed(scriptEditor, "textContent");
-            assert.equal(textContent, markedUpScript);
+            let text = scriptEditor.model.partProperties.getPropertyNamed(scriptEditor, "text");
+            assert.equal(text, markedUpScript);
         });
     });
 });

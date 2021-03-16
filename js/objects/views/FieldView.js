@@ -119,14 +119,8 @@ class FieldView extends PartView {
                 this.classList.remove("editable");
             }
         });
-        this.onPropChange('textContent', (value, id) => {
+        this.onPropChange('text', (value, id) => {
             this.textarea.textContent = value;
-            // TODO make 'textContent' a dynamic prop?
-            this.model.partProperties.setPropertyNamed(
-                this.model,
-                'htmlContent',
-                value
-            );
         });
     }
 
@@ -156,11 +150,11 @@ class FieldView extends PartView {
         this.textarea = this._shadowRoot.querySelector('.field-textarea');
         // If we have a model, set the value of the textarea
         // to the current html of the field model
-        let htmlContent = this.model.partProperties.getPropertyNamed(
+        let innerHTML = this.model.partProperties.getPropertyNamed(
             this.model,
-            'htmlContent'
+            'innerHTML'
         );
-        this.textarea.innerHTML = htmlContent;
+        this.textarea.innerHTML = innerHTML;
 
         // setup the lock/unlock halo button
         this.initCustomHaloButtons();
@@ -190,8 +184,8 @@ class FieldView extends PartView {
                 tabLine= "";
             }
             textContent = `${tabLine}end ${messageName}`;
-            let htmlContent = this.textToHtml(textContent);
-            element.insertAdjacentHTML("beforeend", htmlContent);
+            let innerHTML = this.textToHtml(textContent);
+            element.insertAdjacentHTML("beforeend", innerHTML);
         }
         return element.innerHTML;
     }
@@ -254,13 +248,13 @@ class FieldView extends PartView {
 
         this.model.partProperties.setPropertyNamed(
             this.model,
-            'textContent',
+            'text',
             event.target.innerText,
             false // do not notify, to preserve contenteditable context
         );
         this.model.partProperties.setPropertyNamed(
             this.model,
-            'htmlContent',
+            'innerHTML',
             event.target.innerHTML,
             false // do not notify
         );
@@ -350,7 +344,7 @@ class FieldView extends PartView {
         // TODO these should all be messages and correspnding command handler definitions
         // should be part of the field's own script
         let fieldModel = window.System.newModel("field", this.model._owner.id, "selection XYZ");
-        fieldModel.partProperties.setPropertyNamed(fieldModel, "htmlContent", html);
+        fieldModel.partProperties.setPropertyNamed(fieldModel, "innerHTML", html);
 
     }
 

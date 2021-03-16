@@ -39,12 +39,12 @@ const errorHandler = {
         }
         // get some more info about what the parser expected
         let expectedText = aMessage.parsedScript.getExpectedText();
-        let textContent = scriptEditor.model.partProperties.getPropertyNamed(scriptEditor, "textContent");
-        let textLines = textContent.split("\n");
+        let text = scriptEditor.model.partProperties.getPropertyNamed(scriptEditor, "text");
+        let textLines = text.split("\n");
         // replace said text line with an error marker
         textLines[errorLineNum] += ` --<<<[Expected:${expectedText}; ruleName: "${ruleName}"]`;
-        textContent = textLines.join("\n");
-        scriptEditor.model.partProperties.setPropertyNamed(scriptEditor.model, "textContent", textContent);
+        text = textLines.join("\n");
+        scriptEditor.model.partProperties.setPropertyNamed(scriptEditor.model, "text", text);
         // open the grammar
         this._openGrammar(aMessage.partId, ruleName);
     },
@@ -61,8 +61,8 @@ const errorHandler = {
                 this._openScriptEditor(originalSender.id);
                 scriptEditor = window.System.findScriptEditorByTargetId(originalSender.id);
             }
-            let textContent = scriptEditor.model.partProperties.getPropertyNamed(scriptEditor, "textContent");
-            let textLines = textContent.split("\n");
+            let text = scriptEditor.model.partProperties.getPropertyNamed(scriptEditor, "text");
+            let textLines = text.split("\n");
             // offending command text line with an error marker
             let regex = new RegExp(`\\s*${commandName}(\s|$)`, 'g');
             for(let i = 0; i < textLines.length; i++){
@@ -73,8 +73,8 @@ const errorHandler = {
             }
             textLines.forEach((line) => {
             });
-            textContent = textLines.join("\n");
-            scriptEditor.model.partProperties.setPropertyNamed(scriptEditor.model, "textContent", textContent);
+            text = textLines.join("\n");
+            scriptEditor.model.partProperties.setPropertyNamed(scriptEditor.model, "text", text);
 
             // finally open the debugger (or current version thereof)
             // NOTE: this is a bit dangerous, b/c if the System doesn't

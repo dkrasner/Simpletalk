@@ -41,13 +41,27 @@ class Field extends Part {
         );
 
         this.partProperties.newBasicProp(
-            'htmlContent',
+            'innerHTML',
             ''
         );
-        this.partProperties.newBasicProp(
-            'textContent',
-            ''
+
+        // 'text' is a DynamicProperty configured to also set the innerHTML
+        // BasicProperty when changed. The basic idea is that 'text' will be
+        // the property that ST will interface with and everytime it
+        // is changed the 'innerHTML' property should follow.
+        this.partProperties.newDynamicProp(
+            'text',
+            (owner, prop, value) => {
+                prop._value = value;
+                owner.partProperties.setPropertyNamed(owner, 'innerHTML', value);
+            },
+            (owner, prop) => {
+                return prop._value;
+            },
+            false, // not read only
+            ''     // default is empty string
         );
+
         this.partProperties.newBasicProp(
             'editable',
             true
@@ -86,9 +100,9 @@ class Field extends Part {
     /**
      * Serialize this Field's state as JSON.
      * We override the default Part.js
-     * implementation so that the textContent
+     * implementation so that the text
      * property is not saved. This prevents it
-     * from being set (rather than htmlContent)
+     * from being set (rather than innerHTML)
      * on deserialization
      */
     serialize(){
@@ -107,7 +121,7 @@ class Field extends Part {
         };
         this.partProperties._properties.forEach(prop => {
             let name = prop.name;
-            if(name !== 'textContent'){
+            if(name !== 'text'){
                 let value = prop.getValue(this);
                 // If this is the events set, transform
                 // it to an Array first (for serialization)
