@@ -28,15 +28,6 @@ class CardView extends PartView {
         //a halo to open
         this.wantsHalo = false;
 
-        // Handle current-ness prop changes
-        this.onPropChange('current', (newVal) => {
-            if(newVal){
-                this.classList.add('current-card');
-            } else {
-                this.classList.remove('current-card');
-            }
-        });
-
         // Bind component methods
         this.onClick = this.onClick.bind(this);
         this.onDrop = this.onDrop.bind(this);
@@ -63,15 +54,6 @@ class CardView extends PartView {
         this['ondrop'] = null;
     }
 
-    afterModelSet(){
-        let initCurrentness = this.model.partProperties.getPropertyNamed(
-            this.model,
-            'current'
-        );
-        if(initCurrentness){
-            this.classList.add('current-card');
-        }
-    }
 
     onClick(event){
         if(event.button == 0 && event.shiftKey){

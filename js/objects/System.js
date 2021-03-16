@@ -40,7 +40,7 @@ import {ExecutionStack, ActivationContext} from './ExecutionStack.js';
 
 import idMaker from './utils/idMaker.js';
 
-import handInterface from './utils/handInterface.js'
+import handInterface from './utils/handInterface.js';
 
 const System = {
     name: "System",
@@ -150,20 +150,22 @@ const System = {
         worldView.setModel(worldModel);
         document.body.appendChild(worldView);
 
-        // Create an initial blank Stack in this
-        // case
+        // Create initial stack model
         let initStack = this.newModel('stack', worldModel.id);
+
+        // Create initial card model for that stack
+        let initCard = this.newModel('card', initStack.id);
+
+        // Update current stack and card values
+        worldModel.partProperties.setPropertyNamed(
+            worldModel,
+            'current',
+            0
+        );
         initStack.partProperties.setPropertyNamed(
             initStack,
             'current',
-            true
-        );
-        let stack = document.querySelector('st-stack.current-stack').model;
-        let initCard = this.newModel('card', stack.id);
-        initCard.partProperties.setPropertyNamed(
-            initCard,
-            'current',
-            true
+            0
         );
         
         // Update serialization
@@ -757,17 +759,25 @@ const System = {
         // let currentCardView = document.querySelector(`[part-id="${deserializedInfo.currentCardId}"]`);
         // currentStackView.classList.add('current-stack');
         // currentCardView.classList.add('current-card');
+        let world = this.partsById['world'];
         let currentStack = this.partsById[deserializedInfo.currentStackId];
+        let allStacks = currentStack._owner.subparts.filter(subpart => {
+            return subpart.type == 'stack';
+        });
+        world.partProperties.setPropertyNamed(
+            world,
+            'current',
+            allStacks.indexOf(currentStack)
+        );
+        
+        let currentCard = this.partsById[deserializedInfo.currentCardId];
+        let allCards = currentStack.subparts.filter(subpart => {
+            return subpart.type == 'card';
+        });
         currentStack.partProperties.setPropertyNamed(
             currentStack,
             'current',
-            true
-        );
-        let currentCard = this.partsById[deserializedInfo.currentCardId];
-        currentCard.partProperties.setPropertyNamed(
-            currentCard,
-            'current',
-            true
+            allCards.indexOf(currentCard)
         );
 
         // Compile all of the scripts on
@@ -1200,10 +1210,10 @@ System._commandHandlers['openScriptEditor'] = function(senders, targetId){
     let winStackView = this.findViewById(winStackModel.id);
     winStackView.classList.add('window-stack');
     let currentCard = this.newModel('card', winStackModel.id);
-    currentCard.partProperties.setPropertyNamed(
-        currentCard,
+    winStackModel.partProperties.setPropertyNamed(
+        winStackModel,
         'current',
-        true
+        0
     );
 
     // Set the current card's layout to be a column list
@@ -1293,10 +1303,10 @@ System._commandHandlers['openSimpletalkGrammar'] = function(senders, ruleName){
     let winStackView = this.findViewById(winStackModel.id);
     winStackView.classList.add('window-stack');
     let currentCard = this.newModel('card', winStackModel.id);
-    currentCard.partProperties.setPropertyNamed(
-        currentCard,
+    winStackModel.partProperties.setPropertyNamed(
+        winStackModel,
         'current',
-        true
+        0
     );
 
     // Set the current card's layout to be a column list
@@ -1362,10 +1372,10 @@ System._commandHandlers['openDebugger'] = function(senders, partId){
     let winStackView = this.findViewById(winStackModel.id);
     winStackView.classList.add('window-stack');
     let currentCard = this.newModel('card', winStackModel.id);
-    currentCard.partProperties.setPropertyNamed(
-        currentCard,
+    winStackModel.partProperties.setPropertyNamed(
+        winStackModel,
         'current',
-        true
+        0
     );
 
     // Set the current card's layout to be a column list
