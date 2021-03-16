@@ -29,8 +29,8 @@ const partTypes = [
     "toolbox",
     "drawing",
     "image",
-    "area"
-    "audio",
+    "area",
+    "audio"
 ];
 
 const numbers = [
