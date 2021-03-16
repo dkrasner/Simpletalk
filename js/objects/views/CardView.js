@@ -24,32 +24,25 @@ class CardView extends PartView {
             template.content.cloneNode(true)
         );
 
+        // Halo settings. Cards don't want
+        //a halo to open
+        this.wantsHalo = false;
+
+        // Handle current-ness prop changes
+        this.onPropChange('current', (newVal) => {
+            if(newVal){
+                this.classList.add('current-card');
+            } else {
+                this.classList.remove('current-card');
+            }
+        });
+
         // Bind component methods
         this.onClick = this.onClick.bind(this);
         this.onDrop = this.onDrop.bind(this);
-        this.setupPropHandlers = this.setupPropHandlers.bind(this);
-        this.layoutChanged = this.layoutChanged.bind(this);
-
-        // Setup prop handlers
-        this.setupPropHandlers();
-    }
-
-    setupPropHandlers(){
-        this.onPropChange('layout', this.layoutChanged);
     }
 
     afterConnected(){
-        // Check to see if the parent StackView has another
-        // current card set. If not, and I am the first card
-        // in the StackView, set myself to be the current card.
-        let currentCard = Array.from(this.parentElement.children).find(childEl => {
-            return childEl.classList.contains('current-card');
-        });
-
-        if(!currentCard){
-            this.classList.add('current-card');
-        }
-
         // Add event listeners
         this['onclick'] = this.onClick;
         this['ondragenter'] = (event) => {
@@ -71,13 +64,13 @@ class CardView extends PartView {
     }
 
     afterModelSet(){
-        // We force update the layout after the
-        // model has been set.
-        let currentLayout = this.model.partProperties.getPropertyNamed(
+        let initCurrentness = this.model.partProperties.getPropertyNamed(
             this.model,
-            'layout'
+            'current'
         );
-        this.layoutChanged(currentLayout);
+        if(initCurrentness){
+            this.classList.add('current-card');
+        }
     }
 
     onClick(event){
@@ -109,30 +102,6 @@ class CardView extends PartView {
             this.sendMessage(msg, sourceModel);
         }
     }
-
-    layoutChanged(value, partId){
-        // Layout stuff
-        let layout = value;
-        if(layout == 'list'){
-            this.classList.add('list-layout');
-        } else {
-            this.classList.remove('list-layout');
-        }
-        let listDirection = this.model.partProperties.getPropertyNamed(
-            this.model,
-            'listDirection'
-        );
-        this.classList.remove(
-            'list-row',
-            'list-column'
-        );
-        if(layout && listDirection == 'row'){
-            this.classList.add('list-row');
-        } else if(layout && listDirection){
-            this.classList.add('list-column');
-        }
-    }
-
 };
 
 export {

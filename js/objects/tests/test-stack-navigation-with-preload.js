@@ -5,24 +5,8 @@
  * navigate between cards (ie, go to next card,
  * go to card 2, etc)
  */
-
-/* NOTE: This test module does NOT
- * use the preload.js file
- */
-import 'jsdom-global/register';
 import chai from 'chai';
 const assert = chai.assert;
-
-import StackView from '../views/StackView.js';
-import Stack from '../parts/Stack.js';
-import CardView from '../views/CardView.js';
-import Card from '../parts/Card.js';
-import World from '../parts/WorldStack.js';
-import WorldView from '../views/WorldView.js';
-
-window.customElements.define('st-stack', StackView);
-window.customElements.define('st-card', CardView);
-window.customElements.define('st-world', WorldView);
 
 let stackView;
 let stackModel;
@@ -31,57 +15,30 @@ let worldModel;
 
 describe('World Navigation Tests', () => {
     describe('Setup of WorldView', () => {
-        it('Can initialize a WorldView with model', () => {
-            worldModel = new World(null);
-            worldView = document.createElement('st-world');
-            worldView.setModel(worldModel);
+        it('Can locate the worldModel', () => {
+            worldModel = window.System.partsById['world'];
             assert.exists(worldModel);
-            assert.exists(worldView);
-            assert.equal(worldModel, worldView.model);
         });
-        it('World part has no Stacks on initialization', () => {
+        it('Can locate the worldView', () => {
+            worldView = document.querySelector(`[part-id="${worldModel.id}"]`);
+            assert.exists(worldView);
+        });
+        it('World part has 1 Stack on initialization', () => {
             let stackParts = worldModel.subparts.filter(part => {
                 return part.type == 'stack';
             });
 
-            assert.equal(stackParts.length, 0);
+            assert.equal(stackParts.length, 1);
         });
         it('We can add two Stacks to the world', () => {
-            let stack1 = new Stack(worldModel);
-            let stack2 = new Stack(worldModel);
-            let stack3 = new Stack(worldModel);
-
-            worldModel.addPart(stack1);
-            worldModel.addPart(stack2);
-            worldModel.addPart(stack3);
+            window.System.newModel('stack', worldModel.id);
+            window.System.newModel('stack', worldModel.id);
 
             let stackParts = worldModel.subparts.filter(part => {
                 return part.type == 'stack';
             });
 
             assert.equal(stackParts.length, 3);
-        });
-        it('Can append StackViews from the models', () => {
-            worldModel.subparts.filter(part => {
-                return part.type == 'stack';
-            }).forEach(stackModel => {
-                let stackElement = document.createElement('st-stack');
-                stackElement.setModel(stackModel);
-                worldView.appendChild(stackElement);
-            });
-            // assumes that the first stack has id 1!
-            worldView.goToStackById(1);
-
-            let first = worldView.querySelector('st-stack:first-child');
-            let second = worldView.querySelector('st-stack:nth-child(2)');
-
-            assert.exists(first);
-            assert.exists(second);
-            assert.equal(first.getAttribute('class'), 'current-stack');
-            assert.equal(
-                worldView.querySelectorAll('st-stack').length,
-                3
-            );
         });
         it('First child stackView is set to current stack', () => {
             let firstStackView = worldView.querySelector('st-stack:first-child');
@@ -109,7 +66,7 @@ describe('World Navigation Tests', () => {
             assert.isFalse(second.classList.contains('current-stack'));
 
             // Do the navigation
-            worldView.goToNextStack();
+            worldModel.goToNextStack();
 
             assert.isFalse(first.classList.contains('current-stack'));
             assert.isTrue(second.classList.contains('current-stack'));
@@ -121,7 +78,7 @@ describe('World Navigation Tests', () => {
             assert.isTrue(second.classList.contains('current-stack'));
 
             // Do the navigation
-            worldView.goToPrevStack();
+            worldModel.goToPrevStack();
 
             assert.isTrue(first.classList.contains('current-stack'));
             assert.isFalse(second.classList.contains('current-stack'));
@@ -131,17 +88,17 @@ describe('World Navigation Tests', () => {
 
             // first stack is curent, and going next 3 times returns it to current
             assert.isTrue(first.classList.contains('current-stack'));
-            worldView.goToNextStack();
+            worldModel.goToNextStack();
             assert.isFalse(first.classList.contains('current-stack'));
-            worldView.goToNextStack();
-            worldView.goToNextStack();
+            worldModel.goToNextStack();
+            worldModel.goToNextStack();
             assert.isTrue(first.classList.contains('current-stack'));
 
             // repeat shuffle backwards
-            worldView.goToPrevStack();
+            worldModel.goToPrevStack();
             assert.isFalse(first.classList.contains('current-stack'));
-            worldView.goToPrevStack();
-            worldView.goToPrevStack();
+            worldModel.goToPrevStack();
+            worldModel.goToPrevStack();
             assert.isTrue(first.classList.contains('current-stack'));
         });
         it('#goToStackById: Can go to 3rd stack by id (and return)', () => {
@@ -152,13 +109,13 @@ describe('World Navigation Tests', () => {
             assert.isFalse(third.classList.contains('current-stack'));
 
             // Do the navigation
-            worldView.goToStackById(third.getAttribute("part-id"));
+            worldModel.goToStackById(third.getAttribute("part-id"));
 
             assert.isTrue(third.classList.contains('current-stack'));
             assert.isFalse(first.classList.contains('current-stack'));
 
             // Reset the navigation
-            worldView.goToStackById(first.getAttribute("part-id"));
+            worldModel.goToStackById(first.getAttribute("part-id"));
             assert.isTrue(first.classList.contains('current-stack'));
             assert.isFalse(third.classList.contains('current-stack'));
         });
@@ -167,28 +124,21 @@ describe('World Navigation Tests', () => {
 
 describe('Stack Navigation Tests', () => {
     describe('Setup of StackView', () => {
-        it('Can initialize a StackView with model', () => {
-            stackModel = new Stack(null);
-            stackView = document.createElement('st-stack');
-            stackView.setModel(stackModel);
+        it('Can locate the first stack model in the WorldStack', () => {
+            stackModel = worldModel.subparts.find(subpart => {
+                return subpart.type == 'stack';
+            });
             assert.exists(stackModel);
+        });
+        it('Can locate the stack view for the stack model', () => {
+            stackView = document.querySelector(`[part-id="${stackModel.id}"]`);
             assert.exists(stackView);
-            assert.equal(stackModel, stackView.model);
         });
         it('Stack part has only one Card subpart', () => {
             let cardParts = stackModel.subparts.filter(part => {
                 return part.type == 'card';
             });
-
             assert.equal(1, cardParts.length);
-        });
-        it('Can append the StackView to body', () => {
-            document.body.appendChild(stackView);
-            let found = document.body.querySelector('st-stack');
-            let foundElementId = found.getAttribute('part-id');
-
-            assert.exists(found);
-            assert.equal(foundElementId, stackModel.id.toString());
         });
         it('Stack part STILL has only one Card subpart', () => {
             let cardParts = stackModel.subparts.filter(part => {
@@ -197,17 +147,13 @@ describe('Stack Navigation Tests', () => {
 
             assert.equal(1, cardParts.length);
         });
-        it('StackView has no CardView children yet', () => {
+        it('StackView has one CardView child', () => {
             let numCards = stackView.querySelectorAll('st-card').length;
-            assert.equal(0, numCards);
+            assert.equal(1, numCards);
         });
         it('Can create 2 additional cards (stack model has one by default)', () => {
-            let card2 = new Card(stackModel);
-            let card3 = new Card(stackModel);
-
-            stackModel.addPart(card2);
-            stackModel.addPart(card3);
-
+            let card2 = window.System.newModel('card', stackModel.id);
+            let card3 = window.System.newModel('card', stackModel.id);
             assert.include(stackModel.subparts, card2);
             assert.include(stackModel.subparts, card3);
         });
@@ -221,13 +167,6 @@ describe('Stack Navigation Tests', () => {
             );
         });
         it('Can append StackViews from the models', () => {
-            stackModel.subparts.filter(part => {
-                return part.type == 'card';
-            }).forEach(cardModel => {
-                let cardElement = document.createElement('st-card');
-                cardElement.setModel(cardModel);
-                stackView.appendChild(cardElement);
-            });
             let first = stackView.querySelector('st-card:first-child');
             let second = stackView.querySelector('st-card:nth-child(2)');
             let third = stackView.querySelector('st-card:nth-child(3)');
@@ -268,7 +207,7 @@ describe('Stack Navigation Tests', () => {
             assert.isFalse(secondCard.classList.contains('current-card'));
 
             // Do the navigation
-            stackView.goToNextCard();
+            stackModel.goToNextCard();
 
             assert.isFalse(firstCard.classList.contains('current-card'));
             assert.isTrue(secondCard.classList.contains('current-card'));
@@ -281,7 +220,7 @@ describe('Stack Navigation Tests', () => {
             assert.isFalse(thirdCard.classList.contains('current-card'));
 
             // Do the navigation
-            stackView.goToNextCard();
+            stackModel.goToNextCard();
             assert.isFalse(secondCard.classList.contains('current-card'));
             assert.isTrue(thirdCard.classList.contains('current-card'));
         });
@@ -294,7 +233,7 @@ describe('Stack Navigation Tests', () => {
 
             // Do the navigation. We expect it to 'loop around'
             // back to the first card
-            stackView.goToNextCard();
+            stackModel.goToNextCard();
             assert.isFalse(thirdCard.classList.contains('current-card'));
             assert.isTrue(firstCard.classList.contains('current-card'));
         });
@@ -306,7 +245,7 @@ describe('Stack Navigation Tests', () => {
             assert.isFalse(lastCard.classList.contains('current-card'));
 
             // Do the navigation. Expect to look back to last card
-            stackView.goToPrevCard();
+            stackModel.goToPrevCard();
             assert.isFalse(firstCard.classList.contains('current-card'));
             assert.isTrue(lastCard.classList.contains('current-card'));
         });
@@ -318,7 +257,7 @@ describe('Stack Navigation Tests', () => {
             assert.isFalse(middleCard.classList.contains('current-card'));
 
             // Do the navigation
-            stackView.goToPrevCard();
+            stackModel.goToPrevCard();
             assert.isFalse(lastCard.classList.contains('current-card'));
             assert.isTrue(middleCard.classList.contains('current-card'));
         });
@@ -330,7 +269,7 @@ describe('Stack Navigation Tests', () => {
             assert.isFalse(firstCard.classList.contains('current-card'));
 
             // Do the navigation
-            stackView.goToPrevCard();
+            stackModel.goToPrevCard();
             assert.isFalse(secondCard.classList.contains('current-card'));
             assert.isTrue(firstCard.classList.contains('current-card'));
         });
@@ -342,12 +281,12 @@ describe('Stack Navigation Tests', () => {
             assert.isFalse(secondCard.classList.contains('current-card'));
 
             // Do the navigation
-            stackView.goToCardById(secondCard.getAttribute("part-id"));
+            stackModel.goToCardById(secondCard.getAttribute("part-id"));
             assert.isFalse(firstCard.classList.contains('current-card'));
             assert.isTrue(secondCard.classList.contains('current-card'));
 
             // Undo the navigation
-            stackView.goToCardById(firstCard.getAttribute("part-id"));
+            stackModel.goToCardById(firstCard.getAttribute("part-id"));
             assert.isTrue(firstCard.classList.contains('current-card'));
             assert.isFalse(secondCard.classList.contains('current-card'));
         });
@@ -361,7 +300,7 @@ describe('Stack Navigation Tests', () => {
             assert.isFalse(thirdCard.classList.contains('current-card'));
 
             // Do the navigation. goToNthCard uses 1-indexed values
-            stackView.goToNthCard(3);
+            stackModel.goToNthCard(3);
             assert.isFalse(firstCard.classList.contains('current-card'));
             assert.isTrue(thirdCard.classList.contains('current-card'));
         });
@@ -373,21 +312,21 @@ describe('Stack Navigation Tests', () => {
             assert.isFalse(secondCard.classList.contains('current-card'));
 
             // Do the navigation.
-            stackView.goToNthCard(2);
+            stackModel.goToNthCard(2);
             assert.isFalse(thirdCard.classList.contains('current-card'));
             assert.isTrue(secondCard.classList.contains('current-card'));
         });
 
         it('Throws an error when attempting to navigate to card 0 (should be 1 indexed)', () => {
             assert.throws(
-                stackView.goToNthCard.bind(0),
+                stackModel.goToNthCard.bind(0),
                 Error
             );
         });
 
         it('Throws an error when attempting to navigate to a negative number', () => {
             assert.throws(
-                stackView.goToNthCard.bind(-13),
+                stackModel.goToNthCard.bind(-13),
                 Error
             );
         });
@@ -396,7 +335,7 @@ describe('Stack Navigation Tests', () => {
             // NOTE: Not sure if this is the expected behavior. Need
             // to check and write an appropriate test here if not.
             let currentCard = stackView.querySelector('st-card.current-card');
-            stackView.goToNthCard(51);
+            stackModel.goToNthCard(51);
             assert.isTrue(currentCard.classList.contains('current-card'));
             stackView.querySelectorAll('st-card:not(.current-card)').forEach(el => {
                 assert.isFalse(el.classList.contains('current-card'));

@@ -36,6 +36,14 @@
 /* Prerequisites */
 * {
     visibility: initial;
+    box-sizing: border-box;
+}
+
+body {
+    display: block;
+    width: 100vw;
+    height: 100vh;
+    overflow: hidden;
 }
 
 .active {
@@ -52,7 +60,11 @@ st-world {
 /* =Stack Styles
  *----------------------------------------------------*/
 st-stack {
+    display: block;
     visibility: hidden;
+    position: relative;
+    width: 100%;
+    height: 100%;
 }
 
 
@@ -110,24 +122,23 @@ st-window {
     background-color: var(--palette-blue);
     border: 1px solid rgba(100, 100, 100, 0.2);
     box-shadow: 3px 4px 4px 0px rgba(50, 50, 50, 0.3);
-    z-index: 100;  /* We probably don't want this */
+    z-index: 100;
 }
 
 st-window:active {
     z-index: 100;
 }
 
- *---------------------------------------
-/* =Container Styles
+/* =Area Styles
  *---------------------------------------------------------*/
-st-container {
+st-area {
     position: absolute;
     border: 1px solid rgb(150, 150, 150);
     width: var(--container-default-width);
     height: var(--container-default-height);
 }
 
-st-container:empty {
+st-area:empty {
     display: block;
     position: absolute;
     border: 1px solid rgb(150, 150, 150);
@@ -184,20 +195,120 @@ st-button-editor:active {
  * --------------------------------------------------------*/
 .list-layout {
     display: flex;
-}
-
-.list-layout > * {
-    position: relative !important;
-}
-
-.list-row {
     flex-direction: row;
+}
+
+st-world > st-stack > :not(.current-card).list-layout {
+    display: none;
 }
 
 .list-column {
     flex-direction: column;
 }
 
+.list-layout:not(.list-column).list-align-top {
+    align-items: start;
+}
+
+.list-layout:not(.list-column).list-align-bottom {
+    align-items: end;
+}
+
+.list-layout.list-column.list-align-left {
+    align-items: start;
+}
+
+.list-layout.list-column.list-align-right {
+    align-items: end;
+}
+
+.list-layout.list-align-center {
+    align-items: center;
+}
+
+.list-layout.list-distribution-center {
+    justify-content: center;
+}
+
+.list-layout.list-distribution-start {
+    justify-content: start;
+}
+
+.list-layout.list-distribution-end {
+    justify-content: end;
+}
+
+.list-layout.list-distribution-space-between {
+    justify-content: space-between;
+}
+
+.list-layout.list-distribution-space-around {
+    justify-content: space-around;
+}
+
+.wrap-list {
+    flex-wrap: wrap;
+    align-content: start;
+}
+
+.list-layout > * {
+    position: relative !important;
+    top: auto !important;
+    left: auto !important;
+}
+
+.list-layout > st-window,
+.list-layout > st-button-editor {
+    position: absolute;
+    top: unset;
+    left: unset;
+}
+
+.list-layout.list-column > .h-space-fill {
+    width: 100% !important;
+}
+
+.list-layout:not(.list-column) > .v-space-fill {
+    height: 100% !important;
+}
+
+.list-layout.list-column > .v-space-fill,
+.list-layout:not(.list-column) > .h-space-fill {
+    flex: 1;
+    height: auto !important;
+}
+
+.list-layout:not(.list-column) > .h-rigid {
+    flex: none;
+}
+
+.v-shrink-wrap {
+    height: max-content !important;
+}
+
+.h-shrink-wrap {
+    width: max-content !important;
+}
+
+.pin-top {
+    top: 0 !important;
+    bottom: unset !important;
+}
+
+.pin-bottom {
+    bottom: 0 !important;
+    top: unset !important;
+}
+
+.pin-left {
+    left: 0 !important;
+    right: unset !important;
+}
+
+.pin-right {
+    right: 0 !important;
+    left: unset !important;
+}
 
 /* =Utility Classes
  * --------------------------------------------------------*/

@@ -76,9 +76,10 @@ const cssStyler = (styleObj, propertyName, propertyValue) => {
         if(propertyValue === true){
             styleObj["display"] = "none";
         } else if(propertyValue === false){
-            styleObj["display"] = "initial";
+            styleObj["display"] = null;
         }
         break;
+
 
     default:
         // for the default we simply allow ST style names to map 1-1

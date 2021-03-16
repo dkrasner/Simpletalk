@@ -129,18 +129,21 @@
         EndIfLine
               = "end if" comment?
         
+        ControlStatementLine
+        	   = ~"else" ~"end if" StatementLine
+        
         IfThenSingleline
                = IfLine lineTerminator ThenLine lineTerminator ElseLine --withElse
                | IfLine lineTerminator ThenLine --withoutElse
 
         MultiThen
-               = "then" comment? lineTerminator StatementLine+
+               = "then" comment? lineTerminator ControlStatementLine+
         MultiElse
-               = "else" comment? lineTerminator StatementLine+
+               = "else" comment? lineTerminator ControlStatementLine+
 
         IfThenMultiline
-               = IfLine lineTerminator MultiThen EndIfLine --withoutElse
-               | IfLine lineTerminator MultiThen MultiElse --withElse
+               = IfLine lineTerminator MultiThen MultiElse EndIfLine --withElse
+               | IfLine lineTerminator MultiThen EndIfLine --withoutElse 
 
 		// Looping (repeat)
 		RepeatControlForm
@@ -222,7 +225,7 @@
 		= (comment lineTerminator)+
 
 	systemObject (system object such as card, stack etc)
-		= ("c" | "C") "ontainer" | ("b"| "B") "ackground" | ("b" | "B") "utton" | ("c" | "C") "ard" | ("f" | "F") "ield" | ("s" | "S") "tack" | ("w" | "W") "indow" | ("t"| "T") "oolbox" | ("d" | "D") "rawing" | ("i" | "I") "mage" | ("a" | "A") "udio"
+		= ("a" | "A") "rea" | ("b"| "B") "ackground" | ("b" | "B") "utton" | ("c" | "C") "ard" | ("f" | "F") "ield" | ("s" | "S") "tack" | ("w" | "W") "indow" | ("t"| "T") "oolbox" | ("d" | "D") "rawing" | ("i" | "I") "mage" | ("a" | "A") "udio"
 
 	// TODO do we want to restrict message names (start with lowercase etc)?
 	// Note: we prevent keyword overloading
@@ -250,7 +253,7 @@
         // These are convenience keywords used in place of indexing
         numericalKeyword (a number in English)
                 = "first" | "second" | "third" | "fourth" | "fifth" | "sixth"
-                | "seventh" | "eighth" | "ninth" | "tenth"
+                | "seventh" | "eighth" | "ninth" | "tenth" | "last"
 
 	objectId (an identifier of an object, string, numeric or mixed)
 		= ~systemObject (letter | digit)+

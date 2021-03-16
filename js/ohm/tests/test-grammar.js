@@ -28,7 +28,7 @@ String.prototype.unCapitalize = function() {
 };
 
 const objects = [
-    "background", "card", "container", "field", "button", "stack", "window",
+    "background", "card", "area", "field", "button", "stack", "window",
     "toolbox", "drawing", "audio", "image"
 ];
 
@@ -476,6 +476,7 @@ describe("SimpleTalk Grammar", () => {
         });
         describe("Set", () => {
             it.skip ("Set someProperty with id", () => {
+
                 objects.forEach((d) => {
                     const s = `set "someProperty" to "blue" in ${d} 10`;
                     semanticMatchTest(s, "Command");

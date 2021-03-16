@@ -1,0 +1,4 @@
+- /node_modules
+- /nodeenv
+- /.git
+- /js/objects/build

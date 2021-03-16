@@ -329,6 +329,7 @@ describe("Basic IfThenMultiline", () => {
                 'end if'
             ].join('\n');
             semanticMatchTest(str, "IfThenMultiline");
+            semanticMatchTest(str, "IfThenMultiline_withElse");
         });
         it('Can handle comparison with a variable', () => {
             let str = [

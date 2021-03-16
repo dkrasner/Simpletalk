@@ -35,6 +35,95 @@ class WorldStack extends Part {
         // Set the id property to always
         // be 'world'
         this.id = 'world';
+
+        // Bind navigation methods
+        this.goToNextStack = this.goToNextStack.bind(this);
+        this.goToPrevStack = this.goToPrevStack.bind(this);
+        this.goToNthStack = this.goToNthStack.bind(this);
+        this.goToStackById = this.goToStackById.bind(this);
+    }
+
+    goToNextStack(){
+        let stacks = this.subparts.filter(subpart => {
+            return subpart.type == 'stack';
+        });
+        if(stacks.length < 2){
+            return;
+        }
+        let current = stacks.find(stack => {
+            return stack._current == true;
+        });
+        let currentIdx = stacks.indexOf(current);
+        console.log(`currentIdx: ${currentIdx}`);
+        let nextIdx = currentIdx + 1;
+        if(nextIdx >= stacks.length){
+            nextIdx = (nextIdx % stacks.length);
+        }
+        console.log(`nextIdx: ${nextIdx}`);
+        let nextStack = stacks[nextIdx];
+        nextStack.partProperties.setPropertyNamed(
+            nextStack,
+            'current',
+            true
+        );
+    }
+
+    goToStackById(anId){
+        let stacks = this.subparts.filter(subpart => {
+            return subpart.type == 'stack';
+        });
+        let found = stacks.find(stack => {
+            return stack.id == anId;
+        });
+        if(!found){
+            throw new Error(`The stack id: ${anId} cant be found on this stack`);
+        }
+        found.partProperties.setPropertyNamed(
+            found,
+            'current',
+            true
+        );
+    }
+
+    goToPrevStack(){
+        let stacks = this.subparts.filter(subpart => {
+            return subpart.type == 'stack';
+        });
+        if(stacks.length < 2){
+            return;
+        }
+        let current = stacks.find(stack => {
+            return stack._current == true;
+        });
+        let currentIdx = stacks.indexOf(current);
+        let nextIdx = currentIdx - 1;
+        if(nextIdx < 0){
+            nextIdx = stacks.length + nextIdx;
+        }
+        let nextStack = stacks[nextIdx];
+        nextStack.partProperties.setPropertyNamed(
+            nextStack,
+            'current',
+            true
+        );
+    }
+
+    goToNthStack(anIndex){
+        // NOTE: We are using 1-indexed values
+        // per the SimpleTalk system
+        let trueIndex = anIndex - 1;
+        let stacks = this.subparts.filter(subpart => {
+            return subpart.type == 'stack';
+        });
+        if(trueIndex < 0 || trueIndex > stacks.length -1){
+            throw new Error(`Cannot navigate to stack number ${anIndex} -- out of bounds`);
+        }
+        let nextStack = stacks[trueIndex];
+        nextStack.partProperties.setPropertyNamed(
+            nextStack,
+            'current',
+            true
+        );
     }
 
     get type(){

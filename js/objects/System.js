@@ -11,10 +11,10 @@ import Button from './parts/Button.js';
 import Field from './parts/Field.js';
 import WorldStack from './parts/WorldStack.js';
 import Window from './parts/Window.js';
-import Container from './parts/Container.js';
 import Drawing from './parts/Drawing.js';
 import Audio from './parts/Audio.js';
 import Image from './parts/Image.js';
+import Area from './parts/Area.js';
 
 import ButtonEditor from './parts/editors/ButtonEditor.js';
 
@@ -25,10 +25,11 @@ import ButtonView from './views/ButtonView.js';
 import CardView from './views/CardView.js';
 import WindowView from './views/WindowView';
 import FieldView from './views/FieldView.js';
-import ContainerView from './views/ContainerView.js';
 import DrawingView from './views/drawing/DrawingView.js';
 import ImageView from './views/ImageView.js';
+import AreaView from './views/AreaView.js';
 import AudioView from './views/AudioView.js';
+
 
 import Halo from './views/Halo.js';
 import ButtonEditorView from './views/editors/ButtonEditorView.js';
@@ -151,9 +152,20 @@ const System = {
 
         // Create an initial blank Stack in this
         // case
-        this.newModel('stack', worldModel.id);
-        document.querySelector('st-stack').classList.add('current-stack');
-
+        let initStack = this.newModel('stack', worldModel.id);
+        initStack.partProperties.setPropertyNamed(
+            initStack,
+            'current',
+            true
+        );
+        let stack = document.querySelector('st-stack.current-stack').model;
+        let initCard = this.newModel('card', stack.id);
+        initCard.partProperties.setPropertyNamed(
+            initCard,
+            'current',
+            true
+        );
+        
         // Update serialization
         this.serialize();
     },
@@ -477,25 +489,6 @@ const System = {
         return model;
     },
 
-    // setProperty(property, value, ownerId){
-    //     let ownerPart = this.partsById[ownerId];
-    //     if(!ownerPart || ownerPart == undefined){
-    //         throw new Error(`System could not locate owner part with id ${ownerId}`);
-    //     }
-    //     ownerPart.partProperties.setPropertyNamed(ownerPart, property, value);
-    //     // for now stack properties propagate down to their direct card children
-    //     // TODO this should be refactored within a better lifecycle model and potenitally
-    //     // use dynamic props. A similar propagation should probably exist for world -> stacks,
-    //     // window -> subpart etc
-    //     if(ownerPart.type === "stack"){
-    //         ownerPart.subparts.forEach((subpart) => {
-    //             if(subpart.type === "card"){
-    //                 subpart.partProperties.setPropertyNamed(subpart, property, value);
-    //             }
-    //         });
-    //     }
-    // },
-
     setProperty(senders, propName, value, objectId){
         let target;
         let originalSender = senders[0].id;
@@ -598,6 +591,7 @@ const System = {
 
         // Create the new view instance,
         // append to parent, and set the model
+        
         let newView = document.createElement(
             this.tagNameForViewNamed(partName)
         );
@@ -759,10 +753,22 @@ const System = {
 
         // Restore the correct current card
         // and current stack
-        let currentStackView = document.querySelector(`[part-id="${deserializedInfo.currentStackId}"]`);
-        let currentCardView = document.querySelector(`[part-id="${deserializedInfo.currentCardId}"]`);
-        currentStackView.classList.add('current-stack');
-        currentCardView.classList.add('current-card');
+        // let currentStackView = document.querySelector(`[part-id="${deserializedInfo.currentStackId}"]`);
+        // let currentCardView = document.querySelector(`[part-id="${deserializedInfo.currentCardId}"]`);
+        // currentStackView.classList.add('current-stack');
+        // currentCardView.classList.add('current-card');
+        let currentStack = this.partsById[deserializedInfo.currentStackId];
+        currentStack.partProperties.setPropertyNamed(
+            currentStack,
+            'current',
+            true
+        );
+        let currentCard = this.partsById[deserializedInfo.currentCardId];
+        currentCard.partProperties.setPropertyNamed(
+            currentCard,
+            'current',
+            true
+        );
 
         // Compile all of the scripts on
         // the available Part models
@@ -868,64 +874,34 @@ const System = {
 
     /** Navigation of Current World **/
     goToNextStack: function(){
-        let worldView = document.querySelector(
-            'st-world'
-        );
-        if(!worldView || worldView == undefined){
-            throw new Error(`Could not locate the world view!`);
-        }
-        return worldView.goToNextStack();
+        let world = this.partsById['world'];
+        return world.goToNextStack();
     },
 
     goToPrevStack: function(){
-        let worldView = document.querySelector(
-            'st-world'
-        );
-        if(!worldView || worldView == undefined){
-            throw new Error(`Could not locate the world view!`);
-        }
-        return worldView.goToPrevStack();
+        let world = this.partsById['world'];
+        return world.goToPrevStack();
     },
 
     goToStackById: function(stackId){
-        let worldView = document.querySelector(
-            'st-world'
-        );
-        if(!worldView || worldView == undefined){
-            throw new Error(`Could not locate the world view!`);
-        }
-        return worldView.goToStackById(stackId);
+        let world = this.partsById['world'];
+        return world.goToStackById(stackId);
     },
 
     /** Navigation of Current Stack **/
     goToNextCard: function(){
-        let currentStackView = document.querySelector(
-            'st-stack.current-stack'
-        );
-        if(!currentStackView || currentStackView == undefined){
-            throw new Error(`Could not locate an active current stack!`);
-        }
-        return currentStackView.goToNextCard();
+        let currentStack = this.getCurrentStackModel(); 
+        return currentStack.goToNextCard();
     },
 
     goToPrevCard: function(){
-        let currentStackView = document.querySelector(
-            'st-stack.current-stack'
-        );
-        if(!currentStackView || currentStackView == undefined){
-            throw new Error(`Could not locate an active current stack!`);
-        }
-        return currentStackView.goToPrevCard();
+        let currentStack = this.getCurrentStackModel();
+        return currentStack.goToPrevCard();
     },
 
     goToCardById: function(cardId){
-        let currentStackView = document.querySelector(
-            'st-stack.current-stack'
-        );
-        if(!currentStackView || currentStackView == undefined){
-            throw new Error(`Could not locate an active current stack!`);
-        }
-        return currentStackView.goToCardById(cardId);
+        let currentStack = this.getCurrentStackModel();
+        return currentStack.goToCardById(cardId);
     },
 
     openEditorForPart: function(partType, partId){
@@ -1113,12 +1089,10 @@ System._commandHandlers['openWorldCatalog'] = function(senders, targetId){
     let windowCurrentCardModel = windowStackView.querySelector('.current-card').model;
 
     // Set the current card of the window to have a list layout,
-    // which defaults to a column listDirection
-    // NOTE!!! listDirection is not subscribed to, so it must come before layout
-    // TODO!!!
+    // which defaults to a column list-direction
     windowCurrentCardModel.partProperties.setPropertyNamed(
         windowCurrentCardModel,
-        'listDirection',
+        'list-direction',
         'column'
     );
     windowCurrentCardModel.partProperties.setPropertyNamed(
@@ -1211,9 +1185,7 @@ System._commandHandlers['openScriptEditor'] = function(senders, targetId){
 
     if(!insertStack){
         throw new Error(`Could not find a Stack parent for ${targetPart.type}[${targetId}]`);
-    }
-
-    let winModel = this.newModel('window', insertStack.id);
+    }    let winModel = this.newModel('window', insertStack.id);
     winModel.setTarget(targetPart);
     let targetName = targetPart.partProperties.getPropertyNamed(targetPart, "name");
     let winTitle = `Script: ${targetName}(${targetPart.type}[${targetId}])`;
@@ -1222,13 +1194,17 @@ System._commandHandlers['openScriptEditor'] = function(senders, targetId){
         'title',
         winTitle
     );
+    
     let winView = this.findViewById(winModel.id);
     let winStackModel = this.newModel('stack', winModel.id);
     let winStackView = this.findViewById(winStackModel.id);
     winStackView.classList.add('window-stack');
-    let currentCard = winStackModel.subparts.find(subpart => {
-        return subpart.type == 'card';
-    });
+    let currentCard = this.newModel('card', winStackModel.id);
+    currentCard.partProperties.setPropertyNamed(
+        currentCard,
+        'current',
+        true
+    );
 
     // Set the current card's layout to be a column list
     currentCard.partProperties.setPropertyNamed(
@@ -1236,10 +1212,25 @@ System._commandHandlers['openScriptEditor'] = function(senders, targetId){
         'layout',
         'list'
     );
+    currentCard.partProperties.setPropertyNamed(
+        currentCard,
+        'list-direction',
+        'column'
+    );
 
     // Create the Field model and attach to current card
     // of the new window.
     let fieldModel = this.newModel('field', currentCard.id);
+    fieldModel.partProperties.setPropertyNamed(
+        fieldModel,
+        'vertical-resizing',
+        'space-fill'
+    );
+    fieldModel.partProperties.setPropertyNamed(
+        fieldModel,
+        'horizontal-resizing',
+        'space-fill'
+    );
     let fieldView = this.findViewById(fieldModel.id);
     // Set the field's htmlContent to be the textToHtml converted
     // script of the given target part.
@@ -1301,8 +1292,12 @@ System._commandHandlers['openSimpletalkGrammar'] = function(senders, ruleName){
     let winStackModel = this.newModel('stack', winModel.id);
     let winStackView = this.findViewById(winStackModel.id);
     winStackView.classList.add('window-stack');
-    let currentCardView = winView.querySelector('.current-stack .current-card');
-    let currentCard = currentCardView.model;
+    let currentCard = this.newModel('card', winStackModel.id);
+    currentCard.partProperties.setPropertyNamed(
+        currentCard,
+        'current',
+        true
+    );
 
     // Set the current card's layout to be a column list
     currentCard.partProperties.setPropertyNamed(
@@ -1366,8 +1361,12 @@ System._commandHandlers['openDebugger'] = function(senders, partId){
     let winStackModel = this.newModel('stack', winModel.id);
     let winStackView = this.findViewById(winStackModel.id);
     winStackView.classList.add('window-stack');
-    let currentCardView = winView.querySelector('.current-stack .current-card');
-    let currentCard = currentCardView.model;
+    let currentCard = this.newModel('card', winStackModel.id);
+    currentCard.partProperties.setPropertyNamed(
+        currentCard,
+        'current',
+        true
+    );
 
     // Set the current card's layout to be a column list
     currentCard.partProperties.setPropertyNamed(
@@ -1441,9 +1440,9 @@ System.registerPart('button', Button);
 System.registerPart('world', WorldStack);
 System.registerPart('window', Window);
 System.registerPart('field', Field);
-System.registerPart('container', Container);
 System.registerPart('drawing', Drawing);
 System.registerPart('image', Image);
+System.registerPart('area', Area);
 System.registerPart('audio', Audio);
 
 /** Register the initial set of views in the system **/
@@ -1453,9 +1452,9 @@ System.registerView('world', WorldView);
 System.registerView('card', CardView);
 System.registerView('window', WindowView);
 System.registerView('field', FieldView);
-System.registerView('container', ContainerView);
 System.registerView('drawing', DrawingView);
 System.registerView('image', ImageView);
+System.registerView('area', AreaView);
 System.registerView('audio', AudioView);
 
 

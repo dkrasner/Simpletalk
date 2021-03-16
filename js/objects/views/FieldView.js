@@ -79,6 +79,7 @@ const templateString = `
       <select title="Font Name" id="field-fontname">
         <option class="heading" selected>- font -</option>
         <option value="Monospace" selected>Monospace</option>
+        <option value="Crimson Pro">Crimson Prop</option>
         <option value="Times">Times</option>
         <option value="cursive">cursive</option>
         <option value="math">math</option>

@@ -24,6 +24,7 @@ class PartView extends HTMLElement {
         this.wantsHaloResize = true;
         this.wantsHaloScriptEdit = true;
         this.wantsHaloDelete = true;
+        this.wantsHalo = true;
         // Note: see getter for wantsHaloMove
 
         // Bind component methods
@@ -31,6 +32,7 @@ class PartView extends HTMLElement {
         this.unsetModel = this.unsetModel.bind(this);
         this.sendMessage = this.sendMessage.bind(this);
         this.setupBasePropHandlers = this.setupBasePropHandlers.bind(this);
+        this.initLayout = this.initLayout.bind(this);
 
         // Bind initial property method
         this.styleCSS = this.styleCSS.bind(this);
@@ -39,6 +41,17 @@ class PartView extends HTMLElement {
         this.primHandlePropChange = this.primHandlePropChange.bind(this);
         this.onPropChange = this.onPropChange.bind(this);
         this.scriptChanged = this.scriptChanged.bind(this);
+        this.layoutChanged = this.layoutChanged.bind(this);
+        this.listDirectionChanged = this.listDirectionChanged.bind(this);
+        this.listWrappingChanged = this.listWrappingChanged.bind(this);
+        this.vResizingChanged = this.vResizingChanged.bind(this);
+        this.hResizingChanged = this.hResizingChanged.bind(this);
+        this.pinningLeftChanged = this.pinningLeftChanged.bind(this);
+        this.pinningTopChanged = this.pinningTopChanged.bind(this);
+        this.pinningBottomChanged = this.pinningBottomChanged.bind(this);
+        this.pinningRightChanged = this.pinningRightChanged.bind(this);
+        this.listAlignmentChanged = this.listAlignmentChanged.bind(this);
+        this.listDistributionChanged = this.listDistributionChanged.bind(this);
         this.eventRespond = this.eventRespond.bind(this);
         this.eventIgnore = this.eventIgnore.bind(this);
 
@@ -94,6 +107,7 @@ class PartView extends HTMLElement {
         events.forEach((eventName) => this.eventRespond(eventName));
         // load all the initial styling
         this.styleCSS();
+        this.initLayout();
         this.afterModelSet();
     }
 
@@ -120,6 +134,64 @@ class PartView extends HTMLElement {
                 this.closeEditor();
             }
         });
+        this.onPropChange('layout', this.layoutChanged);
+        this.onPropChange('list-direction', this.listDirectionChanged);
+        this.onPropChange('list-wrapping', this.listWrappingChanged);
+        this.onPropChange('list-alignment', this.listAlignmentChanged);
+        this.onPropChange('list-distribution', this.listDistributionChanged);
+        this.onPropChange('horizontal-resizing', this.hResizingChanged);
+        this.onPropChange('vertical-resizing', this.vResizingChanged);
+        this.onPropChange('pinning-top', this.pinningTopChanged);
+        this.onPropChange('pinning-right', this.pinningRightChanged);
+        this.onPropChange('pinning-left', this.pinningLeftChanged);
+        this.onPropChange('pinning-bottom', this.pinningBottomChanged);
+    }
+
+    initLayout(){
+        // Not all Part/PartView pairs have the layout
+        // properties. Ensure they exist first
+        let hasLayout = this.model.partProperties.findPropertyNamed('layout');
+        let hasBoxResizing = this.model.partProperties.findPropertyNamed('vertical-resizing');
+        let hasPinning = this.model.partProperties.findPropertyNamed('pinning');
+        if(hasLayout){
+            let initialLayout = this.model.partProperties.getPropertyNamed(
+                this.model,
+                'layout'
+            );
+            let initialListDirection = this.model.partProperties.getPropertyNamed(
+                this.model,
+                'list-direction'
+            );
+            let initialListWrapping = this.model.partProperties.getPropertyNamed(
+                this.model,
+                'list-wrapping'
+            );
+            this.layoutChanged(initialLayout);
+            this.listDirectionChanged(initialListDirection);
+            this.listWrappingChanged(initialListWrapping);
+            this.listAlignmentChanged();
+            this.listDistributionChanged();
+        }
+
+        if(hasBoxResizing){
+            let initialVResizing = this.model.partProperties.getPropertyNamed(
+                this.model,
+                'vertical-resizing'
+            );
+            let initialHResizing = this.model.partProperties.getPropertyNamed(
+                this.model,
+                'horizontal-resizing'
+            );
+            this.vResizingChanged(initialVResizing);
+            this.hResizingChanged(initialHResizing);
+        }
+
+        if(hasPinning){
+            this.pinningTopChanged();
+            this.pinningBottomChanged();
+            this.pinningLeftChanged();
+            this.pinningRightChanged();
+        }
     }
 
     styleCSS(){
@@ -179,6 +251,165 @@ class PartView extends HTMLElement {
             codeString: value,
             targetId: partId
         }, window.System);
+    }
+
+    layoutChanged(value, partId){
+        if(value == 'list'){
+            this.classList.add('list-layout');
+        } else {
+            this.classList.remove('list-layout');
+        }
+    }
+
+    listDirectionChanged(value, partId){
+        // Row is the default configuration
+        // for a list layout, so only one extra
+        // CSS class needs to be toggled
+        if(value == 'row'){
+            this.classList.remove('list-column');
+        } else if(value == 'column'){
+            this.classList.add('list-column');
+        }
+    }
+
+    listWrappingChanged(value, partId){
+        if(value == true){
+            this.classList.add('wrap-list');
+        } else {
+            this.classList.remove('wrap-list');
+        }
+    }
+
+    hResizingChanged(value){
+        if(value == 'space-fill'){
+            this.classList.add('h-space-fill');
+            this.classList.remove(
+                'h-rigid',
+                'h-shrink-wrap'
+            );
+        } else if(value == 'shrink-wrap'){
+            this.classList.add('h-shrink-wrap');
+            this.classList.remove(
+                'h-rigid',
+                'h-space-fill'
+            );
+        } else if(value == 'rigid'){
+            this.classList.add('h-rigid');
+            this.classList.remove(
+                'h-space-fill',
+                'h-shrink-wrap'
+            );
+        }
+    }
+
+    vResizingChanged(value){
+        if(value == 'space-fill'){
+            this.classList.add('v-space-fill');
+            this.classList.remove(
+                'v-rigid',
+                'v-shrink-wrap'
+            );
+        } else if(value == 'shrink-wrap'){
+            this.classList.add('v-shrink-wrap');
+            this.classList.remove(
+                'v-rigid',
+                'v-space-fill'
+            );
+        } else if(value == 'rigid'){
+            this.classList.add('v-rigid');
+            this.classList.remove(
+                'v-space-fill',
+                'v-shrink-wrap'
+            );
+        }
+    }
+
+    pinningTopChanged(){
+        let top = this.model.partProperties.getPropertyNamed(
+            this.model,
+            'pinning-top'
+        );
+        if(top){
+            this.classList.add('pin-top');
+        } else {
+            this.classList.remove('pin-top');
+        }
+    }
+
+    pinningLeftChanged(){
+        let left = this.model.partProperties.getPropertyNamed(
+            this.model,
+            'pinning-left'
+        );
+        if(left){
+            this.classList.add('pin-left');
+        } else {
+            this.classList.remove('pin-left');
+        }
+    }
+
+    pinningRightChanged(){
+        let right = this.model.partProperties.getPropertyNamed(
+            this.model,
+            'pinning-right'
+        );
+        if(right){
+            this.classList.add('pin-right');
+        } else {
+            this.classList.remove('pin-right');
+        }
+    }
+
+    pinningBottomChanged(){
+        let bottom = this.model.partProperties.getPropertyNamed(
+            this.model,
+            'pinning-bottom'
+        );
+        if(bottom){
+            this.classList.add('pin-bottom');
+        } else {
+            this.classList.remove('pin-bottom');
+        }
+    }
+
+    listAlignmentChanged(){
+        let value = this.model.partProperties.getPropertyNamed(
+            this.model,
+            'list-alignment'
+        );
+        let valid = [
+            'top',
+            'bottom',
+            'left',
+            'right',
+            'center'
+        ];
+        if(valid.includes(value)){
+            valid.forEach(side => {
+                this.classList.remove(`list-align-${side}`);
+            });
+            this.classList.add(`list-align-${value}`);
+        }
+    }
+
+    listDistributionChanged(){
+        let value = this.model.partProperties.getPropertyNamed(
+            this.model,
+            'list-distribution'
+        );
+        let valid = [
+            'start',
+            'end',
+            'space-between',
+            'space-around',
+            'center'
+        ];
+        if(valid.includes(value)){
+            valid.forEach(side => {
+                this.classList.remove(`list-distribution-${side}`);
+            });
+            this.classList.add(`list-distribution-${value}`);
+        }
     }
 
     // add the event to "event" property and an event listener to the DOM
@@ -329,12 +560,12 @@ class PartView extends HTMLElement {
     onAuxClick(event){
         // Should only open halo when middle
         // mouse button is clicked
-        if(event.button == 1){
+        if(event.button == 1 && this.wantsHalo){
             event.preventDefault();
-            event.stopPropagation();
             if(this.hasOpenHalo){
                 this.closeHalo();
             } else {
+                event.stopPropagation();
                 this.openHalo();
             }
         }
@@ -353,7 +584,7 @@ class PartView extends HTMLElement {
             parentModel,
             'layout'
         );
-        if(parentLayout === 'absolute' | !parentLayout || parentLayout == ""){
+        if(parentLayout === 'strict' | !parentLayout || parentLayout == ""){
             return true;
         }
 

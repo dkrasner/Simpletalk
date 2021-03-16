@@ -13,9 +13,14 @@
  * will be visible on top of everything else.
  */
 import Part from './Part.js';
+import Stack from './Stack.js';
+import {
+    addBasicStyleProps,
+    addPositioningStyleProps
+} from '../utils/styleProperties.js';
 
 class Window extends Part {
-    constructor(owner, name, target){
+    constructor(owner, name, target, deserializing=false){
         super(owner, name);
 
         this.acceptedSubpartTypes = [
@@ -47,28 +52,9 @@ class Window extends Part {
             true
         );
         // Style
-        this.partProperties.newStyleProp(
-            'top',
-            0,
-        );
-        this.partProperties.newStyleProp(
-            'left',
-            0,
-        );
-        this.partProperties.newStyleProp(
-            'rotate',
-            null
-        );
-        this.partProperties.newStyleProp(
-            'hide',
-            false,
-        );
-        this.partProperties.newStyleProp(
-            'transparency',
-            1.0,
-        );
+        addBasicStyleProps(this);
+        addPositioningStyleProps(this);
         this.setupStyleProperties();
-
 
         // Bind methods
         this.setTarget = this.setTarget.bind(this);
@@ -142,7 +128,7 @@ class Window extends Part {
         if(!ownerPart){
             throw new Error(`Could not find owner part id ${ownerId} on deserialization!`);
         }
-        let instance = new this(ownerPart);
+        let instance = new this(ownerPart, null, null, true);
         instance.setFromDeserialized(json);
         ownerPart.addPart(instance);
         return instance;

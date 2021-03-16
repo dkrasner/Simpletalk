@@ -12,16 +12,18 @@ import {Part} from './Part.js';
 import {
     BasicProperty
 } from '../properties/PartProperties.js';
+
 import {
-    addLayoutProperties
-} from '../properties/LayoutProperties.js';
+    addBasicStyleProps,
+    addLayoutStyleProps
+} from '../utils/styleProperties.js';
 
 class Card extends Part {
     constructor(owner, name){
         super(owner);
         this.stack = this._owner;
         this.acceptedSubpartTypes = [
-            "button", "button-editor", "field", "field", "container", "drawing", "image", "audio"
+            "button", "button-editor", "field", "field", "area", "drawing", "image", "audio"
         ];
         this.isCard = true;
 
@@ -54,6 +56,16 @@ class Card extends Part {
             );
         }
 
+        // Cards can set their own current-ness
+        this._current = false;
+        this.partProperties.newDynamicProp(
+            'current',
+            this.setCurrent,
+            function(){
+                return this._current;
+            }
+        );
+
         // set up DOM events to be handled
         this.partProperties.setPropertyNamed(
             this,
@@ -61,20 +73,37 @@ class Card extends Part {
             new Set(['click', 'dragenter', 'dragover', 'drop'])
         );
 
+        // Bind methods
+        this.setCurrent = this.setCurrent.bind(this);
+
         // Styling
-        this.partProperties.newStyleProp(
-            'background-color',
-            null,
-        );
-
+        addBasicStyleProps(this);
+        addLayoutStyleProps(this);
         this.setupStyleProperties();
-
-        // Cards have the layout set
-        // of properties, so we add
-        // those
-        addLayoutProperties(this);
     }
 
+    setCurrent(propOwner, property, value){
+        // If setting current-ness to false,
+        // we simply update the private property.
+        // Otherwise, we go through all sibling Cards
+        // and set theirs to false first, then set
+        // this Card's _current to true
+        if(value == false){
+            propOwner._current = false;
+        } else {
+            propOwner._owner.subparts.filter(subpart => {
+                return subpart.type == 'card';
+            }).forEach(sibling => {
+                sibling.partProperties.setPropertyNamed(
+                    sibling,
+                    'current',
+                    false
+                );
+            });
+            propOwner._current = true;
+        }
+    }
+    
     get type(){
         return 'card';
     }
