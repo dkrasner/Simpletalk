@@ -580,6 +580,15 @@ class PartView extends HTMLElement {
             return true;
         }
 
+        let hasLayout = parentModel.partProperties.findPropertyNamed(
+            parentModel,
+            'layout'
+        );
+
+        if(!hasLayout){
+            return true;
+        }
+        
         let parentLayout = parentModel.partProperties.getPropertyNamed(
             parentModel,
             'layout'
