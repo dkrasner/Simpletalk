@@ -204,6 +204,10 @@ class Part {
         // to ALL Parts in the system.
         let basicProps = [
             new BasicProperty(
+                'target',
+                null,
+            ),
+            new BasicProperty(
                 'contents',
                 null,
             ),

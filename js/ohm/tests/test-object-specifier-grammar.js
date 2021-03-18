@@ -30,7 +30,8 @@ const partTypes = [
     "drawing",
     "image",
     "area",
-    "audio"
+    "audio",
+    "target"
 ];
 
 const numbers = [
