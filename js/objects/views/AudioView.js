@@ -50,6 +50,11 @@ class AudioView extends PartView {
                 this._shadowRoot.querySelector("audio").load();
             }
         });
+        this.onPropChange("stop", (value) => {
+            if(value === true){
+                this._shadowRoot.querySelector("audio").currentTime = 0;
+            }
+        });
         this.onPropChange("src", (url) => {
             try{
                 // resource load is auto-loaded by the <audio> element

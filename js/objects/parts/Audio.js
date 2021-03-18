@@ -28,6 +28,10 @@ class Audio extends Part {
             null
         );
 
+        this.partProperties.newBasicProp(
+            "stop",
+            null
+        );
 
         // Private command handlers
         this.setPrivateCommandHandler("loadAudioFromSource", this.loadAudioFromSource);
@@ -60,8 +64,8 @@ class Audio extends Part {
     }
 
     stop(){
-        this.partProperties.setPropertyNamed(this, "load", true);
         this.partProperties.setPropertyNamed(this, "play", false);
+        this.partProperties.setPropertyNamed(this, "stop", true);
     }
 };
 
