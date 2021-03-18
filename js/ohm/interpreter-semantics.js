@@ -3,15 +3,37 @@ import {ActivationContext} from '../objects/ExecutionStack.js';
 // Helpers
 function findNearestParentOfKind(aPart, aPartType){
     let owner = aPart._owner;
-    let found = null;
     while(owner){
         if(owner.type == aPartType){
-            found = owner;
-            break;
+            return owner;
         }
         owner = owner._owner;
     }
-    return found;
+    throw new Error(`'this' is a ${aPart.type}, not a ${aPartType} or does not have a parent of a ${aPartType}!`);
+}
+
+// check for possibleAncestor.acceptsSubpart(aPart.type)
+// and if not go to owner and check again
+function findFirstPossibleAncestor(aPart, aPartType){
+    if(_subpartCheck(aPart, aPartType)){
+        return aPart;
+    } else {
+        let owner = aPart._owner;
+        while(owner){
+            if(_subpartCheck(owner, aPartType)){
+                return owner;
+            }
+            owner = owner._owner;
+        }
+    }
+    throw new Error(`a ${aPart.type}, does not accept nor has any ancestors which accept part type ${aPartType}`);
+}
+
+function _subpartCheck(aPart, aPartType){
+    if(aPartType == 'part'){
+        return aPart.acceptedSubpartTypes.length > 0;
+    }
+    return aPart.acceptsSubpart(aPartType);
 }
 
 class STVariableReferenceError extends Error {
@@ -724,30 +746,14 @@ const createInterpreterSemantics = (partContext, systemContext) => {
         TerminalSpecifier_thisSystemObject: function(thisLiteral, systemObject){
             let targetType = systemObject.sourceString;
             return function(contextPart){
-                if(targetType == 'card'){
-                    if(partContext.type == 'card'){
-                        return partContext;
-                    } else {
-                        return findNearestParentOfKind(partContext, targetType);
-                    }
-                } else if(targetType == 'stack'){
-                    if(partContext.type == 'stack'){
-                        return partContext;
-                    } else {
-                        return findNearestParentOfKind(partContext, targetType);
-                    }
-                } else {
-                    // If we reach this point, we expect the systemObject
-                    // type to be equivalent to the overall partContext.
-                    // If it is not, throw and error
-                    if(partContext.type !== systemObject.sourceString){
-                        throw new Error(`'this' is a ${partContext.type}, not a ${systemObject.sourceString}!`);
-                    }
+                if(targetType == partContext.type){
                     return partContext;
+                } else {
+                    return findNearestParentOfKind(partContext, targetType);
                 }
             };
         },
-        
+
         /**
          * The 'current' specifier is a terminal (final)
          * specifier that refers to either the current card or stack
@@ -835,6 +841,25 @@ const createInterpreterSemantics = (partContext, systemContext) => {
         },
 
         /**
+         * A Compound with terminal specifier is a QueriedSpecifier
+         * that finishes with a Partial specifier.
+         * Example: `of button 3 of first card` (which can continue `..of current stack` etc)
+         * `first button of first area of stack 3`
+         * `first button of area two of stack 3`
+         */
+        ObjectSpecifier_compoundQueryWithoutTerminal: function(queriedSpecifier, partialSpecifier){
+            // if the partialSpecfier refers to either area, card or stack
+            // then go to its owner for the context
+            let systemObject = partialSpecifier.children[0].children.find((child) => {
+                return child.ctorName == "systemObject";
+            });
+            let finalPart = findFirstPossibleAncestor(partContext, systemObject.sourceString);
+            let finalPartial = partialSpecifier.interpret()(finalPart);
+            let result = queriedSpecifier.interpret()(finalPartial);
+            return result.id;
+        },
+
+        /**
          * A single non-terminal ObjectSpecifier is just a Partial
          * specifier by itself. When present outside of a QueriedSpecifier,
          * it will be interpreted in the current context and treated
@@ -846,14 +871,12 @@ const createInterpreterSemantics = (partContext, systemContext) => {
         ObjectSpecifier_singleNonTerminal: function(partialSpecifier){
             // A single non-terminal object specifier is one
             // whose terminal object is implicitly assumed to
-            // be the card in which the current context part
+            // be the card or the stack in which the current context part
             // exists.
-            let finalPart;
-            if(partContext.type == 'card'){
-                finalPart = partContext;
-            } else {
-                finalPart = findNearestParentOfKind(partContext, 'card');
-            }
+            let systemObject = partialSpecifier.children[0].children.find((child) => {
+                return (child.sourceString == "part" || child.ctorName == 'systemObject');
+            });
+            let finalPart = findFirstPossibleAncestor(partContext, systemObject.sourceString);
             let result = partialSpecifier.interpret()(finalPart);
             return result.id;
         },
