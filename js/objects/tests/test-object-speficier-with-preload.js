@@ -465,4 +465,76 @@ describe("ObjectSpecifier Tests", () => {
             });
         });
     });
+    describe("Target specifiers", () => {
+        let semantics;
+        let partContext;
+
+        before(() => {
+            partContext = window.System.getCurrentStackModel();
+            semantics = testLanguageGrammar.createSemantics();
+            semantics.addOperation(
+                'interpret',
+                interpreterSemantics(partContext, window.System)
+            );
+            // we need to add the semantics to the partContext since
+            // we are not actually compiling a script on it
+            // however OHM will throw an grammar(System)-semantics(partContext) mismatch error if we
+            // simply set the above semantics on the partContext
+            partContext._semantics = semantics;
+            window.System.grammar = semantics.getGrammar();
+        });
+
+        it("Can get button 1 of card 2 of current stack from target of button 1 of card 1", () => {
+            // set up the target prop
+            let card1 = partContext.subparts.filter(subpart => {
+                return subpart.type == 'card';
+            })[0];
+            let button1Card1 = card1.subparts.filter(subpart => {
+                return subpart.type == 'button';
+            })[0];
+            button1Card1.partProperties.setPropertyNamed(
+                button1Card1,
+                'target',
+                'button 1 of card 2 of current stack'
+            );
+            let str = `target of button 1 of card 1 of current stack`;
+            let matchObject = testLanguageGrammar.match(str, 'ObjectSpecifier');
+            assert.isTrue(matchObject.succeeded());
+            let secondCard = partContext.subparts.filter(subpart => {
+                return subpart.type == 'card';
+            })[1];
+            let expectedPart = secondCard.subparts.filter(subpart => {
+                return subpart.type == 'button';
+            })[0];
+            let expectedValue = expectedPart.id;
+            let result = semantics(matchObject).interpret();
+            assert.equal(expectedValue, result);
+        });
+        it("Can get button 1 of area 1 of card 1 of current stack from target of button 1 of card 1", () => {
+            // set up the target prop
+            let card1 = partContext.subparts.filter(subpart => {
+                return subpart.type == 'card';
+            })[0];
+            let button1Card1 = card1.subparts.filter(subpart => {
+                return subpart.type == 'button';
+            })[0];
+            button1Card1.partProperties.setPropertyNamed(
+                button1Card1,
+                'target',
+                'button 1 of first area of card 1 of current stack'
+            );
+            let str = `target of button 1 of card 1 of current stack`;
+            let matchObject = testLanguageGrammar.match(str, 'ObjectSpecifier');
+            assert.isTrue(matchObject.succeeded());
+            let area = card1.subparts.filter(subpart => {
+                return subpart.type == 'area';
+            })[0];
+            let expectedPart = area.subparts.filter(subpart => {
+                return subpart.type == 'button';
+            })[0];
+            let expectedValue = expectedPart.id;
+            let result = semantics(matchObject).interpret();
+            assert.equal(expectedValue, result);
+        });
+    });
 });

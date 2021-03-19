@@ -616,10 +616,20 @@ const createInterpreterSemantics = (partContext, systemContext) => {
         /** Object Specifiers **/
 
 
+        /**
+         * The partByTarget Partial Specifier
+         * refers to partials that specify a part
+         * specified in the "target" PartProperty
+         * of the context part. The value of the
+         * target property is any valid ObjectSpecifier
+         * string.
+         */
         PartialSpecifier_partByTarget(targetLiteral){
             return (context) => {
                 let targetPropValue = context.partProperties.getPropertyNamed(context, "target");
                 // use the partContext since the context object might not have any semantics set on it
+                // For example, a context object/part which does not have a script which has been
+                // compiled will not have had context._semantics set.
                 let semantics = partContext._semantics;
                 let matchObject = systemContext.grammar.match(targetPropValue, 'ObjectSpecifier');
                 let targetId = semantics(matchObject).interpret();
