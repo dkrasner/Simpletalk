@@ -615,6 +615,18 @@ const createInterpreterSemantics = (partContext, systemContext) => {
 
         /** Object Specifiers **/
 
+
+        PartialSpecifier_partByTarget(targetLiteral){
+            return (context) => {
+                let targetPropValue = context.partProperties.getPropertyNamed(context, "target");
+                // use the partContext since the context object might not have any semantics set on it
+                let semantics = partContext._semantics;
+                let matchObject = systemContext.grammar.match(targetPropValue, 'ObjectSpecifier');
+                let targetId = semantics(matchObject).interpret();
+                return systemContext.partsById[targetId];
+            };
+        },
+
         /**
          * The partByIndex Partial Specifier
          * refers to partials that specify a part
