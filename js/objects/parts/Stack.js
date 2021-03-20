@@ -27,13 +27,14 @@ class Stack extends Part {
             false
         );
 
-        this._current = false;
-        this.partProperties.newDynamicProp(
+
+        // Will hold the card-based index,
+        // which here is zero-indexed, of the
+        // card that is the current card for this
+        // Stack.
+        this.partProperties.newBasicProp(
             'current',
-            this.setCurrent,
-            function(){
-                return this._current;
-            }
+            0
         );
 
         // If we are initializing with a name,
@@ -60,19 +61,18 @@ class Stack extends Part {
         if(cards.length < 2){
             return;
         }
-        let current = cards.find(card => {
-            return card._current == true;
-        });
-        let currentIdx = cards.indexOf(current);
+        let currentIdx = this.partProperties.getPropertyNamed(
+            this,
+            'current'
+        );
         let nextIdx = currentIdx + 1;
         if(nextIdx >= cards.length){
             nextIdx = (nextIdx % cards.length);
         }
-        let nextCard = cards[nextIdx];
-        nextCard.partProperties.setPropertyNamed(
-            nextCard,
+        this.partProperties.setPropertyNamed(
+            this,
             'current',
-            true
+            nextIdx
         );
     }
 
@@ -86,10 +86,11 @@ class Stack extends Part {
         if(!found){
             throw new Error(`The card id: ${anId} cant be found on this stack`);
         }
-        found.partProperties.setPropertyNamed(
-            found,
+        let cardIdx = cards.indexOf(found);
+        this.partProperties.setPropertyNamed(
+            this,
             'current',
-            true
+            cardIdx
         );
     }
 
@@ -100,19 +101,18 @@ class Stack extends Part {
         if(cards.length < 2){
             return;
         }
-        let current = cards.find(card => {
-            return card._current == true;
-        });
-        let currentIdx = cards.indexOf(current);
+        let currentIdx = this.partProperties.getPropertyNamed(
+            this,
+            'current'
+        );
         let nextIdx = currentIdx - 1;
         if(nextIdx < 0){
             nextIdx = cards.length + nextIdx;
         }
-        let nextCard = cards[nextIdx];
-        nextCard.partProperties.setPropertyNamed(
-            nextCard,
+        this.partProperties.setPropertyNamed(
+            this,
             'current',
-            true
+            nextIdx
         );
     }
 
@@ -127,36 +127,11 @@ class Stack extends Part {
             console.warn(`Cannot navigate to card number ${anIndex} -- out of bounds`);
             return;
         }
-        let nextCard = cards[trueIndex];
-        nextCard.partProperties.setPropertyNamed(
-            nextCard,
+        this.partProperties.setPropertyNamed(
+            this,
             'current',
-            true
+            trueIndex
         );
-    }
-
-    setCurrent(propOwner, property, value){
-        // There are two types of Stacks:
-        // those in a WorldStack and those in
-        // a Window.
-        // If we are setting this Stack to be the
-        // current in its owner, we need to unset
-        // all of the others. Otherwise, simply
-        // unset
-        if(value == false){
-            propOwner._current = false;
-        } else {
-            propOwner._owner.subparts.filter(subpart => {
-                return subpart.type == 'stack';
-            }).forEach(siblingStack => {
-                siblingStack.partProperties.setPropertyNamed(
-                    siblingStack,
-                    'current',
-                    false
-                );
-            });
-            propOwner._current = true;
-        }
     }
 
     get type(){

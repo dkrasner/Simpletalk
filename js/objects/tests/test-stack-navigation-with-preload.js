@@ -317,14 +317,22 @@ describe('Stack Navigation Tests', () => {
             assert.isTrue(secondCard.classList.contains('current-card'));
         });
 
-        it('Throws an error when attempting to navigate to card 0 (should be 1 indexed)', () => {
+        // We are skipping this for the moment.
+        // These kinds of navigations now write a warning to
+        // the console, but end up having no effect. This is so life
+        // can go on without freezing the whole program
+        it.skip('Throws an error when attempting to navigate to card 0 (should be 1 indexed)', () => {
             assert.throws(
                 stackModel.goToNthCard.bind(0),
                 Error
             );
         });
 
-        it('Throws an error when attempting to navigate to a negative number', () => {
+        // We are skipping this for the moment.
+        // These kinds of navigations now write a warning to
+        // the console, but end up having no effect. This is so life
+        // can go on without freezing the whole program
+        it.skip('Throws an error when attempting to navigate to a negative number', () => {
             assert.throws(
                 stackModel.goToNthCard.bind(-13),
                 Error

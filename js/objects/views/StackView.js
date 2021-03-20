@@ -30,22 +30,37 @@ class StackView extends PartView {
         );
 
         // Handle current-ness prop change
-        this.onPropChange('current', (newVal, id) => {
-            if(newVal){
-                this.classList.add('current-stack');
-            } else {
-                this.classList.remove('current-stack');
-            }
-        });
+        this.onPropChange('current', this.handleCurrentChange);
+
+        // Bind methods
+        this.handleCurrentChange = this.handleCurrentChange.bind(this);
     }
 
     afterModelSet(){
-        let initCurrentness = this.model.partProperties.getPropertyNamed(
+        // Do an initial setting of the
+        // current card
+        this.handleCurrentChange();
+    }
+
+    handleCurrentChange(){
+        // The value of the current prop is the card index
+        // (0-indexed) of the child Card that should be the
+        // current one. We remove the current-card class from
+        // all others and add it to the specified index.
+        let currentCard = this.querySelector('.current-card');
+        let nextCurrentIndex = this.model.partProperties.getPropertyNamed(
             this.model,
             'current'
         );
-        if(initCurrentness){
-            this.classList.add('current-stack');
+        let cards = Array.from(this.querySelectorAll(':scope > st-card'));
+        let nextCurrentCard = cards[nextCurrentIndex];
+        if(nextCurrentCard){
+            nextCurrentCard.classList.add('current-card');
+        } else {
+            return;
+        }
+        if(currentCard){
+            currentCard.classList.remove('current-card');
         }
     }
 };

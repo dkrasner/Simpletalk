@@ -56,16 +56,6 @@ class Card extends Part {
             );
         }
 
-        // Cards can set their own current-ness
-        this._current = false;
-        this.partProperties.newDynamicProp(
-            'current',
-            this.setCurrent,
-            function(){
-                return this._current;
-            }
-        );
-
         // set up DOM events to be handled
         this.partProperties.setPropertyNamed(
             this,
@@ -73,35 +63,10 @@ class Card extends Part {
             new Set(['click', 'dragenter', 'dragover', 'drop'])
         );
 
-        // Bind methods
-        this.setCurrent = this.setCurrent.bind(this);
-
         // Styling
         addBasicStyleProps(this);
         addLayoutStyleProps(this);
         this.setupStyleProperties();
-    }
-
-    setCurrent(propOwner, property, value){
-        // If setting current-ness to false,
-        // we simply update the private property.
-        // Otherwise, we go through all sibling Cards
-        // and set theirs to false first, then set
-        // this Card's _current to true
-        if(value == false){
-            propOwner._current = false;
-        } else {
-            propOwner._owner.subparts.filter(subpart => {
-                return subpart.type == 'card';
-            }).forEach(sibling => {
-                sibling.partProperties.setPropertyNamed(
-                    sibling,
-                    'current',
-                    false
-                );
-            });
-            propOwner._current = true;
-        }
     }
     
     get type(){
