@@ -543,18 +543,18 @@ class PartView extends HTMLElement {
         let newWidth, newHeight;
         if(this.preserveAspectOnResize){
             let ratio = rect.width / rect.height;
-            let hyp = Math.sqrt((event.movementX**2) + (event.movementY**2));
-            if(event.movementX < 0 || event.movementY < 0){
+            let hyp = Math.sqrt((movementX**2) + (movementY**2));
+            if(movementX < 0 || movementY < 0){
                 hyp = hyp * -1;
             }
             newHeight = rect.height + hyp;
             newWidth = rect.width + hyp;
         } else {
-            newWidth = event.movementX + rect.width;
-            newHeight = event.movementY + rect.height;
+            newWidth = movementX + rect.width;
+            newHeight = movementY + rect.height;
         }
-        this.model.partProperties.setPropertyNamed(this.model, "width", `${newWidth}px`);
-        this.model.partProperties.setPropertyNamed(this.model, "height", `${newHeight}px`);
+        this.model.partProperties.setPropertyNamed(this.model, "width", newWidth);
+        this.model.partProperties.setPropertyNamed(this.model, "height", newHeight);
     }
 
     onAuxClick(event){
