@@ -66,6 +66,7 @@ class Part {
         this.getOwnerBranch = this.getOwnerBranch.bind(this);
         this.startStepping = this.startStepping.bind(this);
         this.stopStepping = this.stopStepping.bind(this);
+        this.setTargetProp = this.setTargetProp.bind(this);
 
 
         // Finally, we finish initialization
@@ -76,6 +77,7 @@ class Part {
         this.setPrivateCommandHandler("newModel", this.newModelCmdHandler);
         this.setPrivateCommandHandler("openEditor", this.openEditorCmdHandler);
         this.setPrivateCommandHandler("closeEditor", this.closeEditorCmdHandler);
+        this.setPrivateCommandHandler("setTargetTo", this.setTargetProp);
     }
 
     // Convenience getter to get the id
@@ -172,10 +174,6 @@ class Part {
         // to ALL Parts in the system.
         let basicProps = [
             new BasicProperty(
-                'target',
-                null,
-            ),
-            new BasicProperty(
                 'contents',
                 null,
             ),
@@ -234,6 +232,27 @@ class Part {
             [] // No aliases
         );
 
+        this.partProperties.newDynamicProp(
+            'target',
+            function(propOwner, propObject, val){
+                // check to see if the target is a non-ID
+                if(val == null){
+                    propObject._value = null;
+                } else if(val.match(/(?!\d)/g).length > 1){
+                    propObject._value = val;
+                } else {
+                    // if it is an ID insert "part" since our
+                    // grammar doesn't handle ID without system object
+                    // prefixes
+                    propObject._value = `part id ${val}`;
+                }
+            },
+            function(propOwner, propObject){
+                return propObject._value;
+            },
+            false,
+            null,
+        ),
 
         // Stepping related props
 
@@ -485,6 +504,11 @@ class Part {
             commandName: 'deleteModel',
             args: [objectId, modelType]
         });
+    }
+
+    setTargetProp(senders, ...args){
+        let target = args.join(" ");
+        this.partProperties.setPropertyNamed(this, "target", target);
     }
 
     newModelCmdHandler(senders, modelType, ownerId, targetModelType, context, name){

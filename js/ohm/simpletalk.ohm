@@ -69,6 +69,7 @@
                | PropertyValue
                | anyLiteral
                | variableName
+               | ObjectSpecifier
 
         // For now, expressions are just the
         // value of a given factor.
