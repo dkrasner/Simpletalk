@@ -63,6 +63,8 @@ class PartView extends HTMLElement {
         this.onHaloDelete = this.onHaloDelete.bind(this);
         this.onHaloOpenEditor = this.onHaloOpenEditor.bind(this);
         this.onHaloResize = this.onHaloResize.bind(this);
+        this.onHaloPaste = this.onHaloPaste.bind(this);
+        this.onHaloCopy = this.onHaloCopy.bind(this);
         this.onHaloActivationClick = this.onHaloActivationClick.bind(this);
         this.onAuxClick = this.onAuxClick.bind(this);
         this.onClick = this.onClick.bind(this);
@@ -561,6 +563,15 @@ class PartView extends HTMLElement {
         }
         this.model.partProperties.setPropertyNamed(this.model, "width", newWidth);
         this.model.partProperties.setPropertyNamed(this.model, "height", newHeight);
+    }
+
+    onHaloCopy(){
+        window.System.clipboard.copyPart(this.model);
+    }
+
+    onHaloPaste(){
+        window.System.clipboard.pasteContentsInto(this.model);
+        this.closeHalo();
     }
 
     onAuxClick(event){

@@ -37,8 +37,22 @@ class STClipboard {
             let content = this.contents[0].data;
             let deserialization = JSON.parse(content);
             if(aTargetPart.acceptsSubpart(deserialization.type)){
+                // Update all IDs so that they are new
                 this._recursivelyUpdateIds(deserialization, null);
+
+                // Recursively create new instances of the part and any
+                // descendant subparts, down the chain
                 this._deserializePastedPart(deserialization, aTargetPart);
+
+                // Recompile the Part's script (if present)
+                // and do the same for all descendant copies
+                let copiedPart = window.System.partsById[deserialization.properties.id];
+                this._recursivelyRecompile(copiedPart);
+
+                // Open a halo on the resulting part
+                let copiedView = document.querySelector(`[part-id="${deserialization.properties.id}"]`);
+                copiedView.openHalo();
+                
             } else {
                 console.warn(`${aTargetPart.type}[${aTargetPart.id}] does not accept subparts of type ${deserialization.type}`);
             }
@@ -98,10 +112,12 @@ class STClipboard {
     }
 
     _recursivelyUpdateIds(aDeserialization, parentDeserialization){
-        aDeserialization.id = idMaker.new();
-        if(parentDeserialization){
-            aDeserialization.ownerId = parentDeserialization.id;
-        }
+        //aDeserialization.id = idMaker.new();
+        // if(parentDeserialization){
+        //     aDeserialization.ownerId = parentDeserialization.id;
+        // }
+        aDeserialization.properties.id = idMaker.new();
+        aDeserialization.id = aDeserialization.properties.id;
         aDeserialization.subparts.forEach(subpart => {
             this._recursivelyUpdateIds(subpart, aDeserialization);
         });
