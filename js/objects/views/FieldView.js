@@ -104,6 +104,7 @@ class FieldView extends PartView {
         this.setupPropHandlers = this.setupPropHandlers.bind(this);
         this.simpleTalkCompleter = this.simpleTalkCompleter.bind(this);
         this.initCustomHaloButtons = this.initCustomHaloButtons.bind(this);
+        this.insertRange = this.insertRange.bind(this);
 
         this.setupPropHandlers();
     }
@@ -272,6 +273,20 @@ class FieldView extends PartView {
             event.target.innerHTML,
             false // do not notify
         );
+        // if there is a target and range set then send the target an update message
+        let target = this.model.partProperties.getPropertyNamed(this.model, 'target');
+        if(target){
+            let targetRangeId = this.model.partProperties.getPropertyNamed(this.model, 'targetRangeId');
+            // TODO this is a total hack wtf
+            let targetId = target.split(" ")[2];
+            this.model.sendMessage({
+                type: "command",
+                commandName: "insertRange",
+                args: [targetRangeId, event.target.innerHTML]
+            }, window.System.partsById[targetId]);
+            console.log(`sending message to set range ${targetRangeId} in ${target}`);
+            console.log(event.target.innerHTML);
+        }
     }
 
     onKeydown(event){
@@ -329,33 +344,33 @@ class FieldView extends PartView {
             // make sure this is not a continuing selection
             // and that the range is not already registered
             let range = selection.getRangeAt(i);
-            if(Object.values(this.selectionRanges).indexOf(range) >= 0){
+            let currentRanges = Object.values(this.selectionRanges);
+            if(currentRanges.indexOf(range) >= 0){
                 continue;
             }
             // we generate our own range ids, since we want this to correspond to
             // selection order which is not respected by the browser selection object
-            let rangeId = Object.keys(this.selectionRanges).length;
+            // to ensure we don't hit on other views' ranges by accident we need unique id's
+            let rangeId = Date.now(); //TODO we need a better random id
             this.selectionRanges[rangeId] = range;
             // open a field for each new selection and populate it with the range html
-            this.openField(range);
+            this.openField(range, rangeId);
         }
     }
 
-    openField(range){
+    openField(range, rangeId){
         // create an HTML document fragment from the range to avoid dealing wiht start/end
         // and offset calculations
         // fragments don't have the full html DOM element API so we need to create one
         let span = document.createElement('span');
         span.appendChild(range.cloneContents());
-        docFragment.childNodes.forEach((node) => {
-            span.appendChild(node);
-        });
 
         // TODO these should all be messages and correspnding command handler definitions
         // should be part of the field's own script
-        let fieldModel = window.System.newModel("field", this.model._owner.id, "selection XYZ");
+        let fieldModel = window.System.newModel("field", this.model._owner.id, `selection ${rangeId}`);
         fieldModel.partProperties.setPropertyNamed(fieldModel, "innerHTML", span.innerHTML);
-
+        fieldModel.partProperties.setPropertyNamed(fieldModel, "target", `field id ${this.model.id}`);
+        fieldModel.partProperties.setPropertyNamed(fieldModel, "targetRangeId", rangeId);
     }
 
     openContextMenu(){
@@ -368,8 +383,18 @@ class FieldView extends PartView {
         button.textContent = "Do it!";
         button.addEventListener("click", this.doIt);
         focusNode.after(button);
-        this.contextMenuOpen = true; 
+        this.contextMenuOpen = true;
     };
+
+    insertRange(rangeId, html){
+        let range = this.selectionRanges[rangeId];
+        if(range){
+            let span = document.createElement('span');
+            span.innerHTML = html;
+            range.deleteContents();
+            range.insertNode(span);
+        }
+    }
 
     closeContextMenu(){
         let button = this._shadowRoot.querySelector('#doIt');

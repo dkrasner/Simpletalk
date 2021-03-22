@@ -45,6 +45,11 @@ class Field extends Part {
             ''
         );
 
+        this.partProperties.newBasicProp(
+            'targetRangeId',
+            null
+        );
+
         // 'text' is a DynamicProperty configured to also set the innerHTML
         // BasicProperty when changed. The basic idea is that 'text' will be
         // the property that ST will interface with and everytime it
@@ -95,6 +100,17 @@ class Field extends Part {
         addPositioningStyleProps(this);
         addTextStyleProps(this);
         this.setupStyleProperties();
+
+        // Private command handlers
+
+        this.insertRange = this.insertRange.bind(this);
+        this.setPrivateCommandHandler("insertRange", this.insertRange);
+    }
+
+    insertRange(senders, rangeId, html){
+        window.System.findViewsById(this.id).forEach((view) => {
+            view.insertRange(rangeId, html);
+        });
     }
 
     get type(){
