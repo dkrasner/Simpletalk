@@ -583,7 +583,6 @@ class PartView extends HTMLElement {
         if(this.wantsHalo){
             if(this.hasOpenHalo){
                 this.closeHalo();
-                console.log('fart');
             } else {
                 event.stopPropagation();
                 // Find any other open Halos

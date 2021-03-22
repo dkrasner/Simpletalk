@@ -39,6 +39,7 @@ import interpreterSemantics from '../ohm/interpreter-semantics.js';
 import {ExecutionStack, ActivationContext} from './ExecutionStack.js';
 
 import idMaker from './utils/id.js';
+import STClipboard from './utils/clipboard.js';
 
 import handInterface from './utils/handInterface.js';
 
@@ -88,6 +89,9 @@ const System = {
         } else {
             this.loadFromEmpty();
         }
+
+        // Attach a new clipboard instance
+        this.clipboard = new STClipboard(this);
 
         // By this point we should have a WorldView with
         // a model attached.
