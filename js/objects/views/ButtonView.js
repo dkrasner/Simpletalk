@@ -101,11 +101,7 @@ class ButtonView extends PartView {
             if(event.shiftKey){
                 // prevent triggering the on click message
                 event.preventDefault();
-                if(this.hasOpenHalo){
-                    this.closeHalo();
-                } else {
-                    this.openHalo();
-                }
+                this.onHaloActivationClick(event);
             } else if(!this.hasOpenHalo){
                 // Send the click command message to self
                 this.model.sendMessage({

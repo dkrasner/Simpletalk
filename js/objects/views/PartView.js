@@ -63,7 +63,9 @@ class PartView extends HTMLElement {
         this.onHaloDelete = this.onHaloDelete.bind(this);
         this.onHaloOpenEditor = this.onHaloOpenEditor.bind(this);
         this.onHaloResize = this.onHaloResize.bind(this);
+        this.onHaloActivationClick = this.onHaloActivationClick.bind(this);
         this.onAuxClick = this.onAuxClick.bind(this);
+        this.onClick = this.onClick.bind(this);
 
         // Bind editor related methods
         this.openEditor = this.openEditor.bind(this);
@@ -85,6 +87,9 @@ class PartView extends HTMLElement {
             // to toggle the halo
             this.addEventListener('auxclick', this.onAuxClick);
 
+            // Register default event handlers manually]
+            this['onclick'] = this.onClick;
+
             // Call the lifecycle method when done
             // with the above
             this.afterConnected();
@@ -93,6 +98,7 @@ class PartView extends HTMLElement {
 
     disconnectedCallback(){
         this.removeEventListener('auxclick', this.onAuxClick);
+        this['onclick'] = null;
         this.afterDisconnected();
     }
 
@@ -560,12 +566,34 @@ class PartView extends HTMLElement {
     onAuxClick(event){
         // Should only open halo when middle
         // mouse button is clicked
-        if(event.button == 1 && this.wantsHalo){
+        if(event.button == 1){
             event.preventDefault();
+            this.onHaloActivationClick(event);
+        }
+    }
+
+    onClick(event){
+        if(event.button == 0 && event.shiftKey){
+            event.preventDefault();
+            this.onHaloActivationClick(event);
+        }
+    }
+
+    onHaloActivationClick(event){
+        if(this.wantsHalo){
             if(this.hasOpenHalo){
                 this.closeHalo();
+                console.log('fart');
             } else {
                 event.stopPropagation();
+                // Find any other open Halos
+                // and automatically close them
+                let exSelector = `.editing:not([part-id="${this.model.id}"])`;
+                Array.from(document.querySelectorAll(exSelector)).forEach(openHaloEl => {
+                    openHaloEl.closeHalo();
+                });
+
+                // Finally, open on this view
                 this.openHalo();
             }
         }
