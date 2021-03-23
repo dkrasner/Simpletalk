@@ -166,7 +166,25 @@ const createInterpreterSemantics = (partContext, systemContext) => {
             return msg;
         },
 
-        Command_addModel: function(addLiteral, newPartType, optionalPartName, toLiteral, objectSpecifier){
+        Command_addModel: function(addLiteral, newPartType, optionalPartName){
+            let args = [
+                newPartType.sourceString,
+                null // We assume no specific owner context. Should be handled in Part.js
+            ];
+            let optionalName = optionalPartName.interpret();
+            if(optionalName && optionalName.length){
+                args.push(optionalName[0]);
+            }
+
+            let msg = {
+                type: "command",
+                commandName: "newModel",
+                args: args
+            };
+            return msg;
+        },
+
+        Command_addModelTo: function(addLiteral, newPartType, optionalPartName, toLiteral, objectSpecifier){
             let args = [
                 newPartType.sourceString, // The kind of part to add
                 objectSpecifier.interpret() // id of the parent model part

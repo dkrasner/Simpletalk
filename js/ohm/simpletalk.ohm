@@ -217,7 +217,8 @@
 		| "answer" Expression --answer
 		| "delete" "this"? systemObject objectId? --deleteModel
                 | "set" propertyName "to" Expression InClause? --setProperty
-		| "add" systemObject stringLiteral? "to"? ObjectSpecifier --addModel
+                | "add" systemObject stringLiteral? "to" ObjectSpecifier --addModelTo
+		| "add" systemObject stringLiteral? --addModel
 		| "put" Expression "into" "global"? variableName --putVariable
 		| "ask" anyLiteral --ask
                 | "tell" ObjectSpecifier "to" Command --tellCommand
