@@ -4,7 +4,10 @@
  * I represent the prototype object for all
  * SimpleTalk parts.
  */
-import idMaker from '../utils/idMaker.js';
+import {
+    idMaker,
+    isValidId
+} from '../utils/id.js';
 import errorHandler from '../utils/errorHandler.js';
 import {
     PartProperties,
@@ -13,6 +16,7 @@ import {
 } from '../properties/PartProperties.js';
 
 import {ActivationContext} from '../ExecutionStack.js';
+
 
 class Part {
     constructor(anOwnerPart, name, deserializing=false){
@@ -66,6 +70,7 @@ class Part {
         this.getOwnerBranch = this.getOwnerBranch.bind(this);
         this.startStepping = this.startStepping.bind(this);
         this.stopStepping = this.stopStepping.bind(this);
+        this.setTargetProp = this.setTargetProp.bind(this);
 
 
         // Finally, we finish initialization
@@ -76,6 +81,7 @@ class Part {
         this.setPrivateCommandHandler("newModel", this.newModelCmdHandler);
         this.setPrivateCommandHandler("openEditor", this.openEditorCmdHandler);
         this.setPrivateCommandHandler("closeEditor", this.closeEditorCmdHandler);
+        this.setPrivateCommandHandler("setTargetTo", this.setTargetProp);
     }
 
     // Convenience getter to get the id
@@ -230,6 +236,26 @@ class Part {
             [] // No aliases
         );
 
+        this.partProperties.newDynamicProp(
+            'target',
+            function(propOwner, propObject, val){
+                // check to see if the target is a non-ID
+                let id = isValidId(val);
+                if(id){
+                    // if it is an ID insert "part" since our
+                    // grammar doesn't handle ID without system object
+                    // prefixes
+                    propObject._value = `part id ${val}`;
+                } else {
+                    propObject._value = val;
+                }
+            },
+            function(propOwner, propObject){
+                return propObject._value;
+            },
+            false,
+            null,
+        ),
 
         // Stepping related props
 
@@ -481,6 +507,11 @@ class Part {
             commandName: 'deleteModel',
             args: [objectId, modelType]
         });
+    }
+
+    setTargetProp(senders, ...args){
+        let target = args.join(" ");
+        this.partProperties.setPropertyNamed(this, "target", target);
     }
 
     newModelCmdHandler(senders, modelType, ownerId, targetModelType, context, name){

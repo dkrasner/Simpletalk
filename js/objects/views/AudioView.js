@@ -44,12 +44,6 @@ class AudioView extends PartView {
                 this.pause();
             }
         });
-        this.onPropChange("load", (value) => {
-            if(value === true){
-                // audio.load() reloads to the beginning
-                this._shadowRoot.querySelector("audio").load();
-            }
-        });
         this.onPropChange("stop", (value) => {
             if(value === true){
                 this._shadowRoot.querySelector("audio").currentTime = 0;

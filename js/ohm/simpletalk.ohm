@@ -69,6 +69,7 @@
                | PropertyValue
                | anyLiteral
                | variableName
+               | ObjectSpecifier
 
         // For now, expressions are just the
         // value of a given factor.
@@ -188,7 +189,8 @@
         // like when `card "some card name"` which will assume the current
         // stack as its target
         PartialSpecifier
-                = (systemObject | "part") stringLiteral --partByName
+                = "target" --partByTarget
+                | (systemObject | "part") stringLiteral --partByName
                 | (systemObject | "part") integerLiteral --partByIndex
                 | numericalKeyword (systemObject | "part") --partByNumericalIndex
         

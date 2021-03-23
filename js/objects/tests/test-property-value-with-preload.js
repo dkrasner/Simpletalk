@@ -117,6 +117,5 @@ describe("PropertyValue Interpreter Tests", () => {
             let result = window.System.executionStack.getGlobal('result');
             assert.equal(result, 'TEST_BUTTON');
         });
-        
     });
 });

@@ -11,6 +11,7 @@ let fields = [];
 let buttons = [];
 let cards = [];
 let currentCardModel = null;
+let area = null;
 
 // Helper function that adds cards, buttons, and
 // fields to the current stack.
@@ -51,6 +52,17 @@ function setupCardsAndParts(){
             currentCard.id,
             `Field ${3}`
         );
+        let areaModel = window.System.newModel(
+            'area',
+            currentCard.id,
+            `Area ${1}`
+        );
+        window.System.newModel(
+            'button',
+            areaModel.id,
+            `Area Button ${1}`
+        );
+
         if(i < 2){
             window.System.newModel(
                 'card',
@@ -322,6 +334,286 @@ describe("ObjectSpecifier Tests", () => {
                 return subpart.type == 'field';
             })[2];
             let expectedValue = expectedPart.id;
+            let result = semantics(matchObject).interpret();
+            assert.equal(expectedValue, result);
+        });
+    });
+    describe("Complex Specifiers without terminal", () => {
+        describe("Context is current card", () => {
+            let semantics;
+            let partContext;
+
+            before(() => {
+                partContext = window.System.getCurrentCardModel();
+                semantics = testLanguageGrammar.createSemantics();
+                semantics.addOperation(
+                    'interpret',
+                    interpreterSemantics(partContext, window.System)
+                );
+            });
+
+            it("Can get button 1 of area 1 ", () => {
+                let str = `button 1 of area 1`;
+                let matchObject = testLanguageGrammar.match(str, 'ObjectSpecifier');
+                assert.isTrue(matchObject.succeeded());
+                let firstArea = partContext.subparts.filter(subpart => {
+                    return subpart.type == 'area';
+                })[0];
+                let expectedPart = firstArea.subparts.filter(subpart => {
+                    return subpart.type == 'button';
+                })[0];
+                let expectedValue = expectedPart.id;
+                let result = semantics(matchObject).interpret();
+                assert.equal(expectedValue, result);
+            });
+            it("Can get button 1 of area 1 of card 1", () => {
+                let str = `button 1 of area 1 of card 1`;
+                let matchObject = testLanguageGrammar.match(str, 'ObjectSpecifier');
+                assert.isTrue(matchObject.succeeded());
+                let firstCard = window.System.getCurrentStackModel().subparts.filter(subpart => {
+                    return subpart.type == 'card';
+                })[0];
+                let firstArea = firstCard.subparts.filter(subpart => {
+                    return subpart.type == 'area';
+                })[0];
+                let expectedPart = firstArea.subparts.filter(subpart => {
+                    return subpart.type == 'button';
+                })[0];
+                let expectedValue = expectedPart.id;
+                let result = semantics(matchObject).interpret();
+                assert.equal(expectedValue, result);
+            });
+            it("Can get button 1 of area 1 of card 1 of stack 1", () => {
+                let str = `button 1 of area 1 of card 1 of first stack`;
+                let matchObject = testLanguageGrammar.match(str, 'ObjectSpecifier');
+                assert.isTrue(matchObject.succeeded());
+                let firstCard = window.System.getCurrentStackModel().subparts.filter(subpart => {
+                    return subpart.type == 'card';
+                })[0];
+                let firstArea = firstCard.subparts.filter(subpart => {
+                    return subpart.type == 'area';
+                })[0];
+                let expectedPart = firstArea.subparts.filter(subpart => {
+                    return subpart.type == 'button';
+                })[0];
+                let expectedValue = expectedPart.id;
+                let result = semantics(matchObject).interpret();
+                assert.equal(expectedValue, result);
+            });
+        });
+        describe("Context is current area of current card", () => {
+            let semantics;
+            let partContext;
+
+            before(() => {
+                let currentCard = window.System.getCurrentCardModel();
+                partContext = currentCard.subparts.filter(subpart => {
+                    return subpart.type == 'area';
+                })[0];
+
+                semantics = testLanguageGrammar.createSemantics();
+                semantics.addOperation(
+                    'interpret',
+                    interpreterSemantics(partContext, window.System)
+                );
+            });
+
+            it("Can get button 1 of area 1 ", () => {
+                let str = `button 1`;
+                let matchObject = testLanguageGrammar.match(str, 'ObjectSpecifier');
+                assert.isTrue(matchObject.succeeded());
+                let expectedPart = partContext.subparts.filter(subpart => {
+                    return subpart.type == 'button';
+                })[0];
+                let expectedValue = expectedPart.id;
+                let result = semantics(matchObject).interpret();
+                assert.equal(expectedValue, result);
+            });
+            it("Can get button 1 of area 1 of card 1", () => {
+                let str = `button 1 of area 1 of card 1`;
+                let matchObject = testLanguageGrammar.match(str, 'ObjectSpecifier');
+                assert.isTrue(matchObject.succeeded());
+                let firstCard = window.System.getCurrentStackModel().subparts.filter(subpart => {
+                    return subpart.type == 'card';
+                })[0];
+                let firstArea = firstCard.subparts.filter(subpart => {
+                    return subpart.type == 'area';
+                })[0];
+                let expectedPart = firstArea.subparts.filter(subpart => {
+                    return subpart.type == 'button';
+                })[0];
+                let expectedValue = expectedPart.id;
+                let result = semantics(matchObject).interpret();
+                assert.equal(expectedValue, result);
+            });
+            it("Can get button 1 of area 1 of card 1 of stack 1", () => {
+                let str = `button 1 of area 1 of card 1 of first stack`;
+                let matchObject = testLanguageGrammar.match(str, 'ObjectSpecifier');
+                assert.isTrue(matchObject.succeeded());
+                let firstCard = window.System.getCurrentStackModel().subparts.filter(subpart => {
+                    return subpart.type == 'card';
+                })[0];
+                let firstArea = firstCard.subparts.filter(subpart => {
+                    return subpart.type == 'area';
+                })[0];
+                let expectedPart = firstArea.subparts.filter(subpart => {
+                    return subpart.type == 'button';
+                })[0];
+                let expectedValue = expectedPart.id;
+                let result = semantics(matchObject).interpret();
+                assert.equal(expectedValue, result);
+            });
+        });
+    });
+    describe("Target specifiers", () => {
+        let semantics;
+        let partContext;
+
+        before(() => {
+            partContext = window.System.getCurrentStackModel();
+            semantics = testLanguageGrammar.createSemantics();
+            semantics.addOperation(
+                'interpret',
+                interpreterSemantics(partContext, window.System)
+            );
+            // we need to add the semantics to the partContext since
+            // we are not actually compiling a script on it
+            // however OHM will throw an grammar(System)-semantics(partContext) mismatch error if we
+            // simply set the above semantics on the partContext
+            partContext._semantics = semantics;
+            window.System.grammar = semantics.getGrammar();
+        });
+
+        it("Can get button 1 of card 2 of current stack from target of button 1 of card 1", () => {
+            // set up the target prop
+            let card1 = partContext.subparts.filter(subpart => {
+                return subpart.type == 'card';
+            })[0];
+            let button1Card1 = card1.subparts.filter(subpart => {
+                return subpart.type == 'button';
+            })[0];
+            button1Card1.partProperties.setPropertyNamed(
+                button1Card1,
+                'target',
+                'button 1 of card 2 of current stack'
+            );
+            let str = `target of button 1 of card 1 of current stack`;
+            let matchObject = testLanguageGrammar.match(str, 'ObjectSpecifier');
+            assert.isTrue(matchObject.succeeded());
+            let secondCard = partContext.subparts.filter(subpart => {
+                return subpart.type == 'card';
+            })[1];
+            let expectedPart = secondCard.subparts.filter(subpart => {
+                return subpart.type == 'button';
+            })[0];
+            let expectedValue = expectedPart.id;
+            let result = semantics(matchObject).interpret();
+            assert.equal(expectedValue, result);
+        });
+        it("Can get button 1 of area 1 of card 1 of current stack from target of button 1 of card 1", () => {
+            // set up the target prop
+            let card1 = partContext.subparts.filter(subpart => {
+                return subpart.type == 'card';
+            })[0];
+            let button1Card1 = card1.subparts.filter(subpart => {
+                return subpart.type == 'button';
+            })[0];
+            button1Card1.partProperties.setPropertyNamed(
+                button1Card1,
+                'target',
+                'button 1 of first area of card 1 of current stack'
+            );
+            let str = `target of button 1 of card 1 of current stack`;
+            let matchObject = testLanguageGrammar.match(str, 'ObjectSpecifier');
+            assert.isTrue(matchObject.succeeded());
+            let area = card1.subparts.filter(subpart => {
+                return subpart.type == 'area';
+            })[0];
+            let expectedPart = area.subparts.filter(subpart => {
+                return subpart.type == 'button';
+            })[0];
+            let expectedValue = expectedPart.id;
+            let result = semantics(matchObject).interpret();
+            assert.equal(expectedValue, result);
+        });
+        it("Can get target of a target", () => {
+            // set up the target prop
+            let card1 = partContext.subparts.filter(subpart => {
+                return subpart.type == 'card';
+            })[0];
+            let button1Card1 = card1.subparts.filter(subpart => {
+                return subpart.type == 'button';
+            })[0];
+            button1Card1.partProperties.setPropertyNamed(
+                button1Card1,
+                'target',
+                'button 1 of card 2 of current stack'
+            );
+            let card2 = partContext.subparts.filter(subpart => {
+                return subpart.type == 'card';
+            })[1];
+            let button1Card2 = card2.subparts.filter(subpart => {
+                return subpart.type == 'button';
+            })[0];
+            button1Card2.partProperties.setPropertyNamed(
+                button1Card2,
+                'target',
+                'button 1 of card 3 of current stack'
+            );
+            let str = `target of target of button 1 of card 1 of current stack`;
+            let matchObject = testLanguageGrammar.match(str, 'ObjectSpecifier');
+            assert.isTrue(matchObject.succeeded());
+            // check the object ids
+            let card3 = partContext.subparts.filter(subpart => {
+                return subpart.type == 'card';
+            })[2];
+            let button1Card3 = card3.subparts.filter(subpart => {
+                return subpart.type == 'button';
+            })[0];
+            let expectedValue = button1Card3.id;
+            let result = semantics(matchObject).interpret();
+            assert.equal(expectedValue, result);
+        });
+        it("Can get target of a target of a target", () => {
+            // set up the target prop
+            let card1 = partContext.subparts.filter(subpart => {
+                return subpart.type == 'card';
+            })[0];
+            let button1Card1 = card1.subparts.filter(subpart => {
+                return subpart.type == 'button';
+            })[0];
+            button1Card1.partProperties.setPropertyNamed(
+                button1Card1,
+                'target',
+                'button 1 of card 2 of current stack'
+            );
+            let card2 = partContext.subparts.filter(subpart => {
+                return subpart.type == 'card';
+            })[1];
+            let button1Card2 = card2.subparts.filter(subpart => {
+                return subpart.type == 'button';
+            })[0];
+            button1Card2.partProperties.setPropertyNamed(
+                button1Card2,
+                'target',
+                'button 1 of card 3 of current stack'
+            );
+            let card3 = partContext.subparts.filter(subpart => {
+                return subpart.type == 'card';
+            })[2];
+            let button1Card3 = card3.subparts.filter(subpart => {
+                return subpart.type == 'button';
+            })[0];
+            button1Card3.partProperties.setPropertyNamed(
+                button1Card3,
+                'target',
+                'button 1 of card 1 of current stack' // back to card1 button1
+            );
+            let str = `target of target of target of button 1 of card 1 of current stack`;
+            let matchObject = testLanguageGrammar.match(str, 'ObjectSpecifier');
+            assert.isTrue(matchObject.succeeded());
+            // check the object ids
+            let expectedValue = button1Card1.id;
             let result = semantics(matchObject).interpret();
             assert.equal(expectedValue, result);
         });

@@ -55,6 +55,7 @@ describe('Audio Part & View Tests', () => {
             };
             audio.sendMessage(msg, audio.model);
             assert.isTrue(audio.model.partProperties.getPropertyNamed(audio.model, "play"));
+            assert.isFalse(audio.model.partProperties.getPropertyNamed(audio.model, "stop"));
         });
         it('Can tell audio to pause (via message)', () => {
             let audio = document.querySelector('st-card.current-card > st-audio');
@@ -82,7 +83,7 @@ describe('Audio Part & View Tests', () => {
                 args: []
             };
             audio.sendMessage(msg, audio.model);
-            assert.isTrue(audio.model.partProperties.getPropertyNamed(audio.model, "load"));
+            assert.isTrue(audio.model.partProperties.getPropertyNamed(audio.model, "stop"));
             assert.isFalse(audio.model.partProperties.getPropertyNamed(audio.model, "play"));
         });
     });
