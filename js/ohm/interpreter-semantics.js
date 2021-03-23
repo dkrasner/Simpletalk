@@ -169,7 +169,7 @@ const createInterpreterSemantics = (partContext, systemContext) => {
         Command_addModel: function(addLiteral, newPartType, optionalPartName){
             let args = [
                 newPartType.sourceString,
-                partContext.id // We assume current Part executing as the owner
+                null // We assume no specific owner context. Should be handled in Part.js
             ];
             let optionalName = optionalPartName.interpret();
             if(optionalName && optionalName.length){

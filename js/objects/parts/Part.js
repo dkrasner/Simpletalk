@@ -57,6 +57,7 @@ class Part {
         this.receiveMessage = this.receiveMessage.bind(this);
         this.delegateMessage = this.delegateMessage.bind(this);
         this.sendMessage = this.sendMessage.bind(this);
+        this.newModelCmdHandler = this.newModelCmdHandler.bind(this);
         this.addPropertySubscriber = this.addPropertySubscriber.bind(this);
         this.removePropertySubscriber = this.removePropertySubscriber.bind(this);
         this.serialize = this.serialize.bind(this);
@@ -131,6 +132,31 @@ class Part {
         };
         return this._owner.getOwnerBranch(branch);
     }
+
+    newModelCmdHandler(senders, partType, ownerId, name){
+        if(ownerId){
+            this.delegateMessage({
+                type: 'command',
+                commandName: 'newModel',
+                args: [
+                    partType,
+                    ownerId,
+                    name
+                ]
+            });
+        } else {
+            this.sendMessage({
+                type: 'command',
+                commandName: 'newModel',
+                args: [
+                    partType,
+                    this.id,
+                    name
+                ]
+            }, window.System);
+        }
+    }
+
     // perform a deep copy of myself (and all my suparts)
     // assigning new ids
     copy(ownerPart){
@@ -512,46 +538,6 @@ class Part {
     setTargetProp(senders, ...args){
         let target = args.join(" ");
         this.partProperties.setPropertyNamed(this, "target", target);
-    }
-
-    newModelCmdHandler(senders, modelType, ownerId, targetModelType, context, name){
-        let message = {
-            type: 'command',
-            commandName: 'newModel',
-            args: [modelType, ownerId, targetModelType, context, name]
-        };
-        // If the context is explicitely "current" we find the corresponding part
-        // (card or stack) and send the updated message to it
-        // Note: this assumes that the only current parts or cards or stacks
-        if(context === "current"){
-            // we won't need to the context anymore after sending to the corresponding
-            // target part
-            message.args[3] = "";
-            let targetModel;
-            if(targetModelType.toLowerCase() === "card"){
-                targetModel = window.System.getCurrentCardModel();
-            };
-            if(targetModelType.toLowerCase() === "stack"){
-                targetModel = window.System.getCurrentStackModel();
-            };
-            message.args[1] = targetModel.id;
-            return this.sendMessage(message, targetModel);
-        }
-        // if no owner Id and no targetModelTyope are provided
-        // and I accept the modelType
-        // as a subpart, then add the new model as a subpart
-        // if targetModelType is provided then I check to make sure
-        // my type matches targetModelType
-        if (this.acceptsSubpart(modelType) && !ownerId){
-            if(targetModelType){
-                if(this.type === targetModelType){
-                    message.args[1] = this.id;
-                };
-            } else {
-                message.args[1] = this.id;
-            }
-        }
-        this.delegateMessage(message);
     }
 
     /** Property Subscribers
