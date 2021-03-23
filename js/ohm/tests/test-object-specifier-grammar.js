@@ -119,6 +119,25 @@ describe("Partial Specifier Tests", () => {
             });
         });
     });
+    describe("Part by target tests", () => {
+        it("'target is a PartialSpecifier", () => {
+            let str = "target";
+            semanticMatchTest(str, 'PartialSpecifier_partByTarget');
+        });
+    });
+});
+
+describe("Queried Specifier Tests", () => {
+    describe("Target tests", () => {
+        it("Can parse 'target of'", () => {
+            let str = "target of";
+            semanticMatchTest(str, 'QueriedSpecifier_prefixed');
+        });
+        it("Can parse 'target of target of'", () => {
+            let str = "target of target of";
+            semanticMatchTest(str, 'QueriedSpecifier_nested');
+        });
+    });
 });
 
 describe("Compound Specifier Tests (non-terminal)", () => {
@@ -142,6 +161,13 @@ describe("Compound Specifier Tests (non-terminal)", () => {
         it("compoundSpecifierWithTerminal", () => {
             let str = `button "myButton" of card 5 of current stack`;
             semanticMatchTest(str, 'ObjectSpecifier_compoundQueryWithTerminal');
+        });
+        it("Compound with 'target of this' system object", () => {
+            let str = "target of target of";
+            partTypes.forEach(partName => {
+                let str = `target of this ${partName}`;
+                semanticMatchTest(str, 'ObjectSpecifier');
+            });
         });
     });
 });
