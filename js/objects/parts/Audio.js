@@ -24,11 +24,6 @@ class Audio extends Part {
         );
 
         this.partProperties.newBasicProp(
-            "load",
-            null
-        );
-
-        this.partProperties.newBasicProp(
             "stop",
             null
         );
@@ -61,6 +56,7 @@ class Audio extends Part {
 
     play(value){
         this.partProperties.setPropertyNamed(this, "play", value);
+        this.partProperties.setPropertyNamed(this, "stop", false);
     }
 
     stop(){
