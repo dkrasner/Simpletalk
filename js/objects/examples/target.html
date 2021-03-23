@@ -1,0 +1,1831 @@
+<html xmlns="http://www.w3.org/1999/xhtml"><head>
+    <meta charset="utf-8">
+    <title>System Object Example</title>
+    <link rel="preconnect" href="https://fonts.gstatic.com">
+<link href="https://fonts.googleapis.com/css2?family=Crimson+Pro:ital,wght@0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&amp;display=swap" rel="stylesheet"> 
+    <link rel="stylesheet" href="../../../css/core.css">
+    <script src="../../ohm/simpletalk.ohm" type="text/ohm-js"></script>
+    <script src="../build/devSystem.bundle.js"></script>
+<script>(function addTranscript() {
+  function debounce(callback, wait, immediate = false) {
+    let timeout = null;
+
+    return function () {
+      const callNow = immediate && !timeout;
+      const next = () => callback.apply(this, arguments);
+
+      clearTimeout(timeout);
+      timeout = setTimeout(next, wait);
+
+      if (callNow) {
+        next();
+      }
+    };
+  }
+
+  function waitFor(selector, callback, timeout) {
+    const element = document.querySelector(selector);
+    if (element) {
+      callback(element);
+    } else {
+      if (timeout) {
+        return window.setTimeout(() => {
+          return window.requestAnimationFrame(() => {
+            waitFor(selector, callback);
+          });
+        }, timeout);
+      }
+      return window.requestAnimationFrame(() => {
+        waitFor(selector, callback);
+      });
+    }
+  }
+
+  function onVideoChange(cb) {
+    const debouncedCallback = debounce(cb, 200);
+    waitFor(
+      "ytd-player",
+      function handlePlayer(player) {
+        const video = document.querySelector(".html5-main-video");
+        if (!video) {
+          setTimeout(() => handlePlayer(player), 1000);
+          return;
+        }
+        debouncedCallback();
+        const observer = new MutationObserver(debouncedCallback);
+        observer.observe(video, {
+          childList: false,
+          subtree: false,
+          attributes: true,
+        });
+      },
+      100
+    );
+  }
+
+  function renderTranscript() {
+    const player = document.querySelector("ytd-player")?.getPlayer();
+    if (!player) {
+      return;
+    }
+
+    const { isLive, video_id } = player.getVideoData();
+    const options = player.getOptions();
+    const hasCaptions = options.includes("captions");
+
+    if (!hasCaptions || isLive) {
+      document.querySelector("#transcript-info")?.remove();
+      return;
+    }
+
+    document.querySelector("#transcript-info")?.remove();
+
+    const wrapper = document.createElement("div");
+    wrapper.id = `transcript-info`;
+    wrapper.style = `
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      margin: 0 8px;
+    `.replace("\n", " ");
+
+    const a = document.createElement("a");
+    a.setAttribute("href", `https://video-insights.com/en/video/${video_id}`);
+    a.setAttribute("target", "_blank");
+    a.setAttribute(
+      "style",
+      `
+        color: var(--yt-spec-call-to-action);
+        background-color: transparent;
+        text-transform: uppercase;
+        border: 1px solid var(--yt-spec-call-to-action);
+        padding: var(--yt-button-padding-minus-border);
+        width: var(--yt-paper-button-width, auto);
+        height: var(--yt-paper-button-height, auto);
+        border-radius: inherit;
+        text-align: center;
+        min-width: var(--yt-paper-button-min-width, var(--ytd-paper-button-min-width, 5.14em));
+        font-size: var(--yt-paper-button-font-size, inherit);
+        transition: var(--shadow-transition_-_transition);
+        margin: var(--yt-button-margin, 0 0.29em);
+        text-transform: uppercase;
+        vertical-align: middle;
+        white-space: nowrap;
+        font-size: var(--ytd-tab-system_-_font-size);
+        font-weight: var(--ytd-tab-system_-_font-weight);
+        letter-spacing: var(--ytd-tab-system_-_letter-spacing);
+        text-decoration: none;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        min-width: var(--yt-paper-button-min-width, var(--ytd-paper-button-min-width, 5.14em));
+        cursor: pointer;
+        -webkit-font-smoothing: var(--paper-font-common-base_-_-webkit-font-smoothing);
+      `.replace(/(\r\n|\n|\r|\s)/gm, "")
+    );
+    a.appendChild(document.createTextNode("Transcript "));
+    wrapper.appendChild(a);
+
+    const root = document.querySelector("ytd-video-owner-renderer");
+    root?.appendChild(wrapper);
+  }
+
+  onVideoChange(renderTranscript);
+})()</script></head>
+
+<body cz-shortcut-listen="true">
+    <style>
+        body {
+            display: block;
+            width: 100vw;
+            height: 100vh;
+            padding: 0;
+            margin: 0;
+        }
+    </style>
+    <div id="template-area">
+    </div>
+
+
+
+<script id="serialization" type="application/json">{
+    "parts": {
+        "1": {
+            "type": "stack",
+            "id": 1,
+            "properties": {
+                "target": null,
+                "contents": null,
+                "enabled": true,
+                "id": 1,
+                "name": "",
+                "rectangle": "0, 0, 0, 0",
+                "script": null,
+                "editorOpen": false,
+                "events": [],
+                "cssStyle": {},
+                "number": -1,
+                "stepTime": 500,
+                "stepping": false,
+                "cantPeek": false,
+                "resizable": false
+            },
+            "subparts": [
+                3,
+                4,
+                23,
+                28,
+                33
+            ],
+            "ownerId": "world"
+        },
+        "3": {
+            "type": "card",
+            "id": 3,
+            "properties": {
+                "target": null,
+                "contents": null,
+                "enabled": true,
+                "id": 3,
+                "name": "",
+                "rectangle": "0, 0, 0, 0",
+                "script": null,
+                "editorOpen": false,
+                "events": [
+                    "click",
+                    "dragenter",
+                    "dragover",
+                    "drop"
+                ],
+                "cssStyle": {
+                    "layout": "strict",
+                    "opacity": 1,
+                    "list-direction": "row",
+                    "list-wrapping": false
+                },
+                "number": -1,
+                "stepTime": 500,
+                "stepping": false,
+                "marked": false,
+                "cantDelete": false,
+                "dontSearch": false,
+                "showPict": false,
+                "background-transparency": 1,
+                "background-color": null,
+                "transparency": 1,
+                "layout": "strict",
+                "list-direction": "row",
+                "list-wrapping": false,
+                "top-padding": null,
+                "right-padding": null,
+                "bottom-padding": null,
+                "left-padding": null,
+                "list-alignment": null,
+                "list-distribution": null
+            },
+            "subparts": [
+                15,
+                21,
+                22
+            ],
+            "ownerId": 1
+        },
+        "4": {
+            "type": "window",
+            "id": 4,
+            "properties": {
+                "target": null,
+                "contents": null,
+                "enabled": true,
+                "id": 4,
+                "name": "Toolbox",
+                "rectangle": "0, 0, 0, 0",
+                "script": null,
+                "editorOpen": false,
+                "events": [],
+                "cssStyle": {
+                    "top": "213px",
+                    "left": "2057px",
+                    "display": null,
+                    "opacity": 1,
+                    "backgroundColor": "rgba(255, 234, 149, 1)",
+                    "horizontal-resizing": "rigid",
+                    "vertical-resizing": "rigid"
+                },
+                "number": -1,
+                "stepTime": 500,
+                "stepping": false,
+                "targetId": null,
+                "title": "Toolbox",
+                "isResizable": true,
+                "background-transparency": 1,
+                "background-color": "rgba(255, 234, 149, 1)",
+                "transparency": 1,
+                "hide": false,
+                "width": null,
+                "height": null,
+                "top": 213,
+                "left": 2057,
+                "rotate": null,
+                "horizontal-resizing": "rigid",
+                "vertical-resizing": "rigid",
+                "top-margin": null,
+                "right-margin": null,
+                "bottom-margin": null,
+                "left-margin": null,
+                "pinning-top": false,
+                "pinning-left": false,
+                "pinning-bottom": false,
+                "pinning-right": false,
+                "pinning": ""
+            },
+            "subparts": [
+                5
+            ],
+            "ownerId": 1
+        },
+        "5": {
+            "type": "stack",
+            "id": 5,
+            "properties": {
+                "target": null,
+                "contents": null,
+                "enabled": true,
+                "id": 5,
+                "name": "",
+                "rectangle": "0, 0, 0, 0",
+                "script": null,
+                "editorOpen": false,
+                "events": [],
+                "cssStyle": {},
+                "number": -1,
+                "stepTime": 500,
+                "stepping": false,
+                "cantPeek": false,
+                "resizable": false
+            },
+            "subparts": [
+                7
+            ],
+            "ownerId": 4
+        },
+        "7": {
+            "type": "card",
+            "id": 7,
+            "properties": {
+                "target": null,
+                "contents": null,
+                "enabled": true,
+                "id": 7,
+                "name": "",
+                "rectangle": "0, 0, 0, 0",
+                "script": null,
+                "editorOpen": false,
+                "events": [
+                    "click",
+                    "dragenter",
+                    "dragover",
+                    "drop"
+                ],
+                "cssStyle": {
+                    "layout": "list",
+                    "list-direction": "column",
+                    "opacity": 1,
+                    "list-wrapping": false
+                },
+                "number": -1,
+                "stepTime": 500,
+                "stepping": false,
+                "marked": false,
+                "cantDelete": false,
+                "dontSearch": false,
+                "showPict": false,
+                "background-transparency": 1,
+                "background-color": null,
+                "transparency": 1,
+                "layout": "list",
+                "list-direction": "column",
+                "list-wrapping": false,
+                "top-padding": null,
+                "right-padding": null,
+                "bottom-padding": null,
+                "left-padding": null,
+                "list-alignment": null,
+                "list-distribution": null
+            },
+            "subparts": [
+                8,
+                9,
+                10,
+                11,
+                12,
+                13,
+                14
+            ],
+            "ownerId": 5
+        },
+        "8": {
+            "type": "button",
+            "id": 8,
+            "properties": {
+                "target": null,
+                "contents": null,
+                "enabled": true,
+                "id": 8,
+                "name": "Add Button to Toolbox",
+                "rectangle": "0, 0, 0, 0",
+                "script": "on click\n    add button to first card of first stack of window \"Toolbox\" of current stack\nend click",
+                "editorOpen": false,
+                "events": [
+                    "mousedown",
+                    "mouseup",
+                    "mouseenter",
+                    "click",
+                    "dragstart",
+                    "dragend"
+                ],
+                "cssStyle": {
+                    "textAlign": "center",
+                    "fontFamily": "default",
+                    "backgroundColor": "rgba(255, 234, 149, 1)",
+                    "color": "rgba(0, 0, 0, 1)",
+                    "textStyle": "plain",
+                    "display": null,
+                    "top": "0px",
+                    "left": "0px",
+                    "opacity": 1,
+                    "horizontal-resizing": "rigid",
+                    "vertical-resizing": "rigid"
+                },
+                "number": -1,
+                "stepTime": 500,
+                "stepping": false,
+                "selectedText": null,
+                "background-transparency": 1,
+                "background-color": "rgba(255, 234, 149, 1)",
+                "transparency": 1,
+                "hide": false,
+                "width": null,
+                "height": null,
+                "top": "0",
+                "left": "0",
+                "rotate": null,
+                "horizontal-resizing": "rigid",
+                "vertical-resizing": "rigid",
+                "top-margin": null,
+                "right-margin": null,
+                "bottom-margin": null,
+                "left-margin": null,
+                "pinning-top": false,
+                "pinning-left": false,
+                "pinning-bottom": false,
+                "pinning-right": false,
+                "pinning": "",
+                "text-align": "center",
+                "text-font": "default",
+                "text-color": "rgba(0, 0, 0, 1)",
+                "text-transparency": 1,
+                "text-style": "plain"
+            },
+            "subparts": [],
+            "ownerId": 7
+        },
+        "9": {
+            "type": "button",
+            "id": 9,
+            "properties": {
+                "target": null,
+                "contents": null,
+                "enabled": true,
+                "id": 9,
+                "name": "Add Button to Card",
+                "rectangle": "0, 0, 0, 0",
+                "script": "on click\n\tadd button to current card\nend click",
+                "editorOpen": false,
+                "events": [
+                    "mousedown",
+                    "mouseup",
+                    "mouseenter",
+                    "click",
+                    "dragstart",
+                    "dragend"
+                ],
+                "cssStyle": {
+                    "textAlign": "center",
+                    "fontFamily": "default",
+                    "backgroundColor": "rgba(255, 234, 149, 1)",
+                    "color": "rgba(0, 0, 0, 1)",
+                    "textStyle": "plain",
+                    "display": null,
+                    "top": "0px",
+                    "left": "0px",
+                    "opacity": 1,
+                    "horizontal-resizing": "rigid",
+                    "vertical-resizing": "rigid"
+                },
+                "number": -1,
+                "stepTime": 500,
+                "stepping": false,
+                "selectedText": null,
+                "background-transparency": 1,
+                "background-color": "rgba(255, 234, 149, 1)",
+                "transparency": 1,
+                "hide": false,
+                "width": null,
+                "height": null,
+                "top": "0",
+                "left": "0",
+                "rotate": null,
+                "horizontal-resizing": "rigid",
+                "vertical-resizing": "rigid",
+                "top-margin": null,
+                "right-margin": null,
+                "bottom-margin": null,
+                "left-margin": null,
+                "pinning-top": false,
+                "pinning-left": false,
+                "pinning-bottom": false,
+                "pinning-right": false,
+                "pinning": "",
+                "text-align": "center",
+                "text-font": "default",
+                "text-color": "rgba(0, 0, 0, 1)",
+                "text-transparency": 1,
+                "text-style": "plain"
+            },
+            "subparts": [],
+            "ownerId": 7
+        },
+        "10": {
+            "type": "button",
+            "id": 10,
+            "properties": {
+                "target": null,
+                "contents": null,
+                "enabled": true,
+                "id": 10,
+                "name": "Add Image to Card",
+                "rectangle": "0, 0, 0, 0",
+                "script": "on click\n    add image to current card\nend click",
+                "editorOpen": false,
+                "events": [
+                    "mousedown",
+                    "mouseup",
+                    "mouseenter",
+                    "click",
+                    "dragstart",
+                    "dragend"
+                ],
+                "cssStyle": {
+                    "textAlign": "center",
+                    "fontFamily": "default",
+                    "backgroundColor": "rgba(255, 234, 149, 1)",
+                    "color": "rgba(0, 0, 0, 1)",
+                    "textStyle": "plain",
+                    "display": null,
+                    "top": "0px",
+                    "left": "0px",
+                    "opacity": 1,
+                    "horizontal-resizing": "rigid",
+                    "vertical-resizing": "rigid"
+                },
+                "number": -1,
+                "stepTime": 500,
+                "stepping": false,
+                "selectedText": null,
+                "background-transparency": 1,
+                "background-color": "rgba(255, 234, 149, 1)",
+                "transparency": 1,
+                "hide": false,
+                "width": null,
+                "height": null,
+                "top": "0",
+                "left": "0",
+                "rotate": null,
+                "horizontal-resizing": "rigid",
+                "vertical-resizing": "rigid",
+                "top-margin": null,
+                "right-margin": null,
+                "bottom-margin": null,
+                "left-margin": null,
+                "pinning-top": false,
+                "pinning-left": false,
+                "pinning-bottom": false,
+                "pinning-right": false,
+                "pinning": "",
+                "text-align": "center",
+                "text-font": "default",
+                "text-color": "rgba(0, 0, 0, 1)",
+                "text-transparency": 1,
+                "text-style": "plain"
+            },
+            "subparts": [],
+            "ownerId": 7
+        },
+        "11": {
+            "type": "button",
+            "id": 11,
+            "properties": {
+                "target": null,
+                "contents": null,
+                "enabled": true,
+                "id": 11,
+                "name": "Add Drawing to Card",
+                "rectangle": "0, 0, 0, 0",
+                "script": "on click\n  add drawing to current card\nend click",
+                "editorOpen": false,
+                "events": [
+                    "mousedown",
+                    "mouseup",
+                    "mouseenter",
+                    "click",
+                    "dragstart",
+                    "dragend"
+                ],
+                "cssStyle": {
+                    "textAlign": "center",
+                    "fontFamily": "default",
+                    "backgroundColor": "rgba(255, 234, 149, 1)",
+                    "color": "rgba(0, 0, 0, 1)",
+                    "textStyle": "plain",
+                    "display": null,
+                    "top": "0px",
+                    "left": "0px",
+                    "opacity": 1,
+                    "horizontal-resizing": "rigid",
+                    "vertical-resizing": "rigid"
+                },
+                "number": -1,
+                "stepTime": 500,
+                "stepping": false,
+                "selectedText": null,
+                "background-transparency": 1,
+                "background-color": "rgba(255, 234, 149, 1)",
+                "transparency": 1,
+                "hide": false,
+                "width": null,
+                "height": null,
+                "top": "0",
+                "left": "0",
+                "rotate": null,
+                "horizontal-resizing": "rigid",
+                "vertical-resizing": "rigid",
+                "top-margin": null,
+                "right-margin": null,
+                "bottom-margin": null,
+                "left-margin": null,
+                "pinning-top": false,
+                "pinning-left": false,
+                "pinning-bottom": false,
+                "pinning-right": false,
+                "pinning": "",
+                "text-align": "center",
+                "text-font": "default",
+                "text-color": "rgba(0, 0, 0, 1)",
+                "text-transparency": 1,
+                "text-style": "plain"
+            },
+            "subparts": [],
+            "ownerId": 7
+        },
+        "12": {
+            "type": "button",
+            "id": 12,
+            "properties": {
+                "target": null,
+                "contents": null,
+                "enabled": true,
+                "id": 12,
+                "name": "Add Field to Card",
+                "rectangle": "0, 0, 0, 0",
+                "script": "on click\n  add field to current card\nend click",
+                "editorOpen": false,
+                "events": [
+                    "mousedown",
+                    "mouseup",
+                    "mouseenter",
+                    "click",
+                    "dragstart",
+                    "dragend"
+                ],
+                "cssStyle": {
+                    "textAlign": "center",
+                    "fontFamily": "default",
+                    "backgroundColor": "rgba(255, 234, 149, 1)",
+                    "color": "rgba(0, 0, 0, 1)",
+                    "textStyle": "plain",
+                    "display": null,
+                    "top": "0px",
+                    "left": "0px",
+                    "opacity": 1,
+                    "horizontal-resizing": "rigid",
+                    "vertical-resizing": "rigid"
+                },
+                "number": -1,
+                "stepTime": 500,
+                "stepping": false,
+                "selectedText": null,
+                "background-transparency": 1,
+                "background-color": "rgba(255, 234, 149, 1)",
+                "transparency": 1,
+                "hide": false,
+                "width": null,
+                "height": null,
+                "top": "0",
+                "left": "0",
+                "rotate": null,
+                "horizontal-resizing": "rigid",
+                "vertical-resizing": "rigid",
+                "top-margin": null,
+                "right-margin": null,
+                "bottom-margin": null,
+                "left-margin": null,
+                "pinning-top": false,
+                "pinning-left": false,
+                "pinning-bottom": false,
+                "pinning-right": false,
+                "pinning": "",
+                "text-align": "center",
+                "text-font": "default",
+                "text-color": "rgba(0, 0, 0, 1)",
+                "text-transparency": 1,
+                "text-style": "plain"
+            },
+            "subparts": [],
+            "ownerId": 7
+        },
+        "13": {
+            "type": "button",
+            "id": 13,
+            "properties": {
+                "target": null,
+                "contents": null,
+                "enabled": true,
+                "id": 13,
+                "name": "Save",
+                "rectangle": "0, 0, 0, 0",
+                "script": "on click\n  saveHTML\nend click",
+                "editorOpen": true,
+                "events": [
+                    "mousedown",
+                    "mouseup",
+                    "mouseenter",
+                    "click",
+                    "dragstart",
+                    "dragend"
+                ],
+                "cssStyle": {
+                    "textAlign": "center",
+                    "fontFamily": "default",
+                    "backgroundColor": "rgba(255, 234, 149, 1)",
+                    "color": "rgba(0, 0, 0, 1)",
+                    "textStyle": "plain",
+                    "display": null,
+                    "top": "0px",
+                    "left": "0px",
+                    "opacity": 1,
+                    "horizontal-resizing": "rigid",
+                    "vertical-resizing": "rigid"
+                },
+                "number": -1,
+                "stepTime": 500,
+                "stepping": false,
+                "selectedText": null,
+                "background-transparency": 1,
+                "background-color": "rgba(255, 234, 149, 1)",
+                "transparency": 1,
+                "hide": false,
+                "width": null,
+                "height": null,
+                "top": "0",
+                "left": "0",
+                "rotate": null,
+                "horizontal-resizing": "rigid",
+                "vertical-resizing": "rigid",
+                "top-margin": null,
+                "right-margin": null,
+                "bottom-margin": null,
+                "left-margin": null,
+                "pinning-top": false,
+                "pinning-left": false,
+                "pinning-bottom": false,
+                "pinning-right": false,
+                "pinning": "",
+                "text-align": "center",
+                "text-font": "default",
+                "text-color": "rgba(0, 0, 0, 1)",
+                "text-transparency": 1,
+                "text-style": "plain"
+            },
+            "subparts": [],
+            "ownerId": 7
+        },
+        "14": {
+            "type": "button",
+            "id": 14,
+            "properties": {
+                "target": null,
+                "contents": null,
+                "enabled": true,
+                "id": 14,
+                "name": "Hand Recognition",
+                "rectangle": "0, 0, 0, 0",
+                "script": "on click\n\ttoggleHandDetection\nend click",
+                "editorOpen": false,
+                "events": [
+                    "mousedown",
+                    "mouseup",
+                    "mouseenter",
+                    "click",
+                    "dragstart",
+                    "dragend"
+                ],
+                "cssStyle": {
+                    "textAlign": "center",
+                    "fontFamily": "default",
+                    "backgroundColor": "rgba(255, 234, 149, 1)",
+                    "color": "rgba(0, 0, 0, 1)",
+                    "textStyle": "plain",
+                    "display": null,
+                    "top": "0px",
+                    "left": "0px",
+                    "opacity": 1
+                },
+                "number": -1,
+                "stepTime": 500,
+                "stepping": false,
+                "selectedText": null,
+                "background-transparency": 1,
+                "background-color": "rgba(255, 234, 149, 1)",
+                "transparency": 1,
+                "hide": false,
+                "width": null,
+                "height": null,
+                "top": "0",
+                "left": "0",
+                "rotate": null,
+                "horizontal-resizing": "rigid",
+                "vertical-resizing": "rigid",
+                "top-margin": null,
+                "right-margin": null,
+                "bottom-margin": null,
+                "left-margin": null,
+                "pinning-top": false,
+                "pinning-left": false,
+                "pinning-bottom": false,
+                "pinning-right": false,
+                "pinning": "",
+                "text-align": "center",
+                "text-font": "default",
+                "text-color": "rgba(0, 0, 0, 1)",
+                "text-transparency": 1,
+                "text-style": "plain"
+            },
+            "subparts": [],
+            "ownerId": 7
+        },
+        "15": {
+            "type": "button",
+            "id": 15,
+            "properties": {
+                "target": "third button of current card",
+                "contents": null,
+                "enabled": true,
+                "id": 15,
+                "name": "LiteralSpecifier",
+                "rectangle": "0, 0, 0, 0",
+                "script": "on click\n   setTargetTo \"third button of current card\"\n   answer the \"target\"\n   tell target of this button to set \"name\" to \"LiterallySpecified\"\nend click",
+                "editorOpen": true,
+                "events": [
+                    "mousedown",
+                    "mouseup",
+                    "mouseenter",
+                    "click",
+                    "dragstart",
+                    "dragend"
+                ],
+                "cssStyle": {
+                    "backgroundColor": "rgba(255, 234, 149, 1)",
+                    "opacity": 1,
+                    "display": null,
+                    "top": "536px",
+                    "left": "1489px",
+                    "horizontal-resizing": "rigid",
+                    "vertical-resizing": "rigid",
+                    "textAlign": "left",
+                    "fontFamily": "default",
+                    "color": "rgba(0, 0, 0, 1)",
+                    "textStyle": "plain"
+                },
+                "number": -1,
+                "stepTime": 500,
+                "stepping": false,
+                "selectedText": null,
+                "background-transparency": 1,
+                "background-color": "rgba(255, 234, 149, 1)",
+                "transparency": 1,
+                "hide": false,
+                "width": null,
+                "height": null,
+                "top": 536,
+                "left": 1489,
+                "rotate": null,
+                "horizontal-resizing": "rigid",
+                "vertical-resizing": "rigid",
+                "top-margin": null,
+                "right-margin": null,
+                "bottom-margin": null,
+                "left-margin": null,
+                "pinning-top": false,
+                "pinning-left": false,
+                "pinning-bottom": false,
+                "pinning-right": false,
+                "pinning": "",
+                "text-align": "left",
+                "text-font": "default",
+                "text-color": "rgba(0, 0, 0, 1)",
+                "text-transparency": 1,
+                "text-style": "plain"
+            },
+            "subparts": [],
+            "ownerId": 3
+        },
+        "21": {
+            "type": "button",
+            "id": 21,
+            "properties": {
+                "target": "22",
+                "contents": null,
+                "enabled": true,
+                "id": 21,
+                "name": "ObjectSpecifier",
+                "rectangle": "0, 0, 0, 0",
+                "script": "on click\n   setTargetTo third button of current card\n   answer the \"target\"\n   tell target of this button to set \"name\" to \"Object Specified\"\nend click",
+                "editorOpen": false,
+                "events": [
+                    "mousedown",
+                    "mouseup",
+                    "mouseenter",
+                    "click",
+                    "dragstart",
+                    "dragend"
+                ],
+                "cssStyle": {
+                    "backgroundColor": "rgba(255, 234, 149, 1)",
+                    "opacity": 1,
+                    "display": null,
+                    "top": "531px",
+                    "left": "681px",
+                    "horizontal-resizing": "rigid",
+                    "vertical-resizing": "rigid",
+                    "textAlign": "left",
+                    "fontFamily": "default",
+                    "color": "rgba(0, 0, 0, 1)",
+                    "textStyle": "plain"
+                },
+                "number": -1,
+                "stepTime": 500,
+                "stepping": false,
+                "selectedText": null,
+                "background-transparency": 1,
+                "background-color": "rgba(255, 234, 149, 1)",
+                "transparency": 1,
+                "hide": false,
+                "width": null,
+                "height": null,
+                "top": 531,
+                "left": 681,
+                "rotate": null,
+                "horizontal-resizing": "rigid",
+                "vertical-resizing": "rigid",
+                "top-margin": null,
+                "right-margin": null,
+                "bottom-margin": null,
+                "left-margin": null,
+                "pinning-top": false,
+                "pinning-left": false,
+                "pinning-bottom": false,
+                "pinning-right": false,
+                "pinning": "",
+                "text-align": "left",
+                "text-font": "default",
+                "text-color": "rgba(0, 0, 0, 1)",
+                "text-transparency": 1,
+                "text-style": "plain"
+            },
+            "subparts": [],
+            "ownerId": 3
+        },
+        "22": {
+            "type": "button",
+            "id": 22,
+            "properties": {
+                "target": null,
+                "contents": null,
+                "enabled": true,
+                "id": 22,
+                "name": "LiterallySpecified",
+                "rectangle": "0, 0, 0, 0",
+                "script": null,
+                "editorOpen": false,
+                "events": [
+                    "mousedown",
+                    "mouseup",
+                    "mouseenter",
+                    "click",
+                    "dragstart",
+                    "dragend"
+                ],
+                "cssStyle": {
+                    "backgroundColor": "rgba(73, 192, 255, 255)",
+                    "opacity": 1,
+                    "display": null,
+                    "top": "385px",
+                    "left": "1081px",
+                    "horizontal-resizing": "rigid",
+                    "vertical-resizing": "rigid",
+                    "textAlign": "left",
+                    "fontFamily": "default",
+                    "color": "rgba(0, 0, 0, 1)",
+                    "textStyle": "plain",
+                    "width": "159.8000030517578px",
+                    "height": "86px"
+                },
+                "number": -1,
+                "stepTime": 500,
+                "stepping": false,
+                "selectedText": null,
+                "background-transparency": 1,
+                "background-color": "rgba(73, 192, 255, 255)",
+                "transparency": 1,
+                "hide": false,
+                "width": "159.8000030517578px",
+                "height": "86px",
+                "top": 385,
+                "left": 1081,
+                "rotate": null,
+                "horizontal-resizing": "rigid",
+                "vertical-resizing": "rigid",
+                "top-margin": null,
+                "right-margin": null,
+                "bottom-margin": null,
+                "left-margin": null,
+                "pinning-top": false,
+                "pinning-left": false,
+                "pinning-bottom": false,
+                "pinning-right": false,
+                "pinning": "",
+                "text-align": "left",
+                "text-font": "default",
+                "text-color": "rgba(0, 0, 0, 1)",
+                "text-transparency": 1,
+                "text-style": "plain"
+            },
+            "subparts": [],
+            "ownerId": 3
+        },
+        "23": {
+            "type": "window",
+            "id": 23,
+            "properties": {
+                "target": null,
+                "contents": null,
+                "enabled": true,
+                "id": 23,
+                "name": "",
+                "rectangle": "0, 0, 0, 0",
+                "script": null,
+                "editorOpen": false,
+                "events": [],
+                "cssStyle": {
+                    "opacity": 1,
+                    "display": null,
+                    "top": "822px",
+                    "left": "1164px",
+                    "horizontal-resizing": "rigid",
+                    "vertical-resizing": "rigid"
+                },
+                "number": -1,
+                "stepTime": 500,
+                "stepping": false,
+                "targetId": 15,
+                "title": "Script: LiteralSpecifier(button[15])",
+                "isResizable": true,
+                "background-transparency": 1,
+                "background-color": null,
+                "transparency": 1,
+                "hide": false,
+                "width": null,
+                "height": null,
+                "top": 822,
+                "left": 1164,
+                "rotate": null,
+                "horizontal-resizing": "rigid",
+                "vertical-resizing": "rigid",
+                "top-margin": null,
+                "right-margin": null,
+                "bottom-margin": null,
+                "left-margin": null,
+                "pinning-top": false,
+                "pinning-left": false,
+                "pinning-bottom": false,
+                "pinning-right": false,
+                "pinning": ""
+            },
+            "subparts": [
+                24
+            ],
+            "ownerId": 1
+        },
+        "24": {
+            "type": "stack",
+            "id": 24,
+            "properties": {
+                "target": null,
+                "contents": null,
+                "enabled": true,
+                "id": 24,
+                "name": "",
+                "rectangle": "0, 0, 0, 0",
+                "script": null,
+                "editorOpen": false,
+                "events": [],
+                "cssStyle": {},
+                "number": -1,
+                "stepTime": 500,
+                "stepping": false,
+                "cantPeek": false,
+                "resizable": false
+            },
+            "subparts": [
+                25
+            ],
+            "ownerId": 23
+        },
+        "25": {
+            "type": "card",
+            "id": 25,
+            "properties": {
+                "target": null,
+                "contents": null,
+                "enabled": true,
+                "id": 25,
+                "name": "",
+                "rectangle": "0, 0, 0, 0",
+                "script": null,
+                "editorOpen": false,
+                "events": [
+                    "click",
+                    "dragenter",
+                    "dragover",
+                    "drop"
+                ],
+                "cssStyle": {
+                    "opacity": 1,
+                    "layout": "list",
+                    "list-direction": "column",
+                    "list-wrapping": false
+                },
+                "number": -1,
+                "stepTime": 500,
+                "stepping": false,
+                "marked": false,
+                "cantDelete": false,
+                "dontSearch": false,
+                "showPict": false,
+                "background-transparency": 1,
+                "background-color": null,
+                "transparency": 1,
+                "layout": "list",
+                "list-direction": "column",
+                "list-wrapping": false,
+                "top-padding": null,
+                "right-padding": null,
+                "bottom-padding": null,
+                "left-padding": null,
+                "list-alignment": null,
+                "list-distribution": null
+            },
+            "subparts": [
+                26,
+                27
+            ],
+            "ownerId": 24
+        },
+        "26": {
+            "type": "field",
+            "id": 26,
+            "properties": {
+                "target": null,
+                "contents": null,
+                "enabled": true,
+                "id": 26,
+                "name": "",
+                "rectangle": "0, 0, 0, 0",
+                "script": null,
+                "editorOpen": false,
+                "events": [],
+                "cssStyle": {
+                    "opacity": 1,
+                    "display": null,
+                    "top": "0px",
+                    "left": "0px",
+                    "horizontal-resizing": "space-fill",
+                    "vertical-resizing": "space-fill",
+                    "textAlign": "left",
+                    "fontFamily": "default",
+                    "color": "rgba(0, 0, 0, 1)",
+                    "textStyle": "plain"
+                },
+                "number": -1,
+                "stepTime": 500,
+                "stepping": false,
+                "mode": "editing",
+                "htmlContent": "<div><div>on click</div><div>   setTargetTo \"third button of current card\"</div><div>   answer the \"target\"</div><div>   tell target of this button to set \"name\" to \"LiterallySpecified\"</div><div>end click</div><br></div>",
+                "autoSelect": false,
+                "autoTab": false,
+                "lockText": false,
+                "showLines": false,
+                "dontWrap": false,
+                "multipleLines": false,
+                "scroll": 0,
+                "sharedText": false,
+                "wideMargins": false,
+                "background-transparency": 1,
+                "background-color": null,
+                "transparency": 1,
+                "hide": false,
+                "width": null,
+                "height": null,
+                "top": 0,
+                "left": 0,
+                "rotate": null,
+                "horizontal-resizing": "space-fill",
+                "vertical-resizing": "space-fill",
+                "top-margin": null,
+                "right-margin": null,
+                "bottom-margin": null,
+                "left-margin": null,
+                "pinning-top": false,
+                "pinning-left": false,
+                "pinning-bottom": false,
+                "pinning-right": false,
+                "pinning": "",
+                "text-align": "left",
+                "text-font": "default",
+                "text-color": "rgba(0, 0, 0, 1)",
+                "text-transparency": 1,
+                "text-style": "plain"
+            },
+            "subparts": [],
+            "ownerId": 25
+        },
+        "27": {
+            "type": "button",
+            "id": 27,
+            "properties": {
+                "target": null,
+                "contents": null,
+                "enabled": true,
+                "id": 27,
+                "name": "Save Script",
+                "rectangle": "0, 0, 0, 0",
+                "script": null,
+                "editorOpen": false,
+                "events": [
+                    "mousedown",
+                    "mouseup",
+                    "mouseenter",
+                    "click",
+                    "dragstart",
+                    "dragend"
+                ],
+                "cssStyle": {
+                    "backgroundColor": "rgba(255, 234, 149, 1)",
+                    "opacity": 1,
+                    "display": null,
+                    "top": "0px",
+                    "left": "0px",
+                    "horizontal-resizing": "rigid",
+                    "vertical-resizing": "rigid",
+                    "textAlign": "left",
+                    "fontFamily": "default",
+                    "color": "rgba(0, 0, 0, 1)",
+                    "textStyle": "plain"
+                },
+                "number": -1,
+                "stepTime": 500,
+                "stepping": false,
+                "selectedText": null,
+                "background-transparency": 1,
+                "background-color": "rgba(255, 234, 149, 1)",
+                "transparency": 1,
+                "hide": false,
+                "width": null,
+                "height": null,
+                "top": 0,
+                "left": 0,
+                "rotate": null,
+                "horizontal-resizing": "rigid",
+                "vertical-resizing": "rigid",
+                "top-margin": null,
+                "right-margin": null,
+                "bottom-margin": null,
+                "left-margin": null,
+                "pinning-top": false,
+                "pinning-left": false,
+                "pinning-bottom": false,
+                "pinning-right": false,
+                "pinning": "",
+                "text-align": "left",
+                "text-font": "default",
+                "text-color": "rgba(0, 0, 0, 1)",
+                "text-transparency": 1,
+                "text-style": "plain"
+            },
+            "subparts": [],
+            "ownerId": 25
+        },
+        "28": {
+            "type": "window",
+            "id": 28,
+            "properties": {
+                "target": null,
+                "contents": null,
+                "enabled": true,
+                "id": 28,
+                "name": "",
+                "rectangle": "0, 0, 0, 0",
+                "script": null,
+                "editorOpen": false,
+                "events": [],
+                "cssStyle": {
+                    "opacity": 1,
+                    "display": null,
+                    "top": "2481px",
+                    "left": "2089px",
+                    "horizontal-resizing": "rigid",
+                    "vertical-resizing": "rigid"
+                },
+                "number": -1,
+                "stepTime": 500,
+                "stepping": false,
+                "targetId": 21,
+                "title": "Script: ObjectSpecifier(button[21])",
+                "isResizable": true,
+                "background-transparency": 1,
+                "background-color": null,
+                "transparency": 1,
+                "hide": false,
+                "width": null,
+                "height": null,
+                "top": 2481,
+                "left": 2089,
+                "rotate": null,
+                "horizontal-resizing": "rigid",
+                "vertical-resizing": "rigid",
+                "top-margin": null,
+                "right-margin": null,
+                "bottom-margin": null,
+                "left-margin": null,
+                "pinning-top": false,
+                "pinning-left": false,
+                "pinning-bottom": false,
+                "pinning-right": false,
+                "pinning": ""
+            },
+            "subparts": [
+                29
+            ],
+            "ownerId": 1
+        },
+        "29": {
+            "type": "stack",
+            "id": 29,
+            "properties": {
+                "target": null,
+                "contents": null,
+                "enabled": true,
+                "id": 29,
+                "name": "",
+                "rectangle": "0, 0, 0, 0",
+                "script": null,
+                "editorOpen": false,
+                "events": [],
+                "cssStyle": {},
+                "number": -1,
+                "stepTime": 500,
+                "stepping": false,
+                "cantPeek": false,
+                "resizable": false
+            },
+            "subparts": [
+                30
+            ],
+            "ownerId": 28
+        },
+        "30": {
+            "type": "card",
+            "id": 30,
+            "properties": {
+                "target": null,
+                "contents": null,
+                "enabled": true,
+                "id": 30,
+                "name": "",
+                "rectangle": "0, 0, 0, 0",
+                "script": null,
+                "editorOpen": false,
+                "events": [
+                    "click",
+                    "dragenter",
+                    "dragover",
+                    "drop"
+                ],
+                "cssStyle": {
+                    "opacity": 1,
+                    "layout": "list",
+                    "list-direction": "column",
+                    "list-wrapping": false
+                },
+                "number": -1,
+                "stepTime": 500,
+                "stepping": false,
+                "marked": false,
+                "cantDelete": false,
+                "dontSearch": false,
+                "showPict": false,
+                "background-transparency": 1,
+                "background-color": null,
+                "transparency": 1,
+                "layout": "list",
+                "list-direction": "column",
+                "list-wrapping": false,
+                "top-padding": null,
+                "right-padding": null,
+                "bottom-padding": null,
+                "left-padding": null,
+                "list-alignment": null,
+                "list-distribution": null
+            },
+            "subparts": [
+                31,
+                32
+            ],
+            "ownerId": 29
+        },
+        "31": {
+            "type": "field",
+            "id": 31,
+            "properties": {
+                "target": null,
+                "contents": null,
+                "enabled": true,
+                "id": 31,
+                "name": "",
+                "rectangle": "0, 0, 0, 0",
+                "script": null,
+                "editorOpen": false,
+                "events": [],
+                "cssStyle": {
+                    "opacity": 1,
+                    "display": null,
+                    "top": "0px",
+                    "left": "0px",
+                    "horizontal-resizing": "space-fill",
+                    "vertical-resizing": "space-fill",
+                    "textAlign": "left",
+                    "fontFamily": "default",
+                    "color": "rgba(0, 0, 0, 1)",
+                    "textStyle": "plain"
+                },
+                "number": -1,
+                "stepTime": 500,
+                "stepping": false,
+                "mode": "editing",
+                "htmlContent": "",
+                "autoSelect": false,
+                "autoTab": false,
+                "lockText": false,
+                "showLines": false,
+                "dontWrap": false,
+                "multipleLines": false,
+                "scroll": 0,
+                "sharedText": false,
+                "wideMargins": false,
+                "background-transparency": 1,
+                "background-color": null,
+                "transparency": 1,
+                "hide": false,
+                "width": null,
+                "height": null,
+                "top": 0,
+                "left": 0,
+                "rotate": null,
+                "horizontal-resizing": "space-fill",
+                "vertical-resizing": "space-fill",
+                "top-margin": null,
+                "right-margin": null,
+                "bottom-margin": null,
+                "left-margin": null,
+                "pinning-top": false,
+                "pinning-left": false,
+                "pinning-bottom": false,
+                "pinning-right": false,
+                "pinning": "",
+                "text-align": "left",
+                "text-font": "default",
+                "text-color": "rgba(0, 0, 0, 1)",
+                "text-transparency": 1,
+                "text-style": "plain"
+            },
+            "subparts": [],
+            "ownerId": 30
+        },
+        "32": {
+            "type": "button",
+            "id": 32,
+            "properties": {
+                "target": null,
+                "contents": null,
+                "enabled": true,
+                "id": 32,
+                "name": "Save Script",
+                "rectangle": "0, 0, 0, 0",
+                "script": null,
+                "editorOpen": false,
+                "events": [
+                    "mousedown",
+                    "mouseup",
+                    "mouseenter",
+                    "click",
+                    "dragstart",
+                    "dragend"
+                ],
+                "cssStyle": {
+                    "backgroundColor": "rgba(255, 234, 149, 1)",
+                    "opacity": 1,
+                    "display": null,
+                    "top": "0px",
+                    "left": "0px",
+                    "horizontal-resizing": "rigid",
+                    "vertical-resizing": "rigid",
+                    "textAlign": "left",
+                    "fontFamily": "default",
+                    "color": "rgba(0, 0, 0, 1)",
+                    "textStyle": "plain"
+                },
+                "number": -1,
+                "stepTime": 500,
+                "stepping": false,
+                "selectedText": null,
+                "background-transparency": 1,
+                "background-color": "rgba(255, 234, 149, 1)",
+                "transparency": 1,
+                "hide": false,
+                "width": null,
+                "height": null,
+                "top": 0,
+                "left": 0,
+                "rotate": null,
+                "horizontal-resizing": "rigid",
+                "vertical-resizing": "rigid",
+                "top-margin": null,
+                "right-margin": null,
+                "bottom-margin": null,
+                "left-margin": null,
+                "pinning-top": false,
+                "pinning-left": false,
+                "pinning-bottom": false,
+                "pinning-right": false,
+                "pinning": "",
+                "text-align": "left",
+                "text-font": "default",
+                "text-color": "rgba(0, 0, 0, 1)",
+                "text-transparency": 1,
+                "text-style": "plain"
+            },
+            "subparts": [],
+            "ownerId": 30
+        },
+        "33": {
+            "type": "window",
+            "id": 33,
+            "properties": {
+                "target": null,
+                "contents": null,
+                "enabled": true,
+                "id": 33,
+                "name": "",
+                "rectangle": "0, 0, 0, 0",
+                "script": null,
+                "editorOpen": false,
+                "events": [],
+                "cssStyle": {
+                    "opacity": 1,
+                    "display": null,
+                    "top": "820px",
+                    "left": "189px",
+                    "horizontal-resizing": "rigid",
+                    "vertical-resizing": "rigid"
+                },
+                "number": -1,
+                "stepTime": 500,
+                "stepping": false,
+                "targetId": 21,
+                "title": "Script: ObjectSpecifier(button[21])",
+                "isResizable": true,
+                "background-transparency": 1,
+                "background-color": null,
+                "transparency": 1,
+                "hide": false,
+                "width": null,
+                "height": null,
+                "top": 820,
+                "left": 189,
+                "rotate": null,
+                "horizontal-resizing": "rigid",
+                "vertical-resizing": "rigid",
+                "top-margin": null,
+                "right-margin": null,
+                "bottom-margin": null,
+                "left-margin": null,
+                "pinning-top": false,
+                "pinning-left": false,
+                "pinning-bottom": false,
+                "pinning-right": false,
+                "pinning": ""
+            },
+            "subparts": [
+                34
+            ],
+            "ownerId": 1
+        },
+        "34": {
+            "type": "stack",
+            "id": 34,
+            "properties": {
+                "target": null,
+                "contents": null,
+                "enabled": true,
+                "id": 34,
+                "name": "",
+                "rectangle": "0, 0, 0, 0",
+                "script": null,
+                "editorOpen": false,
+                "events": [],
+                "cssStyle": {},
+                "number": -1,
+                "stepTime": 500,
+                "stepping": false,
+                "cantPeek": false,
+                "resizable": false
+            },
+            "subparts": [
+                35
+            ],
+            "ownerId": 33
+        },
+        "35": {
+            "type": "card",
+            "id": 35,
+            "properties": {
+                "target": null,
+                "contents": null,
+                "enabled": true,
+                "id": 35,
+                "name": "",
+                "rectangle": "0, 0, 0, 0",
+                "script": null,
+                "editorOpen": false,
+                "events": [
+                    "click",
+                    "dragenter",
+                    "dragover",
+                    "drop"
+                ],
+                "cssStyle": {
+                    "opacity": 1,
+                    "layout": "list",
+                    "list-direction": "column",
+                    "list-wrapping": false
+                },
+                "number": -1,
+                "stepTime": 500,
+                "stepping": false,
+                "marked": false,
+                "cantDelete": false,
+                "dontSearch": false,
+                "showPict": false,
+                "background-transparency": 1,
+                "background-color": null,
+                "transparency": 1,
+                "layout": "list",
+                "list-direction": "column",
+                "list-wrapping": false,
+                "top-padding": null,
+                "right-padding": null,
+                "bottom-padding": null,
+                "left-padding": null,
+                "list-alignment": null,
+                "list-distribution": null
+            },
+            "subparts": [
+                36,
+                37
+            ],
+            "ownerId": 34
+        },
+        "36": {
+            "type": "field",
+            "id": 36,
+            "properties": {
+                "target": null,
+                "contents": null,
+                "enabled": true,
+                "id": 36,
+                "name": "",
+                "rectangle": "0, 0, 0, 0",
+                "script": null,
+                "editorOpen": false,
+                "events": [],
+                "cssStyle": {
+                    "opacity": 1,
+                    "display": null,
+                    "top": "0px",
+                    "left": "0px",
+                    "horizontal-resizing": "space-fill",
+                    "vertical-resizing": "space-fill",
+                    "textAlign": "left",
+                    "fontFamily": "default",
+                    "color": "rgba(0, 0, 0, 1)",
+                    "textStyle": "plain"
+                },
+                "number": -1,
+                "stepTime": 500,
+                "stepping": false,
+                "mode": "editing",
+                "htmlContent": "<div><div>on click</div><div>   setTargetTo third button of current card</div><div>   answer the \"target\"</div><div>   tell target of this button to set \"name\" to \"Object Specified\"<br></div><div>end click</div><br></div>",
+                "autoSelect": false,
+                "autoTab": false,
+                "lockText": false,
+                "showLines": false,
+                "dontWrap": false,
+                "multipleLines": false,
+                "scroll": 0,
+                "sharedText": false,
+                "wideMargins": false,
+                "background-transparency": 1,
+                "background-color": null,
+                "transparency": 1,
+                "hide": false,
+                "width": null,
+                "height": null,
+                "top": 0,
+                "left": 0,
+                "rotate": null,
+                "horizontal-resizing": "space-fill",
+                "vertical-resizing": "space-fill",
+                "top-margin": null,
+                "right-margin": null,
+                "bottom-margin": null,
+                "left-margin": null,
+                "pinning-top": false,
+                "pinning-left": false,
+                "pinning-bottom": false,
+                "pinning-right": false,
+                "pinning": "",
+                "text-align": "left",
+                "text-font": "default",
+                "text-color": "rgba(0, 0, 0, 1)",
+                "text-transparency": 1,
+                "text-style": "plain"
+            },
+            "subparts": [],
+            "ownerId": 35
+        },
+        "37": {
+            "type": "button",
+            "id": 37,
+            "properties": {
+                "target": null,
+                "contents": null,
+                "enabled": true,
+                "id": 37,
+                "name": "Save Script",
+                "rectangle": "0, 0, 0, 0",
+                "script": null,
+                "editorOpen": false,
+                "events": [
+                    "mousedown",
+                    "mouseup",
+                    "mouseenter",
+                    "click",
+                    "dragstart",
+                    "dragend"
+                ],
+                "cssStyle": {
+                    "backgroundColor": "rgba(255, 234, 149, 1)",
+                    "opacity": 1,
+                    "display": null,
+                    "top": "0px",
+                    "left": "0px",
+                    "horizontal-resizing": "rigid",
+                    "vertical-resizing": "rigid",
+                    "textAlign": "left",
+                    "fontFamily": "default",
+                    "color": "rgba(0, 0, 0, 1)",
+                    "textStyle": "plain"
+                },
+                "number": -1,
+                "stepTime": 500,
+                "stepping": false,
+                "selectedText": null,
+                "background-transparency": 1,
+                "background-color": "rgba(255, 234, 149, 1)",
+                "transparency": 1,
+                "hide": false,
+                "width": null,
+                "height": null,
+                "top": 0,
+                "left": 0,
+                "rotate": null,
+                "horizontal-resizing": "rigid",
+                "vertical-resizing": "rigid",
+                "top-margin": null,
+                "right-margin": null,
+                "bottom-margin": null,
+                "left-margin": null,
+                "pinning-top": false,
+                "pinning-left": false,
+                "pinning-bottom": false,
+                "pinning-right": false,
+                "pinning": "",
+                "text-align": "left",
+                "text-font": "default",
+                "text-color": "rgba(0, 0, 0, 1)",
+                "text-transparency": 1,
+                "text-style": "plain"
+            },
+            "subparts": [],
+            "ownerId": 35
+        },
+        "world": {
+            "type": "world",
+            "id": "world",
+            "properties": [],
+            "subparts": [
+                1
+            ],
+            "ownerId": null,
+            "loadedStacks": [
+                1
+            ],
+            "currentStack": null
+        }
+    },
+    "currentCardId": 3,
+    "currentStackId": 1
+}</script>
+
+</body></html>

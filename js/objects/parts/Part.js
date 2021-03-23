@@ -4,7 +4,10 @@
  * I represent the prototype object for all
  * SimpleTalk parts.
  */
-import idMaker from '../utils/idMaker.js';
+import {
+    idMaker,
+    isValidId
+} from '../utils/id.js';
 import errorHandler from '../utils/errorHandler.js';
 import {
     PartProperties,
@@ -13,6 +16,7 @@ import {
 } from '../properties/PartProperties.js';
 
 import {ActivationContext} from '../ExecutionStack.js';
+
 
 class Part {
     constructor(anOwnerPart, name, deserializing=false){
@@ -236,15 +240,14 @@ class Part {
             'target',
             function(propOwner, propObject, val){
                 // check to see if the target is a non-ID
-                if(val == null){
-                    propObject._value = null;
-                } else if(val.match(/(?!\d)/g).length > 1){
-                    propObject._value = val;
-                } else {
+                let id = isValidId(val);
+                if(id){
                     // if it is an ID insert "part" since our
                     // grammar doesn't handle ID without system object
                     // prefixes
                     propObject._value = `part id ${val}`;
+                } else {
+                    propObject._value = val;
                 }
             },
             function(propOwner, propObject){

@@ -1,3 +1,5 @@
+// ID related utilities
+
 /**
  * ID Maker
  * ------------------------------------
@@ -21,7 +23,30 @@ const idMaker = {
     }
 };
 
+/* ID checker
+ * --------------------------------------
+ * I am responsible for checking whether an id is
+ * is valid and returning it if so
+ */
+const isValidId = function(id) {
+    if(id === null || id === undefined || id === ""){
+        return false;
+    }
+    if(Number.isInteger(id) && id >= 0){
+        return id;
+    }
+    id = id.toString();
+    // check to see if the id has any non [0-9]
+    // characters
+    if(id.match(/(?!\d)/g).length > 1){
+        return false;
+
+    }
+    return id;
+};
+
 export {
     idMaker,
+    isValidId,
     idMaker as default
 };

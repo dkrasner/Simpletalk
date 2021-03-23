@@ -38,7 +38,7 @@ import ohm from 'ohm-js';
 import interpreterSemantics from '../ohm/interpreter-semantics.js';
 import {ExecutionStack, ActivationContext} from './ExecutionStack.js';
 
-import idMaker from './utils/idMaker.js';
+import idMaker from './utils/id.js';
 
 import handInterface from './utils/handInterface.js';
 
