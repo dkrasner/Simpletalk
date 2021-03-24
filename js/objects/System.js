@@ -92,6 +92,27 @@ const System = {
         // By this point we should have a WorldView with
         // a model attached.
         this.isLoaded = true;
+
+        // Send the openWorld message to the WorldStack
+        let world = this.partsById['world'];
+        world.sendMessage({
+            type: 'command',
+            commandName: 'openWorld',
+            args: [],
+            shouldIgnore: true
+        }, world);
+        world.sendMessage({
+            type: 'command',
+            commandName: 'openStack',
+            args: [],
+            shouldIgnore: true
+        }, world.currentStack);
+        world.currentStack.sendMessage({
+            type: 'command',
+            commandName: 'openCard',
+            args: [],
+            shouldIgnore: true
+        }, world.currentStack.currentCard);
     },
 
     loadFromWorldView: function(aWorldView){
