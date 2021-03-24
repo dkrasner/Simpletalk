@@ -65,6 +65,8 @@ class Part {
         this.deleteModelCmdHandler = this.deleteModelCmdHandler.bind(this);
         this.openEditorCmdHandler = this.openEditorCmdHandler.bind(this);
         this.closeEditorCmdHandler = this.closeEditorCmdHandler.bind(this);
+        this.copyCmdHandler = this.copyCmdHandler.bind(this);
+        this.pasteCmdHandler = this.pasteCmdHandler.bind(this);
         this.isSubpartOfCurrentCard = this.isSubpartOfCurrentCard.bind(this);
         this.isSubpartOfCurrentStack = this.isSubpartOfCurrentStack.bind(this);
         this.getOwnerBranch = this.getOwnerBranch.bind(this);
@@ -82,6 +84,8 @@ class Part {
         this.setPrivateCommandHandler("openEditor", this.openEditorCmdHandler);
         this.setPrivateCommandHandler("closeEditor", this.closeEditorCmdHandler);
         this.setPrivateCommandHandler("setTargetTo", this.setTargetProp);
+        this.setPrivateCommandHandler("copy", this.copyCmdHandler);
+        this.setPrivateCommandHandler("paste", this.pasteCmdHandler);
     }
 
     // Convenience getter to get the id
@@ -503,6 +507,19 @@ class Part {
     setTargetProp(senders, ...args){
         let target = args.join(" ");
         this.partProperties.setPropertyNamed(this, "target", target);
+    }
+
+    copyCmdHandler(){
+        window.System.clipboard.copyPart(this);
+    }
+
+    pasteCmdHandler(){
+        if(!window.System.clipboard.isEmpty){
+            let item = window.System.clipbord.contents[0];
+            if(item.type == 'simpletalk/json' && this.acceptsSubpart(item.partType)){
+                window.System.clipboard.pasteContentsInto(this);
+            }
+        }
     }
 
     /** Property Subscribers

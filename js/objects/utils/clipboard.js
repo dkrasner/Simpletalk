@@ -25,7 +25,8 @@ class STClipboard {
         this._recursivelySerialize(aPart, rootSerialization);
         let item = new STClipboardItem(
             'simpletalk/json',
-            JSON.stringify(rootSerialization)
+            JSON.stringify(rootSerialization),
+            aPart.type
         );
         this.contents = [item];
     }
@@ -122,16 +123,34 @@ class STClipboard {
             this._recursivelyUpdateIds(subpart, aDeserialization);
         });
     }
+
+    get isEmpty(){
+        return this.contents.length > 0;
+    }
 }
 
 class STClipboardItem {
-    constructor(mimeType, data){
+    constructor(mimeType, data, partType){
         if(mimeType){
             this.type = mimeType;
+        }
+        if(partType){
+            this._partType = partType;
         }
         if(data){
             this.data = data;
         }
+    }
+
+    get partType(){
+        if(this.type == 'simpletalk/json'){
+            return this._partType;
+        }
+        return null;
+    }
+
+    set partType(val){
+        this._partType = val;
     }
 };
 
