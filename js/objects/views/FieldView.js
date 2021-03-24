@@ -9,6 +9,7 @@
  */
 import PartView from './PartView.js';
 import ColorWheelWidget from './drawing/ColorWheelWidget.js';
+import interpreterSemantics from '../../ohm/interpreter-semantics.js';
 
 const haloEditButtonSVG = `
 <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-tools" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
@@ -105,6 +106,7 @@ class FieldView extends PartView {
         this.simpleTalkCompleter = this.simpleTalkCompleter.bind(this);
         this.initCustomHaloButtons = this.initCustomHaloButtons.bind(this);
         this.insertRange = this.insertRange.bind(this);
+        this.setRangeInTarget = this.setRangeInTarget.bind(this);
 
         this.setupPropHandlers();
     }
@@ -123,7 +125,7 @@ class FieldView extends PartView {
         // 'text' is a DynamicProp whose setter will set the corresponding
         // value for `innerHTML`. This way we can have programmatic content
         // setting and still allow to not loose markup.
-        // 'innerHTML' is not a BasicProp. See how these are set, without
+        // 'innerHTML' is a BasicProp. See how these are set, without
         // notification in this.onInput()
         this.onPropChange('text', (value, id) => {
             this.textarea.textContent = value;
@@ -276,16 +278,7 @@ class FieldView extends PartView {
         // if there is a target and range set then send the target an update message
         let target = this.model.partProperties.getPropertyNamed(this.model, 'target');
         if(target){
-            let targetRangeId = this.model.partProperties.getPropertyNamed(this.model, 'targetRangeId');
-            // TODO this is a total hack wtf
-            let targetId = target.split(" ")[2];
-            this.model.sendMessage({
-                type: "command",
-                commandName: "insertRange",
-                args: [targetRangeId, event.target.innerHTML]
-            }, window.System.partsById[targetId]);
-            console.log(`sending message to set range ${targetRangeId} in ${target}`);
-            console.log(event.target.innerHTML);
+            this.setRangeInTarget(target, event.target.innerHTML);
         }
     }
 
@@ -386,13 +379,52 @@ class FieldView extends PartView {
         this.contextMenuOpen = true;
     };
 
-    insertRange(rangeId, html){
+    /**
+      * Given a tagrget specifier and html
+      * I first look up to make sure that the target has the corresponding
+      * range (coming from the targetRangeId property), and then set it with my
+      * innerHTML. Note, since the target property value is an object specifier I
+      * create a semantics objects and interpret the value resulting in a valid
+      * part id.
+      */
+    setRangeInTarget(targetSpecifier, html){
+        let targetRangeId = this.model.partProperties.getPropertyNamed(this.model, 'targetRangeId');
+        let match = window.System.grammar.match(targetSpecifier, "ObjectSpecifier");
+        let semantics = window.System.grammar.createSemantics();
+        semantics.addOperation('interpret', interpreterSemantics(this.model, window.System));
+        let targetId = semantics(match).interpret();
+
+        this.model.sendMessage({
+            type: "command",
+            commandName: "insertRange",
+            args: [targetRangeId, html]
+        }, window.System.partsById[targetId]);
+    }
+
+    /*
+     * I insert the html (string) into the specified range (by id)
+     */
+     insertRange(rangeId, html){
         let range = this.selectionRanges[rangeId];
         if(range){
             let span = document.createElement('span');
             span.innerHTML = html;
             range.deleteContents();
             range.insertNode(span);
+            // update the text and innerHTML properties without notification
+            // to prevent unnecessary setting of the text/html
+            this.model.partProperties.setPropertyNamed(
+                this.model,
+                'text',
+                this.textarea.innerText,
+                false // do not notify, to preserve contenteditable context
+            );
+            this.model.partProperties.setPropertyNamed(
+                this.model,
+                'innerHTML',
+                this.textarea.innerHTML,
+                false // do not notify
+            );
         }
     }
 

@@ -58,7 +58,9 @@ class Field extends Part {
             'text',
             (owner, prop, value, notify) => {
                 prop._value = value;
-                owner.partProperties.setPropertyNamed(owner, 'innerHTML', value, notify);
+                if(notify){
+                    owner.partProperties.setPropertyNamed(owner, 'innerHTML', value, notify);
+                }
             },
             (owner, prop) => {
                 return prop._value;

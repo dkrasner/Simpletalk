@@ -27,7 +27,7 @@ describe('Field Part/Model Tests', () =>{
 });
 
 let fieldView;
-describe('FieldView tests', () => {
+describe('FieldView basic tests', () => {
     before('', () => {
         let text = "some text";
         fieldModel.partProperties.setPropertyNamed(
@@ -140,5 +140,98 @@ describe('FieldView tests', () => {
             'text'
         );
         assert.equal(newTextContent, foundTextContent);
+    });
+});
+
+class MockRange {
+    constructor(){
+        this.node = null;
+    }
+
+    selectNode(node){
+        this.node = node;
+    }
+
+    insertNode(newNode){
+        this.node.appendChild(newNode);
+    }
+
+    deleteContents(){
+        this.node.innerHTML = '';
+    }
+
+
+}
+
+describe('FieldView Target Range tests', () => {
+    let range = null;
+    let line1HTML = "<div>line1</div>";
+    let line2HTML = "<div>line2</div>";
+    before('Set up a range for testing', () => {
+        let html = line1HTML + line2HTML;
+        fieldModel.partProperties.setPropertyNamed(
+            fieldModel,
+            'innerHTML',
+            html
+        );
+        assert.exists(fieldView);
+        // NOTE: b/c of JSDON weirdness we need to update the innerText manually
+        fieldView.textarea.innerText = "line1\nline2";
+        // create a range and set it to the first child of the textarea
+        let firstChild = fieldView.textarea.children[0];
+        range = new MockRange();
+        range.selectNode(firstChild);
+        assert.equal(firstChild.innerHTML, range.node.innerHTML);
+        // set the range as a selectedRange in the field view
+        fieldView.selectionRanges['rangeUID'] = range;
+
+    });
+    it('Inserting Range (basic) updates the textarea', () => {
+        let newHTML = "<div><span style='color: red'>new line </span></div>";
+        // NOTE: b/c of JSDON weirdness we need to update the innerText manually
+        fieldView.textarea.innerText = "new line\nline2";
+        fieldView.insertRange('rangeUID', newHTML);
+        let expectedHTML = '<div><span><div><span style="color: red">new line </span></div></span></div>' + line2HTML;
+        assert.equal(expectedHTML, fieldView.textarea.innerHTML);
+    });
+    it('Inserting Range (basic) updates the "text" and "innerHTML" part properties', () => {
+        let expectedHTML = '<div><span><div><span style="color: red">new line </span></div></span></div>' + line2HTML;
+        let innerHTML = fieldModel.partProperties.getPropertyNamed(fieldModel, 'innerHTML');
+        assert.equal(expectedHTML, innerHTML);
+        let expectedText = "new line\nline2";
+        let text = fieldModel.partProperties.getPropertyNamed(fieldModel, 'text');
+        assert.equal(expectedText, text);
+    });
+    it.skip('Inserting Range (with target)', () => {
+        // reset everything first
+        let html = line1HTML + line2HTML;
+        // NOTE: b/c of JSDON weirdness we need to update the innerText manually
+        fieldView.textarea.innerText = "line1\nline2";
+        fieldModel.partProperties.setPropertyNamed(
+            fieldModel,
+            'innerHTML',
+            html
+        );
+        assert.equal(html, fieldView.textarea.innerHTML);
+        assert.equal("line1\nline2", fieldModel.partProperties.getPropertyNamed(fieldModel, 'text'));
+        // create a range and set it to the first child of the textarea
+        let firstChild = fieldView.textarea.children[0];
+        range = new MockRange();
+        range.selectNode(firstChild);
+        // set the range as a selectedRange in the field view
+        fieldView.selectionRanges['rangeUID'] = range;
+
+        // Note: here the fieldView will be its own target
+        // set the range ID
+        fieldModel.partProperties.setPropertyNamed(
+            fieldModel,
+            'targetRangeId',
+            "rangeUID"
+        );
+
+        let newHTML = "<div><span style='color: red'>new line </span></div>";
+        let target = `field id ${fieldModel.id}`;
+        console.log(target);
+        fieldView.setRangeInTarget(target, newHTML);
     });
 });
