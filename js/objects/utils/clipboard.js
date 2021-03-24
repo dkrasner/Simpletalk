@@ -50,6 +50,19 @@ class STClipboard {
                 let copiedPart = window.System.partsById[deserialization.properties.id];
                 this._recursivelyRecompile(copiedPart);
 
+                // Reset the top and left values so that the
+                // pasted part doesn't run outside of new relative bounds
+                copiedPart.partProperties.setPropertyNamed(
+                    copiedPart,
+                    'top',
+                    10
+                );
+                copiedPart.partProperties.setPropertyNamed(
+                    copiedPart,
+                    'left',
+                    10
+                );
+
                 // Open a halo on the resulting part
                 let copiedView = document.querySelector(`[part-id="${deserialization.properties.id}"]`);
                 copiedView.openHalo();
