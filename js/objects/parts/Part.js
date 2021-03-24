@@ -515,7 +515,7 @@ class Part {
 
     pasteCmdHandler(){
         if(!window.System.clipboard.isEmpty){
-            let item = window.System.clipbord.contents[0];
+            let item = window.System.clipboard.contents[0];
             if(item.type == 'simpletalk/json' && this.acceptsSubpart(item.partType)){
                 window.System.clipboard.pasteContentsInto(this);
             }

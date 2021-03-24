@@ -5,7 +5,7 @@
  * since the Clipboard API is not standardized across
  * browser implementations.
  **/
-import idMaker from './idMaker.js';
+import idMaker from './id.js';
 class STClipboard {
     constructor(aSystem){
         this.system = aSystem;
@@ -125,7 +125,7 @@ class STClipboard {
     }
 
     get isEmpty(){
-        return this.contents.length > 0;
+        return this.contents.length <= 0;
     }
 }
 
