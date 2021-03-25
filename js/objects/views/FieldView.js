@@ -208,6 +208,34 @@ class FieldView extends PartView {
     }
 
     /*
+     * I override my base-class's implementation to handle target related functionality
+     * Note for text and color related properties we style the textarea instead of the
+     * the top st element.
+     */
+    styleCSS(){
+        let textarea = this._shadowRoot.querySelector('.field-textarea');
+        let cssStyle = this.model.partProperties.getPropertyNamed(this, "cssStyle");
+        Object.keys(cssStyle).forEach((key) => {
+            let value = cssStyle[key];
+            if(key.startsWith("text") || key.startsWith("font") || key.endsWith("olor") || key == "opacity"){
+                textarea.style[key] = value;
+            }
+            this.style[key] = value;
+        });
+        // if there is a target and range set then send the target an update message
+        let target = this.model.partProperties.getPropertyNamed(this.model, 'target');
+        if(target){
+            let span = document.createElement('span');
+            span.innerHTML = this.textarea.innerHTML;
+            Array.from(this.textarea.style).forEach((key) => {
+                span.style[key] = this.textarea.style[key];
+            });
+            this.setRangeInTarget(target, span.outerHTML);
+        }
+    }
+
+
+    /*
      * I convert raw text to html respecting the Firefox
      * contenteditable attribute guidelnes.
      * This means that single lins of text are left as is;
@@ -321,7 +349,6 @@ class FieldView extends PartView {
                     // clear all the selections
                     this.selectionRanges = {};
                 }
-                console.log(this.selectionRanges);
             }
         }
     }

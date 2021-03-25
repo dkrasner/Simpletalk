@@ -55,7 +55,6 @@ const cssStyler = (styleObj, propertyName, propertyValue) => {
         }
         break;
 
-
     case "text-underline":
         if(propertyValue === true){
             _setOrNot(styleObj, "textDecoration",  "underline");

@@ -155,12 +155,12 @@ const templateString = `
     <div class="editor-icons">
         ${boldIcon}
         ${italicIcon}
+        ${textColorIcon}
+        ${backgroundColorIcon}
         ${justifyLeftIcon}
         ${justifyCenterIcon}
         ${justifyRightIcon}
         ${scriptIcon}
-        ${textColorIcon}
-        ${backgroundColorIcon}
     </div>
 </div>
 `;
