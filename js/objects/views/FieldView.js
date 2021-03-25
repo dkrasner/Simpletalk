@@ -209,28 +209,18 @@ class FieldView extends PartView {
 
     /*
      * I override my base-class's implementation to handle target related functionality
-     * Note for text and color related properties we style the textarea instead of the
-     * the top st element.
      */
-    styleCSS(){
+    styleTextCSS(){
         let textarea = this._shadowRoot.querySelector('.field-textarea');
-        let cssStyle = this.model.partProperties.getPropertyNamed(this, "cssStyle");
+        let cssStyle = this.model.partProperties.getPropertyNamed(this, "cssTextStyle");
         Object.keys(cssStyle).forEach((key) => {
             let value = cssStyle[key];
-            if(key.startsWith("text") || key.startsWith("font") || key.endsWith("olor") || key == "opacity"){
-                textarea.style[key] = value;
-            }
-            this.style[key] = value;
+            textarea.style[key] = value;
         });
         // if there is a target and range set then send the target an update message
         let target = this.model.partProperties.getPropertyNamed(this.model, 'target');
         if(target){
-            let span = document.createElement('span');
-            span.innerHTML = this.textarea.innerHTML;
-            Array.from(this.textarea.style).forEach((key) => {
-                span.style[key] = this.textarea.style[key];
-            });
-            this.setRangeInTarget(target, span.outerHTML);
+            this.setRangeInTarget(target, this.textarea.innerHTML, cssStyle);
         }
     }
 
@@ -414,7 +404,7 @@ class FieldView extends PartView {
       * create a semantics objects and interpret the value resulting in a valid
       * part id.
       */
-    setRangeInTarget(targetSpecifier, html){
+    setRangeInTarget(targetSpecifier, html, css){
         let targetRangeId = this.model.partProperties.getPropertyNamed(this.model, 'targetRangeId');
         let match = window.System.grammar.match(targetSpecifier, "ObjectSpecifier");
         let semantics = window.System.grammar.createSemantics();
@@ -424,18 +414,24 @@ class FieldView extends PartView {
         this.model.sendMessage({
             type: "command",
             commandName: "insertRange",
-            args: [targetRangeId, html]
+            args: [targetRangeId, html, css]
         }, window.System.partsById[targetId]);
     }
 
     /*
      * I insert the html (string) into the specified range (by id)
      */
-     insertRange(rangeId, html){
+    insertRange(rangeId, html, cssObj){
         let range = this.selectionRanges[rangeId];
         if(range){
             let span = document.createElement('span');
             span.innerHTML = html;
+            if(cssObj){
+                Object.keys(cssObj).forEach((key) => {
+                    let value = cssObj[key];
+                    span.style[key] = value;
+                });
+            }
             range.deleteContents();
             range.insertNode(span);
             // update the text and innerHTML properties without notification

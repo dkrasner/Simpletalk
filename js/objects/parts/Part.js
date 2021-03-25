@@ -250,6 +250,12 @@ class Part {
                 'cssStyle',
                 {},
                 false,
+            ),
+            // css (really JS style) key-values
+            new BasicProperty(
+                'cssTextStyle',
+                {},
+                false,
             )
         ];
         basicProps.forEach(prop => {

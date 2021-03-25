@@ -205,30 +205,37 @@ const addTextStyleProps = (target) => {
     target.partProperties.newStyleProp(
         'text-align',
         'left',
+        'cssTextStyle'
     );
     target.partProperties.newStyleProp(
         'text-font',
         'default',
+        'cssTextStyle'
     );
     target.partProperties.newStyleProp(
         'text-color',
         "rgba(0, 0, 0, 1)", // black
+        'cssTextStyle'
     );
     target.partProperties.newStyleProp(
         'text-transparency',
         1,
+        'cssTextStyle'
     );
     target.partProperties.newStyleProp(
         'text-style',
         'plain',
+        'cssTextStyle'
     );
     target.partProperties.newStyleProp(
         'text-bold',
         false,
+        'cssTextStyle'
     );
     target.partProperties.newStyleProp(
         'text-italic',
         false,
+        'cssTextStyle'
     );
 };
 
@@ -249,7 +256,7 @@ const addLayoutStyleProps = (target) => {
         'layout',
         'strict'
     );
-    
+
     // list-direction specifies row or column
     // and will only have an effect whent the
     // layout property is set to 'list'

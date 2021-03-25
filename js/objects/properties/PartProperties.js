@@ -121,15 +121,16 @@ class DynamicProperty extends BasicProperty {
   * styling options.
   **/
 class StyleProperty extends BasicProperty {
-    constructor(name, defaultValue,  styler=cssStyler, readOnly=false, aliases=[]){
+    constructor(name, defaultValue,  propName='cssStyle', styler=cssStyler, readOnly=false, aliases=[]){
         super(name, defaultValue, readOnly, aliases);
+        this.propName = propName;
         this.styler = styler;
     }
 
     // In this override, we update the cssStyle property
     setValue(owner, val, notify=true){
         if(!this.readOnly){
-            let styleProperty = owner.partProperties.findPropertyNamed("cssStyle");
+            let styleProperty = owner.partProperties.findPropertyNamed(this.propName);
             let style = styleProperty.getValue(owner);
             let newStyle = this.styler(style, this.name, val);
             styleProperty.setValue(owner, newStyle, notify);

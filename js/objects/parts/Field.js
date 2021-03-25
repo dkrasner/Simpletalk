@@ -109,9 +109,9 @@ class Field extends Part {
         this.setPrivateCommandHandler("insertRange", this.insertRange);
     }
 
-    insertRange(senders, rangeId, html){
+    insertRange(senders, rangeId, html, css){
         window.System.findViewsById(this.id).forEach((view) => {
-            view.insertRange(rangeId, html);
+            view.insertRange(rangeId, html, css);
         });
     }
 
