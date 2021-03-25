@@ -691,7 +691,7 @@ const System = {
         // make sure there is only one current-stack
         let currentStacks = document.querySelectorAll('st-world > st-stack.current-stack');
         if(currentStacks.length > 1){
-            throw "Found multiple current stacks in world!";
+            throw new Error("Found multiple current stacks in world!");
         }
         return currentStacks[0].model;
     },
@@ -767,6 +767,10 @@ const System = {
         if(!worldJSON){
             throw new Error(`World not found in serialization!`);
         }
+        // Remove any existing WorldViews
+        Array.from(document.querySelectorAll('st-world')).forEach(el => {
+            el.remove();
+        });
         this.deserializePart(
             worldJSON,
             null,

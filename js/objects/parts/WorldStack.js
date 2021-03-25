@@ -148,12 +148,15 @@ class WorldStack extends Part {
             args: [],
             shouldIgnore: true
         }, aStack);
-        aStack.sendMessage({
-            type: 'command',
-            commandName: 'closeCard',
-            args: [],
-            shouldIgnore: true
-        }, aStack.currentCard);
+        let currentCard = aStack.currentCard;
+        if(currentCard){
+            aStack.sendMessage({
+                type: 'command',
+                commandName: 'closeCard',
+                args: [],
+                shouldIgnore: true
+            }, aStack.currentCard);
+        }
     }
 
     sendOpenStackTo(aStack){
@@ -163,12 +166,15 @@ class WorldStack extends Part {
             args: [],
             shouldIgnore: true
         }, aStack);
-        aStack.sendMessage({
-            type: 'command',
-            commandName: 'openCard',
-            args: [],
-            shouldIgnore: true
-        }, aStack.currentCard);
+        let currentCard = aStack.currentCard;
+        if(currentCard){
+            aStack.sendMessage({
+                type: 'command', 
+                commandName: 'ope nCard',
+                args: [],
+                shouldIgnore: true
+            }, aStack.currentCard);
+        }
     }
 
     get type(){
