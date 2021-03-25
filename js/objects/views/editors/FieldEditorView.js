@@ -1,16 +1,92 @@
 import ColorWheelWidget from '../drawing/ColorWheelWidget.js';
 
+
+const boldIcon = `
+<svg  id="text-bold" xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-bold" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+    <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
+    <path d="M7 5h6a3.5 3.5 0 0 1 0 7h-6z" />
+    <path d="M13 12h1a3.5 3.5 0 0 1 0 7h-7v-7" />
+</svg>
+`;
+
+const italicIcon = `
+<svg id="text-italic"  xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-italic" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+    <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
+    <line x1="11" y1="5" x2="17" y2="5" />
+    <line x1="7" y1="19" x2="13" y2="19" />
+    <line x1="14" y1="5" x2="10" y2="19" />
+</svg>
+`;
+
+
+const justifyLeftIcon = `
+<svg id="justifyleft"  xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-align-left" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+    <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
+    <line x1="4" y1="6" x2="20" y2="6" />
+    <line x1="4" y1="12" x2="14" y2="12" />
+    <line x1="4" y1="18" x2="18" y2="18" />
+</svg>
+`;
+
+const justifyCenterIcon = `
+<svg id="justifycenter" xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-align-center" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+    <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
+    <line x1="4" y1="6" x2="20" y2="6" />
+    <line x1="8" y1="12" x2="16" y2="12" />
+    <line x1="6" y1="18" x2="18" y2="18" />
+</svg>
+`;
+
+const justifyRightIcon = `
+<svg id="justifyright"  xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-align-right" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+    <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
+    <line x1="4" y1="6" x2="20" y2="6" />
+    <line x1="10" y1="12" x2="20" y2="12" />
+    <line x1="6" y1="18" x2="20" y2="18" />
+</svg>
+`;
+
+const textColorIcon = `
+<svg id="text-color" xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-color-picker" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+    <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
+    <line x1="11" y1="7" x2="17" y2="13" />
+    <path d="M5 19v-4l9.7 -9.7a1 1 0 0 1 1.4 0l2.6 2.6a1 1 0 0 1 0 1.4l-9.7 9.7h-4" />
+</svg>
+`;
+
+const backgroundColorIcon = `
+<svg id="background-color" xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-color-swatch" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+    <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
+    <path d="M19 3h-4a2 2 0 0 0 -2 2v12a4 4 0 0 0 8 0v-12a2 2 0 0 0 -2 -2" />
+    <path d="M13 7.35l-2 -2a2 2 0 0 0 -2.828 0l-2.828 2.828a2 2 0 0 0 0 2.828l9 9" />
+    <path d="M7.3 13h-2.3a2 2 0 0 0 -2 2v4a2 2 0 0 0 2 2h12" />
+    <line x1="17" y1="17" x2="17" y2="17.01" />
+</svg>
+`;
+
+
+const scriptIcon = `
+<svg id='script' xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-file-code" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+    <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
+    <path d="M14 3v4a1 1 0 0 0 1 1h4" />
+    <path d="M17 21h-10a2 2 0 0 1 -2 -2v-14a2 2 0 0 1 2 -2h7l5 5v11a2 2 0 0 1 -2 2z" />
+    <path d="M10 13l-1 2l1 2" />
+    <path d="M14 13l1 2l-1 2" />
+</svg>
+`;
+
 const templateString = `
 <style>
     :host {
         position: absolute;
         box-sizing: border-box;
         border-style: inset;
+        width: 10rem;
     }
 
-:host > color-wheel{
-position: absolute;
-}
+    :host color-wheel{
+        position: absolute;
+    }
 
     .editor-bar {
         display: flex;
@@ -26,23 +102,15 @@ position: absolute;
         flex-wrap: wrap;
         padding: 5px;
         justify-content: center;
+        background-color: var(--palette-cornsik);
     }
 
-    .editor-main > * {
+    .editor-main > input.name,div.editor-icons {
         margin-top: 5px;
         margin-right: 1px;
         margin-left: 1px;
-    }
-
-    .editor-main input {
-        width: 80%;
+        width: 90%;
         text-align: center;
-    }
-
-    .editor-main > button {
-        background-color: var(--palette-yellow);
-        padding: 5px;
-        border-radius: 5px;
     }
 
     .editor-bar-button {
@@ -63,42 +131,18 @@ position: absolute;
     .editor-title {
         align-self: center;
         margin-left: 10px;
-    }
-    .button-editor {
-        position:relative;
-        height: 100%;
-    }
-
-    .events-display {
-        display: flex;
-        flex-direction: column;
-        align-items: center;
+        text-overflow: ellipsis;
+        overflow: hidden;
+        white-space: nowrap;
     }
 
-    .events-display > * {
-        width: 80%;
-        text-align: center;
-        margin-top: 2px;
+    .editor-icons > * {
+        cursor: pointer;
     }
 
-    .event-list {
-        display: flex;
-        flex-direction: row;
-        flex-wrap: wrap;
-        justify-content: center;
+    svg * {
+        pointer-events: none;
     }
-
-    .event-list > div {
-        background-color: #4da5c6;
-        border-style: solid;
-        border-radius: 5px;
-        margin-right: 2px;
-        margin-left: 2px;
-        margin-top: 2px;
-        border-width: 1px;
-        padding: 1px;
-    }
-
 </style>
 <div class="editor-bar">
     <div class="editor-bar-button close-button"></div>
@@ -108,12 +152,16 @@ position: absolute;
 </div>
 <div class="editor-main">
     <input class="name"></input>
-    <div class="events-display">
-        <div class="event-list"></div>
+    <div class="editor-icons">
+        ${boldIcon}
+        ${italicIcon}
+        ${justifyLeftIcon}
+        ${justifyCenterIcon}
+        ${justifyRightIcon}
+        ${scriptIcon}
+        ${textColorIcon}
+        ${backgroundColorIcon}
     </div>
-    <button class="script">Script</button>
-    <button class="background-color" name="background-color">Background Color</button>
-    <button class="text-color" name="text-color">Font Color</button>
 </div>
 `;
 
@@ -135,28 +183,25 @@ class FieldEditorView extends HTMLElement {
 
         // bind methods
         this.setTarget = this.setTarget.bind(this);
+        this.setProperty = this.setProperty.bind(this);
+        this.toggleProperty = this.toggleProperty.bind(this);
         this.setupChangeHandlers = this.setupChangeHandlers.bind(this);
         this.setupOptions = this.setupOptions.bind(this);
         this.setupClickAndDrag = this.setupClickAndDrag.bind(this);
-        // this.setupBarButtons = this.setupBarButtons.bind(this);
-        // this.setupExpanderAreas = this.setupExpanderAreas.bind(this);
         this.openColorWheelWidget = this.openColorWheelWidget.bind(this);
         this.onColorSelected = this.onColorSelected.bind(this);
         this.onTransparencyChanged = this.onTransparencyChanged.bind(this);
         this.onMouseDownInBar = this.onMouseDownInBar.bind(this);
         this.onMouseUpAfterDrag = this.onMouseUpAfterDrag.bind(this);
         this.onMouseMoveInBar = this.onMouseMoveInBar.bind(this);
-        this.onScriptButtonClick = this.onScriptButtonClick.bind(this);
+        this.onScriptIconClick = this.onScriptIconClick.bind(this);
         this.onCloseButtonClick = this.onCloseButtonClick.bind(this);
         this.onNameInput = this.onNameInput.bind(this);
-        this._displayEvent = this._displayEvent.bind(this);
     }
 
 
     connectedCallback(){
         if(this.isConnected){
-            // this.setupBarButtons();
-            // this.setupExpanderAreas();
             this.style.top = "200px";
             this.style.left = "200px";
             this.setupClickAndDrag();
@@ -165,15 +210,6 @@ class FieldEditorView extends HTMLElement {
     }
 
     disconnectedCallback(){
-        let closeButton = this._shadowRoot.querySelector('div.close-button');
-        closeButton.removeEventListener('click', this.onCloseButtonClick);
-        let scriptButton = this._shadowRoot.querySelector('button.script');
-        scriptButton.removeEventListener('click', this.onScriptButtonClick);
-        let nameInput = this._shadowRoot.querySelector('input.name');
-        nameInput.removeEventListener('input', this.onNameInput);
-        let backgroundButton = this._shadowRoot.querySelector('button.background-color');
-        backgroundButton.removeEventListener('click', this.openColorWheelWidget);
-        let colorButton = this._shadowRoot.querySelector('button.text-color');
     }
 
     setTarget(partId){
@@ -191,14 +227,8 @@ class FieldEditorView extends HTMLElement {
         let name = this.target.partProperties.getPropertyNamed(this.target, 'name');
         let titleSpan = this._shadowRoot.querySelector('.editor-title > span');
         let nameInput = this._shadowRoot.querySelector('input.name');
-        titleSpan.textContent = `Field Editor [${name}]`;
+        titleSpan.textContent = `Field [${name}]`;
         nameInput.placeholder = name;
-        // set up events editing interface
-        let currentEvents = this.target.partProperties.getPropertyNamed(this.target, "events");
-        let eventsDiv = this._shadowRoot.querySelector('.editor-main > div.events-display');
-        currentEvents.forEach((e) => {
-            this._displayEvent(e);
-        });
     }
 
     /*
@@ -206,27 +236,48 @@ class FieldEditorView extends HTMLElement {
       and buttons
     */
     setupChangeHandlers(){
-        // scripting
         let closeButton = this._shadowRoot.querySelector('div.close-button');
         closeButton.addEventListener('click', this.onCloseButtonClick);
-        let scriptButton = this._shadowRoot.querySelector('button.script');
-        scriptButton.addEventListener('click', this.onScriptButtonClick);
         let nameInput = this._shadowRoot.querySelector('input.name');
         nameInput.addEventListener('input', this.onNameInput);
-        let backgroundButton = this._shadowRoot.querySelector('button.background-color');
-        backgroundButton.addEventListener('click', this.openColorWheelWidget);
-        let colorButton = this._shadowRoot.querySelector('button.text-color');
-        colorButton.addEventListener('click', this.openColorWheelWidget);
+        let icons = this._shadowRoot.querySelector('.editor-icons');
+        icons.childNodes.forEach((icon) => {
+            if(icon.id === "script"){
+                icon.addEventListener('click', this.onScriptIconClick);
+            } else if(icon.id === "background-color"){
+                icon.addEventListener('click', this.openColorWheelWidget);
+            } else if(icon.id === "text-color"){
+                icon.addEventListener('click', this.openColorWheelWidget);
+            } else if(icon.id === "text-bold"){
+                icon.addEventListener('click', () => {this.toggleProperty("text-bold");});
+            } else if(icon.id === "text-italic"){
+                icon.addEventListener('click', () => {this.toggleProperty("text-italic");});
+            } else if(icon.id === "justifyleft"){
+                icon.addEventListener('click', () => {this.setProperty("text-align", "left");});
+            } else if(icon.id === "justifycenter"){
+                icon.addEventListener('click', () => {this.setProperty("text-align", "center");});
+            } else if(icon.id === "justifyright"){
+                icon.addEventListener('click', () => {this.setProperty("text-align", "right");});
+            }
+        });
+    }
+
+    toggleProperty(name){
+        let value = !this.target.partProperties.getPropertyNamed(this.target, name);
+        this.setProperty(name, value);
+    }
+    setProperty(name, value){
+        this.target.sendMessage({
+            type: "command",
+            commandName: "setProperty",
+            args: [name, value]
+        }, this.target);
     }
 
     onNameInput(event){
         let titleSpan = this._shadowRoot.querySelector('.editor-title > span');
-        titleSpan.textContent = `Field Editor [${event.target.value}]`;
-        this.target.sendMessage({
-            type: "command",
-            commandName: "setProperty",
-            args: ["name", event.target.value]
-        }, this.target);
+        titleSpan.textContent = `Field [${event.target.value}]`;
+        this.setProperty("name", event.target.value);
     }
 
     onCloseButtonClick(){
@@ -238,7 +289,7 @@ class FieldEditorView extends HTMLElement {
     }
 
 
-    onScriptButtonClick(){
+    onScriptIconClick(){
         this.target.sendMessage({
             type: "command",
             commandName: "openScriptEditor",
@@ -248,13 +299,13 @@ class FieldEditorView extends HTMLElement {
 
     openColorWheelWidget(event){
         // make sure the color wheel is not already open
-        let colorWheelWidget = this._shadowRoot.querySelector(`color-wheel[selector-command="${event.target.name}"]`);
+        let colorWheelWidget = this._shadowRoot.querySelector(`color-wheel[selector-command="${event.target.id}"]`);
         if(colorWheelWidget){
             return;
         }
-        colorWheelWidget = new ColorWheelWidget(event.target.name);
+        colorWheelWidget = new ColorWheelWidget(event.target.id);
         // add an attribute describing the command
-        colorWheelWidget.setAttribute("selector-command", event.target.name);
+        colorWheelWidget.setAttribute("selector-command", event.target.id);
         // add a custom callback for the close button
         let closeButton = colorWheelWidget.shadowRoot.querySelector('#close-button');
         closeButton.addEventListener('click', () => {colorWheelWidget.remove();});
@@ -271,19 +322,11 @@ class FieldEditorView extends HTMLElement {
         let command = event.target.getAttribute("selector-command");
         let colorInfo = event.detail;
         let colorStr = `rgba(${colorInfo.r}, ${colorInfo.g}, ${colorInfo.b}, ${colorInfo.alpha})`;
-        this.target.sendMessage({
-            type: "command",
-            commandName: "setProperty",
-            args: [command, colorStr]
-        }, this.target);
+        this.setProperty(command, colorStr);
     }
 
     onTransparencyChanged(event){
-        this.target.sendMessage({
-            type: "command",
-            commandName: "setProperty",
-            args: [event.detail.propName, event.detail.value]
-        }, this.target);
+        this.setProperty(event.detail.propName, event.detail.value);
     }
 
     setupClickAndDrag(){
@@ -312,28 +355,6 @@ class FieldEditorView extends HTMLElement {
         let newLeft = `${currentLeft + event.movementX}px`;
         this.style.top = newTop;
         this.style.left = newLeft;
-    }
-
-    _displayEvent(eventName){
-        let eventListDiv = this._shadowRoot.querySelector('div.event-list');
-        // if the event is already listed do nothing
-        // TODO: this is a hack b/c the editor is not properly responsive at the moment
-        let eventEl = eventListDiv.querySelector(`#${eventName}`);
-        if(eventEl){
-            return;
-        }
-        eventEl = document.createElement("div");
-        let eventSpan = document.createElement("span");
-        eventEl.id = eventName;
-        eventSpan.textContent = eventName;
-        eventEl.appendChild(eventSpan);
-        eventListDiv.appendChild(eventEl);
-    }
-
-    _removeEvent(eventName){
-        let eventListDiv = this._shadowRoot.querySelector('div.event-list');
-        let eventEl = eventListDiv.querySelector(`#${eventName}`);
-        eventListDiv.removeChild(eventEl);
     }
 };
 

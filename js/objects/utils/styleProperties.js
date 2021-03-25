@@ -222,6 +222,14 @@ const addTextStyleProps = (target) => {
         'text-style',
         'plain',
     );
+    target.partProperties.newStyleProp(
+        'text-bold',
+        false,
+    );
+    target.partProperties.newStyleProp(
+        'text-italic',
+        false,
+    );
 };
 
 /**

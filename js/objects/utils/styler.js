@@ -39,6 +39,23 @@ const cssStyler = (styleObj, propertyName, propertyValue) => {
         _setOrNot(styleObj, "textAlign",  propertyValue);
         break;
 
+    case "text-bold":
+        if(propertyValue === true){
+            _setOrNot(styleObj, "font-weight",  "bold");
+        } else if(propertyValue === false){
+            _setOrNot(styleObj, "font-weight",  "normal");
+        }
+        break;
+
+    case "text-italic":
+        if(propertyValue === true){
+            _setOrNot(styleObj, "font-style",  "italic");
+        } else if(propertyValue === false){
+            _setOrNot(styleObj, "font-style",  "normal");
+        }
+        break;
+
+
     case "text-underline":
         if(propertyValue === true){
             _setOrNot(styleObj, "textDecoration",  "underline");
