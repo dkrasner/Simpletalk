@@ -16,6 +16,7 @@ const templateString = `
         width: 150px;
         height: 100px;
         border: 1px solid brown;
+        overflow: hidden;
     }
     :host(st-card){
         display: block;

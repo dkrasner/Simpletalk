@@ -561,6 +561,10 @@ const System = {
         views.forEach(view => {
             view.parentElement.removeChild(view);
         });
+        let lenses = this.findLensViewsById(modelId);
+        lenses.forEach(lensView => {
+            lensView.parentElement.removeChild(lensView);
+        });
     },
 
     newView: function(partName, modelId, parentId){
@@ -602,6 +606,20 @@ const System = {
         } else {
             parentElement.appendChild(newView);
         }
+
+        // See if there are lens views and update
+        // those as well
+        let lensViews = this.findLensViewsById(parentId);
+        lensViews.forEach(lensView => {
+            let newLensView = document.createElement(
+                this.tagNameForViewNamed(partName)
+            );
+            newLensView.setModel(model);
+            newLensView.removeAttribute('part-id');
+            newLensView.setAttribute('lens-part-id', modelId);
+            newLensView.setAttribute('role', 'lens');
+            lensView.appendChild(newLensView);
+        });
 
         // TODO do we want to allow the possibiliy of a view on an
         // element but no subpart of that view on the element?
@@ -660,6 +678,10 @@ const System = {
     // with the given id
     findViewById: function(id){
         return document.querySelector(`[part-id="${id}"]`);
+    },
+
+    findLensViewsById: function(id){
+        return Array.from(document.querySelectorAll(`[lens-part-id="${id}"]`));
     },
 
     // Find all matching view elements with

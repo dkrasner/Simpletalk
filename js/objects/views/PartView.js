@@ -113,7 +113,12 @@ class PartView extends HTMLElement {
         // NOTE: run here as opposed to in this.connectedCallback() because
         // the latter can technically be invoked before the model is set
         let events = this.model.partProperties.getPropertyNamed(this.model, "events");
-        events.forEach((eventName) => this.eventRespond(eventName));
+
+        // If this view is not currently used as a Lens,
+        // then we want to setup the events
+        if(!this.isLensed){
+            events.forEach((eventName) => this.eventRespond(eventName));
+        }
         // load all the initial styling
         this.styleCSS();
         this.styleTextCSS();
@@ -222,7 +227,10 @@ class PartView extends HTMLElement {
     }
 
     sendMessage(aMessage, target){
-        window.System.sendMessage(aMessage, this, target);
+        if(!this.isLensed){
+            // Lensed views should not send messages
+            window.System.sendMessage(aMessage, this, target);
+        }
     }
 
     receiveMessage(aMessage){
@@ -646,6 +654,14 @@ class PartView extends HTMLElement {
             return true;
         }
 
+        return false;
+    }
+
+    get isLensed(){
+        let role = this.getAttribute('role');
+        if(role && role == 'lens'){
+            return true;
+        }
         return false;
     }
 
