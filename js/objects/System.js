@@ -31,6 +31,8 @@ import AudioView from './views/AudioView.js';
 
 import Halo from './views/Halo.js';
 import EditorView from './views/editors/EditorView.js';
+import STNavigator from './views/navigator/Navigator.js';
+import ButtonEditorView from './views/editors/ButtonEditorView.js';
 
 import ohm from 'ohm-js';
 import interpreterSemantics from '../ohm/interpreter-semantics.js';
@@ -1517,7 +1519,17 @@ document.addEventListener('DOMContentLoaded', () => {
     // like the halo
     window.customElements.define('st-halo', Halo);
     window.customElements.define('st-editor', EditorView);
+    window.customElements.define('st-navigator', STNavigator);
+    window.customElements.define('st-button-editor', ButtonEditorView);
 
+    // If there is already a Navigator element in the body,
+    // remove it and add a new one
+    Array.from(document.querySelectorAll('st-navigator')).forEach(el => {
+        el.remove();
+    });
+    System.navigator = document.createElement('st-navigator');
+    document.body.append(System.navigator);
+    
     // Perform the initial setup of
     // the system
     System.initialLoad();
