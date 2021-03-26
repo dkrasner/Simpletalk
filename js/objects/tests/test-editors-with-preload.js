@@ -195,7 +195,7 @@ describe('Editor tests', () => {
         it('Editor title bar has the proper name', () => {
             let editorView = document.querySelector('st-field-editor');
             let title = editorView._shadowRoot.querySelector('.editor-title > span');
-            assert.equal(title.textContent, `Field Editor [${fieldName}]`);
+            assert.equal(title.textContent, `Field [${fieldName}]`);
         });
         it('Editor has the proper target id', () => {
             let editorView = document.querySelector('st-field-editor');

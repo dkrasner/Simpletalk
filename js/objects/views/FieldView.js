@@ -224,53 +224,6 @@ class FieldView extends PartView {
         }
     }
 
-
-    /*
-     * I convert raw text to html respecting the Firefox
-     * contenteditable attribute guidelnes.
-     * This means that single lins of text are left as is;
-     * multiline text, i.e. text which includes "\n", is
-     * wrapped in <div></div> for every line; and the last
-     * line gets a <br> tag inserted before the </div> to reflect
-     * the "on-enter-key" behavior.
-     */
-    textToHtml(text){
-        if(text){
-            let textLines = text.split("\n");
-            if(textLines.length > 1){
-                let html = "";
-                textLines.forEach((line) => {
-                    if(line){
-                        html += `<div>${line}</div>`;
-                    } else {
-                        html += "<div><br></div>";
-                    }
-                });
-                return  `<div>${html}<br></div>`;
-            } else {
-                return text;
-            }
-        } else {
-            return "";
-        }
-    }
-
-    htmlToText(element){
-        // TODO this is very naive and ignores most possible structure
-        if(element.innerHTML){
-            // first replace all the "</div><div>" with line breaks
-            let cleanHTML =  element.innerHTML.replace(/<\/div><div>/g, "\n");
-            // then remove all html
-            let tempElement = document.createElement("div");
-            tempElement.innerHTML = cleanHTML;
-            let cleanText = tempElement.textContent;
-            tempElement.remove();
-            return cleanText;
-        } else {
-            return "";
-        }
-    }
-
     onInput(event){
         event.stopPropagation();
         event.preventDefault();
@@ -556,6 +509,51 @@ class FieldView extends PartView {
         }, this.model);
     }
 
+    /*
+     * I convert raw text to html respecting the Firefox
+     * contenteditable attribute guidelnes.
+     * This means that single lins of text are left as is;
+     * multiline text, i.e. text which includes "\n", is
+     * wrapped in <div></div> for every line; and the last
+     * line gets a <br> tag inserted before the </div> to reflect
+     * the "on-enter-key" behavior.
+     */
+    textToHtml(text){
+        if(text){
+            let textLines = text.split("\n");
+            if(textLines.length > 1){
+                let html = "";
+                textLines.forEach((line) => {
+                    if(line){
+                        html += `<div>${line}</div>`;
+                    } else {
+                        html += "<div><br></div>";
+                    }
+                });
+                return  `<div>${html}<br></div>`;
+            } else {
+                return text;
+            }
+        } else {
+            return "";
+        }
+    }
+
+    htmlToText(element){
+        // TODO this is very naive and ignores most possible structure
+        if(element.innerHTML){
+            // first replace all the "</div><div>" with line breaks
+            let cleanHTML =  element.innerHTML.replace(/<\/div><div>/g, "\n");
+            // then remove all html
+            let tempElement = document.createElement("div");
+            tempElement.innerHTML = cleanHTML;
+            let cleanText = tempElement.textContent;
+            tempElement.remove();
+            return cleanText;
+        } else {
+            return "";
+        }
+    }
 
 };
 

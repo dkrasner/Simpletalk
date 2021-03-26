@@ -39,7 +39,8 @@ const errorHandler = {
         }
         // get some more info about what the parser expected
         let expectedText = aMessage.parsedScript.getExpectedText();
-        let text = scriptEditor.model.partProperties.getPropertyNamed(scriptEditor, "text");
+        // get the original script
+        let text = aMessage.parsedScript.input;
         let textLines = text.split("\n");
         // replace said text line with an error marker
         textLines[errorLineNum] += ` --<<<[Expected:${expectedText}; ruleName: "${ruleName}"]`;
@@ -61,7 +62,8 @@ const errorHandler = {
                 this._openScriptEditor(originalSender.id);
                 scriptEditor = window.System.findScriptEditorByTargetId(originalSender.id);
             }
-            let text = scriptEditor.model.partProperties.getPropertyNamed(scriptEditor, "text");
+            let originalSenderModel = window.System.partsById[originalSender.id];
+            let text = originalSenderModel.partProperties.getPropertyNamed(originalSenderModel, 'script');
             let textLines = text.split("\n");
             // offending command text line with an error marker
             let regex = new RegExp(`\\s*${commandName}(\s|$)`, 'g');

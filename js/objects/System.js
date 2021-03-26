@@ -1209,7 +1209,7 @@ System._commandHandlers['openScriptEditor'] = function(senders, targetId){
         'title',
         winTitle
     );
-    
+
     let winView = this.findViewById(winModel.id);
     let winStackModel = this.newModel('stack', winModel.id);
     let winStackView = this.findViewById(winStackModel.id);

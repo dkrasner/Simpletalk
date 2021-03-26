@@ -65,7 +65,6 @@ describe('FieldView basic tests', () => {
             fieldModel,
             'text'
         );
-
         assert.equal(textArea.textContent, modelValue);
     });
     it('innerHTML is updated after text is', () => {

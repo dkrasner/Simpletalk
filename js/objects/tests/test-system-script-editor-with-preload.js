@@ -141,10 +141,17 @@ describe('ScriptEditor Functionality', () => {
         let textArea = editorFieldView._shadowRoot.querySelector('.field-textarea');
         fieldModel.partProperties.setPropertyNamed(
             fieldModel,
-            'text',
+            'innerHTML',
             newScript
         );
-
+        // due to JSDOM weirdness where element.innerText is not auto set if element.innerHTML is
+        // we need to set the 'text' property again without notification
+        fieldModel.partProperties.setPropertyNamed(
+            fieldModel,
+            'text',
+            newScript,
+            false
+        );
         // Send click on the button,
         // which should itself send a message
         // to set the script of the card

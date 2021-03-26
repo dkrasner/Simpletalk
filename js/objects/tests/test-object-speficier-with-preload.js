@@ -237,7 +237,7 @@ describe("ObjectSpecifier Tests", () => {
             ); 
         });
 
-        it("Can match the button 1 (implicit this card)", () => {
+        it.skip("Can match the button 1 (implicit this card)", () => {
             let str = `button 1`;
             let matchObject = testLanguageGrammar.match(str, 'ObjectSpecifier');
             assert.isTrue(matchObject.succeeded());
