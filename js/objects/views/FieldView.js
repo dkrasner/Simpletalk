@@ -270,7 +270,6 @@ class FieldView extends PartView {
         this.textarea.focus();
         // document.execCommand("defaultParagraphSeparator", false, "br");
         this.setUpToolbar();
-        this.addEventListener('click', this.onClick);
         if(!this.haloModeButton){
             this.initCustomHaloButton();
         }
@@ -279,7 +278,6 @@ class FieldView extends PartView {
     afterDisconnected(){
         this.textarea.removeEventListener('input', this.onInput);
         this.textarea.removeEventListener('keydown', this.onKeydown);
-        this.removeEventListener('click', this.onClick);
     }
 
     afterModelSet(){
@@ -504,16 +502,7 @@ class FieldView extends PartView {
             // if the shift key is pressed we toggle the halo
             if(event.shiftKey){
                 event.preventDefault();
-                event.stopPropagation();
-                if(this.hasOpenHalo){
-                    this.closeHalo();
-                    // toolbar.style.top = `${toolbar.clientHeight + 5}px`;
-                    // toolbar.style.visibility = "hidden";
-                } else {
-                    this.openHalo();
-                    // toolbar.style.top = `-${toolbar.clientHeight + 5}px`;
-                    // toolbar.style.visibility = "unset";
-                }
+                this.onHaloActivationClick(event);
             } else if(event.altKey){
                 let text = document.getSelection().toString();
                 if(text && !this.contextMenuOpen){

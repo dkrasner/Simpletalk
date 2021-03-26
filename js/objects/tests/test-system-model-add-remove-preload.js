@@ -166,40 +166,6 @@ describe('newModel tests', () => {
     });
 });
 
-describe('copyModel tests', () => {
-    it('Can send copyModel message ', () => {
-        let cards = document.querySelectorAll('st-card');
-        assert.isAtLeast(cards.length, 1);
-        let card1 = cards[0];
-
-        let card1Buttons = card1.model.subparts.filter(item => {
-            return item.type === 'button';
-        });
-        assert.isAtLeast(card1Buttons.length, 1);
-
-        let button = card1Buttons[0];
-
-        // add a copy of the card1 button to card2
-        let msg = {
-            type: 'command',
-            commandName: 'copyModel',
-            args: [button.id, card1.model.id]
-        };
-        let sendFunc = function(){
-            currentCard.sendMessage(msg, currentCard);
-        };
-        expect(sendFunc).to.not.throw(Error);
-
-        let card1ButtonsAfter = card1.model.subparts.filter(item => {
-            return item.type === 'button';
-        });
-
-        assert.equal(card1ButtonsAfter.length, card1Buttons.length + 1);
-
-    });
-
-});
-
 describe('deleteModel tests', () => {
     beforeEach(function() {
         let msg = {
