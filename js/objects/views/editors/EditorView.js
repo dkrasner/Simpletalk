@@ -81,7 +81,7 @@ const templateString = `
         position: absolute;
         box-sizing: border-box;
         border-style: inset;
-        width: 10rem;
+        width: 20rem;
     }
 
     :host color-wheel{
@@ -166,7 +166,7 @@ const templateString = `
 `;
 
 
-class FieldEditorView extends HTMLElement {
+class EditorView extends HTMLElement {
     constructor(){
         super();
 
@@ -227,7 +227,7 @@ class FieldEditorView extends HTMLElement {
         let name = this.target.partProperties.getPropertyNamed(this.target, 'name');
         let titleSpan = this._shadowRoot.querySelector('.editor-title > span');
         let nameInput = this._shadowRoot.querySelector('input.name');
-        titleSpan.textContent = `Field [${name}]`;
+        titleSpan.textContent = `Editor [${name}]`;
         nameInput.placeholder = name;
     }
 
@@ -276,7 +276,7 @@ class FieldEditorView extends HTMLElement {
 
     onNameInput(event){
         let titleSpan = this._shadowRoot.querySelector('.editor-title > span');
-        titleSpan.textContent = `Field [${event.target.value}]`;
+        titleSpan.textContent = `Editor [${event.target.value}]`;
         this.setProperty("name", event.target.value);
     }
 
@@ -359,6 +359,6 @@ class FieldEditorView extends HTMLElement {
 };
 
 export {
-    FieldEditorView,
-    FieldEditorView as default
+    EditorView,
+    EditorView as default
 };

@@ -172,25 +172,6 @@ st-field {
     background-color: var(--palette-cornsik);
 }
 
-
-/* =Editor Styles
- *----------------------------------------------------*/
-st-button-editor{
-    width: 300px;
-    background-color: var(--palette-cornsik);
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-}
-
-st-button-editor > color-wheel{
-    position: absolute;
-}
-
-st-button-editor:active {
-    z-index: 100;
-}
-
 /* =Layout Class Styles
  * --------------------------------------------------------*/
 .list-layout {

@@ -488,11 +488,11 @@ class FieldView extends PartView {
 
     // Overwriting the base class open/close editor methods
     openEditor(){
-        window.System.openEditorForPart("field", this.model.id);
+        window.System.openEditorForPart(this.model.id);
     }
 
     closeEditor(){
-        window.System.closeEditorForPart("field", this.model.id);
+        window.System.closeEditorForPart(this.model.id);
     }
 
     // We overwrite the PartView.onHaloOpenEditor for the moment
