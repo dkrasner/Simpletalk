@@ -31,7 +31,6 @@ const partTypes = [
     "image",
     "area",
     "audio",
-    "target"
 ];
 
 const numbers = [

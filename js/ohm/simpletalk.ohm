@@ -228,7 +228,7 @@
 		= (comment lineTerminator)+
 
 	systemObject (system object such as card, stack etc)
-		= ("a" | "A") "rea" | ("b"| "B") "ackground" | ("b" | "B") "utton" | ("c" | "C") "ard" | ("f" | "F") "ield" | ("s" | "S") "tack" | ("w" | "W") "indow" | ("t"| "T") "oolbox" | ("d" | "D") "rawing" | ("i" | "I") "mage" | ("a" | "A") "udio" | ("t" | "T") "arget"
+		= ("a" | "A") "rea" | ("b"| "B") "ackground" | ("b" | "B") "utton" | ("c" | "C") "ard" | ("f" | "F") "ield" | ("s" | "S") "tack" | ("w" | "W") "indow" | ("t"| "T") "oolbox" | ("d" | "D") "rawing" | ("i" | "I") "mage" | ("a" | "A") "udio"
 
 	// TODO do we want to restrict message names (start with lowercase etc)?
 	// Note: we prevent keyword overloading
