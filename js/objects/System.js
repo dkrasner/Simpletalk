@@ -92,6 +92,27 @@ const System = {
         // By this point we should have a WorldView with
         // a model attached.
         this.isLoaded = true;
+
+        // Send the openWorld message to the WorldStack
+        let world = this.partsById['world'];
+        world.sendMessage({
+            type: 'command',
+            commandName: 'openWorld',
+            args: [],
+            shouldIgnore: true
+        }, world);
+        world.sendMessage({
+            type: 'command',
+            commandName: 'openStack',
+            args: [],
+            shouldIgnore: true
+        }, world.currentStack);
+        world.currentStack.sendMessage({
+            type: 'command',
+            commandName: 'openCard',
+            args: [],
+            shouldIgnore: true
+        }, world.currentStack.currentCard);
     },
 
     loadFromWorldView: function(aWorldView){
@@ -670,7 +691,7 @@ const System = {
         // make sure there is only one current-stack
         let currentStacks = document.querySelectorAll('st-world > st-stack.current-stack');
         if(currentStacks.length > 1){
-            throw "Found multiple current stacks in world!";
+            throw new Error("Found multiple current stacks in world!");
         }
         return currentStacks[0].model;
     },
@@ -746,6 +767,10 @@ const System = {
         if(!worldJSON){
             throw new Error(`World not found in serialization!`);
         }
+        // Remove any existing WorldViews
+        Array.from(document.querySelectorAll('st-world')).forEach(el => {
+            el.remove();
+        });
         this.deserializePart(
             worldJSON,
             null,

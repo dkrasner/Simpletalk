@@ -47,6 +47,10 @@ class Stack extends Part {
             );
         }
 
+        // Bind general methods
+        this.sendOpenCardTo = this.sendOpenCardTo.bind(this);
+        this.sendCloseCardTo = this.sendCloseCardTo.bind(this);
+
         // Bind stack navigation methods
         this.goToNextCard = this.goToNextCard.bind(this);
         this.goToPrevCard = this.goToPrevCard.bind(this);
@@ -61,10 +65,8 @@ class Stack extends Part {
         if(cards.length < 2){
             return;
         }
-        let currentIdx = this.partProperties.getPropertyNamed(
-            this,
-            'current'
-        );
+        let currentIdx = this.currentCardIndex;
+        let currentCard = cards[currentIdx];
         let nextIdx = currentIdx + 1;
         if(nextIdx >= cards.length){
             nextIdx = (nextIdx % cards.length);
@@ -74,6 +76,11 @@ class Stack extends Part {
             'current',
             nextIdx
         );
+        let nextCard = cards[nextIdx];
+        if(nextCard.id != currentCard.id){
+            this.sendCloseCardTo(currentCard);
+            this.sendOpenCardTo(nextCard);
+        }
     }
 
     goToCardById(anId){
@@ -86,12 +93,18 @@ class Stack extends Part {
         if(!found){
             throw new Error(`The card id: ${anId} cant be found on this stack`);
         }
+        let currentCard = this.currentCard;
         let cardIdx = cards.indexOf(found);
         this.partProperties.setPropertyNamed(
             this,
             'current',
             cardIdx
         );
+        let nextCard = cards[cardIdx];
+        if(currentCard.id != nextCard.id){
+            this.sendCloseCardTo(currentCard);
+            this.sendOpenCardTo(nextCard);
+        }
     }
 
     goToPrevCard(){
@@ -101,10 +114,8 @@ class Stack extends Part {
         if(cards.length < 2){
             return;
         }
-        let currentIdx = this.partProperties.getPropertyNamed(
-            this,
-            'current'
-        );
+        let currentIdx = this.currentCardIndex;
+        let currentCard = cards[currentIdx];
         let nextIdx = currentIdx - 1;
         if(nextIdx < 0){
             nextIdx = cards.length + nextIdx;
@@ -114,6 +125,11 @@ class Stack extends Part {
             'current',
             nextIdx
         );
+        let nextCard = cards[nextIdx];
+        if(currentCard.id != nextCard.id){
+            this.sendCloseCardTo(currentCard);
+            this.sendOpenCardTo(nextCard);
+        }
     }
 
     goToNthCard(anIndex){
@@ -127,15 +143,62 @@ class Stack extends Part {
             console.warn(`Cannot navigate to card number ${anIndex} -- out of bounds`);
             return;
         }
+        let currentCard = this.currentCard;
         this.partProperties.setPropertyNamed(
             this,
             'current',
             trueIndex
         );
+        let nextCard = cards[trueIndex];
+        if(currentCard.id != nextCard.id){
+            this.sendCloseCardTo(currentCard);
+            this.sendOpenCardTo(nextCard);
+        }
+    }
+
+    sendCloseCardTo(aCard){
+        this.sendMessage(
+            {
+                type: 'command',
+                commandName: 'closeCard',
+                args: [],
+                shouldIgnore: true
+            },
+            aCard
+        );
+    }
+
+    sendOpenCardTo(aCard){
+        this.sendMessage(
+            {
+                type: 'command',
+                commandName: 'openCard',
+                args: [],
+                shouldIgnore: true
+            },
+            aCard
+        );
     }
 
     get type(){
         return 'stack';
+    }
+
+    get currentCardIndex(){
+        return this.partProperties.getPropertyNamed(
+            this,
+            'current'
+        );
+    }
+
+    get currentCard(){
+        let cards = this.subparts.filter(subpart => {
+            return subpart.type == 'card';
+        });
+        if(cards.length){
+            return cards[this.currentCardIndex];
+        }
+        return null;
     }
 };
 
