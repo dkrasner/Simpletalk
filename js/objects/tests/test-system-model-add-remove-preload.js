@@ -12,16 +12,24 @@ const expect = chai.expect;
 
 let currentCard;
 let currentCardView;
+let currentStack;
+let currentStackView;
 describe('newModel tests', () => {
+    before('', () => {
+        currentCardView = document.querySelector('.current-stack .current-card');
+        currentCard = currentCardView.model;
+        assert.exists(currentCard);
+        assert.exists(currentCardView);
+        currentStackView = document.querySelector('.current-stack');
+        currentStack = currentStackView.model;
+        assert.exists(currentStackView);
+    });
+
     it('System has loaded', () => {
         assert.isTrue(System.isLoaded);
     });
 
     it('The current card does not have any button models or views', () => {
-        currentCardView = document.querySelector('.current-stack .current-card');
-        currentCard = currentCardView.model;
-        assert.exists(currentCard);
-
         let buttonSubparts = currentCard.subparts.filter(item => {
             return item.type === 'button';
         });
@@ -163,6 +171,41 @@ describe('newModel tests', () => {
         };
 
         expect(sendFunc).to.not.throw(Error);
+    });
+    it('Can add button to current stack', () => {
+        let msg = {
+            type: 'command',
+            commandName: 'newModel',
+            args: ['button', currentStack.id]
+        };
+        let sendFunc = function(){
+            currentCard.sendMessage(msg, System);
+        };
+        expect(sendFunc).to.not.throw(Error);
+
+        let button = currentStackView.querySelector(':scope > st-button');
+        assert.exists(button);
+    });
+    it('Adding a card to stack preserves card-child priority', () => {
+        let msg = {
+            type: 'command',
+            commandName: 'newModel',
+            args: ['card', currentStack.id]
+        };
+        let sendFunc = function(){
+            currentCard.sendMessage(msg, System);
+        };
+        expect(sendFunc).to.not.throw(Error);
+        let totalCards = currentStackView.querySelectorAll(':scope > st-card').length;
+        let conseqCardCounter = 0;
+        currentStackView.childNodes.forEach((child) => {
+            if(child.name === 'CardView'){
+                conseqCardCounter += 1;
+            } else {
+                return;
+            }
+        });
+        assert.equal(conseqCardCounter, totalCards);
     });
 });
 
