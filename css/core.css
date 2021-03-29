@@ -83,7 +83,8 @@ st-card {
     height: 100%;
 }
 
-.current-card {
+.current-card,
+st-card[role="lens"] {
     display: block;
     visibility: initial;
     background-color: var(--palette-blue);

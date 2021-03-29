@@ -6,6 +6,7 @@
  * Stacks therein using a convenient pop-out tray from
  * the bottom of the screen.
  **/
+import PartView from '../PartView.js';
 import WrappedView from './WrappedView.js';
 
 const stackIcon = `
@@ -77,6 +78,7 @@ const templateString = `
         position: relative;
         align-items: center;
         justify-content: flex-start;
+        margin-bottom: 15px;
     }
     .nav-icon {
         color: gray;
@@ -93,7 +95,7 @@ const templateString = `
 </div>
 `;
 
-class STNavigator extends HTMLElement {
+class STNavigator extends PartView {
     constructor(){
         super();
 
