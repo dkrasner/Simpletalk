@@ -173,10 +173,6 @@ class Part {
         // to ALL Parts in the system.
         let basicProps = [
             new BasicProperty(
-                'target',
-                null,
-            ),
-            new BasicProperty(
                 'contents',
                 null,
             ),
@@ -217,12 +213,6 @@ class Part {
             // css (really JS style) key-values
             new BasicProperty(
                 'cssStyle',
-                {},
-                false,
-            ),
-            // css (really JS style) key-values
-            new BasicProperty(
-                'cssTextStyle',
                 {},
                 false,
             )

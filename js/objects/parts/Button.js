@@ -45,6 +45,7 @@ class Button extends Part {
             null, // readOnly (for now)
             this.getSelectedText,
             true, // readOnly,
+            [] // no aliases
         );
 
         // Styling

@@ -21,8 +21,6 @@ class Field extends Part {
     constructor(owner, name){
         super(owner);
 
-        this.acceptedSubpartTypes = ["field"];
-
         this.isField = true;
 
         if(name){
@@ -32,68 +30,59 @@ class Field extends Part {
                 name
             );
         }
+        // some bs
 
         // Set the Field-specific
         // Part Properties
         this.partProperties.newBasicProp(
             'mode',
-            'editing' //TODO this should be either "bravo" or "simpletalk"
+            'editing'
         );
 
         this.partProperties.newBasicProp(
-            'innerHTML',
+            'htmlContent',
             ''
         );
-
         this.partProperties.newBasicProp(
-            'targetRangeId',
-            null
+            'textContent',
+            ''
         );
-
-        // 'text' is a DynamicProperty configured to also set the innerHTML
-        // BasicProperty when changed. The basic idea is that 'text' will be
-        // the property that ST will interface with and everytime it
-        // is changed the 'innerHTML' property should follow.
-        this.partProperties.newDynamicProp(
-            'text',
-            (owner, prop, value, notify) => {
-                prop._value = value;
-                if(notify){
-                    owner.partProperties.setPropertyNamed(owner, 'innerHTML', value, notify);
-                }
-            },
-            (owner, prop) => {
-                return prop._value;
-            },
-            false, // not read only
-            ''     // default is empty string
-        );
-
         this.partProperties.newBasicProp(
-            'editable',
-            true
+            'autoSelect',
+            false,
         );
-        // A number of the props deal with direct text editing,
-        // and so they are like commands. Examples include "undo"
-        // "redo" "clear" etc. Here we use dynami props which the
-        // view can respond to accordingly, but having these props have
-        // no actual 'state'
-        this.partProperties.newDynamicProp(
-            "undo",
-            () => {}, // all we is a notification
-            () => {} // no getter
+        this.partProperties.newBasicProp(
+            'autoTab',
+            false
         );
-        this.partProperties.newDynamicProp(
-            "redo",
-            () => {}, // all we is a notification
-            () => {} // no getter
+        this.partProperties.newBasicProp(
+            'lockText',
+            false
         );
-        this.partProperties.newDynamicProp(
-            "remove-format",
-            () => {}, // all we is a notification
-            () => {} // no getter
+        this.partProperties.newBasicProp(
+            'showLines',
+            false
         );
-
+        this.partProperties.newBasicProp(
+            'dontWrap',
+            false
+        );
+        this.partProperties.newBasicProp(
+            'multipleLines',
+            false
+        );
+        this.partProperties.newBasicProp(
+            'scroll',
+            0
+        );
+        this.partProperties.newBasicProp(
+            'sharedText',
+            false
+        );
+        this.partProperties.newBasicProp(
+            'wideMargins',
+            false
+        );
         // Styling
         // setting width and height to null
         // effectively forces to the default size
@@ -102,17 +91,43 @@ class Field extends Part {
         addPositioningStyleProps(this);
         addTextStyleProps(this);
         this.setupStyleProperties();
-
-        // Private command handlers
-
-        this.insertRange = this.insertRange.bind(this);
-        this.setPrivateCommandHandler("insertRange", this.insertRange);
     }
 
-    insertRange(senders, rangeId, html, css){
-        window.System.findViewsById(this.id).forEach((view) => {
-            view.insertRange(rangeId, html, css);
+    /**
+     * Serialize this Field's state as JSON.
+     * We override the default Part.js
+     * implementation so that the textContent
+     * property is not saved. This prevents it
+     * from being set (rather than htmlContent)
+     * on deserialization
+     */
+    serialize(){
+        let ownerId = null;
+        if(this._owner){
+            ownerId = this._owner.id;
+        }
+        let result = {
+            type: this.type,
+            id: this.id,
+            properties: {},
+            subparts: this.subparts.map(subpart => {
+                return subpart.id;
+            }),
+            ownerId: ownerId
+        };
+        this.partProperties._properties.forEach(prop => {
+            let name = prop.name;
+            if(name !== 'textContent'){
+                let value = prop.getValue(this);
+                // If this is the events set, transform
+                // it to an Array first (for serialization)
+                if(name == 'events'){
+                    value = Array.from(value);
+                }
+                result.properties[name] = value;
+            }
         });
+        return result;
     }
 
     get type(){

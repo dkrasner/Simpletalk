@@ -60,6 +60,7 @@ template.innerHTML = `
      height: 30px;
  }
  .st-window-title {
+     font-family: monospace;
      user-select: none;
  }
  .right-gripper {
