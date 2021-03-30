@@ -159,7 +159,6 @@ class FieldView extends PartView {
     afterDisconnected(){
         this.textarea.removeEventListener('input', this.onInput);
         this.textarea.removeEventListener('keydown', this.onKeydown);
-        this.removeEventListener('click', this.onClick);
     }
 
     afterModelSet(){

@@ -33,6 +33,23 @@ const growIcon = `
 </svg>
 `;
 
+const copyIcon = `
+<svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-copy" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+   <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
+   <rect x="8" y="8" width="12" height="12" rx="2"></rect>
+   <path d="M16 8v-2a2 2 0 0 0 -2 -2h-8a2 2 0 0 0 -2 2v8a2 2 0 0 0 2 2h2"></path>
+</svg>
+`;
+
+const pasteIcon = `
+<svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-clipboard-check" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+   <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
+   <path d="M9 5h-2a2 2 0 0 0 -2 2v12a2 2 0 0 0 2 2h10a2 2 0 0 0 2 -2v-12a2 2 0 0 0 -2 -2h-2"></path>
+   <rect x="9" y="3" width="6" height="4" rx="2"></rect>
+   <path d="M9 14l2 2l4 -4"></path>
+</svg>
+`;
+
 const templateString = `
 <style>
  :host {
@@ -137,6 +154,12 @@ const templateString = `
 </div>
 
 <div id="halo-left-column" class="halo-column">
+    <div id="halo-copy" class="halo-button" title="Copy this Part">
+        ${copyIcon}
+    </div>
+    <div id="halo-paste" class="halo-button" title="Paste the contents of clipboard into this Part">
+        ${pasteIcon}
+    </div>
     <slot name="left-column"></slot>
 </div>
 
@@ -202,6 +225,15 @@ class Halo extends HTMLElement {
             if(!this.targetElement.wantsHaloScriptEdit){
                 this.editor.style.visibility = 'hidden';
             }
+
+            // Copy button
+            this.copier = this.shadowRoot.getElementById('halo-copy');
+            this.copier.addEventListener('click', this.targetElement.onHaloCopy);
+
+
+            // Paste button
+            this.paster = this.shadowRoot.getElementById('halo-paste');
+            this.paster.addEventListener('click', this.targetElement.onHaloPaste);
         }
     }
 

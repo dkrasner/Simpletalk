@@ -37,6 +37,7 @@ import interpreterSemantics from '../ohm/interpreter-semantics.js';
 import {ExecutionStack, ActivationContext} from './ExecutionStack.js';
 
 import idMaker from './utils/id.js';
+import STClipboard from './utils/clipboard.js';
 
 import handInterface from './utils/handInterface.js';
 
@@ -87,9 +88,33 @@ const System = {
             this.loadFromEmpty();
         }
 
+        // Attach a new clipboard instance
+        this.clipboard = new STClipboard(this);
+
         // By this point we should have a WorldView with
         // a model attached.
         this.isLoaded = true;
+
+        // Send the openWorld message to the WorldStack
+        let world = this.partsById['world'];
+        world.sendMessage({
+            type: 'command',
+            commandName: 'openWorld',
+            args: [],
+            shouldIgnore: true
+        }, world);
+        world.sendMessage({
+            type: 'command',
+            commandName: 'openStack',
+            args: [],
+            shouldIgnore: true
+        }, world.currentStack);
+        world.currentStack.sendMessage({
+            type: 'command',
+            commandName: 'openCard',
+            args: [],
+            shouldIgnore: true
+        }, world.currentStack.currentCard);
     },
 
     loadFromWorldView: function(aWorldView){
@@ -591,12 +616,23 @@ const System = {
 
         // Create the new view instance,
         // append to parent, and set the model
-        
         let newView = document.createElement(
             this.tagNameForViewNamed(partName)
         );
         newView.setModel(model);
-        parentElement.appendChild(newView);
+        // if the new model is a Card we make sure add it after the last card
+        // on the stack
+        if(newView.name === 'CardView' && parentElement.childNodes.length){
+            let lastCard;
+            parentElement.childNodes.forEach((child) => {
+                if(child.name === "CardView"){
+                    lastCard = child;
+                }
+                lastCard.after(newView);
+            });
+        } else {
+            parentElement.appendChild(newView);
+        }
 
         // TODO do we want to allow the possibiliy of a view on an
         // element but no subpart of that view on the element?
@@ -668,7 +704,7 @@ const System = {
         // make sure there is only one current-stack
         let currentStacks = document.querySelectorAll('st-world > st-stack.current-stack');
         if(currentStacks.length > 1){
-            throw "Found multiple current stacks in world!";
+            throw new Error("Found multiple current stacks in world!");
         }
         return currentStacks[0].model;
     },
@@ -744,6 +780,10 @@ const System = {
         if(!worldJSON){
             throw new Error(`World not found in serialization!`);
         }
+        // Remove any existing WorldViews
+        Array.from(document.querySelectorAll('st-world')).forEach(el => {
+            el.remove();
+        });
         this.deserializePart(
             worldJSON,
             null,

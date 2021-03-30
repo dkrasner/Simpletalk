@@ -33,6 +33,10 @@ class WorldStack extends Part {
         // be 'world'
         this.id = 'world';
 
+        // Bind general methods
+        this.sendOpenStackTo = this.sendOpenStackTo.bind(this);
+        this.sendCloseStackTo = this.sendCloseStackTo.bind(this);
+
         // Bind navigation methods
         this.goToNextStack = this.goToNextStack.bind(this);
         this.goToPrevStack = this.goToPrevStack.bind(this);
@@ -47,10 +51,8 @@ class WorldStack extends Part {
         if(stacks.length < 2){
             return;
         }
-        let currentIdx = this.partProperties.getPropertyNamed(
-            this,
-            'current'
-        );
+        let currentIdx = this.currentStackIndex;
+        let currentStack = stacks[currentIdx];
         let nextIdx = currentIdx + 1;
         if(nextIdx >= stacks.length){
             nextIdx = (nextIdx % stacks.length);
@@ -60,6 +62,11 @@ class WorldStack extends Part {
             'current',
             nextIdx
         );
+        let nextStack = stacks[nextIdx];
+        if(currentStack.id != nextStack.id){
+            this.sendCloseStackTo(currentStack);
+            this.sendOpenStackTo(nextStack);
+        }
     }
 
     goToStackById(anId){
@@ -72,12 +79,18 @@ class WorldStack extends Part {
         if(!found){
             throw new Error(`The stack id: ${anId} cant be found on this stack`);
         }
+        let currentStack = this.currentStack;
         let foundIdx = stacks.indexOf(found);
         this.partProperties.setPropertyNamed(
             this,
             'current',
             foundIdx
         );
+        let nextStack = stacks[foundIdx];
+        if(currentStack.id != nextStack.id){
+            this.sendCloseStackTo(currentStack);
+            this.sendOpenStackTo(nextStack);
+        }
     }
 
     goToPrevStack(){
@@ -87,10 +100,8 @@ class WorldStack extends Part {
         if(stacks.length < 2){
             return;
         }
-        let currentIdx = this.partProperties.getPropertyNamed(
-            this,
-            'current'
-        );
+        let currentIdx = this.currentStackIndex;
+        let currentStack = stacks[currentIdx];
         let nextIdx = currentIdx - 1;
         if(nextIdx < 0){
             nextIdx = stacks.length + nextIdx;
@@ -100,6 +111,11 @@ class WorldStack extends Part {
             'current',
             nextIdx
         );
+        let nextStack = stacks[nextIdx];
+        if(currentStack.id != nextStack.id){
+            this.sendCloseStackTo(currentStack);
+            this.sendOpenStackTo(nextStack);
+        }
     }
 
     goToNthStack(anIndex){
@@ -112,11 +128,53 @@ class WorldStack extends Part {
         if(trueIndex < 0 || trueIndex > stacks.length -1){
             throw new Error(`Cannot navigate to stack number ${anIndex} -- out of bounds`);
         }
+        let currentStack = this.currentStack;
         this.partProperties.setPropertyNamed(
             this,
             'current',
             trueIndex
         );
+        let nextStack = stacks[trueIndex];
+        if(currentStack.id != nextStack.id){
+            this.sendCloseStackTo(currentStack);
+            this.sendOpenStackTo(nextStack);
+        }
+    }
+
+    sendCloseStackTo(aStack){
+        this.sendMessage({
+            type: 'command',
+            commandName: 'closeStack',
+            args: [],
+            shouldIgnore: true
+        }, aStack);
+        let currentCard = aStack.currentCard;
+        if(currentCard){
+            aStack.sendMessage({
+                type: 'command',
+                commandName: 'closeCard',
+                args: [],
+                shouldIgnore: true
+            }, aStack.currentCard);
+        }
+    }
+
+    sendOpenStackTo(aStack){
+        this.sendMessage({
+            type: 'command',
+            commandName: 'openStack',
+            args: [],
+            shouldIgnore: true
+        }, aStack);
+        let currentCard = aStack.currentCard;
+        if(currentCard){
+            aStack.sendMessage({
+                type: 'command', 
+                commandName: 'ope nCard',
+                args: [],
+                shouldIgnore: true
+            }, aStack.currentCard);
+        }
     }
 
     get type(){
@@ -136,7 +194,7 @@ class WorldStack extends Part {
         let result = {
             type: this.type,
             id: this.id,
-            properties: [],
+            properties: {},
             subparts: this.subparts.map(subpart => {
                 return subpart.id;
             }),
@@ -151,6 +209,11 @@ class WorldStack extends Part {
         this.partProperties._properties.forEach(prop => {
             let name = prop.name;
             let value = prop.getValue(this);
+            // If this is the events set, transform
+            // it to an Array first (for serialization)
+            if(name == 'events'){
+                value = Array.from(value);
+            }
             result.properties[name] = value;
         });
         return result;
@@ -162,6 +225,23 @@ class WorldStack extends Part {
     // 'handlers of last resort'
     delegateMessage(aMessage){
         return this.sendMessage(aMessage, window.System);
+    }
+
+    get currentStackIndex(){
+        return this.partProperties.getPropertyNamed(
+            this,
+            'current'
+        );
+    }
+
+    get currentStack(){
+        let stacks = this.subparts.filter(subpart => {
+            return subpart.type == 'stack';
+        });
+        if(stacks.length){
+            return stacks[this.currentStackIndex];
+        }
+        return null;
     }
 
     static fromSerialized(ownerId, json){
