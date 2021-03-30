@@ -147,7 +147,7 @@ class Part {
                     name
                 ]
             });
-        } else {
+        } else if(this.acceptsSubpart(partType)){
             this.sendMessage({
                 type: 'command',
                 commandName: 'newModel',
@@ -157,6 +157,16 @@ class Part {
                     name
                 ]
             }, window.System);
+        } else {
+            this.delegateMessage({
+                type: 'command',
+                commandName: 'newModel',
+                args: [
+                    partType,
+                    ownerId,
+                    name
+                ]
+            });
         }
     }
 
