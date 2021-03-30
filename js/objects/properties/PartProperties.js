@@ -102,7 +102,7 @@ class DynamicProperty extends BasicProperty {
     // incoming value
     setValue(owner, val, notify=true){
         if(!this.readOnly){
-            this.valueSetter(owner, this, val);
+            this.valueSetter(owner, this, val, notify);
             if(notify){
                 owner.propertyChanged(
                     this.name,
@@ -121,15 +121,16 @@ class DynamicProperty extends BasicProperty {
   * styling options.
   **/
 class StyleProperty extends BasicProperty {
-    constructor(name, defaultValue,  styler=cssStyler, readOnly=false, aliases=[]){
+    constructor(name, defaultValue,  propName='cssStyle', styler=cssStyler, readOnly=false, aliases=[]){
         super(name, defaultValue, readOnly, aliases);
+        this.propName = propName;
         this.styler = styler;
     }
 
     // In this override, we update the cssStyle property
     setValue(owner, val, notify=true){
         if(!this.readOnly){
-            let styleProperty = owner.partProperties.findPropertyNamed("cssStyle");
+            let styleProperty = owner.partProperties.findPropertyNamed(this.propName);
             let style = styleProperty.getValue(owner);
             let newStyle = this.styler(style, this.name, val);
             styleProperty.setValue(owner, newStyle, notify);
@@ -206,12 +207,12 @@ class PartProperties {
     // with the given name or alias.
     // If the property is not found, we throw an
     // error
-    setPropertyNamed(owner, aName, aValue){
+    setPropertyNamed(owner, aName, aValue, notify=true){
         let found = this.findPropertyNamed(aName);
         if(!found){
             throw new Error(`${owner} does not have property "${aName}"`);
         }
-        return found.setValue(owner, aValue);
+        return found.setValue(owner, aValue, notify);
     }
 
     // If you add a property with a name or alias

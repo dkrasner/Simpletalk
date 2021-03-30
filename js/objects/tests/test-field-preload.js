@@ -24,34 +24,29 @@ describe('Field Part/Model Tests', () =>{
         assert.exists(fieldModel);
         assert.equal(fieldModel.type, 'field');
     });
-    it('Can set the htmlContent property', () => {
-        let htmlToSet = "<div>on message</div><div>   some command</div><div>end message<br></div>";
-        fieldModel.partProperties.setPropertyNamed(
-            fieldModel,
-            'htmlContent',
-            htmlToSet
-        );
-
-        let accessedValue = fieldModel.partProperties.getPropertyNamed(
-            fieldModel,
-            'htmlContent'
-        );
-
-        assert.equal(accessedValue, htmlToSet);
-    });
 });
 
 let fieldView;
-describe('FieldView tests', () => {
+describe('FieldView basic tests', () => {
+    before('', () => {
+        let text = "some text";
+        fieldModel.partProperties.setPropertyNamed(
+            fieldModel,
+            'text',
+            text
+        );
+        let html = "<div>some text</div>";
+        fieldModel.partProperties.setPropertyNamed(
+            fieldModel,
+            'innerHTML',
+            html
+        );
+    });
     it('Can create a view element', () => {
         fieldView = document.createElement('st-field');
         assert.exists(fieldView);
     });
     it('Can set the view model', () => {
-        let accessedValue = fieldModel.partProperties.getPropertyNamed(
-            fieldModel,
-            'htmlContent'
-        );
         fieldView.setModel(fieldModel);
         assert.equal(fieldView.model, fieldModel);
     });
@@ -64,23 +59,28 @@ describe('FieldView tests', () => {
         let found = document.querySelector('st-field');
         assert.equal(fieldView, found);
     });
-    it('Mounted shadow textarea has current model value', () => {
+    it('Mounted shadow textarea has current model text value', () => {
         let textArea = fieldView._shadowRoot.querySelector('.field-textarea');
         let modelValue = fieldModel.partProperties.getPropertyNamed(
             fieldModel,
-            'htmlContent'
+            'text'
         );
-
-        assert.equal(textArea.innerHTML, modelValue);
+        assert.equal(textArea.textContent, modelValue);
     });
-    it('textContent property is updated after the model is set', () => {
-        let textContent = `on message\n   some command\nend message`;
-        let accessedValue = fieldModel.partProperties.getPropertyNamed(
+    it('innerHTML is updated after text is', () => {
+        let textArea = fieldView._shadowRoot.querySelector('.field-textarea');
+        let newText = `on message\n   something NEW\nend message`;
+        fieldModel.partProperties.setPropertyNamed(
             fieldModel,
-            'textContent'
+            'text',
+            newText
+        );
+        let htmlValue = fieldModel.partProperties.getPropertyNamed(
+            fieldModel,
+            'innerHTML'
         );
 
-        assert.equal(accessedValue, textContent);
+        assert.equal(htmlValue, newText);
     });
     it('textToHtml and htmlToText are idempotent 1 (empty)', () => {
         let fieldView = document.querySelector('st-field');
@@ -115,7 +115,7 @@ describe('FieldView tests', () => {
         assert.equal(newContentText, fieldView.htmlToText(textContainer));
         // assert.equal(newContentHtml, fieldView.textToHtml(newContentText));
     });
-    it('Entering text into the shadow textarea changes the model htmlContent and textContent prop', () => {
+    it('Entering text into the shadow textarea changes the model innerHTML and text prop', () => {
         let textArea = fieldView._shadowRoot.querySelector('.field-textarea');
         let newHTMLContent = "<div>on message</div><div>   something new</div><div>end message<br></div>";
         let newTextContent = `on message\n   something new\nend message`;
@@ -123,18 +123,114 @@ describe('FieldView tests', () => {
         // Simulate typing the input events
         let event = new window.Event('input');
         textArea.innerHTML = newHTMLContent;
+        // due to some JSDOM weirdness we have to set the innerText explicitely, unlike in a 'real
+        // DOM element '...ugggh
+        textArea.innerText = newTextContent;
         textArea.dispatchEvent(event);
 
         let foundHTMLContent = fieldModel.partProperties.getPropertyNamed(
             fieldModel,
-            'htmlContent'
+            'innerHTML'
         );
         assert.equal(newHTMLContent, foundHTMLContent);
 
         let foundTextContent = fieldModel.partProperties.getPropertyNamed(
             fieldModel,
-            'textContent'
+            'text'
         );
         assert.equal(newTextContent, foundTextContent);
+    });
+});
+
+class MockRange {
+    constructor(){
+        this.node = null;
+    }
+
+    selectNode(node){
+        this.node = node;
+    }
+
+    insertNode(newNode){
+        this.node.appendChild(newNode);
+    }
+
+    deleteContents(){
+        this.node.innerHTML = '';
+    }
+
+
+}
+
+describe('FieldView Target Range tests', () => {
+    let range = null;
+    let line1HTML = "<div>line1</div>";
+    let line2HTML = "<div>line2</div>";
+    before('Set up a range for testing', () => {
+        let html = line1HTML + line2HTML;
+        fieldModel.partProperties.setPropertyNamed(
+            fieldModel,
+            'innerHTML',
+            html
+        );
+        assert.exists(fieldView);
+        // NOTE: b/c of JSDON weirdness we need to update the innerText manually
+        fieldView.textarea.innerText = "line1\nline2";
+        // create a range and set it to the first child of the textarea
+        let firstChild = fieldView.textarea.children[0];
+        range = new MockRange();
+        range.selectNode(firstChild);
+        assert.equal(firstChild.innerHTML, range.node.innerHTML);
+        // set the range as a selectedRange in the field view
+        fieldView.selectionRanges['rangeUID'] = range;
+
+    });
+    it('Inserting Range (basic) updates the textarea', () => {
+        let newHTML = "<div><span style='color: red'>new line </span></div>";
+        // NOTE: b/c of JSDON weirdness we need to update the innerText manually
+        fieldView.textarea.innerText = "new line\nline2";
+        fieldView.insertRange('rangeUID', newHTML);
+        let expectedHTML = '<div><span><div><span style="color: red">new line </span></div></span></div>' + line2HTML;
+        assert.equal(expectedHTML, fieldView.textarea.innerHTML);
+    });
+    it('Inserting Range (basic) updates the "text" and "innerHTML" part properties', () => {
+        let expectedHTML = '<div><span><div><span style="color: red">new line </span></div></span></div>' + line2HTML;
+        let innerHTML = fieldModel.partProperties.getPropertyNamed(fieldModel, 'innerHTML');
+        assert.equal(expectedHTML, innerHTML);
+        let expectedText = "new line\nline2";
+        let text = fieldModel.partProperties.getPropertyNamed(fieldModel, 'text');
+        assert.equal(expectedText, text);
+    });
+    it.skip('Inserting Range (with target)', () => {
+        // reset everything first
+        let html = line1HTML + line2HTML;
+        // NOTE: b/c of JSDON weirdness we need to update the innerText manually
+        fieldView.textarea.innerText = "line1\nline2";
+        fieldModel.partProperties.setPropertyNamed(
+            fieldModel,
+            'innerHTML',
+            html
+        );
+        assert.equal(html, fieldView.textarea.innerHTML);
+        assert.equal("line1\nline2", fieldModel.partProperties.getPropertyNamed(fieldModel, 'text'));
+        // create a range and set it to the first child of the textarea
+        let firstChild = fieldView.textarea.children[0];
+        range = new MockRange();
+        range.selectNode(firstChild);
+        // set the range as a selectedRange in the field view
+        fieldView.selectionRanges['rangeUID'] = range;
+
+        // Note: here the fieldView will be its own target
+        // set the range ID
+        fieldModel.partProperties.setPropertyNamed(
+            fieldModel,
+            'targetRangeId',
+            "rangeUID"
+        );
+
+        let newHTML = "<div><span style='color: red'>new line </span></div>";
+        let target = `field id ${fieldModel.id}`;
+        console.log(target);
+        fieldView.setRangeInTarget(target, newHTML);
     });
 });
