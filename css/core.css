@@ -44,6 +44,7 @@ body {
     width: 100vw;
     height: 100vh;
     overflow: hidden;
+    font-family: "Crimson Pro";
 }
 
 .active {
@@ -97,7 +98,6 @@ st-button {
     padding-right: 10px;
     padding-top: 5px;
     padding-bottom: 5px;
-    font-family: monospace;
     border: 1px solid rgb(50, 50, 50);
     user-select: none;
     margin-left: -1px;
@@ -170,25 +170,6 @@ st-field {
     height: var(--field-default-height);
     position: absolute;
     background-color: var(--palette-cornsik);
-}
-
-
-/* =Editor Styles
- *----------------------------------------------------*/
-st-button-editor{
-    width: 300px;
-    background-color: var(--palette-cornsik);
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-}
-
-st-button-editor > color-wheel{
-    position: absolute;
-}
-
-st-button-editor:active {
-    z-index: 100;
 }
 
 /* =Layout Class Styles
@@ -321,4 +302,8 @@ st-world > st-stack > :not(.current-card).list-layout {
     background-size: var(--marching-ant-length) var(--marching-ant-width), var(--marching-ant-length) var(--marching-ant-width), var(--marching-ant-width) var(--marching-ant-length), var(--marching-ant-width) var(--marching-ant-length);
     animation: marching-ants-animation 400ms infinite linear;
     border-color: transparent;
+}
+
+.editable {
+    outline: solid 1px var(--palette-orange);
 }
