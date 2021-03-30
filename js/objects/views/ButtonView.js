@@ -169,11 +169,11 @@ class ButtonView extends PartView {
 
     // Overwriting the base class open/close editor methods
     openEditor(){
-        window.System.openEditorForPart(this.model.id);
+        window.System.openEditorForPart("button", this.model.id);
     }
 
     closeEditor(){
-        window.System.closeEditorForPart(this.model.id);
+        window.System.closeEditorForPart("button", this.model.id);
     }
 };
 

@@ -121,9 +121,9 @@ describe('ScriptEditor Functionality', () => {
         let fieldModel = editorFieldView.model;
         let textArea = editorFieldView._shadowRoot.querySelector('.field-textarea');
         assert.exists(textArea);
-        let text = fieldModel.partProperties.getPropertyNamed(
+        let textContent = fieldModel.partProperties.getPropertyNamed(
             fieldModel,
-            'text'
+            'textContent'
         );
 
         let cardModel = document.querySelector('.current-stack > .current-card').model;
@@ -138,20 +138,16 @@ describe('ScriptEditor Functionality', () => {
         let fieldModel = editorFieldView.model;
         let saveButtonModel = editorSaveButtonView.model;
 
+        // TODO at the moment field does not respond to html content updates!
+        let newScriptHTML = editorFieldView.textToHtml(newScript);
         let textArea = editorFieldView._shadowRoot.querySelector('.field-textarea');
+        textArea.innerHTML = newScriptHTML;
         fieldModel.partProperties.setPropertyNamed(
             fieldModel,
-            'innerHTML',
-            newScript
+            'htmlContent',
+            newScriptHTML
         );
-        // due to JSDOM weirdness where element.innerText is not auto set if element.innerHTML is
-        // we need to set the 'text' property again without notification
-        fieldModel.partProperties.setPropertyNamed(
-            fieldModel,
-            'text',
-            newScript,
-            false
-        );
+
         // Send click on the button,
         // which should itself send a message
         // to set the script of the card
@@ -186,7 +182,7 @@ describe('ScriptEditor Functionality', () => {
 
             let foundHTMLContent = fieldModel.partProperties.getPropertyNamed(
                 fieldModel,
-                'innerHTML'
+                'htmlContent'
             );
             assert.equal(foundHTMLContent, completedHTMLContent);
         });
@@ -203,7 +199,7 @@ describe('ScriptEditor Functionality', () => {
 
             let foundHTMLContent = fieldModel.partProperties.getPropertyNamed(
                 fieldModel,
-                'innerHTML'
+                'htmlContent'
             );
             assert.equal(foundHTMLContent, completedHTMLContent);
         });

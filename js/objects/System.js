@@ -16,6 +16,8 @@ import Audio from './parts/Audio.js';
 import Image from './parts/Image.js';
 import Area from './parts/Area.js';
 
+import ButtonEditor from './parts/editors/ButtonEditor.js';
+
 import WorldView from './views/WorldView.js';
 import StackView from './views/StackView.js';
 import ButtonView from './views/ButtonView.js';
@@ -30,7 +32,7 @@ import AudioView from './views/AudioView.js';
 
 
 import Halo from './views/Halo.js';
-import EditorView from './views/editors/EditorView.js';
+import ButtonEditorView from './views/editors/ButtonEditorView.js';
 
 import ohm from 'ohm-js';
 import interpreterSemantics from '../ohm/interpreter-semantics.js';
@@ -952,23 +954,27 @@ const System = {
         return currentStack.goToCardById(cardId);
     },
 
-    openEditorForPart: function(partId){
+    openEditorForPart: function(partType, partId){
         // if there is already and editor open for this part do nothing
-        let editor = document.querySelector(`st-editor[target-id="${partId}"]`);
+        let editor = document.querySelector(`st-${partType}-editor[target-id="${partId}"]`);
         if(editor){
             return;
         }
         let currentCard = this.getCurrentCardModel();
         let currentCardView = this.findViewById(currentCard.id);
-        editor = document.createElement(
-            "st-editor"
-        );
+        if(partType === 'button'){
+            // Create the new view instance,
+            // append to parent, and set the target 
+            editor = document.createElement(
+                "st-button-editor"
+            );
+        }
         currentCardView.appendChild(editor);
         editor.setTarget(partId);
     },
 
-    closeEditorForPart: function(partId){
-        let editor = document.querySelector(`st-editor[target-id="${partId}"]`);
+    closeEditorForPart: function(partType, partId){
+        let editor = document.querySelector(`st-${partType}-editor[target-id="${partId}"]`);
         editor.parentNode.removeChild(editor);
     }
 };
@@ -1238,7 +1244,7 @@ System._commandHandlers['openScriptEditor'] = function(senders, targetId){
         'title',
         winTitle
     );
-
+    
     let winView = this.findViewById(winModel.id);
     let winStackModel = this.newModel('stack', winModel.id);
     let winStackView = this.findViewById(winStackModel.id);
@@ -1276,15 +1282,23 @@ System._commandHandlers['openScriptEditor'] = function(senders, targetId){
         'space-fill'
     );
     let fieldView = this.findViewById(fieldModel.id);
+    // Set the field's htmlContent to be the textToHtml converted
+    // script of the given target part.
     let currentScript = targetPart.partProperties.getPropertyNamed(
         targetPart,
         'script'
     );
+
+    let htmlContent = fieldView.textToHtml(currentScript);
+    // set the inner html of the textarea with the proper htmlContent
+    // NOTE: at the moment fieldView does not subscribe to htmlContent
+    // change due to cursor focus and other issues
     let textArea = fieldView._shadowRoot.querySelector(".field-textarea");
+    textArea.innerHTML = htmlContent;
     fieldModel.partProperties.setPropertyNamed(
         fieldModel,
-        'text',
-        currentScript
+        'htmlContent',
+        htmlContent
     );
 
     let saveBtnModel = this.newModel('button', currentCard.id);
@@ -1299,14 +1313,14 @@ System._commandHandlers['openScriptEditor'] = function(senders, targetId){
     // Set the save button's action to be to save the script
     // on the part
     saveBtnModel._commandHandlers['click'] = function(){
-        let text = fieldModel.partProperties.getPropertyNamed(
+        let textContent = fieldModel.partProperties.getPropertyNamed(
             fieldModel,
-            'text'
+            'textContent'
         );
         targetPart.partProperties.setPropertyNamed(
             targetPart,
             'script',
-            text
+            textContent
         );
     };
 };
@@ -1346,17 +1360,23 @@ System._commandHandlers['openSimpletalkGrammar'] = function(senders, ruleName){
     // of the new window.
     let fieldModel = this.newModel('field', currentCard.id);
     let fieldView = this.findViewById(fieldModel.id);
+    // Set the field's htmlContent to be the textToHtml converted
+    // Simpletalk grammar.
     let grammar = System.grammar.source.sourceString;
 
+    let htmlContent = fieldView.textToHtml(grammar);
+    // set the inner html of the textarea with the proper htmlContent
+    // NOTE: at the moment fieldView does not subscribe to htmlContent
+    // change due to cursor focus and other issues
+    let textArea = fieldView._shadowRoot.querySelector(".field-textarea");
+    textArea.innerHTML = htmlContent;
     fieldModel.partProperties.setPropertyNamed(
         fieldModel,
-        'text',
-        grammar
+        'htmlContent',
+        htmlContent
     );
 
     // if the ruleName has been provided, scroll that into view
-    // TODO this doesn't work properly
-    let textArea = fieldView._shadowRoot.querySelector(".field-textarea");
     if(ruleName){
         let regex = `${ruleName}`;
         for(var i = 0; i < textArea.children.length; i++){
@@ -1410,15 +1430,21 @@ System._commandHandlers['openDebugger'] = function(senders, partId){
     let fieldModel = this.newModel('field', currentCard.id);
     let fieldView = this.findViewById(fieldModel.id);
 
-    let text = "";
+    let textContent = "";
     Object.keys(target.commandHandlerRegistry).forEach((name) =>{
         let info = target.commandHandlerRegistry[name];
-        text += `${name}: ${JSON.stringify(info)}\n`;
+        textContent += `${name}: ${JSON.stringify(info)}\n`;
     });
+    let htmlContent = fieldView.textToHtml(textContent);
+    // set the inner html of the textarea with the proper htmlContent
+    // NOTE: at the moment fieldView does not subscribe to htmlContent
+    // change due to cursor focus and other issues
+    let textArea = fieldView._shadowRoot.querySelector(".field-textarea");
+    textArea.innerHTML = htmlContent;
     fieldModel.partProperties.setPropertyNamed(
         fieldModel,
-        'text',
-        text
+        'htmlContent',
+        htmlContent
     );
 };
 
@@ -1522,7 +1548,7 @@ document.addEventListener('DOMContentLoaded', () => {
     // Add any other non-part view CustomElements,
     // like the halo
     window.customElements.define('st-halo', Halo);
-    window.customElements.define('st-editor', EditorView);
+    window.customElements.define('st-button-editor', ButtonEditorView);
 
     // Perform the initial setup of
     // the system

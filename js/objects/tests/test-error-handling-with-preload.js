@@ -42,15 +42,15 @@ describe('Error Handling', () => {
             let scriptEditor = window.System.findScriptEditorByTargetId(button.id);
             assert.isNotNull(scriptEditor);
         });
-        it.skip('Script editor has the propertly error marked content', () => {
+        it('Script editor has the propertly error marked content', () => {
            let markedUpScript = [
                 'on doSomethingFirst',
                 'not a command --<<<[Expected:"end"; ruleName: "StatementList"]',
                 'end doSomethingFirst',
             ].join('\n');
             let scriptEditor = window.System.findScriptEditorByTargetId(button.id);
-            let text = scriptEditor.innerText;
-            assert.equal(text, markedUpScript);
+            let textContent = scriptEditor.model.partProperties.getPropertyNamed(scriptEditor, "textContent");
+            assert.equal(markedUpScript, textContent);
         });
     });
     describe('MessageNotUnderstood', () => {
@@ -84,15 +84,15 @@ describe('Error Handling', () => {
             expect(sendErrorMsgFunction).to.not.throw();
         });
 
-        it.skip('MessageNotUnderstood command is marked up in the editor', () => {
+        it('MessageNotUnderstood command is marked up in the editor', () => {
             let markedUpScript = [
                 'on click',
                 'someNotACommandCommand --<<<[MessageNotUnderstood: command; commandName: "someNotACommandCommand"]',
                 'end click',
             ].join('\n');
             let scriptEditor = window.System.findScriptEditorByTargetId(anotherButton.id);
-            let text = scriptEditor.innerText;
-            assert.equal(text, markedUpScript);
+            let textContent = scriptEditor.model.partProperties.getPropertyNamed(scriptEditor, "textContent");
+            assert.equal(markedUpScript, textContent);
         });
     });
 });

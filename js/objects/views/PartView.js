@@ -36,7 +36,6 @@ class PartView extends HTMLElement {
 
         // Bind initial property method
         this.styleCSS = this.styleCSS.bind(this);
-        this.styleTextCSS = this.styleTextCSS.bind(this);
 
         // Bind property change reaction methods
         this.primHandlePropChange = this.primHandlePropChange.bind(this);
@@ -116,7 +115,6 @@ class PartView extends HTMLElement {
         events.forEach((eventName) => this.eventRespond(eventName));
         // load all the initial styling
         this.styleCSS();
-        this.styleTextCSS();
         this.initLayout();
         this.afterModelSet();
     }
@@ -137,7 +135,6 @@ class PartView extends HTMLElement {
         // TODO: Implement the universals
         this.onPropChange('script', this.scriptChanged);
         this.onPropChange('cssStyle', this.styleCSS);
-        this.onPropChange('cssTextStyle', this.styleTextCSS);
         this.onPropChange('editorOpen', (value) => {
             if(value === true){
                 this.openEditor();
@@ -207,14 +204,6 @@ class PartView extends HTMLElement {
 
     styleCSS(){
         let cssStyle = this.model.partProperties.getPropertyNamed(this, "cssStyle");
-        Object.keys(cssStyle).forEach((key) => {
-            let value = cssStyle[key];
-            this.style[key] = value;
-        });
-    }
-
-    styleTextCSS(){
-        let cssStyle = this.model.partProperties.getPropertyNamed(this, "cssTextStyle");
         Object.keys(cssStyle).forEach((key) => {
             let value = cssStyle[key];
             this.style[key] = value;

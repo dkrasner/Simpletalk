@@ -39,13 +39,12 @@ const errorHandler = {
         }
         // get some more info about what the parser expected
         let expectedText = aMessage.parsedScript.getExpectedText();
-        // get the original script
-        let text = aMessage.parsedScript.input;
-        let textLines = text.split("\n");
+        let textContent = scriptEditor.model.partProperties.getPropertyNamed(scriptEditor, "textContent");
+        let textLines = textContent.split("\n");
         // replace said text line with an error marker
         textLines[errorLineNum] += ` --<<<[Expected:${expectedText}; ruleName: "${ruleName}"]`;
-        text = textLines.join("\n");
-        scriptEditor.model.partProperties.setPropertyNamed(scriptEditor.model, "text", text);
+        textContent = textLines.join("\n");
+        scriptEditor.setTextValue(textContent);
         // open the grammar
         this._openGrammar(aMessage.partId, ruleName);
     },
@@ -62,9 +61,8 @@ const errorHandler = {
                 this._openScriptEditor(originalSender.id);
                 scriptEditor = window.System.findScriptEditorByTargetId(originalSender.id);
             }
-            let originalSenderModel = window.System.partsById[originalSender.id];
-            let text = originalSenderModel.partProperties.getPropertyNamed(originalSenderModel, 'script');
-            let textLines = text.split("\n");
+            let textContent = scriptEditor.model.partProperties.getPropertyNamed(scriptEditor, "textContent");
+            let textLines = textContent.split("\n");
             // offending command text line with an error marker
             let regex = new RegExp(`\\s*${commandName}(\s|$)`, 'g');
             for(let i = 0; i < textLines.length; i++){
@@ -75,8 +73,8 @@ const errorHandler = {
             }
             textLines.forEach((line) => {
             });
-            text = textLines.join("\n");
-            scriptEditor.model.partProperties.setPropertyNamed(scriptEditor.model, "text", text);
+            textContent = textLines.join("\n");
+            scriptEditor.setTextValue(textContent);
 
             // finally open the debugger (or current version thereof)
             // NOTE: this is a bit dangerous, b/c if the System doesn't

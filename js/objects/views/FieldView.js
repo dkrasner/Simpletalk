@@ -9,9 +9,8 @@
  */
 import PartView from './PartView.js';
 import ColorWheelWidget from './drawing/ColorWheelWidget.js';
-import interpreterSemantics from '../../ohm/interpreter-semantics.js';
 
-const haloEditButtonSVG = `
+const haloModeButtonSVG = `
 <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-tools" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
   <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
   <path d="M3 21h4l13 -13a1.5 1.5 0 0 0 -4 -4l-13 13v4" />
@@ -23,51 +22,180 @@ const haloEditButtonSVG = `
 </svg>
 `;
 
-const haloLockButtonSVG = `
-<svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-lock" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
-   <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
-   <rect x="5" y="11" width="14" height="10" rx="2"></rect>
-   <circle cx="12" cy="16" r="1"></circle>
-   <path d="M8 11v-4a4 4 0 0 1 8 0v4"></path>
-</svg>
-`;
+const templateString = `
+<style>
+.field {
+    display: flex;
+    align-items: center;
+    flex-direction: column;
+    height: 100%;
+    width: 100%;
+}
 
-const haloUnlockButtonSVG = `
-<svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-lock-open" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
-   <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
-   <rect x="5" y="11" width="14" height="10" rx="2"></rect>
-   <circle cx="12" cy="16" r="1"></circle>
-   <path d="M8 11v-5a4 4 0 0 1 8 0"></path>
-</svg>
-`;
+.field color-wheel {
+    position: absolute;
+}
 
-const fieldTemplateString = `
-      <style>
-        .field {
-            display: flex;
-            align-items: center;
-            flex-direction: column;
-            height: 100%;
-            width: 100%;
-            overflow: auto;
-        }
+.field-textarea-wrapper {
+    width: 100%;
+    height: 100%;
+    overflow: auto;
+}
 
-        .field color-wheel {
-            position: absolute;
-        }
+.field-textarea {
+    width: calc(100% - 5px);
+    font-family: monospace;
+    height: 100%;
+    white-space: pre-wrap;
+    overflow-wrap: anywhere;
+}
 
-        .field-textarea {
-            width: calc(100% - 5px);
-            height: 100%;
-            width: 100%;
-            white-space: pre-wrap;
-            overflow-wrap: anywhere;
-        }
+.field-toolbar {
+    display: flex;
+    justify-content: center;
+    width: 100%;
+    background-color: var(--palette-red);
+    opacity: 1;
+    transition: opacity .5s, transform 1s;
+}
 
-    </style>
-    <div class="field">
-        <div class="field-textarea" spellcheck="false"></div>
-    </div>`;
+.field-toolbar > * {
+    margin-right: 2px;
+    margin-left: 2px;
+    color: initial;
+}
+
+.field-toolbar > *:active {
+    outline: 2px solid #004b67;
+}
+</style>
+<div class="field">
+  <div class="field-toolbar">
+      <select title="Mode" id="field-mode">
+        <option class="heading" selected>- mode -</option>
+        <option value="Bravo">Bravo</option>
+        <option value="SimpleTalk" selected>SimpleTalk</option>
+      </select>
+      <select title="Font Name" id="field-fontname">
+        <option class="heading" selected>- font -</option>
+        <option value="Monospace" selected>Monospace</option>
+        <option value="Crimson Pro">Crimson Prop</option>
+        <option value="Times">Times</option>
+        <option value="cursive">cursive</option>
+        <option value="math">math</option>
+      </select>
+      <select title="Font Size" id="field-fontsize">
+        <option class="heading" selected>- size -</option>
+        <option value="1">X-small</option>
+        <option value="2">Small</option>
+        <option value="3" selected>Medium</option>
+        <option value="4">Large</option>
+        <option value="5">X-Large</option>
+        <option value="6">XX-Large</option>
+        <option value="7">Max</option>
+      </select>
+        <svg xmlns="http://www.w3.org/2000/svg" id="field-clean" class="icon icon-tabler icon-tabler-eraser" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+          <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
+          <path d="M19 19h-11l-4 -4a1 1 0 0 1 0 -1.41l10 -10a1 1 0 0 1 1.41 0l5 5a1 1 0 0 1 0 1.41l-9 9" />
+          <line x1="18" y1="12.3" x2="11.7" y2="6" />
+        </svg>
+        <svg xmlns="http://www.w3.org/2000/svg" id="field-undo"  class="icon icon-tabler icon-tabler-arrow-back-up" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+          <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
+          <path d="M9 13l-4 -4l4 -4m-4 4h11a4 4 0 0 1 0 8h-1" />
+        </svg>
+        <svg xmlns="http://www.w3.org/2000/svg" id="field-redo"  class="icon icon-tabler icon-tabler-arrow-forward-up" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+          <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
+          <path d="M15 13l4 -4l-4 -4m4 4h-11a4 4 0 0 0 0 8h1" />
+        </svg>
+        <svg xmlns="http://www.w3.org/2000/svg" id="field-removeFormat" class="icon icon-tabler icon-tabler-clear-formatting" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+          <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
+          <path d="M17 15l4 4m0 -4l-4 4" />
+          <path d="M7 6v-1h11v1" />
+          <line x1="7" y1="19" x2="11" y2="19" />
+          <line x1="13" y1="5" x2="9" y2="19" />
+        </svg>
+        <svg xmlns="http://www.w3.org/2000/svg" id="field-bold"  class="icon icon-tabler icon-tabler-bold" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+          <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
+          <path d="M7 5h6a3.5 3.5 0 0 1 0 7h-6z" />
+          <path d="M13 12h1a3.5 3.5 0 0 1 0 7h-7v-7" />
+        </svg>
+        <svg xmlns="http://www.w3.org/2000/svg" id="field-italic"  class="icon icon-tabler icon-tabler-italic" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+          <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
+          <line x1="11" y1="5" x2="17" y2="5" />
+          <line x1="7" y1="19" x2="13" y2="19" />
+          <line x1="14" y1="5" x2="10" y2="19" />
+        </svg>
+        <svg xmlns="http://www.w3.org/2000/svg" id="field-underline" class="icon icon-tabler icon-tabler-underline" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+          <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
+          <line x1="6" y1="20" x2="18" y2="20" />
+          <path d="M8 5v6a4 4 0 0 0 8 0v-6" />
+        </svg>
+        <svg xmlns="http://www.w3.org/2000/svg" id="field-justifyleft"  class="icon icon-tabler icon-tabler-align-left" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+          <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
+          <line x1="4" y1="6" x2="20" y2="6" />
+          <line x1="4" y1="12" x2="14" y2="12" />
+          <line x1="4" y1="18" x2="18" y2="18" />
+        </svg>
+        <svg xmlns="http://www.w3.org/2000/svg" id="field-justifycenter" class="icon icon-tabler icon-tabler-align-center" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+          <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
+          <line x1="4" y1="6" x2="20" y2="6" />
+          <line x1="8" y1="12" x2="16" y2="12" />
+          <line x1="6" y1="18" x2="18" y2="18" />
+        </svg>
+        <svg xmlns="http://www.w3.org/2000/svg" id="field-justifyright"  class="icon icon-tabler icon-tabler-align-right" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+          <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
+          <line x1="4" y1="6" x2="20" y2="6" />
+          <line x1="10" y1="12" x2="20" y2="12" />
+          <line x1="6" y1="18" x2="20" y2="18" />
+        </svg>
+        <svg xmlns="http://www.w3.org/2000/svg" id="field-insertunorderedlist" class="icon icon-tabler icon-tabler-list" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+          <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
+          <line x1="9" y1="6" x2="20" y2="6" />
+          <line x1="9" y1="12" x2="20" y2="12" />
+          <line x1="9" y1="18" x2="20" y2="18" />
+          <line x1="5" y1="6" x2="5" y2="6.01" />
+          <line x1="5" y1="12" x2="5" y2="12.01" />
+          <line x1="5" y1="18" x2="5" y2="18.01" />
+        </svg>
+        <svg xmlns="http://www.w3.org/2000/svg" id="field-outdent"  class="icon icon-tabler icon-tabler-indent-decrease" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+          <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
+          <line x1="20" y1="6" x2="13" y2="6" />
+          <line x1="20" y1="12" x2="11" y2="12" />
+          <line x1="20" y1="18" x2="13" y2="18" />
+          <path d="M8 8l-4 4l4 4" />
+        </svg>
+        <svg xmlns="http://www.w3.org/2000/svg" id="field-indent"  class="icon icon-tabler icon-tabler-indent-increase" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+          <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
+          <line x1="20" y1="6" x2="9" y2="6" />
+          <line x1="20" y1="12" x2="13" y2="12" />
+          <line x1="20" y1="18" x2="9" y2="18" />
+          <path d="M4 8l4 4l-4 4" />
+        </svg>
+        <svg xmlns="http://www.w3.org/2000/svg" id="field-cut"  class="icon icon-tabler icon-tabler-cut" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+          <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
+          <circle cx="7" cy="17" r="3" />
+          <circle cx="17" cy="17" r="3" />
+          <line x1="9.15" y1="14.85" x2="18" y2="4" />
+          <line x1="6" y1="4" x2="14.85" y2="14.85" />
+        </svg>
+        <svg id="field-textColor" xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-color-picker" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+          <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
+          <line x1="11" y1="7" x2="17" y2="13" />
+          <path d="M5 19v-4l9.7 -9.7a1 1 0 0 1 1.4 0l2.6 2.6a1 1 0 0 1 0 1.4l-9.7 9.7h-4" />
+        </svg>
+        <svg id="field-backgroundColor" xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-color-swatch" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+          <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
+          <path d="M19 3h-4a2 2 0 0 0 -2 2v12a4 4 0 0 0 8 0v-12a2 2 0 0 0 -2 -2" />
+          <path d="M13 7.35l-2 -2a2 2 0 0 0 -2.828 0l-2.828 2.828a2 2 0 0 0 0 2.828l9 9" />
+          <path d="M7.3 13h-2.3a2 2 0 0 0 -2 2v4a2 2 0 0 0 2 2h12" />
+          <line x1="17" y1="17" x2="17" y2="17.01" />
+        </svg>
+   </div>
+   <div class="field-textarea-wrapper">
+      <div class="field-textarea" contenteditable="true" spellcheck="false">
+   </div>
+  </div>
+</div>`;
 
 
 function formatDoc(sCmd, sValue) {
@@ -81,11 +209,9 @@ class FieldView extends PartView {
         // this.editorCompleter = this.simpleTalkCompleter;
         this.editorCompleter = null;
         this.contextMenuOpen = false;
-        this.haloLockUnlockButton = null;
-        this.selectionRanges = {};
 
         this.template = document.createElement('template');
-        this.template.innerHTML = fieldTemplateString;
+        this.template.innerHTML = templateString;
         this._shadowRoot = this.attachShadow({mode: 'open'});
         this._shadowRoot.appendChild(
             this.template.content.cloneNode(true)
@@ -98,45 +224,36 @@ class FieldView extends PartView {
         this.openContextMenu = this.openContextMenu.bind(this);
         this.closeContextMenu = this.closeContextMenu.bind(this);
         this.doIt = this.doIt.bind(this);
-        this.handleSelection = this.handleSelection.bind(this);
-        this.openField = this.openField.bind(this);
         this.textToHtml = this.textToHtml.bind(this);
+        this.setTextValue = this.setTextValue.bind(this);
         this.setupPropHandlers = this.setupPropHandlers.bind(this);
+        this.setUpToolbar = this.setUpToolbar.bind(this);
+        this._toolbarHandler = this._toolbarHandler.bind(this);
+        this.setEditorMode = this.setEditorMode.bind(this);
         this.simpleTalkCompleter = this.simpleTalkCompleter.bind(this);
-        this.initCustomHaloButtons = this.initCustomHaloButtons.bind(this);
-        this.insertRange = this.insertRange.bind(this);
-        this.setRangeInTarget = this.setRangeInTarget.bind(this);
+        this.initCustomHaloButton = this.initCustomHaloButton.bind(this);
+        this.toggleMode = this.toggleMode.bind(this);
+        this.toggleModePartProperty = this.toggleModePartProperty.bind(this);
+        this.openColorWheelWidget = this.openColorWheelWidget.bind(this);
+        this.onColorSelected = this.onColorSelected.bind(this);
+        this.onTransparencyChanged = this.onTransparencyChanged.bind(this);
 
         this.setupPropHandlers();
     }
 
     setupPropHandlers(){
-        this.onPropChange('editable', (value, id) => {
-            this.textarea.setAttribute('contenteditable', value);
-            if(value === true){
-                this.haloLockUnlockButton = this.haloLockButton;
-                this.classList.add("editable");
-            } else if (value === false){
-                this.haloLockUnlockButton = this.haloUnlockButton;
-                this.classList.remove("editable");
-            }
-        });
-        // 'text' is a DynamicProp whose setter will set the corresponding
-        // value for `innerHTML`. This way we can have programmatic content
-        // setting and still allow to not loose markup.
-        // 'innerHTML' is a BasicProp. See how these are set, without
-        // notification in this.onInput()
-        this.onPropChange('text', (value, id) => {
-            this.textarea.textContent = value;
-        });
-        this.onPropChange('innerHTML', (value, id) => {
-            this.textarea.innerHTML = value;
+        // When the htmlContent changes I update the textContent property
+        // this way anything that depends on the underlying content can
+        // access it directly
+        this.onPropChange('htmlContent', (value, id) => {
             this.model.partProperties.setPropertyNamed(
                 this.model,
-                "text",
-                this.textarea.innerText,
-                false // do not notify, to avoid an infinite loop
+                'textContent',
+                this.htmlToText(this.textarea)
             );
+        });
+        this.onPropChange('mode', (value, id) => {
+            this.toggleMode(value);
         });
     }
 
@@ -147,13 +264,15 @@ class FieldView extends PartView {
         // system-web events that we don't want meddled with at the moment, like
         // entering text in a field, and ones exposed in the environemnt for scripting
         this.textarea = this._shadowRoot.querySelector('.field-textarea');
-        let isEditable = this.model.partProperties.getPropertyNamed(this.model, "editable");
-        this.textarea.setAttribute('contenteditable', isEditable);
+        this.textareaWrapper = this._shadowRoot.querySelector('.field-textarea-wrapper');
         this.textarea.addEventListener('input', this.onInput);
         this.textarea.addEventListener('keydown', this.onKeydown);
         this.textarea.focus();
         // document.execCommand("defaultParagraphSeparator", false, "br");
-        this.addEventListener('click', this.onClick);
+        this.setUpToolbar();
+        if(!this.haloModeButton){
+            this.initCustomHaloButton();
+        }
     }
 
     afterDisconnected(){
@@ -162,28 +281,131 @@ class FieldView extends PartView {
     }
 
     afterModelSet(){
-        this.textarea = this._shadowRoot.querySelector('.field-textarea');
         // If we have a model, set the value of the textarea
-        // to the current html of the field model
-        let innerHTML = this.model.partProperties.getPropertyNamed(
+        // to the current text of the field model
+        this.textarea = this._shadowRoot.querySelector('.field-textarea');
+        let htmlContent = this.model.partProperties.getPropertyNamed(
             this.model,
-            'innerHTML'
+            'htmlContent'
         );
-        this.textarea.innerHTML = innerHTML;
+        this.textarea.innerHTML = htmlContent;
+        // set the textContent property
+        this.model.partProperties.setPropertyNamed(
+            this.model,
+            'textContent',
+            this.htmlToText(this.textarea)
+        );
+        // set the editing mode
+        let mode = this.model.partProperties.getPropertyNamed(this.model, "mode");
+        this.toggleMode(mode);
+    }
 
-        // setup the lock/unlock halo button
-        this.initCustomHaloButtons();
-        let editable = this.model.partProperties.getPropertyNamed(
-            this.model,
-            'editable'
-        );
-        if(editable === true){
-            this.haloLockUnlockButton = this.haloLockButton;
-            this.classList.add("editable");
-        } else if (editable === false){
-            this.haloLockUnlockButton = this.haloUnlockButton;
-            this.classList.remove("editable");
+    setUpToolbar(){
+        let toolbar = this._shadowRoot.querySelector('.field-toolbar');
+        toolbar.childNodes.forEach((node) => {
+            // current id contains the command and the value, maybe this is too implicit
+            // format "field-command-value"
+            // TODO
+            if(node.id){
+                let [_, command, value] = node.id.split("-");
+                let eventName = "click";
+                if(command === "fontsize"){
+                    eventName = "change";
+                }
+                node.addEventListener(eventName, (event) => {this._toolbarHandler(event, command, value);});
+            }
+        });
+    }
+
+    _toolbarHandler(event, command, value){
+        if(command === "clean"){
+            if(confirm('Are you sure?')){
+                this.textarea.innerHTML = "";
+            };
+            return true;
+        } else if(["fontsize", "fontname"].indexOf(command) > -1){
+            value = event.target.value;
+        } else if(command === "textColor"){
+            this.openColorWheelWidget(event, "text-color");
+        } else if(command === "backgroundColor"){
+            this.openColorWheelWidget(event, "background-color");
+        } else if(command === "mode"){
+            this.setEditorMode(event.target.value);
+            return true;
         }
+        // execute the command
+        document.execCommand(command, false, value);
+        this.model.partProperties.setPropertyNamed(
+            this.model,
+            'htmlContent',
+            this.htmlToText(this.textarea)
+        );
+        this.textarea.focus();
+    }
+
+    setTextValue(text){
+        let innerHTML = this.textToHtml(text);
+        this.textarea.innerHTML = innerHTML;
+        this.model.partProperties.setPropertyNamed(
+            this.model,
+            'htmlContent',
+            innerHTML
+        );
+    }
+
+    openColorWheelWidget(event, command){
+        let colorWheelWidget = new ColorWheelWidget(command);
+        // add an attribute describing the command
+        colorWheelWidget.setAttribute("selector-command", command);
+        // add a custom callback for the close button
+        let closeButton = colorWheelWidget.shadowRoot.querySelector('#close-button');
+        closeButton.addEventListener('click', () => {colorWheelWidget.remove();});
+        // add the colorWheelWidget
+        event.target.parentNode.after(colorWheelWidget);
+        // add a color-selected event callback
+        // colorWheelWidget event listener
+        let colorWheel = this.shadowRoot.querySelector('color-wheel');
+        colorWheel.addEventListener('color-selected', this.onColorSelected);
+        colorWheel.addEventListener('transparency-changed', this.onTransparencyChanged);
+    }
+
+    onColorSelected(event){
+        let command = event.target.getAttribute("selector-command");
+        let colorInfo = event.detail;
+        let colorStr = `rgba(${colorInfo.r}, ${colorInfo.g}, ${colorInfo.b}, ${colorInfo.alpha})`;
+        this.model.sendMessage({
+            type: "command",
+            commandName: "setProperty",
+            args: [command, colorStr]
+        }, this.model);
+    }
+
+    onTransparencyChanged(event){
+        this.model.sendMessage({
+            type: "command",
+            commandName: "setProperty",
+            args: [event.detail.propName, event.detail.value]
+        }, this.model);
+    }
+
+    // I set the selected editor mode, removing or adding corresponding
+    // toolbard elements, as well as adding editor helpers/utilities.
+    setEditorMode(mode){
+        let toolbarElementNames = ["insertunorderedlist", "justifyleft", "justifycenter", "justifyright"];
+        let display = "inherit";
+        this.editorCompleter = undefined;
+        // spellcheck
+        this.textarea.setAttribute("spellcheck", "true");
+        if(mode === "SimpleTalk"){
+            display = "none";
+            // this.editorCompleter = this.simpleTalkCompleter;
+            this.textarea.setAttribute("spellcheck", "false");
+        }
+        toolbarElementNames.forEach((name) => {
+            let idSelector = "#field-" + name;
+            let element = this._shadowRoot.querySelector(idSelector);
+            element.style.display = display;
+        });
     }
 
     simpleTalkCompleter(element){
@@ -199,312 +421,10 @@ class FieldView extends PartView {
                 tabLine= "";
             }
             textContent = `${tabLine}end ${messageName}`;
-            let innerHTML = this.textToHtml(textContent);
-            element.insertAdjacentHTML("beforeend", innerHTML);
+            let htmlContent = this.textToHtml(textContent);
+            element.insertAdjacentHTML("beforeend", htmlContent);
         }
         return element.innerHTML;
-    }
-
-    /*
-     * I override my base-class's implementation to handle target related functionality
-     */
-    styleTextCSS(){
-        let textarea = this._shadowRoot.querySelector('.field-textarea');
-        let cssStyle = this.model.partProperties.getPropertyNamed(this, "cssTextStyle");
-        Object.keys(cssStyle).forEach((key) => {
-            let value = cssStyle[key];
-            textarea.style[key] = value;
-        });
-        // if there is a target and range set then send the target an update message
-        let target = this.model.partProperties.getPropertyNamed(this.model, 'target');
-        if(target){
-            this.setRangeInTarget(target, this.textarea.innerHTML, cssStyle);
-        }
-    }
-
-    onInput(event){
-        event.stopPropagation();
-        event.preventDefault();
-
-        if(this.editorCompleter){
-            // TODO sort out how this would work
-            let innerHTML = event.target.innerHTML;
-            innerHTML = this.editorCompleter(event.target);
-        }
-
-        this.model.partProperties.setPropertyNamed(
-            this.model,
-            'text',
-            event.target.innerText,
-            false // do not notify, to preserve contenteditable context
-        );
-        this.model.partProperties.setPropertyNamed(
-            this.model,
-            'innerHTML',
-            event.target.innerHTML,
-            false // do not notify
-        );
-        // if there is a target and range set then send the target an update message
-        let target = this.model.partProperties.getPropertyNamed(this.model, 'target');
-        if(target){
-            this.setRangeInTarget(target, event.target.innerHTML);
-        }
-    }
-
-    onKeydown(event){
-        // prevent the default tab key to leave focus on the field
-        if(event.key==="Tab"){
-            event.preventDefault();
-            document.execCommand('insertHTML', false, '&#x9');
-        };
-    }
-
-    onClick(event){
-        event.preventDefault();
-        event.stopPropagation();
-        if(event.button == 0){
-            // if the shift key is pressed we toggle the halo
-            if(event.shiftKey){
-                if(this.hasOpenHalo){
-                    this.closeHalo();
-                    // toolbar.style.top = `${toolbar.clientHeight + 5}px`;
-                    // toolbar.style.visibility = "hidden";
-                } else {
-                    this.openHalo();
-                    // toolbar.style.top = `-${toolbar.clientHeight + 5}px`;
-                    // toolbar.style.visibility = "unset";
-                }
-            } else{
-                let text = window.getSelection().toString();
-                // if no text is selected we do nothing
-                if(text){
-                    // if the altKey is pressed we open the context ("do it") menu
-                    if(event.altKey){
-                        if(!this.contextMenuOpen){
-                            this.openContextMenu();
-                        }
-                    } else if(event.metaKey){
-                        this.handleSelection();
-                    }
-                } else {
-                    // clear all the selections
-                    this.selectionRanges = {};
-                }
-            }
-        }
-    }
-
-    /* I handle selected text, creating a new field model/view
-     * for every range in the selection, keeping track of every range
-     * in this.selection Object/dict so that modification can be inserted
-     * back into the corresponding ranges.
-     */
-    handleSelection(){
-        let selection = window.getSelection();
-        for(let i=0; i < selection.rangeCount; i++){
-            // make sure this is not a continuing selection
-            // and that the range is not already registered
-            let range = selection.getRangeAt(i);
-            let currentRanges = Object.values(this.selectionRanges);
-            if(currentRanges.indexOf(range) >= 0){
-                continue;
-            }
-            // we generate our own range ids, since we want this to correspond to
-            // selection order which is not respected by the browser selection object
-            // to ensure we don't hit on other views' ranges by accident we need unique id's
-            let rangeId = Date.now(); //TODO we need a better random id
-            this.selectionRanges[rangeId] = range;
-            // open a field for each new selection and populate it with the range html
-            this.openField(range, rangeId);
-        }
-    }
-
-    openField(range, rangeId){
-        // create an HTML document fragment from the range to avoid dealing wiht start/end
-        // and offset calculations
-        // fragments don't have the full html DOM element API so we need to create one
-        let span = document.createElement('span');
-        span.appendChild(range.cloneContents());
-
-        // TODO these should all be messages and correspnding command handler definitions
-        // should be part of the field's own script
-        let fieldModel = window.System.newModel("field", this.model._owner.id, `selection ${rangeId}`);
-        fieldModel.partProperties.setPropertyNamed(fieldModel, "innerHTML", span.innerHTML);
-        fieldModel.partProperties.setPropertyNamed(fieldModel, "target", `field id ${this.model.id}`);
-        fieldModel.partProperties.setPropertyNamed(fieldModel, "targetRangeId", rangeId);
-    }
-
-    openContextMenu(){
-        let text = document.getSelection().toString();
-        let focusNode = document.getSelection().focusNode;
-        let button = document.createElement("button");
-        button.id = "doIt";
-        button.style.marginLeft = "10px";
-        button.style.backgroundColor = "var(--palette-green)";
-        button.textContent = "Do it!";
-        button.addEventListener("click", this.doIt);
-        focusNode.after(button);
-        this.contextMenuOpen = true;
-    };
-
-    /**
-      * Given a tagrget specifier and html
-      * I first look up to make sure that the target has the corresponding
-      * range (coming from the targetRangeId property), and then set it with my
-      * innerHTML. Note, since the target property value is an object specifier I
-      * create a semantics objects and interpret the value resulting in a valid
-      * part id.
-      */
-    setRangeInTarget(targetSpecifier, html, css){
-        let targetRangeId = this.model.partProperties.getPropertyNamed(this.model, 'targetRangeId');
-        let match = window.System.grammar.match(targetSpecifier, "ObjectSpecifier");
-        let semantics = window.System.grammar.createSemantics();
-        semantics.addOperation('interpret', interpreterSemantics(this.model, window.System));
-        let targetId = semantics(match).interpret();
-
-        this.model.sendMessage({
-            type: "command",
-            commandName: "insertRange",
-            args: [targetRangeId, html, css]
-        }, window.System.partsById[targetId]);
-    }
-
-    /*
-     * I insert the html (string) into the specified range (by id)
-     */
-    insertRange(rangeId, html, cssObj){
-        let range = this.selectionRanges[rangeId];
-        if(range){
-            let span = document.createElement('span');
-            span.innerHTML = html;
-            if(cssObj){
-                Object.keys(cssObj).forEach((key) => {
-                    let value = cssObj[key];
-                    span.style[key] = value;
-                });
-            }
-            range.deleteContents();
-            range.insertNode(span);
-            // update the text and innerHTML properties without notification
-            // to prevent unnecessary setting of the text/html
-            this.model.partProperties.setPropertyNamed(
-                this.model,
-                'text',
-                this.textarea.innerText,
-                false // do not notify, to preserve contenteditable context
-            );
-            this.model.partProperties.setPropertyNamed(
-                this.model,
-                'innerHTML',
-                this.textarea.innerHTML,
-                false // do not notify
-            );
-        }
-    }
-
-    closeContextMenu(){
-        let button = this._shadowRoot.querySelector('#doIt');
-        if(button){
-            button.remove();
-        }
-        // clear the selection and set the context menu to closed
-        document.getSelection().removeAllRanges();
-        this.contextMenuOpen = false;
-    }
-
-    doIt(event){
-        event.stopPropagation();
-        let text = document.getSelection().toString();
-        this.closeContextMenu();
-        // send message to compile the prepped script
-        let script = `on doIt\n   ${text}\nend doIt`;
-        this.sendMessage(
-            {
-                type: "compile",
-                codeString: script,
-                targetId: this.model.id
-            },
-            this.model
-        );
-        this.sendMessage(
-            {
-                type: "command",
-                commandName: "doIt",
-                args: [],
-            },
-            this.model
-        );
-    }
-
-    initCustomHaloButtons(){
-        this.haloLockButton = document.createElement('div');
-        this.haloLockButton.id = "halo-field-lock-editor";
-        this.haloLockButton.classList.add('halo-button');
-        this.haloLockButton.innerHTML = haloLockButtonSVG;
-        this.haloLockButton.style.marginRight = "6px";
-        this.haloLockButton.setAttribute('slot', 'bottom-row');
-        this.haloLockButton.setAttribute('title', 'Lock Editing');
-        this.haloLockButton.addEventListener('click', () => {
-            this.model.sendMessage({
-                type: 'command',
-                commandName: 'setProperty',
-                args: ["editable", false],
-            }, this.model);
-            this.closeHalo();
-            this.openHalo();
-            // close/open the halo to update the editing state toggle button
-        });
-        this.haloUnlockButton = document.createElement('div');
-        this.haloUnlockButton.id = "halo-field-unlock-editor";
-        this.haloUnlockButton.classList.add('halo-button');
-        this.haloUnlockButton.innerHTML = haloUnlockButtonSVG;
-        this.haloUnlockButton.style.marginRight = "6px";
-        this.haloUnlockButton.setAttribute('slot', 'bottom-row');
-        this.haloUnlockButton.setAttribute('title', 'Unlock Editing');
-        this.haloUnlockButton.addEventListener('click', () => {
-            this.model.sendMessage({
-                type: 'command',
-                commandName: 'setProperty',
-                args: ["editable", true],
-            }, this.model);
-            // close/open the halo to update the editing state toogle button
-            this.closeHalo();
-            this.openHalo();
-        });
-    }
-
-    openHalo(){
-        // Override default. Here we add a custom button
-        // when showing.
-        let foundHalo = this.shadowRoot.querySelector('st-halo');
-        if(!foundHalo){
-            foundHalo = document.createElement('st-halo');
-            this.shadowRoot.appendChild(foundHalo);
-        }
-        foundHalo.append(this.haloLockUnlockButton);
-    }
-
-    // Overwriting the base class open/close editor methods
-    openEditor(){
-        window.System.openEditorForPart(this.model.id);
-    }
-
-    closeEditor(){
-        window.System.closeEditorForPart(this.model.id);
-    }
-
-    // We overwrite the PartView.onHaloOpenEditor for the moment
-    // TODO when all editors are properly established this can
-    // be moved back to the base class, and remove from here
-    onHaloOpenEditor(){
-        // Send the message to open a script editor
-        // with this view's model as the target
-        this.model.sendMessage({
-            type: 'command',
-            commandName: 'openEditor',
-            args: [this.model.id],
-            shouldIgnore: true // Should ignore if System DNU
-        }, this.model);
     }
 
     /*
@@ -553,9 +473,151 @@ class FieldView extends PartView {
         }
     }
 
+    onInput(event){
+        event.stopPropagation();
+        event.preventDefault();
+        let innerHTML = event.target.innerHTML;
+
+        if(this.editorCompleter){
+            innerHTML = this.editorCompleter(event.target);
+        }
+
+        this.model.partProperties.setPropertyNamed(
+            this.model,
+            'htmlContent',
+            innerHTML
+        );
+    }
+
+    onKeydown(event){
+        // prevent the default tab key to leave focus on the field
+        if(event.key==="Tab"){
+            event.preventDefault();
+            document.execCommand('insertHTML', false, '&#x9');
+        };
+    }
+
+    onClick(event){
+        if(event.button == 0){
+            // if the shift key is pressed we toggle the halo
+            if(event.shiftKey){
+                event.preventDefault();
+                this.onHaloActivationClick(event);
+            } else if(event.altKey){
+                let text = document.getSelection().toString();
+                if(text && !this.contextMenuOpen){
+                    this.openContextMenu();
+                }
+            }
+        }
+    }
+
+    openContextMenu(){
+        let text = document.getSelection().toString();
+        let focusNode = document.getSelection().focusNode;
+        let button = document.createElement("button");
+        button.id = "doIt";
+        button.style.marginLeft = "10px";
+        button.style.backgroundColor = "var(--palette-green)";
+        button.textContent = "Do it!";
+        button.addEventListener("click", this.doIt);
+        focusNode.after(button);
+        this.contextMenuOpen = true; 
+    };
+
+    closeContextMenu(){
+        let button = this._shadowRoot.querySelector('#doIt');
+        if(button){
+            button.remove();
+        }
+        // clear the selection and set the context menu to closed
+        document.getSelection().removeAllRanges();
+        this.contextMenuOpen = false;
+    }
+
+    doIt(event){
+        event.stopPropagation();
+        let text = document.getSelection().toString();
+        this.closeContextMenu();
+        // send message to compile the prepped script
+        let script = `on doIt\n   ${text}\nend doIt`;
+        this.sendMessage(
+            {
+                type: "compile",
+                codeString: script,
+                targetId: this.model.id
+            },
+            this.model
+        );
+        this.sendMessage(
+            {
+                type: "command",
+                commandName: "doIt",
+                args: [],
+            },
+            this.model
+        );
+    }
+
+    initCustomHaloButton(){
+        this.haloModeButton = document.createElement('div');
+        this.haloModeButton.id = "halo-field-toggle-mode";
+        this.haloModeButton.classList.add('halo-button');
+        this.haloModeButton.innerHTML = haloModeButtonSVG;
+        this.haloModeButton.style.marginRight = "6px";
+        this.haloModeButton.setAttribute('slot', 'bottom-row');
+        this.haloModeButton.setAttribute('title', 'Toggle field tools');
+        this.haloModeButton.addEventListener('click', this.toggleModePartProperty);
+    }
+
+    openHalo(){
+        // Override default. Here we add a custom button
+        // when showing.
+        let foundHalo = this.shadowRoot.querySelector('st-halo');
+        if(!foundHalo){
+            foundHalo = document.createElement('st-halo');
+            this.shadowRoot.appendChild(foundHalo);
+        }
+        foundHalo.append(this.haloModeButton);
+    }
+
+    /*
+     * I toggle the editing mode of field, by setting the 'mode'
+     * partProperty to either "viewing" or "editing."
+     */
+    toggleModePartProperty(){
+        let currentMode = this.model.partProperties.getPropertyNamed(this.model, "mode");
+        let nextMode = 'editing'; // By default, set to editing
+        if(currentMode === 'editing'){
+            nextMode = 'viewing';
+        }
+        this.model.partProperties.setPropertyNamed(
+            this.model,
+            'mode',
+            nextMode
+        );
+    }
+
+    /*
+     * I toggle the editing mode of field and toolbar, by setting
+     * the opacity of toolbar to 0 or 1 and conteneditable of textarea to
+     * false or true, respectively.
+     */
+    toggleMode(mode){
+        let toolbar = this._shadowRoot.querySelector('.field-toolbar');
+        if(mode === "viewing"){
+            toolbar.style.opacity = "0";
+            this.textarea.setAttribute("contenteditable", "false");
+        } else if(mode === "editing") {
+            toolbar.style.opacity = "1";
+            this.textarea.setAttribute("contenteditable", "true");
+        } else {
+            throw `Unkown field mode ${mode}`;
+        }
+    }
 };
 
 export {
-    FieldView,
-    FieldView as default
+FieldView,
+FieldView as default
 };
