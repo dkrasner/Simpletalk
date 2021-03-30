@@ -58,7 +58,6 @@ const fieldTemplateString = `
 
         .field-textarea {
             width: calc(100% - 5px);
-            font-family: monospace;
             height: 100%;
             width: 100%;
             white-space: pre-wrap;

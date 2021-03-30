@@ -44,6 +44,7 @@ body {
     width: 100vw;
     height: 100vh;
     overflow: hidden;
+    font-family: "Crimson Pro";
 }
 
 .active {
@@ -97,7 +98,6 @@ st-button {
     padding-right: 10px;
     padding-top: 5px;
     padding-bottom: 5px;
-    font-family: monospace;
     border: 1px solid rgb(50, 50, 50);
     user-select: none;
     margin-left: -1px;

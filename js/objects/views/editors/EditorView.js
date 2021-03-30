@@ -81,7 +81,7 @@ const templateString = `
         position: absolute;
         box-sizing: border-box;
         border-style: inset;
-        width: 20rem;
+        width: 16rem;
     }
 
     :host color-wheel{
@@ -105,12 +105,26 @@ const templateString = `
         background-color: var(--palette-cornsik);
     }
 
-    .editor-main > input.name,div.editor-icons {
+    .editor-main > input.name,div.font,div.editor-icons {
         margin-top: 5px;
         margin-right: 1px;
         margin-left: 1px;
         width: 90%;
         text-align: center;
+    }
+
+    .editor-main > div.font {
+        display: flex;
+        justify-content: space-between;
+    }
+
+    .editor-main > div.font > select.text-font{
+        width: 80%;
+    }
+
+    .editor-main > div.font > input.text-size{
+        width: 15%;
+        text-align: right;
     }
 
     .editor-bar-button {
@@ -152,6 +166,18 @@ const templateString = `
 </div>
 <div class="editor-main">
     <input class="name"></input>
+    <div class="font">
+        <select class="text-font">
+            <option>Crimson Pro</option>
+            <option>Arial</option>>
+            <option>Courier New</option>>
+            <option>Georgia</option>>
+            <option>Times New Roman</option>>
+            <option>Trebuchet MS</option>>
+            <option>Verdana</option>>
+        </select>
+        <input class="text-size"></input>
+    </div>
     <div class="editor-icons">
         ${boldIcon}
         ${italicIcon}
@@ -229,6 +255,9 @@ class EditorView extends HTMLElement {
         let nameInput = this._shadowRoot.querySelector('input.name');
         titleSpan.textContent = `Editor [${name}]`;
         nameInput.placeholder = name;
+        let sizeSelect = this._shadowRoot.querySelector('input.text-size');
+        let size = this.target.partProperties.getPropertyNamed(this.target, 'text-size');
+        sizeSelect.placeholder = size;
     }
 
     /*
@@ -240,6 +269,10 @@ class EditorView extends HTMLElement {
         closeButton.addEventListener('click', this.onCloseButtonClick);
         let nameInput = this._shadowRoot.querySelector('input.name');
         nameInput.addEventListener('input', this.onNameInput);
+        let fontSelect = this._shadowRoot.querySelector('select.text-font');
+        fontSelect.addEventListener('input', (event) => {this.setProperty("text-font", event.target.value);});
+        let sizeSelect = this._shadowRoot.querySelector('input.text-size');
+        sizeSelect.addEventListener('input', (event) => {this.setProperty("text-size", event.target.value);});
         let icons = this._shadowRoot.querySelector('.editor-icons');
         icons.childNodes.forEach((icon) => {
             if(icon.id === "script"){

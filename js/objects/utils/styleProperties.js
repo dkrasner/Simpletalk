@@ -237,6 +237,11 @@ const addTextStyleProps = (target) => {
         false,
         'cssTextStyle'
     );
+    target.partProperties.newStyleProp(
+        'text-size',
+        15,
+        'cssTextStyle'
+    );
 };
 
 /**
