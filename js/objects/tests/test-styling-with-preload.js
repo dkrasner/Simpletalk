@@ -107,47 +107,76 @@ describe('Styling Properties', () => {
         })[0];
         assert.exists(buttonModel);
     });
-    it('Initial button "cssStyle" BasicProperty is properly set', () => {
-        // Note we just test for some of the core style props as the
-        // complete list is likely to change in the future
-        let styleProp = buttonModel.partProperties.getPropertyNamed(buttonModel, "cssStyle");
-        assert.equal(styleProp['opacity'], 1.0);
-        assert.equal(styleProp['textAlign'], 'left');
+    describe('cssStyle', () => {
+        it('Initial button "cssStyle" BasicProperty is properly set', () => {
+            // Note we just test for some of the core style props as the
+            // complete list is likely to change in the future
+            let styleProp = buttonModel.partProperties.getPropertyNamed(buttonModel, "cssStyle");
+            assert.equal(styleProp['top'], "0px");
+            assert.equal(styleProp['left'], "0px");
+        });
+        it('Initial button DOM element style attribute is properly set', () => {
+            // Note we just test for some of the core style props as the
+            // complete list is likely to change in the future
+            let buttonView = window.System.findViewById(buttonModel.id);
+            assert.equal(buttonView.style['top'], "0px");
+            assert.equal(buttonView.style['left'], "0px");
+        });
+        it('Updating StyleProperty directly updates the style property value', () => {
+            let styleProp = buttonModel.partProperties.getPropertyNamed(buttonModel, "hide");
+            assert.equal(styleProp, false);
+            buttonModel.partProperties.setPropertyNamed(buttonModel, "hide", true);
+            styleProp = buttonModel.partProperties.getPropertyNamed(buttonModel, "hide");
+            assert.equal(styleProp, true);
+        });
+        it('Updating StyleProperty directly updates the "cssStyle" BasicProperty', () => {
+            let styleProp = buttonModel.partProperties.getPropertyNamed(buttonModel, "cssStyle");
+            assert.equal(styleProp['display'], 'none');
+        });
+        it('Updating StyleProperty directly updates the DOM element style attribute', () => {
+            let buttonView = window.System.findViewById(buttonModel.id);
+            assert.equal(buttonView.style['display'], 'none');
+        });
+        it('Updating StyleProperty via "set" message updates the "cssStyle" BasicProperty', () => {
+            let msg  = {
+                type: "command",
+                commandName: "setProperty",
+                args: ["hide", false]
+            };
+            buttonModel.sendMessage(msg, buttonModel);
+            let styleProp = buttonModel.partProperties.getPropertyNamed(buttonModel, "cssStyle");
+            assert.equal(styleProp['display'], null);
+        });
+        it('Updating StyleProperty via "set" updates the DOM element style attribute', () => {
+            let buttonView = window.System.findViewById(buttonModel.id);
+            assert.equal(buttonView.style['display'], '');
+        });
     });
-    it('Initial button DOM element style attribute is properly set', () => {
-        // Note we just test for some of the core style props as the
-        // complete list is likely to change in the future
-        let buttonView = window.System.findViewById(buttonModel.id);
-        assert.equal(buttonView.style['opacity'], 1.0);
-        assert.equal(buttonView.style['textAlign'], 'left');
-    });
-    it('Updating StyleProperty directly updates the style property value', () => {
-        let styleProp = buttonModel.partProperties.getPropertyNamed(buttonModel, "hide");
-        assert.equal(styleProp, false);
-        buttonModel.partProperties.setPropertyNamed(buttonModel, "hide", true);
-        styleProp = buttonModel.partProperties.getPropertyNamed(buttonModel, "hide");
-        assert.equal(styleProp, true);
-    });
-    it('Updating StyleProperty directly updates the "cssStyle" BasicProperty', () => {
-        let styleProp = buttonModel.partProperties.getPropertyNamed(buttonModel, "cssStyle");
-        assert.equal(styleProp['display'], 'none');
-    });
-    it('Updating StyleProperty directly updates the DOM element style attribute', () => {
-        let buttonView = window.System.findViewById(buttonModel.id);
-        assert.equal(buttonView.style['display'], 'none');
-    });
-    it('Updating StyleProperty via "set" message updates the "cssStyle" BasicProperty', () => {
-        let msg  = {
-            type: "command",
-            commandName: "setProperty",
-            args: ["hide", false]
-        };
-        buttonModel.sendMessage(msg, buttonModel);
-        let styleProp = buttonModel.partProperties.getPropertyNamed(buttonModel, "cssStyle");
-        assert.equal(styleProp['display'], null);
-    });
-    it('Updating StyleProperty via "set" updates the DOM element style attribute', () => {
-        let buttonView = window.System.findViewById(buttonModel.id);
-        assert.equal(buttonView.style['display'], '');
+    describe('cssTextStyle', () => {
+        it('Initial button "cssTextStyle" BasicProperty is properly set', () => {
+            // Note we just test for some of the core style props as the
+            // complete list is likely to change in the future
+            let styleProp = buttonModel.partProperties.getPropertyNamed(buttonModel, "cssTextStyle");
+            assert.equal(styleProp['textAlign'], 'left');
+        });
+        it('Initial button DOM element style attribute is properly set', () => {
+            // Note we just test for some of the core style props as the
+            // complete list is likely to change in the future
+            let buttonView = window.System.findViewById(buttonModel.id);
+            assert.equal(buttonView.style['textAlign'], 'left');
+        });
+        it('Updating a text style related StyleProperty', () => {
+            // Note we just test for some of the core style props as the
+            // complete list is likely to change in the future
+            buttonModel.partProperties.setPropertyNamed(buttonModel, "text-align", "center");
+            let styleProp = buttonModel.partProperties.getPropertyNamed(buttonModel, "cssTextStyle");
+            assert.equal(styleProp['textAlign'], 'center');
+        });
+        it('Updating "cssTextStyle" property has DOM element style attribute is properly set', () => {
+            // Note we just test for some of the core style props as the
+            // complete list is likely to change in the future
+            let buttonView = window.System.findViewById(buttonModel.id);
+            assert.equal(buttonView.style['textAlign'], 'center');
+        });
     });
 });
