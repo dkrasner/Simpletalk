@@ -153,7 +153,7 @@ class FieldView extends PartView {
         this.textarea.addEventListener('keydown', this.onKeydown);
         this.textarea.focus();
         // document.execCommand("defaultParagraphSeparator", false, "br");
-        this.addEventListener('click', this.onClick);
+        // No need to add a click listener as the base PartView class does that
     }
 
     afterDisconnected(){
@@ -265,15 +265,7 @@ class FieldView extends PartView {
         if(event.button == 0){
             // if the shift key is pressed we toggle the halo
             if(event.shiftKey){
-                if(this.hasOpenHalo){
-                    this.closeHalo();
-                    // toolbar.style.top = `${toolbar.clientHeight + 5}px`;
-                    // toolbar.style.visibility = "hidden";
-                } else {
-                    this.openHalo();
-                    // toolbar.style.top = `-${toolbar.clientHeight + 5}px`;
-                    // toolbar.style.visibility = "unset";
-                }
+                this.onHaloActivationClick(event);
             } else{
                 let text = window.getSelection().toString();
                 // if no text is selected we do nothing
