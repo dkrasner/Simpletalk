@@ -618,12 +618,23 @@ const System = {
 
         // Create the new view instance,
         // append to parent, and set the model
-        
         let newView = document.createElement(
             this.tagNameForViewNamed(partName)
         );
         newView.setModel(model);
-        parentElement.appendChild(newView);
+        // if the new model is a Card we make sure add it after the last card
+        // on the stack
+        if(newView.name === 'CardView' && parentElement.childNodes.length){
+            let lastCard;
+            parentElement.childNodes.forEach((child) => {
+                if(child.name === "CardView"){
+                    lastCard = child;
+                }
+                lastCard.after(newView);
+            });
+        } else {
+            parentElement.appendChild(newView);
+        }
 
         // TODO do we want to allow the possibiliy of a view on an
         // element but no subpart of that view on the element?
