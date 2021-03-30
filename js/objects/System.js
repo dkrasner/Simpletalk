@@ -701,33 +701,19 @@ const System = {
 
     // return the model corresponding to the current stack
     getCurrentStackModel: function(){
-        // make sure there is only one current-stack
-        let currentStacks = document.querySelectorAll('st-world > st-stack.current-stack');
-        if(currentStacks.length > 1){
-            throw new Error("Found multiple current stacks in world!");
-        }
-        return currentStacks[0].model;
+        let world = this.getWorldStackModel();
+        return world.currentStack;
     },
 
     // return the model corresponding to the current card
     getCurrentCardModel: function(){
-        // there could be multiple current cards (in windows for example) but only one
-        // current-card child of a current-stack
-        let currentStack = document.querySelector('st-world > st-stack.current-stack');
-        let currentCards = currentStack.querySelectorAll(':scope > st-card.current-card');
-        if(currentCards.length > 1){
-            throw "Found multiple current cards in current stack!";
-        }
-        return currentCards[0].model;
+        let currentStack = this.getCurrentStackModel();
+        return currentStack.currentCard;
     },
 
     // return the model corresponding to the world stack
     getWorldStackModel: function(){
-        let worldStack = document.querySelectorAll('st-world');
-        if(worldStack.length > 1){
-            throw "Found multiple world stack!";
-        }
-        return worldStack[0].model;
+        return this.partsById['world'];
     },
 
     // return the model corresponding script editor st-field
