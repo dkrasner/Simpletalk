@@ -23,7 +23,6 @@ const templateString = `
         display: inline-block;
         position: relative;
         box-sizing: border-box;
-        border: 1px solid black;
     }
     #tool-buttons {
         position: absolute;
@@ -32,8 +31,8 @@ const templateString = `
         display: flex;
         flex-direction: column;
     }
-    :host([mode="viewing"]) {
-        border: 1px solid transparent;
+    :host(.show-border){
+        border: 1px solid black;
     }
     :host(:not([mode="drawing"])) > #tool-buttons {
         display: none;
@@ -67,7 +66,6 @@ class DrawingView extends PartView {
         this.onMouseUp = this.onMouseUp.bind(this);
         this.onMouseLeave = this.onMouseLeave.bind(this);
         this.onHaloResize = this.onHaloResize.bind(this);
-        this.onClick = this.onClick.bind(this);
         this.initCustomHaloButton = this.initCustomHaloButton.bind(this);
         this.toggleMode = this.toggleMode.bind(this);
         this.afterDrawAction = this.afterDrawAction.bind(this);
@@ -88,6 +86,13 @@ class DrawingView extends PartView {
             );
             this.restoreImageFromModel(imageBits);
         });
+        this.onPropChange('show-border', (val) => {
+            if(val){
+                this.classList.add('show-border');
+            } else {
+                this.classList.remove('show-border');
+            }
+        });
     }
 
     modeChanged(value){
@@ -98,7 +103,6 @@ class DrawingView extends PartView {
         this.canvas = this.shadow.querySelector('canvas');
         this.canvas.addEventListener('mouseup', this.onMouseUp);
         this.canvas.addEventListener('mousedown', this.onMouseDown);
-        this.addEventListener('click', this.onClick);
 
         // Set and store the drawing context
         this.drawingContext = this.canvas.getContext('2d');
@@ -133,7 +137,6 @@ class DrawingView extends PartView {
     afterDisconnected(){
         this.canvas.removeEventListener('mouseup', this.onMouseUp);
         this.canvas.removeEventListener('mousedown', this.onMouseDown);
-        this.removeEventListener('click', this.onClick);
     }
 
     afterModelSet(){
@@ -143,6 +146,14 @@ class DrawingView extends PartView {
         );
         if(currentImage){
             this.restoreImageFromModel(currentImage);
+        }
+
+        let initialShowBorder = this.model.partProperties.getPropertyNamed(
+            this.model,
+            'show-border'
+        );
+        if(initialShowBorder){
+            this.classList.add('show-border');
         }
     }
 
@@ -211,29 +222,6 @@ class DrawingView extends PartView {
         this.canvas.removeEventListener('mousemove', this.onMouseMove);
     }
 
-    onClick(event){
-        if(event.button == 0){
-            // if the shift key is pressed we toggle the halo
-            if(event.shiftKey){
-                event.preventDefault();
-                event.stopPropagation();
-                if(this.hasOpenHalo){
-                    this.closeHalo();
-                } else {
-                    this.openHalo();
-                }
-            } else if(!this.hasOpenHalo){
-                // Send the click command message to self
-                this.model.sendMessage({
-                    type: 'command',
-                    commandName: 'click',
-                    args: [],
-                    shouldIgnore: true // Should ignore if System DNU
-                }, this.model);
-            }
-        }
-    }
-
     onHaloResize(movementX, movementY){
         let canvas = this.shadowRoot.querySelector('canvas');
         let currentImage = this.model.partProperties.getPropertyNamed(
@@ -269,6 +257,13 @@ class DrawingView extends PartView {
                 context.drawImage(img, 0, 0);
             };
             img.src = base64ImageData;
+
+            // Set the border to hide
+            this.model.partProperties.setPropertyNamed(
+                this.model,
+                'show-border',
+                false
+            );
         }
     }
 
