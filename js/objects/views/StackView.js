@@ -29,6 +29,10 @@ class StackView extends PartView {
             template.content.cloneNode(true)
         );
 
+        // Halo settings. Cards don't want
+        //a halo to open
+        this.wantsHalo = false;
+
         // Handle current-ness prop change
         this.onPropChange('current', this.handleCurrentChange);
 
