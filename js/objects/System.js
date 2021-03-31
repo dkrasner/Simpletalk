@@ -781,52 +781,10 @@ const System = {
 
         // Restore the correct current card
         // and current stack
-        // let currentStackView = document.querySelector(`[part-id="${deserializedInfo.currentStackId}"]`);
-        // let currentCardView = document.querySelector(`[part-id="${deserializedInfo.currentCardId}"]`);
-        // currentStackView.classList.add('current-stack');
-        // currentCardView.classList.add('current-card');
-        let world = this.partsById['world'];
-        let currentStack = this.partsById[deserializedInfo.currentStackId];
-        let allStacks = currentStack._owner.subparts.filter(subpart => {
-            return subpart.type == 'stack';
-        });
-        world.partProperties.setPropertyNamed(
-            world,
-            'current',
-            allStacks.indexOf(currentStack)
-        );
+        this.setCurrentStack(deserializedInfo.currentStackId);
+        this.setCurrentCard(deserializedInfo.currentCardId);
 
-        let currentCard = this.partsById[deserializedInfo.currentCardId];
-        let allCards = currentStack.subparts.filter(subpart => {
-            return subpart.type == 'card';
-        });
-        currentStack.partProperties.setPropertyNamed(
-            currentStack,
-            'current',
-            allCards.indexOf(currentCard)
-        );
-
-        // Compile all of the scripts on
-        // the available Part models
-        Object.keys(this.partsById).forEach(partId => {
-            let targetPart = this.partsById[partId];
-            let scriptText = targetPart.partProperties.getPropertyNamed(
-                targetPart,
-                'script'
-            );
-            if(scriptText){
-                // Here we just re-set the script
-                // to its original value. This should trigger
-                // all prop change subscribers that listen
-                // for script changes, which will trigger
-                // a compilation step
-                targetPart.partProperties.setPropertyNamed(
-                    targetPart,
-                    'script',
-                    scriptText
-                );
-            }
-        });
+        this.setAllProperties();
 
         // Finally, we reset the idMaker to start its
         // count at the highest current id
@@ -840,6 +798,47 @@ const System = {
 
         // And serialize
         this.serialize();
+    },
+
+    setCurrentStack: function(partId){
+        let world = this.partsById['world'];
+        let currentStack = this.partsById[partId];
+        let allStacks = currentStack._owner.subparts.filter(subpart => {
+            return subpart.type == 'stack';
+        });
+        world.partProperties.setPropertyNamed(
+            world,
+            'current',
+            allStacks.indexOf(currentStack)
+        );
+    },
+
+    setCurrentCard: function(partId){
+        let currentCard = this.partsById[partId];
+        let currentStack = this.getCurrentStackModel();
+        let allCards = currentStack.subparts.filter(subpart => {
+            return subpart.type == 'card';
+        });
+        currentStack.partProperties.setPropertyNamed(
+            currentStack,
+            'current',
+            allCards.indexOf(currentCard)
+        );
+    },
+
+    setAllProperties: function(){
+        Object.keys(this.partsById).forEach(partId => {
+            let part = this.partsById[partId];
+            part.partProperties.all.forEach((prop) => {
+                if(prop.name !== "current" && prop._value !== null && prop._value !== undefined){
+                    part.partProperties.setPropertyNamed(
+                        part,
+                        prop.name,
+                        prop._value
+                    );
+                }
+            });
+        });
     },
 
     serializePart: function(aPart, aDict){
@@ -960,7 +959,9 @@ const System = {
 
     closeEditorForPart: function(partId){
         let editor = document.querySelector(`st-editor[target-id="${partId}"]`);
-        editor.parentNode.removeChild(editor);
+        if(editor){
+            editor.parentNode.removeChild(editor);
+        }
     }
 };
 
@@ -1103,6 +1104,13 @@ System._commandHandlers['importWorld'] = function(sender, sourceUrl){
                             true // generate new ids
                         );
                     });
+
+                    // set all the first cards to current for now
+                    this.setCurrentCard(0);
+                    this.setAllProperties();
+
+                    // And serialize
+                    this.serialize();
                 };
             });
         })
