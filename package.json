@@ -33,6 +33,7 @@
     "jsdom-global": "^3.0.2",
     "mocha": "^8.0.1",
     "node-fetch": "^2.6.1",
+    "node-html-parser": "^3.1.2",
     "ohm-js": "^15.3.0",
     "webpack": "^4.44.1",
     "webpack-cli": "^3.3.12"

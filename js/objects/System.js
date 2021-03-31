@@ -41,6 +41,8 @@ import STClipboard from './utils/clipboard.js';
 
 import handInterface from './utils/handInterface.js';
 
+import { parse } from 'node-html-parser';
+
 const System = {
     name: "System",
     id: -1,
@@ -793,7 +795,7 @@ const System = {
             'current',
             allStacks.indexOf(currentStack)
         );
-        
+
         let currentCard = this.partsById[deserializedInfo.currentCardId];
         let allCards = currentStack.subparts.filter(subpart => {
             return subpart.type == 'card';
@@ -847,7 +849,7 @@ const System = {
         });
     },
 
-    deserializePart: function(aPartJSON, ownerId, fullJSON, deserializedInfo){
+    deserializePart: function(aPartJSON, ownerId, fullJSON, deserializedInfo, newId=false){
         let newPartClass = this.availableParts[aPartJSON.type];
         if(!newPartClass){
             throw new Error(`Cannot deserialize Part of type ${aPartJSON.type}!`);
@@ -855,6 +857,9 @@ const System = {
         //let newPart = new newPartClass(ownerPart, null, true);
         //newPart.setFromDeserialized(aPartJSON);
         let newPart = newPartClass.fromSerialized(ownerId, aPartJSON);
+        if(newId){
+            newPart.id = idMaker.new();
+        }
         this.partsById[newPart.id] = newPart;
 
         // Add the System as a prop subscriber
@@ -889,7 +894,7 @@ const System = {
             if(!subpartJSON){
                 throw new Error(`Could not deserialize Part ${subpartId} -- not found in serialization!`);
             }
-            this.deserializePart(subpartJSON, newPart.id, fullJSON, deserializedInfo);
+            this.deserializePart(subpartJSON, newPart.id, fullJSON, deserializedInfo, newId);
         });
     },
 
@@ -1054,6 +1059,63 @@ System._commandHandlers['go to reference'] = function(senders, objectName, refer
 
     }
 };
+
+//Import a world, i.e. its stacks from another source
+System._commandHandlers['importWorld'] = function(sender, sourceUrl){
+    if(!sourceUrl){
+        sourceUrl = window.prompt("Choose World location");
+    }
+    fetch(sourceUrl)
+        .then(response => {
+            let contentType = response.headers.get('content-type');
+            if(!contentType.startsWith('text/html')){
+                throw new Error(`Invalid content type: ${contentType}`);
+            }
+            return response.blob().then(blob => {
+                let reader = new FileReader();
+                reader.readAsText(blob);
+                reader.onloadend = () => {
+                    let parsedDocument = parse(reader.result);
+                    // there is no .getElementById() for a node HTML parsed document!
+                    let serializationEl = parsedDocument.querySelector('#serialization');
+                    if(!serializationEl){
+                        throw new Error(`No serialization found for this page`);
+                    }
+                    let deserializedInfo = JSON.parse(serializationEl.textContent);
+
+                    // Start from the WorldStack and recursively
+                    // create new Parts/Views from the deserialized
+                    // dictionary
+                    let worldJSON = deserializedInfo.parts['world'];
+                    if(!worldJSON){
+                        throw new Error(`World not found in serialization!`);
+                    }
+
+                    // for each sub-part of world (presumably a stack)
+                    // add it to the current world
+                    worldJSON.subparts.forEach((partId) => {
+                        let part = deserializedInfo.parts[partId];
+                        this.deserializePart(
+                            part,
+                            'world',
+                            deserializedInfo.parts,
+                            deserializedInfo,
+                            true // generate new ids
+                        );
+                    });
+                };
+            });
+        })
+        .then(() => {
+            // Manually set the _src.
+            // This ensures that we don't infinitely
+            // call the load operation
+            this._src = sourceUrl;
+        })
+        .catch(err => {
+            console.error(err);
+        });
+}
 
 // Opens a basic tool window on the Part of the given
 // id. If no ID is given, we assume the tool window
