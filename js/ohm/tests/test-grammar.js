@@ -328,7 +328,7 @@ describe("SimpleTalk Grammar", () => {
                 semanticMatchTest(s, "Command_goToByReference");
                 semanticMatchTest(s, "Statement");
             });
-            it ("Bad go to: invalid object", () => {
+            it.skip ("Bad go to: invalid object", () => {
                 const s = "go to world 42";
                 semanticMatchFailTest(s, "Command");
             });
@@ -356,7 +356,7 @@ describe("SimpleTalk Grammar", () => {
                     semanticMatchTest(s, "Statement");
                 });
             });
-            it ("Bad delete (world)", () => {
+            it.skip ("Bad delete (world)", () => {
                 const s = "delete this world";
                 semanticMatchFailTest(s, "Command_deleteModel");
                 semanticMatchFailTest(s, "Command");
