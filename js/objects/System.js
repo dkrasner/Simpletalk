@@ -779,12 +779,10 @@ const System = {
             deserializedInfo
         );
 
-        // Restore the correct current card
-        // and current stack
-        this.setCurrentStack(deserializedInfo.currentStackId);
-        this.setCurrentCard(deserializedInfo.currentCardId);
+        // set the current stack and cards (for each stack)
+        this.setCurrentStackAndCards();
 
-        this.setAllProperties();
+        this.setAllScriptProperties();
 
         // Finally, we reset the idMaker to start its
         // count at the highest current id
@@ -800,44 +798,23 @@ const System = {
         this.serialize();
     },
 
-    setCurrentStack: function(partId){
+    setCurrentStackAndCards: function(){
         let world = this.partsById['world'];
-        let currentStack = this.partsById[partId];
-        let allStacks = currentStack._owner.subparts.filter(subpart => {
-            return subpart.type == 'stack';
+        let currentStackIndex = world.partProperties.getPropertyNamed(world, 'current');
+        world.partProperties.setPropertyNamed(world, 'current', currentStackIndex);
+        world.subparts.forEach((stack) => {
+            let currentCardIndex = stack.partProperties.getPropertyNamed(stack, 'current');
+            stack.partProperties.setPropertyNamed(stack, 'current', currentCardIndex);
         });
-        world.partProperties.setPropertyNamed(
-            world,
-            'current',
-            allStacks.indexOf(currentStack)
-        );
     },
 
-    setCurrentCard: function(partId){
-        let currentCard = this.partsById[partId];
-        let currentStack = this.getCurrentStackModel();
-        let allCards = currentStack.subparts.filter(subpart => {
-            return subpart.type == 'card';
-        });
-        currentStack.partProperties.setPropertyNamed(
-            currentStack,
-            'current',
-            allCards.indexOf(currentCard)
-        );
-    },
-
-    setAllProperties: function(){
+    setAllScriptProperties: function(){
         Object.keys(this.partsById).forEach(partId => {
             let part = this.partsById[partId];
-            part.partProperties.all.forEach((prop) => {
-                if(prop.name !== "current" && prop._value !== null && prop._value !== undefined){
-                    part.partProperties.setPropertyNamed(
-                        part,
-                        prop.name,
-                        prop._value
-                    );
-                }
-            });
+            let script = part.partProperties.getPropertyNamed(part, "script");
+            if(script){
+                part.partProperties.setPropertyNamed(part, "script", script);
+            }
         });
     },
 
@@ -876,16 +853,6 @@ const System = {
             document.body.prepend(newView);
         }
 
-        // If this part represents the current card
-        // or current stack, we need to set the fullJSON's
-        // respective IDs for those parts to the new IDs
-        // generated for the deserialized versions
-        if(aPartJSON.id == deserializedInfo.currentCardId){
-            deserializedInfo.currentCardId = newPart.id;
-        } else if(aPartJSON.id == deserializedInfo.currentStackId){
-            deserializedInfo.currentStackId = newPart.id;
-        }
-
         // Recursively deserialize any referenced
         // subpart ids in the deserialization object
         aPartJSON.subparts.forEach(subpartId => {
@@ -895,6 +862,7 @@ const System = {
             }
             this.deserializePart(subpartJSON, newPart.id, fullJSON, deserializedInfo, newId);
         });
+        return newPart;
     },
 
     // Return a *complete* HTML
@@ -1094,20 +1062,25 @@ System._commandHandlers['importWorld'] = function(sender, sourceUrl){
 
                     // for each sub-part of world (presumably a stack)
                     // add it to the current world
+                    let newStacks = [];
                     worldJSON.subparts.forEach((partId) => {
-                        let part = deserializedInfo.parts[partId];
-                        this.deserializePart(
-                            part,
+                        let stack = deserializedInfo.parts[partId];
+                        let newStack = this.deserializePart(
+                            stack,
                             'world',
                             deserializedInfo.parts,
                             deserializedInfo,
                             true // generate new ids
                         );
+                        newStacks.push(newStack);
                     });
 
-                    // set all the first cards to current for now
-                    this.setCurrentCard(0);
-                    this.setAllProperties();
+                    // set all the current cards for new stacks 
+                    newStacks.forEach((stack) => {
+                        let currentCardIndex = stack.partProperties.getPropertyNamed(stack, 'current');
+                        stack.partProperties.setPropertyNamed(stack, 'current', currentCardIndex);
+                    });
+                    this.setAllScriptProperties();
 
                     // And serialize
                     this.serialize();
