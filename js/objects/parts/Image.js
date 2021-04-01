@@ -144,7 +144,6 @@ class Image extends Part {
         if(value){
             owner.loadImageFromSource([this], value);
         }
-        
     }
 
     getSource(owner, property){

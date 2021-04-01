@@ -133,10 +133,10 @@ describe('Subpart Validity Tests', () => {
             let stack = new Stack();
             assert.isTrue(stack.acceptsSubpart(win.type));
         });
-        it('Rejects Field', () => {
+        it('Accepts Field', () => {
             let ericField = new Field();
             let stack = new Stack();
-            assert.isFalse(stack.acceptsSubpart(ericField.type));
+            assert.isTrue(stack.acceptsSubpart(ericField.type));
         });
         it('Rejects World', () => {
             let world = new WorldStack();

@@ -41,6 +41,8 @@ import STClipboard from './utils/clipboard.js';
 
 import handInterface from './utils/handInterface.js';
 
+import { parse } from 'node-html-parser';
+
 const System = {
     name: "System",
     id: -1,
@@ -777,54 +779,10 @@ const System = {
             deserializedInfo
         );
 
-        // Restore the correct current card
-        // and current stack
-        // let currentStackView = document.querySelector(`[part-id="${deserializedInfo.currentStackId}"]`);
-        // let currentCardView = document.querySelector(`[part-id="${deserializedInfo.currentCardId}"]`);
-        // currentStackView.classList.add('current-stack');
-        // currentCardView.classList.add('current-card');
-        let world = this.partsById['world'];
-        let currentStack = this.partsById[deserializedInfo.currentStackId];
-        let allStacks = currentStack._owner.subparts.filter(subpart => {
-            return subpart.type == 'stack';
-        });
-        world.partProperties.setPropertyNamed(
-            world,
-            'current',
-            allStacks.indexOf(currentStack)
-        );
-        
-        let currentCard = this.partsById[deserializedInfo.currentCardId];
-        let allCards = currentStack.subparts.filter(subpart => {
-            return subpart.type == 'card';
-        });
-        currentStack.partProperties.setPropertyNamed(
-            currentStack,
-            'current',
-            allCards.indexOf(currentCard)
-        );
+        // set the current stack and cards (for each stack)
+        this.setCurrentStackAndCards();
 
-        // Compile all of the scripts on
-        // the available Part models
-        Object.keys(this.partsById).forEach(partId => {
-            let targetPart = this.partsById[partId];
-            let scriptText = targetPart.partProperties.getPropertyNamed(
-                targetPart,
-                'script'
-            );
-            if(scriptText){
-                // Here we just re-set the script
-                // to its original value. This should trigger
-                // all prop change subscribers that listen
-                // for script changes, which will trigger
-                // a compilation step
-                targetPart.partProperties.setPropertyNamed(
-                    targetPart,
-                    'script',
-                    scriptText
-                );
-            }
-        });
+        this.setAllScriptProperties();
 
         // Finally, we reset the idMaker to start its
         // count at the highest current id
@@ -840,6 +798,26 @@ const System = {
         this.serialize();
     },
 
+    setCurrentStackAndCards: function(){
+        let world = this.partsById['world'];
+        let currentStackIndex = world.partProperties.getPropertyNamed(world, 'current');
+        world.partProperties.setPropertyNamed(world, 'current', currentStackIndex);
+        world.subparts.forEach((stack) => {
+            let currentCardIndex = stack.partProperties.getPropertyNamed(stack, 'current');
+            stack.partProperties.setPropertyNamed(stack, 'current', currentCardIndex);
+        });
+    },
+
+    setAllScriptProperties: function(){
+        Object.keys(this.partsById).forEach(partId => {
+            let part = this.partsById[partId];
+            let script = part.partProperties.getPropertyNamed(part, "script");
+            if(script){
+                part.partProperties.setPropertyNamed(part, "script", script);
+            }
+        });
+    },
+
     serializePart: function(aPart, aDict){
         aDict[aPart.id] = aPart.toJSON();
         aPart.subparts.forEach(subpart => {
@@ -847,7 +825,7 @@ const System = {
         });
     },
 
-    deserializePart: function(aPartJSON, ownerId, fullJSON, deserializedInfo){
+    deserializePart: function(aPartJSON, ownerId, fullJSON, deserializedInfo, newId=false){
         let newPartClass = this.availableParts[aPartJSON.type];
         if(!newPartClass){
             throw new Error(`Cannot deserialize Part of type ${aPartJSON.type}!`);
@@ -855,6 +833,9 @@ const System = {
         //let newPart = new newPartClass(ownerPart, null, true);
         //newPart.setFromDeserialized(aPartJSON);
         let newPart = newPartClass.fromSerialized(ownerId, aPartJSON);
+        if(newId){
+            newPart.id = idMaker.new();
+        }
         this.partsById[newPart.id] = newPart;
 
         // Add the System as a prop subscriber
@@ -872,16 +853,6 @@ const System = {
             document.body.prepend(newView);
         }
 
-        // If this part represents the current card
-        // or current stack, we need to set the fullJSON's
-        // respective IDs for those parts to the new IDs
-        // generated for the deserialized versions
-        if(aPartJSON.id == deserializedInfo.currentCardId){
-            deserializedInfo.currentCardId = newPart.id;
-        } else if(aPartJSON.id == deserializedInfo.currentStackId){
-            deserializedInfo.currentStackId = newPart.id;
-        }
-
         // Recursively deserialize any referenced
         // subpart ids in the deserialization object
         aPartJSON.subparts.forEach(subpartId => {
@@ -889,8 +860,9 @@ const System = {
             if(!subpartJSON){
                 throw new Error(`Could not deserialize Part ${subpartId} -- not found in serialization!`);
             }
-            this.deserializePart(subpartJSON, newPart.id, fullJSON, deserializedInfo);
+            this.deserializePart(subpartJSON, newPart.id, fullJSON, deserializedInfo, newId);
         });
+        return newPart;
     },
 
     // Return a *complete* HTML
@@ -955,7 +927,9 @@ const System = {
 
     closeEditorForPart: function(partId){
         let editor = document.querySelector(`st-editor[target-id="${partId}"]`);
-        editor.parentNode.removeChild(editor);
+        if(editor){
+            editor.parentNode.removeChild(editor);
+        }
     }
 };
 
@@ -1054,6 +1028,75 @@ System._commandHandlers['go to reference'] = function(senders, objectName, refer
 
     }
 };
+
+//Import a world, i.e. its stacks from another source
+System._commandHandlers['importWorld'] = function(sender, sourceUrl){
+    if(!sourceUrl){
+        sourceUrl = window.prompt("Choose World location");
+    }
+    fetch(sourceUrl)
+        .then(response => {
+            let contentType = response.headers.get('content-type');
+            if(!contentType.startsWith('text/html')){
+                throw new Error(`Invalid content type: ${contentType}`);
+            }
+            return response.blob().then(blob => {
+                let reader = new FileReader();
+                reader.readAsText(blob);
+                reader.onloadend = () => {
+                    let parsedDocument = parse(reader.result);
+                    // there is no .getElementById() for a node HTML parsed document!
+                    let serializationEl = parsedDocument.querySelector('#serialization');
+                    if(!serializationEl){
+                        throw new Error(`No serialization found for this page`);
+                    }
+                    let deserializedInfo = JSON.parse(serializationEl.textContent);
+
+                    // Start from the WorldStack and recursively
+                    // create new Parts/Views from the deserialized
+                    // dictionary
+                    let worldJSON = deserializedInfo.parts['world'];
+                    if(!worldJSON){
+                        throw new Error(`World not found in serialization!`);
+                    }
+
+                    // for each sub-part of world (presumably a stack)
+                    // add it to the current world
+                    let newStacks = [];
+                    worldJSON.subparts.forEach((partId) => {
+                        let stack = deserializedInfo.parts[partId];
+                        let newStack = this.deserializePart(
+                            stack,
+                            'world',
+                            deserializedInfo.parts,
+                            deserializedInfo,
+                            true // generate new ids
+                        );
+                        newStacks.push(newStack);
+                    });
+
+                    // set all the current cards for new stacks 
+                    newStacks.forEach((stack) => {
+                        let currentCardIndex = stack.partProperties.getPropertyNamed(stack, 'current');
+                        stack.partProperties.setPropertyNamed(stack, 'current', currentCardIndex);
+                    });
+                    this.setAllScriptProperties();
+
+                    // And serialize
+                    this.serialize();
+                };
+            });
+        })
+        .then(() => {
+            // Manually set the _src.
+            // This ensures that we don't infinitely
+            // call the load operation
+            this._src = sourceUrl;
+        })
+        .catch(err => {
+            console.error(err);
+        });
+}
 
 // Opens a basic tool window on the Part of the given
 // id. If no ID is given, we assume the tool window

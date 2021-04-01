@@ -164,6 +164,10 @@ class PartProperties {
         this._indexOfProperty = this._indexOfProperty.bind(this);
     }
 
+    get all(){
+        return this._properties;
+    }
+
     // This collection 'has' a property if it contains
     // a Property object with matching name or alias
     // of the incoming property.

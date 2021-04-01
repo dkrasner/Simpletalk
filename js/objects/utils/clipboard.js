@@ -72,7 +72,6 @@ class STClipboard {
                 // Open a halo on the resulting part
                 let copiedView = document.querySelector(`[part-id="${deserialization.properties.id}"]`);
                 copiedView.openHalo();
-                
             } else {
                 console.warn(`${aTargetPart.type}[${aTargetPart.id}] does not accept subparts of type ${deserialization.type}`);
             }
