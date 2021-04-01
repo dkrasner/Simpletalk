@@ -41,7 +41,8 @@ import STClipboard from './utils/clipboard.js';
 
 import handInterface from './utils/handInterface.js';
 
-import { parse } from 'node-html-parser';
+const DOMparser = new DOMParser();
+
 
 const System = {
     name: "System",
@@ -476,42 +477,6 @@ const System = {
                 this.newView(model.type, model.id);
             }
         }
-
-        return model;
-    },
-
-    // "Deep" copy an existing model, including all it's partProperties
-    // (id excluded and owner excluded)
-    copyModel(modelId, ownerId){
-        // Lookup the instance of the model that
-        // matches the owner's id
-        let ownerPart = this.partsById[ownerId];
-        if(!ownerPart || ownerPart == undefined){
-            throw new Error(`System could not locate owner part with id ${ownerId}`);
-        }
-
-        let templateModel = this.partsById[modelId];
-        let model = templateModel.copy(ownerPart);
-
-        // add the new model to the owner's
-        // subparts list
-        ownerPart.addPart(model);
-
-        // Add the System as a property subscriber to
-        // the new model. This will send a message to
-        // this System object whenever any of this model's
-        // properties have changed
-        model.addPropertySubscriber(this);
-
-        // See if there is already a view for the model.
-        // If not, create and attach it.
-        let viewForModel = this.findViewById(model.id);
-        if(!viewForModel){
-            this.newView(model.type, model.id);
-        }
-
-        // Reserialize the world
-        this.serialize();
 
         return model;
     },
@@ -1044,7 +1009,7 @@ System._commandHandlers['importWorld'] = function(sender, sourceUrl){
                 let reader = new FileReader();
                 reader.readAsText(blob);
                 reader.onloadend = () => {
-                    let parsedDocument = parse(reader.result);
+                    let parsedDocument = DOMparser.parseFromString(reader.result, "text/html");
                     // there is no .getElementById() for a node HTML parsed document!
                     let serializationEl = parsedDocument.querySelector('#serialization');
                     if(!serializationEl){
