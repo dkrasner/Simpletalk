@@ -16,6 +16,7 @@ class PartView extends HTMLElement {
         super();
         this.model = null;
         this.isPartView = true;
+        this.isLensed = false;
         this.name = this.constructor.name;
         this.propChangeHandlers = {};
         this.setupBasePropHandlers();
@@ -108,7 +109,14 @@ class PartView extends HTMLElement {
     setModel(aModel){
         this.model = aModel;
         aModel.addPropertySubscriber(this);
-        this.setAttribute('part-id', aModel.id);
+        if(this.isLensed){
+            this.removeAttribute('part-id');
+            this.setAttribute('lens-part-id', aModel.id);
+        } else {
+            this.removeAttribute('lens-part-id');
+            this.setAttribute('part-id', aModel.id);
+        }
+
         // set onevent DOM element handlers for events property
         // NOTE: run here as opposed to in this.connectedCallback() because
         // the latter can technically be invoked before the model is set
@@ -654,14 +662,6 @@ class PartView extends HTMLElement {
             return true;
         }
 
-        return false;
-    }
-
-    get isLensed(){
-        let role = this.getAttribute('role');
-        if(role && role == 'lens'){
-            return true;
-        }
         return false;
     }
 

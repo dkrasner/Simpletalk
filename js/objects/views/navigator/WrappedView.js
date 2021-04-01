@@ -19,11 +19,25 @@ const templateString = `
         overflow: hidden;
         margin-left: 15px;
     }
-    :host(st-card){
+    ::slotted(st-stack) {
         display: block;
     }
+    ::slotted(st-stack > st-card){
+        background-color: green;
+    }
+    :host(.current){
+        box-shadow: 1px 1px 20px 2px rgba(100, 100, 100, 0.8);
+        transition: box-shadow 0.2s linear, opacity 0.2s linear;
+    }
+    :host(:not(.current)){
+        opacity: 0.5;
+        transition: box-shadow 0.2s linear; opacity 0.2s linear;
+    }
+    st-card {
+        background-color: brown;
+    }
 </style>
-<slot name="simpletalk-view"></slot>
+<slot name="wrapped-view"></slot>
 `;
 
 

@@ -1543,6 +1543,10 @@ document.addEventListener('DOMContentLoaded', () => {
     window.customElements.define('st-navigator', STNavigator);
     
 
+    // Perform the initial setup of
+    // the system
+    System.initialLoad();
+    
     // If there is already a Navigator element in the body,
     // remove it and add a new one
     Array.from(document.querySelectorAll('st-navigator')).forEach(el => {
@@ -1550,10 +1554,9 @@ document.addEventListener('DOMContentLoaded', () => {
     });
     System.navigator = document.createElement('st-navigator');
     document.body.append(System.navigator);
-    
-    // Perform the initial setup of
-    // the system
-    System.initialLoad();
+    System.navigator.setModel(
+        System.partsById['world']
+    );
 });
 
 export {

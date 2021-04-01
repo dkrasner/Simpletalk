@@ -8,6 +8,13 @@
  **/
 import PartView from '../PartView.js';
 import WrappedView from './WrappedView.js';
+import StackRow from './StackRow.js';
+import CardRow from './CardRow.js';
+
+// Add any needed customElements
+window.customElements.define('nav-stack-row', StackRow);
+window.customElements.define('nav-card-row', CardRow);
+window.customElements.define('wrapped-view', WrappedView);
 
 const stackIcon = `
 <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-stack" width="50" height="50" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
@@ -65,14 +72,17 @@ const cardIcon = `
 const templateString = `
 <style>
     :host {
+        box-sizing: border-box;
         position: absolute;
         width: 100%;
-        top: 100%;
+        top: 100vh;
         min-height: 100px;
         background-color: white;
         transition: top 0.2s ease-out;
         padding: 20px;
+        border-top: 1px solid rgba(50, 50, 50, 0.4);
     }
+
     .nav-display-row {
         display: flex;
         position: relative;
@@ -87,11 +97,11 @@ const templateString = `
 </style>
 <div id="stacks-display" class="nav-display-row">
     <div id="stack-icon" class="nav-icon">${stackIcon}</div>
-    <slot name="stacks"></slot>
+    <slot name="stack-row"></slot>
 </div>
 <div id="cards-display" class="nav-display-row">
     <div id="card-icon" class="nav-icon">${cardIcon}</div>
-    <slot name="cards"></slot>
+    <slot name="card-row"></slot>
 </div>
 `;
 
@@ -99,6 +109,8 @@ class STNavigator extends PartView {
     constructor(){
         super();
 
+        this.initialized = false;
+        
         // Set up template
         this.template = document.createElement('template');
         this.template.innerHTML = templateString;
@@ -111,10 +123,27 @@ class STNavigator extends PartView {
         this.toggle = this.toggle.bind(this);
         this.open = this.open.bind(this);
         this.close = this.close.bind(this);
-        this.attachToWorld = this.attachToWorld.bind(this);
-        this.updateStacksDisplay = this.updateStacksDisplay.bind(this);
         this.updateCardsDisplay = this.updateCardsDisplay.bind(this);
-        this._recursivelyUpdateViewChildren = this._recursivelyUpdateViewChildren.bind(this);
+    }
+
+    afterConnected(){
+        this.stackRowEl = this.querySelector(':scope > nav-stack-row');
+        if(!this.stackRowEl){
+            this.stackRowEl = document.createElement('nav-stack-row');
+            this.stackRowEl.setAttribute('slot', 'stack-row');
+            this.appendChild(this.stackRowEl);
+        }
+        this.cardRowEl = this.querySelector(':scope > nav-card-row');
+        if(!this.cardRowEl){
+            this.cardRowEl = document.createElement('nav-card-row');
+            this.cardRowEl.setAttribute('slot', 'card-row');
+            this.appendChild(this.cardRowEl);
+        }
+    }
+
+    afterModelSet(){
+        this.stackRowEl.setModel(this.model);
+        this.cardRowEl.setModel(this.model.currentStack);
     }
 
     toggle(){
@@ -127,21 +156,18 @@ class STNavigator extends PartView {
     }
 
     open(){
-        let worldView = document.querySelector('st-world');
-        this.attachToWorld(worldView);
+        if(!this.initialized){
+            this.stackRowEl.initView();
+            this.cardRowEl.initView();
+            this.initialized = true;
+        }
         let height = this.getBoundingClientRect().height;
-        let heightPx = `calc(100% - ${height}px)`;
-        this.style.top = heightPx;
+        let heightPx = `calc(100vh - ${height}px)`;
+        this.style.top = heightPx;        
     }
 
     close(){
         this.style.top = null;
-    }
-
-    attachToWorld(aWorldView){
-        this.updateStacksDisplay(aWorldView);
-        let currentStackView = aWorldView.querySelector('.current-stack');
-        this.updateCardsDisplay(currentStackView);
     }
 
     updateCardsDisplay(aStackView){
@@ -162,40 +188,7 @@ class STNavigator extends PartView {
             this.appendChild(wrapper);
         });
     }
-
-    updateStacksDisplay(aWorldView){
-        // Clear any existing wrappers inside the stacks display
-        let existing = Array.from(this.querySelectorAll('wrapped-view[slot="stacks"]'));
-        existing.forEach(el => { el.remove(); });
-        Array.from(aWorldView.querySelectorAll('st-world > st-stack')).forEach(sourceStackView => {
-            let stackViewCopy = sourceStackView.cloneNode(true);
-            stackViewCopy.setModel(sourceStackView.model);
-            stackViewCopy.handleCurrentChange(); // Re-sets the current card attribute to match model
-            stackViewCopy.removeAttribute('part-id');
-            stackViewCopy.setAttribute('lens-part-id', sourceStackView.getAttribute('part-id'));
-            stackViewCopy.setAttribute('slot', 'simpletalk-view');
-            stackViewCopy.style.pointerEvents = "none";
-            this._recursivelyUpdateViewChildren(stackViewCopy);
-            let wrapper = document.createElement('wrapped-view');
-            wrapper.setAttribute('slot', 'stacks');
-            wrapper.appendChild(stackViewCopy);
-            this.appendChild(wrapper);
-        });
-    }
-
-    _recursivelyUpdateViewChildren(aLensView){
-        Array.from(aLensView.querySelectorAll('[part-id]')).forEach(subView => {
-            let mappedId = subView.getAttribute('part-id');
-            subView.setAttribute('lens-part-id', mappedId);
-            subView.removeAttribute('part-id');
-            let model = document.querySelector(`[part-id="${mappedId}"]`).model;
-            subView.setModel(model);
-            this._recursivelyUpdateViewChildren(subView);
-        });
-    }
 };
-
-window.customElements.define('wrapped-view', WrappedView);
 
 export {
     STNavigator,

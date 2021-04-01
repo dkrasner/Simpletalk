@@ -297,6 +297,22 @@ st-world > st-stack > :not(.current-card).list-layout {
     left: unset !important;
 }
 
+/* =Layout Exceptions
+ * --------------------------------------------------------*/
+/* We don't want list-layout to display on Cards when they
+ * are not current in the current stack (but we want this
+ * in stack windows) */
+/* st-stack.current-stack > st-card.list-layout:not(.current-card){ */
+/*     display: none; */
+/* } */
+wrapped-view st-stack st-card:not(.current-card){
+    display: none;
+}
+
+wrapped-view > st-card {
+    display: block;
+}
+
 /* =Utility Classes
  * --------------------------------------------------------*/
 .editing {
