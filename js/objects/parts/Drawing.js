@@ -26,6 +26,14 @@ class Drawing extends Part {
         addPositioningStyleProps(this);
         this.setupStyleProperties();
 
+        // We are using a distinct show-border
+        // property to deal with being able to see
+        // a drawing that is empty
+        this.partProperties.newBasicProp(
+            'show-border',
+            true
+        );
+
         // When drawing from a script/commands,
         // we will use this as the open canvas
         // whose image bytes will be set to the
