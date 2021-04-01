@@ -279,6 +279,10 @@ class FieldView extends PartView {
                         this.handleSelection();
                     }
                 } else {
+                    // make sure no context menu is open
+                    if(this.contextMenuOpen){
+                        this.closeContextMenu();
+                    }
                     // clear all the selections
                     this.selectionRanges = {};
                 }
@@ -325,19 +329,6 @@ class FieldView extends PartView {
         fieldModel.partProperties.setPropertyNamed(fieldModel, "target", `field id ${this.model.id}`);
         fieldModel.partProperties.setPropertyNamed(fieldModel, "targetRangeId", rangeId);
     }
-
-    openContextMenu(){
-        let text = document.getSelection().toString();
-        let focusNode = document.getSelection().focusNode;
-        let button = document.createElement("button");
-        button.id = "doIt";
-        button.style.marginLeft = "10px";
-        button.style.backgroundColor = "var(--palette-green)";
-        button.textContent = "Do it!";
-        button.addEventListener("click", this.doIt);
-        focusNode.after(button);
-        this.contextMenuOpen = true;
-    };
 
     /**
       * Given a tagrget specifier and html
@@ -394,6 +385,19 @@ class FieldView extends PartView {
         }
     }
 
+    openContextMenu(){
+        let text = document.getSelection().toString();
+        let focusNode = document.getSelection().focusNode;
+        let button = document.createElement("button");
+        button.id = "doIt";
+        button.style.marginLeft = "10px";
+        button.style.backgroundColor = "var(--palette-green)";
+        button.textContent = "Do it!";
+        button.addEventListener("click", this.doIt);
+        focusNode.after(button);
+        this.contextMenuOpen = true;
+    };
+
     closeContextMenu(){
         let button = this._shadowRoot.querySelector('#doIt');
         if(button){
@@ -407,6 +411,9 @@ class FieldView extends PartView {
     doIt(event){
         event.stopPropagation();
         let text = document.getSelection().toString();
+        // clean up the text to make sure no newlines or spaces made it in
+        text = text.replace(/^[\n ]+/, "");
+        text = text.replace(/[\n ]+$/, "");
         this.closeContextMenu();
         // send message to compile the prepped script
         let script = `on doIt\n   ${text}\nend doIt`;

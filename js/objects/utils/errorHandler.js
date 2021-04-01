@@ -57,26 +57,39 @@ const errorHandler = {
         // are not type: command?
         if(offendingMessage.type === "command"){
             let commandName = offendingMessage.commandName;
-            let scriptEditor = window.System.findScriptEditorByTargetId(originalSender.id);
-            if(!scriptEditor){
-                this._openScriptEditor(originalSender.id);
-                scriptEditor = window.System.findScriptEditorByTargetId(originalSender.id);
-            }
             let originalSenderModel = window.System.partsById[originalSender.id];
-            let text = originalSenderModel.partProperties.getPropertyNamed(originalSenderModel, 'script');
+            let script = originalSenderModel.partProperties.getPropertyNamed(originalSenderModel, 'script');
+            let regex = new RegExp(`\\s*${commandName}(\s|\n|$)`, 'g');
+            let text;
+            if(script && script.match(regex)){
+                text = script;
+            } else if (originalSenderModel.type === 'field'){
+                // if there is no script, or no mention of the commandName in the script
+                // then the code was run from a "do it" context menu
+                text = originalSenderModel.partProperties.getPropertyNamed(originalSenderModel, 'text');
+            } else {
+                console.log(`could not process error: ${aMessage}`);
+                return;
+            }
             let textLines = text.split("\n");
             // offending command text line with an error marker
-            let regex = new RegExp(`\\s*${commandName}(\s|$)`, 'g');
             for(let i = 0; i < textLines.length; i++){
                 let line = textLines[i];
                 if(line.match(regex)){
                     textLines[i] = line += ` --<<<[MessageNotUnderstood: command; commandName: "${commandName}"]`;
                 }
             }
-            textLines.forEach((line) => {
-            });
             text = textLines.join("\n");
-            scriptEditor.model.partProperties.setPropertyNamed(scriptEditor.model, "text", text);
+            if(script && script.match(regex)){
+                let scriptEditor = window.System.findScriptEditorByTargetId(originalSender.id);
+                if(!scriptEditor){
+                    this._openScriptEditor(originalSender.id);
+                    scriptEditor = window.System.findScriptEditorByTargetId(originalSender.id);
+                }
+                scriptEditor.model.partProperties.setPropertyNamed(scriptEditor.model, "text", text);
+            } else {
+                originalSenderModel.partProperties.setPropertyNamed(originalSenderModel, 'text', text);
+            }
 
             // finally open the debugger (or current version thereof)
             // NOTE: this is a bit dangerous, b/c if the System doesn't
