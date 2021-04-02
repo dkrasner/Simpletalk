@@ -21,12 +21,6 @@ const errorHandler = {
     },
 
     handleGrammarMatchError: function(aMessage){
-        // first locate the script editor in question
-        let scriptEditor = window.System.findScriptEditorByTargetId(aMessage.partId);
-        if(!scriptEditor){
-            this._openScriptEditor(aMessage.partId);
-            scriptEditor = window.System.findScriptEditorByTargetId(aMessage.partId);
-        }
         // TODO is there a more structured way to get this out of ohm?
         let regex = /Line (?<line>\d), col (?<column>\d)/;
         let match = aMessage.parsedScript.message.match(regex);
@@ -45,7 +39,30 @@ const errorHandler = {
         // replace said text line with an error marker
         textLines[errorLineNum] += ` --<<<[Expected:${expectedText}; ruleName: "${ruleName}"]`;
         text = textLines.join("\n");
-        scriptEditor.model.partProperties.setPropertyNamed(scriptEditor.model, "text", text);
+        // if the first message in the parsed script is "doIt" then the statementLines are
+        // located in the corresponding field text, not the script, property and
+        // we want the error to be marked up in the field textarea
+        if(aMessage.parsedScript.input.startsWith("on doIt")){
+            let originalSenderModel = window.System.partsById[aMessage.partId];
+            // we need to get the original text so as not to completely replace it
+            // then insert the markup in the appropriate line
+            let fieldText = originalSenderModel.partProperties.getPropertyNamed(originalSenderModel, "text");
+            let script = aMessage.parsedScript.input;
+            script = this._cleanDoItSCript(script);
+            // we don't want the "doIt" handler inserted back in, since it's just a hidden wrapper for the
+            // statement lines
+            text = this._cleanDoItSCript(text);
+            fieldText = fieldText.replace(script, text);
+            originalSenderModel.partProperties.setPropertyNamed(originalSenderModel, "text", fieldText);
+        } else {
+            // first locate the script editor in question
+            let scriptEditor = window.System.findScriptEditorByTargetId(aMessage.partId);
+            if(!scriptEditor){
+                this._openScriptEditor(aMessage.partId);
+                scriptEditor = window.System.findScriptEditorByTargetId(aMessage.partId);
+            }
+            scriptEditor.model.partProperties.setPropertyNamed(scriptEditor.model, "text", text);
+        }
         // open the grammar
         this._openGrammar(aMessage.partId, ruleName);
     },
@@ -58,18 +75,24 @@ const errorHandler = {
         if(offendingMessage.type === "command"){
             let commandName = offendingMessage.commandName;
             let originalSenderModel = window.System.partsById[originalSender.id];
-            let script = originalSenderModel.partProperties.getPropertyNamed(originalSenderModel, 'script');
             let regex = new RegExp(`\\s*${commandName}(\s|\n|$)`, 'g');
             let text;
-            if(script && script.match(regex)){
-                text = script;
-            } else if (originalSenderModel.type === 'field'){
-                // if there is no script, or no mention of the commandName in the script
-                // then the code was run from a "do it" context menu
+            let target;
+            let executionStack = window.System.executionStack._stack;
+            // if the first message in the execution stack is "doIt" then the statementLines are
+            // located in the corresponding field text, not the script, property and
+            // we want the error to be marked up in the field textarea
+            if(executionStack[0] && executionStack[0].messageName == "doIt"){
                 text = originalSenderModel.partProperties.getPropertyNamed(originalSenderModel, 'text');
+                target = originalSenderModel;
             } else {
-                console.log(`could not process error: ${aMessage}`);
-                return;
+                text = originalSenderModel.partProperties.getPropertyNamed(originalSenderModel, 'script');
+                let scriptEditor = window.System.findScriptEditorByTargetId(originalSender.id);
+                if(!scriptEditor){
+                    this._openScriptEditor(originalSender.id);
+                    scriptEditor = window.System.findScriptEditorByTargetId(originalSender.id);
+                }
+                target = scriptEditor.model;
             }
             let textLines = text.split("\n");
             // offending command text line with an error marker
@@ -80,16 +103,7 @@ const errorHandler = {
                 }
             }
             text = textLines.join("\n");
-            if(script && script.match(regex)){
-                let scriptEditor = window.System.findScriptEditorByTargetId(originalSender.id);
-                if(!scriptEditor){
-                    this._openScriptEditor(originalSender.id);
-                    scriptEditor = window.System.findScriptEditorByTargetId(originalSender.id);
-                }
-                scriptEditor.model.partProperties.setPropertyNamed(scriptEditor.model, "text", text);
-            } else {
-                originalSenderModel.partProperties.setPropertyNamed(originalSenderModel, 'text', text);
-            }
+            target.partProperties.setPropertyNamed(target, "text", text);
 
             // finally open the debugger (or current version thereof)
             // NOTE: this is a bit dangerous, b/c if the System doesn't
@@ -98,6 +112,16 @@ const errorHandler = {
             // an infinite loop!
             this._openDebugger(originalSender.id);
         }
+    },
+
+    _cleanDoItSCript(script){
+        // clean up the DoIt script by removing the handler
+        // newlines, tabs and spaces
+        script = script.replace("on doIt", "");
+        script = script.replace("end doIt", "");
+        script = script.replace(/^[\n\t ]+/, "");
+        script = script.replace(/[\n\t ]+$/, "");
+        return script;
     },
 
     _openScriptEditor: function(partId){

@@ -412,12 +412,15 @@ class FieldView extends PartView {
         event.stopPropagation();
         let text = document.getSelection().toString();
         // clean up the text to make sure no newlines or spaces made it in
-        text = text.replace(/^[\n ]+/, "");
-        text = text.replace(/[\n ]+$/, "");
+        text = text.replace(/^[\t\n ]+/, "");
+        text = text.replace(/[\t\n ]+$/, "");
         this.closeContextMenu();
         // send message to compile the prepped script
         let script = `on doIt\n   ${text}\nend doIt`;
-        this.sendMessage(
+        // send these messages from the model (not the view)
+        // since if there is an error the original sender will
+        // have an id
+        this.model.sendMessage(
             {
                 type: "compile",
                 codeString: script,
@@ -425,11 +428,12 @@ class FieldView extends PartView {
             },
             this.model
         );
-        this.sendMessage(
+        this.model.sendMessage(
             {
                 type: "command",
                 commandName: "doIt",
                 args: [],
+                shouldIgnore: true // Should ignore if System DNU
             },
             this.model
         );
