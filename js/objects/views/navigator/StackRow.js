@@ -35,6 +35,7 @@ class StackRow extends PartView {
         // Bound methods
         this.initView = this.initView.bind(this);
         this.addWrappedStack = this.addWrappedStack.bind(this);
+        this.showInitially = this.showInitially.bind(this);
         this._recursivelyUpdateLensViewSubparts = this._recursivelyUpdateLensViewSubparts.bind(this);
     }
 
@@ -53,6 +54,14 @@ class StackRow extends PartView {
             return subpart.type == 'stack';
         }).forEach(stackPart => {
             this.addWrappedStack(stackPart);
+        });
+    }
+
+    showInitially(){
+        let wrappers = Array.from(this.querySelectorAll('wrapped-view'));
+        wrappers.forEach(wrapper => {
+            wrapper.classList.remove('hide');
+            wrapper.showContent();
         });
     }
 
@@ -77,6 +86,8 @@ class StackRow extends PartView {
         wrapper.setAttribute("slot", "stacks");
         wrapper.setAttribute("wrapped-id", aStack.id);
         wrapper.appendChild(stackLensView);
+        wrapper.hideContent();
+        wrapper.classList.add('hide');
         this.appendChild(wrapper);
     }
 

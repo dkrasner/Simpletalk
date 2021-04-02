@@ -75,15 +75,18 @@ const templateString = `
         box-sizing: border-box;
         position: absolute;
         width: 100%;
-        top: 100vh;
-        min-height: 100px;
+        top: 100%;
+        min-height: 271px;
         background-color: white;
+        backdrop-filter: blur(4px);
         transition: top 0.2s ease-out;
         padding: 20px;
         border-top: 1px solid rgba(50, 50, 50, 0.4);
+        overflow-y: hidden;
     }
 
     .nav-display-row {
+        box-sizing: border-box;
         display: flex;
         position: relative;
         align-items: center;
@@ -123,7 +126,6 @@ class STNavigator extends PartView {
         this.toggle = this.toggle.bind(this);
         this.open = this.open.bind(this);
         this.close = this.close.bind(this);
-        this.updateCardsDisplay = this.updateCardsDisplay.bind(this);
     }
 
     afterConnected(){
@@ -142,6 +144,19 @@ class STNavigator extends PartView {
     }
 
     afterModelSet(){
+        this.removeAttribute('part-id');
+        this.stackRowEl = this.querySelector(':scope > nav-stack-row');
+        if(!this.stackRowEl){
+            this.stackRowEl = document.createElement('nav-stack-row');
+            this.stackRowEl.setAttribute('slot', 'stack-row');
+            this.appendChild(this.stackRowEl);
+        }
+        this.cardRowEl = this.querySelector(':scope > nav-card-row');
+        if(!this.cardRowEl){
+            this.cardRowEl = document.createElement('nav-card-row');
+            this.cardRowEl.setAttribute('slot', 'card-row');
+            this.appendChild(this.cardRowEl);
+        }
         this.stackRowEl.setModel(this.model);
         this.cardRowEl.setModel(this.model.currentStack);
     }
@@ -156,37 +171,22 @@ class STNavigator extends PartView {
     }
 
     open(){
-        if(!this.initialized){
+        if(!this.initialized && this.model){
             this.stackRowEl.initView();
             this.cardRowEl.initView();
             this.initialized = true;
+            setTimeout(() => {
+                this.cardRowEl.showInitially();
+                this.stackRowEl.showInitially();
+            }, 330);
         }
         let height = this.getBoundingClientRect().height;
-        let heightPx = `calc(100vh - ${height}px)`;
-        this.style.top = heightPx;        
+        let heightPx = `calc(100% - ${height}px)`;
+        this.style.top = heightPx;
     }
 
     close(){
         this.style.top = null;
-    }
-
-    updateCardsDisplay(aStackView){
-        // Clear any existing wrappers inside the cards display
-        let existing = Array.from(this.querySelectorAll('wrapped-view[slot="cards"]'));
-        existing.forEach(el => { el.remove(); });
-        Array.from(aStackView.querySelectorAll('st-world > st-stack.current-stack > st-card')).forEach(sourceCardView => {
-            let cardViewCopy = sourceCardView.cloneNode(true);
-            cardViewCopy.setModel(sourceCardView.model);
-            cardViewCopy.removeAttribute('part-id');
-            cardViewCopy.setAttribute('lens-part-id', sourceCardView.getAttribute('part-id'));
-            cardViewCopy.setAttribute('slot', 'simpletalk-view');
-            cardViewCopy.style.pointerEvents = "none";
-            this._recursivelyUpdateViewChildren(cardViewCopy);
-            let wrapper = document.createElement('wrapped-view');
-            wrapper.setAttribute('slot', 'cards');
-            wrapper.appendChild(cardViewCopy);
-            this.appendChild(wrapper);
-        });
     }
 };
 

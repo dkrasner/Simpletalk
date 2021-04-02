@@ -12,29 +12,41 @@ const templateString = `
     :host {
         display: block;
         box-sizing: border-box;
-        position: relative;
         width: 150px;
         height: 100px;
-        border: 1px solid brown;
+        border: 1px solid rgba(100, 100, 100, 0.4);
         overflow: hidden;
         margin-left: 15px;
+        flex-shrink: 0;
+        transition: transform 0.2s ease-in, opacity 0.2s ease-in, box-shadow 0.2s linear;
+        transform: translateY(0);
+        opacity: 1.0;
     }
-    ::slotted(st-stack) {
-        display: block;
+
+    :host(:hover:not(.current)){
+        cursor: pointer;
+        border: 1px solid rgba(100, 100, 100, 0.8);
+        box-shadow: 1px 1px 20px 1px rgba(150, 150, 150, 0.5);
+        transition: box-shadow 0.1s linear, border 0.1s linear;
     }
-    ::slotted(st-stack > st-card){
-        background-color: green;
+
+    :host(.hide),
+    :host(.hide.current){
+        transform: translateY(100%);
+        opacity: 0.01;
+        transition: transform 0.2s ease-out, opacity 0.2s ease-out, box-shadow 0.2s linear;
     }
+
+    :host(.hide) > st-card {
+        display: none;
+    }
+
     :host(.current){
         box-shadow: 1px 1px 20px 2px rgba(100, 100, 100, 0.8);
-        transition: box-shadow 0.2s linear, opacity 0.2s linear;
     }
     :host(:not(.current)){
         opacity: 0.5;
-        transition: box-shadow 0.2s linear; opacity 0.2s linear;
-    }
-    st-card {
-        background-color: brown;
+        transition: transform 0.2s ease-out, opacity 0.2s ease-out, box-shadow 0.2s linear;
     }
 </style>
 <slot name="wrapped-view"></slot>
@@ -56,6 +68,8 @@ class WrappedView extends HTMLElement {
         // Bind methods
         this.onChildSlotted = this.onChildSlotted.bind(this);
         this.updateScaling = this.updateScaling.bind(this);
+        this.hideContent = this.hideContent.bind(this);
+        this.showContent = this.showContent.bind(this);
     }
 
     connectedCallback(){
@@ -85,7 +99,7 @@ class WrappedView extends HTMLElement {
         // actual view for the lens-ed part, in order to get
         // its current dimensions.
         let partId = firstChild.getAttribute('lens-part-id');
-        let refElement = document.querySelector(`[part-id="${partId}"]`);
+        let refElement = document.querySelector(`st-world`);
         let wrapBox = this.getBoundingClientRect();
         let innerBox = document.querySelector(`st-world`).getBoundingClientRect();
         let scalingX = (wrapBox.width / innerBox.width);
@@ -93,7 +107,15 @@ class WrappedView extends HTMLElement {
         firstChild.style.width = `${refElementBox.width}px`;
         firstChild.style.height = `${refElementBox.height}px`;
         firstChild.style.transform = `scale(${scalingX, scalingX})`;
-        firstChild.style.transformOrigin = "0 0";
+        firstChild.style.transformOrigin = "0px 0px";
+    }
+
+    hideContent(){
+        this.children[0].style.display = "none";
+    }
+
+    showContent(){
+        this.children[0].style.display = "block";
     }
 };
 

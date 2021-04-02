@@ -1553,10 +1553,13 @@ document.addEventListener('DOMContentLoaded', () => {
         el.remove();
     });
     System.navigator = document.createElement('st-navigator');
-    document.body.append(System.navigator);
     System.navigator.setModel(
         System.partsById['world']
     );
+    let worldView = document.querySelector('st-world');
+    worldView.appendChild(System.navigator);
+    //document.body.appendChild(System.navigator);
+    //document.querySelector('st-world').scrollIntoView(); // Fixes janky movement and scaling!
 });
 
 export {

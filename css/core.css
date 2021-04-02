@@ -45,6 +45,7 @@ body {
     height: 100vh;
     overflow: hidden;
     font-family: "Crimson Pro";
+    background-color: purple;
 }
 
 .active {
@@ -309,7 +310,8 @@ wrapped-view st-stack st-card:not(.current-card){
     display: none;
 }
 
-wrapped-view > st-card {
+wrapped-view > st-card,
+wrapped-view > st-stack {
     display: block;
 }
 
@@ -328,4 +330,11 @@ wrapped-view > st-card {
 
 .editable {
     outline: solid 1px var(--palette-orange);
+}
+
+
+/* = TESTING: TODO: Remove
+ * --------------------------------------------------*/
+st-navigator {
+    background-color: rgba(255, 255, 255, 0.2);
 }

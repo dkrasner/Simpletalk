@@ -36,6 +36,8 @@ class CardRow extends PartView {
         this.initView = this.initView.bind(this);
         this.addWrappedCard = this.addWrappedCard.bind(this);
         this.handleCurrentChange = this.handleCurrentChange.bind(this);
+        this.showInitially = this.showInitially.bind(this);
+        this.onWrapperClick = this.onWrapperClick.bind(this);
         this._recursivelyUpdateLensViewSubparts = this._recursivelyUpdateLensViewSubparts.bind(this);
     }
 
@@ -60,6 +62,13 @@ class CardRow extends PartView {
         });
     }
 
+    onWrapperClick(event){
+        let wrapperIsCurrent = event.target.classList.contains('current');
+        if(this.model && !wrapperIsCurrent){
+            this.model.goToCardById(event.target.getAttribute('wrapped-id'));
+        }
+    }
+
     initView(){
         // We iterate over each card of the stack and:
         // * Create a clone of the card view element;
@@ -76,6 +85,20 @@ class CardRow extends PartView {
         this.handleCurrentChange();
     }
 
+    showInitially(){
+        let wrappers = Array.from(this.querySelectorAll('wrapped-view'));
+        let delay = 100;
+        for(let i = 0; i < wrappers.length; i++){
+            let wrapper = wrappers[i];
+            setTimeout(() => {
+                wrapper.classList.remove('hide');
+            }, delay * (i + 1));
+            setTimeout(() => {
+                wrapper.showContent();
+            }, delay * (i + 2));
+        }
+    }
+
     addWrappedCard(aCard){
         // Create a lensed copy of the CardView
         let cardView = document.querySelector(`[part-id="${aCard.id}"]`);
@@ -83,6 +106,10 @@ class CardRow extends PartView {
         cardLensView.setAttribute('lens-part-id', aCard.id);
         cardLensView.setAttribute('slot', 'wrapped-view');
         cardLensView.style.pointerEvents = "none";
+
+        // The wrapper will handle current-ness, so remove
+        // the class from the lensed version
+        cardLensView.classList.remove('current-card');
 
         // Recursively create lens views of all subpart
         // children and append them in the correct places
@@ -95,7 +122,10 @@ class CardRow extends PartView {
         let wrapper = document.createElement('wrapped-view');
         wrapper.setAttribute('slot', 'cards');
         wrapper.setAttribute('wrapped-id', aCard.id);
+        wrapper.addEventListener('click', this.onWrapperClick);
         wrapper.appendChild(cardLensView);
+        wrapper.hideContent();
+        wrapper.classList.add('hide');
         this.appendChild(wrapper);
     }
 
