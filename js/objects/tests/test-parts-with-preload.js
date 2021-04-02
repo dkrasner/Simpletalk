@@ -42,20 +42,17 @@ describe('Basic functionality', () => {
         it('Can properly list all boot up command handlers present', () => {
             // we just check for a few of the core handlers and make sure these
             // are present, as these evolve too quickly to keep a comprehensive list
-            assert.deepEqual(button.commandHandlerRegistry["deleteModel"], {partId: -1, partType: "System", override: false});
-            assert.deepEqual(button.commandHandlerRegistry["newModel"], {partId: -1, partType: "System", override: false});
-            assert.deepEqual(button.commandHandlerRegistry["answer"], {partId: -1, partType: "System", override: false});
-            // since there are no new commands for the button, these should be the
-            // as for its parent card
-            assert.deepEqual(button.commandHandlerRegistry, button._owner.commandHandlerRegistry);
+            assert.deepEqual(button.commandHandlerRegistry["deleteModel"], {partId: button.id, partType: "button", override: true, private: true});
+            assert.deepEqual(button.commandHandlerRegistry["newModel"], {partId: button.id, partType: "button", override: true, private: true});
+            assert.deepEqual(button.commandHandlerRegistry["answer"], {partId: -1, partType: "System", override: false, private: false});
         });
         it('Adding a new command handler adds it to the registry', () => {
             button._commandHandlers["newHandler"] = function(){};
-            assert.deepEqual(button.commandHandlerRegistry["newHandler"], {partId: button.id, partType: "button", override: false});
+            assert.deepEqual(button.commandHandlerRegistry["newHandler"], {partId: button.id, partType: "button", override: false, private: false});
         });
         it('Overriding a command handler is properly registered', () => {
             button._commandHandlers["answer"] = function(){};
-            assert.deepEqual(button.commandHandlerRegistry["answer"], {partId: button.id, partType: "button", override: true});
+            assert.deepEqual(button.commandHandlerRegistry["answer"], {partId: button.id, partType: "button", override: true, private: false});
         });
     });
 });
