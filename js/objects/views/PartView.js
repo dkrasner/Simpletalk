@@ -77,6 +77,7 @@ class PartView extends HTMLElement {
 
         // Bind lifecycle methods
         this.afterModelSet = this.afterModelSet.bind(this);
+        this.afterModelUnset = this.afterModelUnset.bind(this);
         this.afterConnected = this.afterConnected.bind(this);
         this.afterDisconnected = this.afterDisconnected.bind(this);
     }
@@ -107,6 +108,7 @@ class PartView extends HTMLElement {
     }
 
     setModel(aModel){
+        this.unsetModel();
         this.model = aModel;
         aModel.addPropertySubscriber(this);
         if(this.isLensed){
@@ -134,10 +136,14 @@ class PartView extends HTMLElement {
         this.afterModelSet();
     }
 
-    unsetModel(aModel){
-        this.model = null;
-        aModel.removePropertySubscriber(this);
-        this.setAttribute('part-id', "");
+    unsetModel(){
+        if(this.model){
+            let removedModel = this.model;
+            this.model.removePropertySubscriber(this);
+            this.model = null;
+            this.setAttribute('part-id', "");
+            this.afterModelUnset(removedModel);
+        }
     }
 
     setupBasePropHandlers(){
@@ -503,6 +509,11 @@ class PartView extends HTMLElement {
 
     /* Lifecycle Method Defaults */
     afterModelSet(){
+        // Does nothing.
+        // Should be implemented in subclasses
+    }
+
+    afterModelUnset(removedModel){
         // Does nothing.
         // Should be implemented in subclasses
     }

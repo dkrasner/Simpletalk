@@ -36,6 +36,7 @@ class StackRow extends PartView {
         this.initView = this.initView.bind(this);
         this.addWrappedStack = this.addWrappedStack.bind(this);
         this.handleCurrentChange = this.handleCurrentChange.bind(this);
+        this.handlePartAdded = this.handlePartAdded.bind(this);
         this.showInitially = this.showInitially.bind(this);
         this.onWrapperClick = this.onWrapperClick.bind(this);
         this._recursivelyUpdateLensViewSubparts = this._recursivelyUpdateLensViewSubparts.bind(this);
@@ -45,6 +46,18 @@ class StackRow extends PartView {
         this.removeAttribute('part-id');
         this.setAttribute('stack-id', this.model.id);
         this.onPropChange('current', this.handleCurrentChange);
+
+        // Find the World Model's main view element.
+        // We add the st-view-added CustomEvent listener
+        // here so we can react only to direct stack additions
+        // to the WorldStack (and not, say, to Windows or other nested kinds)
+        let worldView = document.querySelector('st-world');
+        worldView.addEventListener('st-view-added', this.handlePartAdded);
+    }
+
+    afterModelUnset(){
+        let worldView = document.querySelector('st-world');
+        worldView.removeEventListener('st-view-added', this.handlePartAdded);
     }
 
     handleCurrentChange(){
@@ -60,7 +73,17 @@ class StackRow extends PartView {
                 wrappedView.classList.remove('current');
             }
         });
-        
+    }
+
+    handlePartAdded(event){
+        // This handler is for the st-view-added
+        // CustomEvent that is triggered by System when
+        // newModel() has completed.
+        if(event.detail.partType == 'stack'){
+            let stackPart = window.System.partsById[event.detail.partId];
+            this.addWrappedStack(stackPart);
+            this.showInitially();
+        }
     }
 
     onWrapperClick(event){

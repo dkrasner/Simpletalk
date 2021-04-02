@@ -45,6 +45,8 @@ import handInterface from './utils/handInterface.js';
 const DOMparser = new DOMParser();
 
 
+
+
 const System = {
     name: "System",
     id: -1,
@@ -455,7 +457,6 @@ const System = {
             this.partsById[subpart.id] = subpart;
         });
 
-
         // If there is a valid owner part for
         // the newly created part model,
         // add the new model to the owner's
@@ -605,6 +606,18 @@ const System = {
         } else {
             parentElement.appendChild(newView);
         }
+
+        // Dispatch a CustomEvent on the parentElement
+        // indicating that this part has been created, and
+        // any view utilities that care can be notified.
+        let event = new CustomEvent('st-view-added', {
+            detail: {
+                partType: model.type,
+                partId: model.id,
+                ownerId: model._owner.id || null
+            } 
+        });
+        parentElement.dispatchEvent(event);
 
         // See if there are lens views and update
         // those as well

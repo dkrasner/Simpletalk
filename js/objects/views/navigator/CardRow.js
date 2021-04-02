@@ -36,6 +36,7 @@ class CardRow extends PartView {
         this.initView = this.initView.bind(this);
         this.addWrappedCard = this.addWrappedCard.bind(this);
         this.handleCurrentChange = this.handleCurrentChange.bind(this);
+        this.handlePartAdded = this.handlePartAdded.bind(this);
         this.showInitially = this.showInitially.bind(this);
         this.onWrapperClick = this.onWrapperClick.bind(this);
         this._recursivelyUpdateLensViewSubparts = this._recursivelyUpdateLensViewSubparts.bind(this);
@@ -45,6 +46,18 @@ class CardRow extends PartView {
         this.removeAttribute('part-id');
         this.setAttribute('card-id', this.model.id);
         this.onPropChange('current', this.handleCurrentChange);
+
+        // Find the Stack Model's main view element.
+        // We add the st-view-added/removed CustomEvent listeners
+        // here so we can react only to direct stack additions
+        // to the Stack (and not, say, to Windows or other nested kinds)
+        let stackView = window.System.findViewById(this.model.id);
+        stackView.addEventListener('st-view-added', this.handlePartAdded);
+    }
+
+    afterModelUnset(removedModel){
+        let stackView = window.System.findViewById(removedModel.id);
+        stackView.removeEventListener('st-view-added', this.handlePartAdded);
     }
 
     handleCurrentChange(){
@@ -60,6 +73,17 @@ class CardRow extends PartView {
                 wrappedView.classList.remove('current');
             }
         });
+    }
+
+    handlePartAdded(event){
+        // This handler is for the st-view-added
+        // CustomEvent that is triggered by System when
+        // newModel() has completed.
+        if(event.detail.partType == 'card'){
+            let cardPart = window.System.partsById[event.detail.partId];
+            this.addWrappedCard(cardPart);
+            this.showInitially();
+        }
     }
 
     onWrapperClick(event){
