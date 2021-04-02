@@ -110,13 +110,22 @@ class Part {
             let partType = part.type;
             if(part.id === -1){
                 partType = "System";
+            } else {
+                // System doesn't have private command handlers
+                Object.keys(part._privateCommandHandlers).forEach((h) => {
+                    let override = false;
+                    if(handlersInfo[h]){
+                        override = true;
+                    }
+                    handlersInfo[h] = {partId: part.id, partType: partType, override: override, private: true};
+                });
             }
             Object.keys(part._commandHandlers).forEach((h) => {
                 let override = false;
                 if(handlersInfo[h]){
                     override = true;
                 }
-                handlersInfo[h] = {partId: part.id, partType: partType, override: override};
+                handlersInfo[h] = {partId: part.id, partType: partType, override: override, private: false};
             });
         }
         return handlersInfo;
