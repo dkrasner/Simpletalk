@@ -35,13 +35,41 @@ class StackRow extends PartView {
         // Bound methods
         this.initView = this.initView.bind(this);
         this.addWrappedStack = this.addWrappedStack.bind(this);
+        this.handleCurrentChange = this.handleCurrentChange.bind(this);
         this.showInitially = this.showInitially.bind(this);
+        this.onWrapperClick = this.onWrapperClick.bind(this);
         this._recursivelyUpdateLensViewSubparts = this._recursivelyUpdateLensViewSubparts.bind(this);
     }
 
     afterModelSet(){
         this.removeAttribute('part-id');
         this.setAttribute('stack-id', this.model.id);
+        this.onPropChange('current', this.handleCurrentChange);
+    }
+
+    handleCurrentChange(){
+        let currentId = this.model.currentStack.id;
+        let wrappedViews = Array.from(
+            this.querySelectorAll('wrapped-view')
+        );
+        wrappedViews.forEach(wrappedView => {
+            let wrappedChild = wrappedView.children[0];
+            if(wrappedChild.model.id == currentId){
+                wrappedView.classList.add('current');
+            } else {
+                wrappedView.classList.remove('current');
+            }
+        });
+        
+    }
+
+    onWrapperClick(event){
+        let wrapperIsCurrent = event.target.classList.contains('current');
+        if(this.model && !this.wrapperIsCurrent){
+            this.model.goToStackById(
+                event.target.getAttribute('wrapped-id')
+            );
+        }
     }
 
     initView(){
@@ -55,6 +83,9 @@ class StackRow extends PartView {
         }).forEach(stackPart => {
             this.addWrappedStack(stackPart);
         });
+
+        // Setup the initial current-ness display
+        this.handleCurrentChange();
     }
 
     showInitially(){
@@ -85,6 +116,7 @@ class StackRow extends PartView {
         let wrapper = document.createElement('wrapped-view');
         wrapper.setAttribute("slot", "stacks");
         wrapper.setAttribute("wrapped-id", aStack.id);
+        wrapper.addEventListener('click', this.onWrapperClick);
         wrapper.appendChild(stackLensView);
         wrapper.hideContent();
         wrapper.classList.add('hide');

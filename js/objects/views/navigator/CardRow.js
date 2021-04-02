@@ -70,6 +70,9 @@ class CardRow extends PartView {
     }
 
     initView(){
+        // First, we clear out any existing children
+        this.innerHTML = "";
+        
         // We iterate over each card of the stack and:
         // * Create a clone of the card view element;
         // * Attach the correct model;

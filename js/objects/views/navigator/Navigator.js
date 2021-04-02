@@ -83,6 +83,7 @@ const templateString = `
         padding: 20px;
         border-top: 1px solid rgba(50, 50, 50, 0.4);
         overflow-y: hidden;
+        z-index: 1000;
     }
 
     .nav-display-row {
@@ -126,6 +127,7 @@ class STNavigator extends PartView {
         this.toggle = this.toggle.bind(this);
         this.open = this.open.bind(this);
         this.close = this.close.bind(this);
+        this.handleCurrentChange = this.handleCurrentChange.bind(this);
     }
 
     afterConnected(){
@@ -141,6 +143,10 @@ class STNavigator extends PartView {
             this.cardRowEl.setAttribute('slot', 'card-row');
             this.appendChild(this.cardRowEl);
         }
+
+        // Respond to eventual current-ness prop
+        // changes from the WorldStack.
+        this.onPropChange('current', this.handleCurrentChange);
     }
 
     afterModelSet(){
@@ -159,6 +165,14 @@ class STNavigator extends PartView {
         }
         this.stackRowEl.setModel(this.model);
         this.cardRowEl.setModel(this.model.currentStack);
+    }
+
+    handleCurrentChange(){
+        // If we get here, this means that the current *stack* has changed.
+        // Therefore we need to re-initialize the CardRow view.
+        this.cardRowEl.setModel(this.model.currentStack);
+        this.cardRowEl.initView();
+        this.cardRowEl.showInitially();
     }
 
     toggle(){
