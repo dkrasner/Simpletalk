@@ -1450,6 +1450,15 @@ System._commandHandlers['toggleHandDetection'] = () => {
     }
 };
 
+System._commandHandlers['globalInterrupt'] = () => {
+    // cycle through all the parts and set the "stepping" property to false
+    Object.values(System.partsById).forEach((part) => {
+        if(part.isStepping){
+            part.partProperties.setPropertyNamed(part, "stepping", false);
+        }
+    });
+};
+
 /** Register the initial set of parts in the system **/
 System.registerPart('card', Card);
 System.registerPart('stack', Stack);
@@ -1522,6 +1531,18 @@ document.addEventListener('DOMContentLoaded', () => {
     // the system
     System.initialLoad();
 });
+
+// global interrupt
+document.addEventListener('keydown', (event) => {
+    if(event.ctrlKey && event.key == 'c'){
+        System.sendMessage({
+            type: "command",
+            commandName: "globalInterrupt",
+            args: []
+        }, System, System);
+    }
+});
+
 
 export {
     System,
