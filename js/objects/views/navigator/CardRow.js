@@ -61,6 +61,9 @@ class CardRow extends PartView {
     }
 
     handleCurrentChange(){
+        if(!this.model.currentCard){
+            return;
+        }
         let currentId = this.model.currentCard.id;
         let wrappedViews = Array.from(
             this.querySelectorAll('wrapped-view')
