@@ -24,8 +24,6 @@ describe('CSS Styler Util', () => {
         it('Text color conversion', () => {
             cssStyler(stylerObj, "text-color", "rgb(255, 0, 0)");
             assert.equal(stylerObj["color"], "rgba(255, 0, 0, 1)");
-            cssStyler(stylerObj, "text-color", "rgba(255, 0, 0, 1)");
-            assert.equal(stylerObj["color"], "rgba(255, 0, 0, 1)");
             cssStyler(stylerObj, "text-color", "red");
             assert.equal(stylerObj["color"], "rgba(255, 0, 0, 1)");
         });
@@ -34,6 +32,20 @@ describe('CSS Styler Util', () => {
             assert.equal(stylerObj["color"], "rgba(255, 0, 0, 0.5)");
             cssStyler(stylerObj, "text-transparency", ".5");
             assert.equal(stylerObj["color"], "rgba(255, 0, 0, .5)");
+        });
+    });
+    describe('Background', () => {
+        it('Background color conversion', () => {
+            cssStyler(stylerObj, "background-color", "rgb(0, 0, 0)");
+            assert.equal(stylerObj["backgroundColor"], "rgba(0, 0, 0, 1)");
+            cssStyler(stylerObj, "background-color", "red");
+            assert.equal(stylerObj["backgroundColor"], "rgba(255, 0, 0, 1)");
+        });
+        it('Background transparency', () => {
+            cssStyler(stylerObj, "background-transparency", .5);
+            assert.equal(stylerObj["backgroundColor"], "rgba(255, 0, 0, 0.5)");
+            cssStyler(stylerObj, "background-transparency", ".5");
+            assert.equal(stylerObj["backgroundColor"], "rgba(255, 0, 0, .5)");
         });
     });
     it('Transparency', () => {

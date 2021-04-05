@@ -15,16 +15,16 @@ const cssStyler = (styleObj, propertyName, propertyValue) => {
     switch(propertyName){
 
     case "background-color":
-        _setOrNot(styleObj, "backgroundColor",  _colorToRGBA(propertyValue));
+        _setOrNot(styleObj, "backgroundColor",  _colorToRGBA(styleObj["backgroundColor"], propertyValue));
         break;
 
     case "background-transparency":
         // here we set the Alpha value of the current styleObj["backgroundColor"] rgba
-        _setOrNot(styleObj, "backgroundColor",  _colorToRGBA(styleObj["backgroundColor"], propertyValue));
+        _setOrNot(styleObj, "backgroundColor",  _colorTransparencyToRGBA(styleObj["backgroundColor"], propertyValue));
         break;
 
     case "text-color":
-        _setOrNot(styleObj, "color",  _colorToRGBA(propertyValue));
+        _setOrNot(styleObj, "color",  _colorToRGBA(styleObj["color"], propertyValue));
         break;
 
     case "text-font":
@@ -69,7 +69,7 @@ const cssStyler = (styleObj, propertyName, propertyValue) => {
 
     case "text-transparency":
         // here we set the Alpha value of the current styleObj["color"] rgba
-        _setOrNot(styleObj, "color",  _colorToRGBA(styleObj["color"], propertyValue));
+        _setOrNot(styleObj, "color",  _colorTransparencyToRGBA(styleObj["color"], propertyValue));
         break;
 
     case "top":
@@ -154,36 +154,44 @@ const _intToPx = (n) => {
 };
 
 // Convert colors to rgba
-// If a color string is a referenced name from the list
-// below then use its RGB values. Else if the string is
-// of the form RGBA with A=1. If A is provided
-// convert and/or replace the current value of A with the
-// argument value.
-const _colorToRGBA = (color, A) => {
-    if(color == null || color === undefined){
+// change a css color RGB values, preserving the A(lpha) value
+const _colorToRGBA = (cssColor, STColor) => {
+    if(!STColor){
         return;
     }
-    let r, g, b, a;
-    // either RGB or RGBA is accepted
-    if(color.startsWith("rgb")){
-        [r, g, b, a] = color.match(/\d+/g);
+    let r, g, b, a, _;
+    // ST colors are RGB
+    if(STColor.startsWith("rgb")){
+        [r, g, b] = STColor.match(/\d+/g);
     } else {
-        let colorInfo = basicCSSColors[color];
+        let colorInfo = basicCSSColors[STColor];
         if(colorInfo){
             r = colorInfo["r"];
             g = colorInfo["g"];
             b = colorInfo["b"];
-            a = colorInfo["a"];
         } else {
             return;
         }
     }
-    if(A){
-        a = A;
-    } else if(a === undefined){
+    if(cssColor){
+        [_, _, _, a] = cssColor.match(/\d+/g);
+        // if Alpha is not defined then we set it to 1
+        // default for browsers
+    }
+    if(!a){
         a = 1;
     }
     return `rgba(${r}, ${g}, ${b}, ${a})`;
+}
+
+// change the A(alpha) value, preserving the RGB values
+const _colorTransparencyToRGBA = (cssColor, tValue) => {
+    if(!cssColor){
+        return;
+    }
+    let r, g, b;
+    [r, g, b] = cssColor.match(/\d+/g);
+    return `rgba(${r}, ${g}, ${b}, ${tValue})`;
 }
 
 // Add more colors as needed

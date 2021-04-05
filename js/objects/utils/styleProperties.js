@@ -15,7 +15,7 @@ const addBasicStyleProps = (target) => {
     );
     target.partProperties.newStyleProp(
         'background-color',
-        null
+        "rgba(255, 255, 255)", // white 
     );
     target.partProperties.newStyleProp(
         'transparency',
@@ -73,7 +73,7 @@ const addPositioningStyleProps = (target) => {
         'horizontal-resizing',
         'rigid'
     );
-    
+
     // vertical-resizing specifies a strategy
     // for how this Part should adjust its
     // vertical axis relative to the parent.
@@ -214,7 +214,7 @@ const addTextStyleProps = (target) => {
     );
     target.partProperties.newStyleProp(
         'text-color',
-        "rgba(0, 0, 0, 1)", // black
+        "rgba(0, 0, 0)", // black
         'cssTextStyle'
     );
     target.partProperties.newStyleProp(
