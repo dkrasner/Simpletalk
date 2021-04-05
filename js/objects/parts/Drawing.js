@@ -25,6 +25,12 @@ class Drawing extends Part {
         addBasicStyleProps(this);
         addPositioningStyleProps(this);
         this.setupStyleProperties();
+        // part specific default style properties
+        this.partProperties.setPropertyNamed(
+            this,
+            'background-transparency',
+            0
+        );
 
         // We are using a distinct show-border
         // property to deal with being able to see

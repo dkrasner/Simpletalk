@@ -102,6 +102,12 @@ class Field extends Part {
         addPositioningStyleProps(this);
         addTextStyleProps(this);
         this.setupStyleProperties();
+        // part specific default style properties
+        this.partProperties.setPropertyNamed(
+            this,
+            'background-color',
+            "rgb(255, 248, 220)", // var(--palette-cornsik)
+        );
 
         // Private command handlers
 

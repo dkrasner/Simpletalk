@@ -15,7 +15,7 @@ const addBasicStyleProps = (target) => {
     );
     target.partProperties.newStyleProp(
         'background-color',
-        "rgba(255, 255, 255)", // white 
+        "rgb(255, 255, 255)", // white 
     );
     target.partProperties.newStyleProp(
         'transparency',
@@ -214,7 +214,7 @@ const addTextStyleProps = (target) => {
     );
     target.partProperties.newStyleProp(
         'text-color',
-        "rgba(0, 0, 0)", // black
+        "rgb(0, 0, 0)", // black
         'cssTextStyle'
     );
     target.partProperties.newStyleProp(
@@ -257,7 +257,7 @@ const addLayoutStyleProps = (target) => {
     // list - Will force items into either a row
     // or column list, based on the pairing with
     // the 'listDirection' property
-    target.partProperties.newStyleProp(
+    target.partProperties.newBasicProp(
         'layout',
         'strict'
     );
@@ -265,14 +265,14 @@ const addLayoutStyleProps = (target) => {
     // list-direction specifies row or column
     // and will only have an effect whent the
     // layout property is set to 'list'
-    target.partProperties.newStyleProp(
+    target.partProperties.newBasicProp(
         'list-direction',
         'row'
     );
 
     // Wrapping specifies whether a list should
     // wrap along its dominant dimension (row or column)
-    target.partProperties.newStyleProp(
+    target.partProperties.newBasicProp(
         'list-wrapping',
         false
     );

@@ -49,14 +49,15 @@ class Button extends Part {
 
         // Styling
         addBasicStyleProps(this);
-        this.partProperties.setPropertyNamed(
-            this,
-            'background-color',
-            "rgba(255, 234, 149, 1)", // var(--palette-yellow)
-        );
         addPositioningStyleProps(this);
         addTextStyleProps(this);
         this.setupStyleProperties();
+        // part specific default style properties
+        this.partProperties.setPropertyNamed(
+            this,
+            'background-color',
+            "rgb(255, 234, 149)", // var(--palette-yellow)
+        );
 
     }
 

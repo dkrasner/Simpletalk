@@ -56,6 +56,12 @@ class Area extends Part {
             false
         );
         this.setupStyleProperties();
+        // part specific default style properties
+        this.partProperties.setPropertyNamed(
+            this,
+            'background-transparency',
+            0
+        );
     }
 
 
