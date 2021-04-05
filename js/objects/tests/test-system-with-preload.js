@@ -51,7 +51,7 @@ describe('System methods', () => {
         let cardViews = document.querySelectorAll('st-stack.current-stack > st-card');
         let card2 = cardViews[0];
         card2.classList.add("current-card");
-        let getCurrentCardModel = function() {System.getCurrentCardModel()};
+        let getCurrentCardModel = function() {System.getCurrentCardModel();};
         expect(getCurrentCardModel).to.throw();
         card2.classList.remove("current-card");
     });
@@ -60,14 +60,66 @@ describe('System methods', () => {
         let currentStackModel = currentStackView.model;
         assert.equal(currentStackModel.id, System.getCurrentStackModel().id);
     });
-
     // There are not multiple at the time this test runs!
     it.skip('Will throw error if there are multiple st-world > .current-stack elements', () => {
         let stackViews = document.querySelectorAll('st-world > st-stack');
         let stack2 = stackViews[0];
         stack2.classList.add("current-stack");
-        let getCurrentStackModel = function() {System.getCurrentStackModel()};
+        let getCurrentStackModel = function() {System.getCurrentStackModel();};
         expect(getCurrentStackModel).to.throw();
         stack2.classList.remove("current-stack");
+    });
+    describe('System Interrupt', () => {
+        let currentCard;
+        let buttons;
+        before('', () => {
+            currentCard = System.getCurrentCardModel();
+            for(let i =0; i < 2; i++){
+                let msg = {
+                    type: 'command',
+                    commandName: 'newModel',
+                    args: ['button', currentCard.id]
+                };
+                currentCard.sendMessage(msg, currentCard);
+            }
+            buttons = document.querySelectorAll('st-card.current-card > st-button');
+            // put a 'step' handler so it doesn't MNU when 'stepping' is set to true
+            let script = [
+                'on step',
+                '    answer "OK"',
+                'end step'
+            ].join('\n');
+            buttons.forEach((button) => {
+                let msg = {
+                    type: 'compile',
+                    targetId: button.model.id,
+                    codeString: script
+                };
+                button.model.sendMessage(msg, button.model);
+                button.model.partProperties.setPropertyNamed(button.model, 'stepping', true);
+            });
+        });
+        it('Global Interrupt message stops all stepping .', () => {
+            currentCard.sendMessage({
+                type: "command",
+                commandName: "globalInterrupt",
+                args: []
+            }, currentCard);
+            buttons.forEach((button) => {
+                assert.isFalse(button.model.partProperties.getPropertyNamed(button.model, 'stepping'));
+            });
+        });
+        it('Global Interrupt key-combo (ctrl-c) stops all stepping .', () => {
+            buttons.forEach((button) => {
+                button.model.partProperties.setPropertyNamed(button.model, 'stepping', true);
+            });
+            let event = new window.Event('keydown');
+            event.ctrlKey = true;
+            event.key = 'c';
+            document.dispatchEvent(event);
+            buttons.forEach((button) => {
+                assert.isFalse(button.model.partProperties.getPropertyNamed(button.model, 'stepping'));
+            });
+        });
     });
 });
