@@ -23,8 +23,11 @@ const templateString = `
         opacity: 1.0;
     }
 
-    :host(:hover:not(.current)){
+    :host(:hover){
         cursor: pointer;
+    }
+
+    :host(:hover:not(.current)){
         border: 1px solid rgba(100, 100, 100, 0.8);
         box-shadow: 1px 1px 20px 1px rgba(150, 150, 150, 0.5);
         transition: box-shadow 0.1s linear, border 0.1s linear;

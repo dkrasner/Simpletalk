@@ -88,7 +88,7 @@ class StackRow extends PartView {
 
     onWrapperClick(event){
         let wrapperIsCurrent = event.target.classList.contains('current');
-        if(this.model && !this.wrapperIsCurrent){
+        if(this.model && !wrapperIsCurrent){
             this.model.goToStackById(
                 event.target.getAttribute('wrapped-id')
             );
