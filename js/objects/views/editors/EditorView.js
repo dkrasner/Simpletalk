@@ -354,7 +354,7 @@ class EditorView extends HTMLElement {
     onColorSelected(event){
         let command = event.target.getAttribute("selector-command");
         let colorInfo = event.detail;
-        let colorStr = `rgba(${colorInfo.r}, ${colorInfo.g}, ${colorInfo.b}, ${colorInfo.alpha})`;
+        let colorStr = `rgb(${colorInfo.r}, ${colorInfo.g}, ${colorInfo.b})`;
         this.setProperty(command, colorStr);
     }
 

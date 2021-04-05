@@ -174,7 +174,7 @@ const _colorToRGBA = (cssColor, STColor) => {
         }
     }
     if(cssColor){
-        [_, _, _, a] = cssColor.match(/\d+/g);
+        [_, _, _, a] = cssColor.match(/[\d\.]+/g);
         // if Alpha is not defined then we set it to 1
         // default for browsers
     }
