@@ -42,8 +42,9 @@ import STClipboard from './utils/clipboard.js';
 
 import handInterface from './utils/handInterface.js';
 
-const DOMparser = new DOMParser();
+import {STDeserializer} from './utils/serialization.js';
 
+const DOMparser = new DOMParser();
 
 
 
@@ -387,7 +388,9 @@ const System = {
         // serialization for the target
         // part, thus adding the script to
         // its serialization
-        this.serialize();
+        if(aMessage.serialize){
+            this.serialize();
+        }
     },
 
     receiveCommand: function(aMessage){

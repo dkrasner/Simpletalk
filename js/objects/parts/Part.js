@@ -677,6 +677,28 @@ class Part {
         });
     }
 
+    setPropsFromDeserializer(incomingProps, deserializer){
+        Object.keys(incomingProps).forEach(propName => {
+            let property = this.partProperties.findPropertyNamed(propName);
+            if(!property){
+                // If some old or invalid property is
+                // present in the deserialization, simply provide
+                // a warning and then skip this one.
+                console.warn(`Deserialized property "${propName}" is not a valid property name for ${this.type} (id ${this.id}) and will be ignored`);
+            } else if(property.name == 'events'){
+                // The events property uses a Set, but sets are serialized as Arrays.
+                // We need to return them to being sets.
+                property.setValue(this, new Set(incomingProps[propName]), false);
+            } else if(!property.readOnly){
+                // Last arg is false, which tells the property
+                // not to notify its owner's subscribers of
+                // property changes. We don't need that when
+                // deserializing
+                property.setValue(this, incomingProps[propName], false);
+            }
+        });
+    }
+
     toJSON(){
         return this.serialize();
     }
