@@ -107,52 +107,6 @@ const System = {
         this.isLoaded = true;
     },
 
-    loadFromWorldView: function(aWorldView){
-        let worldSerialization = this.getSerializationFor(aWorldView.getAttribute("part-id"));
-        if(!worldSerialization || worldSerialization == undefined){
-            // The element has no corresponding serialized model.
-            // Remove the element from the DOM and initialize
-            // as if this is an empty system.
-            aWorldView.parentElement.removeChild(aWorldView);
-            this.loadFromEmpty();
-        } else {
-            let worldModel = WorldStack.fromSerialization(
-                worldSerialization
-            );
-            aWorldView.setModel(worldModel);
-            this.partsById['world'] = worldModel;
-            this.attachSubPartsFromDeserialized(
-                worldModel,
-                JSON.parse(worldSerialization)
-            );
-            worldModel.subparts.forEach(subpart => {
-                this.attachView(subpart, worldModel);
-            });
-
-            // Finally, compile all of the scripts on
-            // the available Part models
-            Object.keys(this.partsById).forEach(partId => {
-                let targetPart = this.partsById[partId];
-                let scriptText = targetPart.partProperties.getPropertyNamed(
-                    targetPart,
-                    'script'
-                );
-                if(scriptText){
-                    // Here we just re-set the script
-                    // to its original value. This should trigger
-                    // all prop change subscribers that listen
-                    // for script changes, which will trigger
-                    // a compilation step
-                    targetPart.partProperties.setPropertyNamed(
-                        targetPart,
-                        'script',
-                        scriptText
-                    );
-                }
-            });
-
-        }
-    },
 
     loadFromEmpty: function(){
         let worldModel = new this.availableParts['world']();
@@ -208,51 +162,6 @@ const System = {
         }, world.currentStack.currentCard);
     },
 
-    attachSubPartsFromDeserialized: function(aModel, aSerialization){
-        // The serialization contains an array of subparts
-        // that contains integer ids of other models.
-        // For each of these IDs we need to find the
-        // subpart serialization for that id and create a new model
-        // instance
-        aSerialization.subparts.forEach(partId => {
-            let subSerialization = JSON.parse(this.getSerializationFor(partId));
-            let partClass = this.availableParts[subSerialization.type];
-            if(!partClass){
-                throw new Error(`Could not deserialize Part of type ${subSerialization.type}`);
-            }
-            let part = partClass === Stack ?
-                new partClass(aModel, subSerialization.properties.name, true) :
-                new partClass(aModel, subSerialization.properties.name);
-
-            part.id = subSerialization.id;
-            part.setFromDeserialized(subSerialization);
-            aModel.addPart(part);
-            this.partsById[subSerialization.id] = part;
-
-            // Recursively get the subparts of the subpart
-            this.attachSubPartsFromDeserialized(
-                part,
-                subSerialization
-            );
-        });
-    },
-
-    attachView: function(aModel, parentView){
-        // We look up to see if a view for this
-        // model by id is already in the DOM.
-        // If so, we set it to the model.
-        // If not, we ignore it. It was already absent from
-        // the DOM in the serialized saved state
-        let found = this.findViewById(aModel.id);
-        if(found){
-            found.setModel(aModel);
-            // Now recursively do the same for any
-            // children
-            aModel.subparts.forEach(subpart => {
-                this.attachView(subpart, found);
-            });
-        }
-    },
 
     // returns a recursive tree structure, specified by a parent NODE
     // where a NODE has the form {id: ID, type: TYPE, children: [NODES]}

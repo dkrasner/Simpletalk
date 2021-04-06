@@ -38,6 +38,7 @@ class STDeserializer {
         this.appendWorld = this.appendWorld.bind(this);
         this.addPartsToSystem = this.addPartsToSystem.bind(this);
         this.compileScripts = this.compileScripts.bind(this);
+        this.getFlattenedPartTree = this.getFlattenedPartTree.bind(this);
         this.getModelClass = this.getModelClass.bind(this);
         this.throwError = this.throwError.bind(this);
         this.flushCaches = this.flushCaches.bind(this);
@@ -147,15 +148,21 @@ class STDeserializer {
                 return this._instanceCache.filter(filterFunction);
             })
             .then((rootParts) => {
-                this.addPartsToSystem(rootParts);
+                rootParts.forEach(rootPart => {
+                    let allTreeParts = this.getFlattenedPartTree(rootPart);
+                    this.addPartsToSystem(allTreeParts);
+                });
+                return rootParts;
                 
             })
             .then((rootParts) => {
-                this.compileScripts(rootParts);
+                rootParts.forEach(rootPart => {
+                    let allTreeParts = this.getFlattenedPartTree(rootPart);
+                    this.compileScripts(allTreeParts);
+                });
                 return rootParts;
             })
             .then((rootParts) => {
-                console.log(`Importing ${rootParts.length} parts into ${target.type}[${this.targetId}]`);
                 rootParts.forEach(rootPart => {
                     let view = this._viewsCache[rootPart.id];
                     target.addPart(rootPart);
@@ -176,7 +183,6 @@ class STDeserializer {
             newId = idMaker.new();
             instance.id = newId;
         } else {
-            console.log("Is this ever reached?");
             newId = oldId; // World always has 'world' as id
         }
 
@@ -191,7 +197,6 @@ class STDeserializer {
 
     addPartsToSystem(aListOfParts){
         aListOfParts.forEach(part => {
-            console.log(`Adding ${part.type}[]${part.id}`);
             this.system.partsById[part.id] = part;
         });
     }
@@ -268,6 +273,14 @@ class STDeserializer {
         } else {
             document.body.prepend(this.rootView);
         }
+    }
+
+    getFlattenedPartTree(aPart, list=[]){
+        list.push(aPart);
+        aPart.subparts.forEach(subpart => {
+            this.getFlattenedPartTree(subpart, list);
+        });
+        return list;
     }
 
     throwError(message){
