@@ -391,6 +391,24 @@ const createInterpreterSemantics = (partContext, systemContext) => {
             return first <= second;
         },
 
+        ThereIsAnObjectConditional: function(thereisLiteral, aOrAnLiteral, objectSpecifier){
+            try{
+                objectSpecifier.interpret();
+                return true;
+            } catch(e){
+                return false;
+            };
+        },
+
+        ThereIsNotAnObjectConditional: function(thereisnotaLiteral, aOrAnLiteral, objectSpecifier){
+            try{
+                objectSpecifier.interpret();
+                return false;
+            } catch(e){
+                return true;
+            };
+        },
+
         IfThenInline: function(ifLiteral, conditional, thenLiteral, statement, optionalComment){
             let shouldEvaluate = conditional.interpret();
             if(shouldEvaluate){

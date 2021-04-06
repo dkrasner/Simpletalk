@@ -60,7 +60,6 @@ describe('Add command tests', () => {
                 semantics = getSemanticsFor(exampleArea);
             };
             expect(initSemantics).to.not.throw();
-            
         });
         it('Can add a button to the area by using object specifier', () => {
             let script = `add button "Area Button 1" to first area of current card`;

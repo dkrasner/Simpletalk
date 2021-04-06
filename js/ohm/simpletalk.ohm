@@ -103,9 +103,17 @@
         NotKindConditional
                = Expression "is not a" Expression
                | Expression "is not an" Expression
+
+        ThereIsAnObjectConditional
+               = "there is " ("an" | "a") ObjectSpecifier
+        
+        ThereIsNotAnObjectConditional
+               = "there is not" ("an" | "a") ObjectSpecifier
         
         Conditional
                = booleanLiteral --booleanLiteral
+               | ThereIsAnObjectConditional
+               | ThereIsNotAnObjectConditional
                | EqualityConditional
                | NonEqualityConditional
                | KindConditional
