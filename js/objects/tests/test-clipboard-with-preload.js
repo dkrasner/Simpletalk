@@ -39,9 +39,11 @@ describe("Basic Copy and Paste Tests", () => {
             });
         });
         describe("Pasting the initial button into the area", () => {
-            it("Can paste the clipboard contents (button) into the area on the card without error", () => {
+            it("Can paste the clipboard contents (button) into the area on the card without error", (done) => {
                 let pasteAction = function(){
-                    window.System.clipboard.pasteContentsInto(initialArea);
+                    window.System.clipboard.pasteContentsInto(initialArea).then(() => {
+                        return done();
+                    });
                 };
                 expect(pasteAction).to.not.throw();
             });
@@ -88,9 +90,11 @@ describe("Basic Copy and Paste Tests", () => {
                 });
                 assert.equal(areas.length, 0);
             });
-            it("Can paste the clipboard contents (area) into a new card without error", () => {
+            it("Can paste the clipboard contents (area) into a new card without error", (done) => {
                 let pasteAction = function(){
-                    window.System.clipboard.pasteContentsInto(currentCard);
+                    window.System.clipboard.pasteContentsInto(currentCard).then(() => {
+                        done();
+                    });
                 };
                 expect(pasteAction).to.not.throw();
             });
@@ -138,9 +142,11 @@ describe("Basic Copy and Paste Tests", () => {
                 });
                 assert.equal(cards.length, 2);
             });
-            it("Can paste the clipboard contents (card) into the stack without error", () => {
+            it("Can paste the clipboard contents (card) into the stack without error", (done) => {
                 let pasteAction = function(){
-                    window.System.clipboard.pasteContentsInto(currentStack);
+                    window.System.clipboard.pasteContentsInto(currentStack).then(() => {
+                        done();
+                    });
                 };
                 expect(pasteAction).to.not.throw();
             });

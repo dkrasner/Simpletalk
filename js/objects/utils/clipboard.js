@@ -6,6 +6,8 @@
  * browser implementations.
  **/
 import idMaker from './id.js';
+import {STDeserializer, STSerializer} from './serialization.js';
+
 class STClipboard {
     constructor(aSystem){
         this.system = aSystem;
@@ -21,17 +23,17 @@ class STClipboard {
     }
 
     copyPart(aPart){
-        let rootSerialization = aPart.serialize();
-        this._recursivelySerialize(aPart, rootSerialization);
+        let serializer = new STSerializer(this.system);
+        let rootSerialization = serializer.serialize(aPart, false);
         let item = new STClipboardItem(
             'simpletalk/json',
-            JSON.stringify(rootSerialization),
+            rootSerialization,
             aPart.type
         );
         this.contents = [item];
     }
 
-    pasteContentsInto(aTargetPart){
+    old_pasteContentsInto(aTargetPart){
         // For now, we only allow single entries
         // into this mock clipboard.
         if(this.contents.length){
@@ -76,6 +78,45 @@ class STClipboard {
                 console.warn(`${aTargetPart.type}[${aTargetPart.id}] does not accept subparts of type ${deserialization.type}`);
             }
         }
+    }
+
+    pasteContentsInto(aTargetPart){
+        let promises = this.contents.map(clipboardContent => {
+            let serializedContent = clipboardContent.data;
+            let deserializer = new STDeserializer(this.system);
+            deserializer.targetId = aTargetPart.id;
+            return deserializer.deserialize(serializedContent)
+                .then(() => {
+                    // Reset the top and left values to that
+                    // the pasted part doesn't run outside of the new
+                    // relative bounds in which it has been pasted
+                    let newPart = deserializer.rootParts[0];
+                    let hasTop = newPart.partProperties.findPropertyNamed('top');
+                    let hasLeft = newPart.partProperties.findPropertyNamed('left');
+                    if(hasTop){
+                        newPart.partProperties.setPropertyNamed(
+                            newPart,
+                            'top',
+                            10
+                        );
+                    }
+                    if(hasLeft){
+                        newPart.partProperties.setPropertyNamed(
+                            newPart,
+                            'left',
+                            10
+                        );
+                    }
+                    
+                    // Open Halo on the new view
+                    deserializer.rootViews[0].openHalo();
+                    return;
+                })
+                .catch(err => {
+                    throw err;
+                });
+        });
+        return Promise.all(promises);
     }
 
     _deserializePastedPart(deserialization, anOwnerPart){

@@ -3,6 +3,8 @@
  */
 import idMaker from './id.js';
 
+const version = "0.0.1";
+
 class STDeserializer {
     constructor(aSystem){
         this.system = aSystem;
@@ -16,6 +18,7 @@ class STDeserializer {
         this._propsCache = {};
         this._viewsCache = {};
         this._scriptCache = {};
+        this._rootsCache = [];
 
         // The targetId is the id of
         // the Part that we wish to append any
@@ -46,7 +49,7 @@ class STDeserializer {
 
     deserialize(aJSONString){
         this.data = JSON.parse(aJSONString);
-        let target = this.system[this.targetId];
+        let target = this.system.partsById[this.targetId];
         return this.deserializeData()
             .then(() => {
                 // Add all deserialized Parts to the System dict,
@@ -61,10 +64,12 @@ class STDeserializer {
             .then(() => {
                 // Insert the root Part into whatever
                 // target it should go into.
+                let rootPart = this.rootParts[0];
+                let rootView = this.rootViews[0];
                 if(this.targetId == 'system'){
                     this.refreshWorld();
                 } else {
-                    target.addPart(this.rootPart);
+                    target.addPart(rootPart);
                 }
                 
                 // Finally, append the PartView root node
@@ -72,8 +77,8 @@ class STDeserializer {
                 if(this.targetId == 'system'){
                     this.appendWorld();
                 } else {
-                    let targetView = document.querySelector(`[part-id="${targetId}"]`);
-                    targetView.appendChild(this.rootView);
+                    let targetView = document.querySelector(`[part-id="${this.targetId}"]`);
+                    targetView.appendChild(rootView);
                 }
                 return this;
             });
@@ -127,9 +132,18 @@ class STDeserializer {
                 this.setViewModel(partInstance);
             });
 
+            // We determine which of the instances is a "root",
+            // meaning that it has, at this point, no owner in
+            // the deserialized data. There can be multiple roots
+            // (and therefore multiple trees) in a single deserialization
+            this._rootsCache = this._instanceCache.filter(instance => {
+                return instance._owner == null || instance._owner == undefined;
+            });
+
             // Insertion should be handled by composed
             // promises elsewhere (see imports and deserialize()
             // for examples)
+            
 
             return resolve(this);
         });
@@ -263,15 +277,22 @@ class STDeserializer {
     }
 
     refreshWorld(){
-        this.system.partsById['world'] = this.rootPart;
+        // We assume a single root part was deserialized and
+        // attach it as the World accordingly
+        let newWorld = this.rootParts[0];
+        if(newWorld.type !== 'world'){
+            this.throwError(`Found ${this.rootParts.length} roots, but no world!`);
+        }
+        this.system.partsById['world'] = this.rootParts[0];
     }
 
     appendWorld(){
+        // We assume a single root view that is an st-world.
         let found = document.querySelector('st-world');
         if(found){
-            document.body.replaceChild(this.rootView, found);
+            document.body.replaceChild(this.rootViews[0], found);
         } else {
-            document.body.prepend(this.rootView);
+            document.body.prepend(this.rootViews[0]);
         }
     }
 
@@ -303,29 +324,74 @@ class STDeserializer {
         this._propsCache = {};
         this._viewsCache = {};
         this._scriptCache = {};
+        this._rootsCache = [];
     }
 
-    get rootPart(){
-        let found = this._instanceCache.filter(inst => {
-            return inst._owner == null;
+    get rootParts(){
+        return this._rootsCache;
+    }
+
+    get rootViews(){
+        return this.rootParts.map(part => {
+            return this._viewsCache[part.id];
         });
-        if(found.length > 1){
-            this.throwError(`Found multiple root parts in deserialization (${found.length})`);
-        } else if(found.length == 1){
-            return found[0];
-        }
-        return null;
+    }
+}
+
+
+class STSerializer {
+    constructor(aSystem){
+        this.system = aSystem;
+        this._objectCache = {};
+
+        // Bound methods
+        this.serializePart = this.serializePart.bind(this);
+        this.flushCaches = this.flushCaches.bind(this);
     }
 
-    get rootView(){
-        let root = this.rootPart;
-        if(root){
-            return this._viewsCache[root.id];
+    serialize(aRootPart, pretty=true){
+        this.flushCaches();
+        let result = {
+            version: version,
+            stamp: Date.now(),
+            rootId: aRootPart.id,
+            type: aRootPart.type,
+            id: aRootPart.id
+        };
+
+        // Recursively serialize Parts and
+        // store in flat list
+        this.serializePart(aRootPart);
+
+        // We set the result objects parts
+        // dict to be the same as the cache
+        result.parts = this._objectCache;
+
+        // Finally, we convert to a string and
+        // return
+        if(pretty){
+            return JSON.stringify(result, null, 4);
+        } else {
+            return JSON.stringify(result);
         }
-        return null;
+    }
+
+    serializePart(aPart){
+        // We use the serialize method available on
+        // base Parts, passing in this serializer instance
+        // as the sole arg
+        this._objectCache[aPart.id] = aPart.serialize(this);
+        aPart.subparts.forEach(subpart => {
+            this.serializePart(subpart);
+        });
+    }
+
+    flushCaches(){
+        this._objectCache = {};
     }
 }
 
 export {
+    STSerializer,
     STDeserializer
 };
