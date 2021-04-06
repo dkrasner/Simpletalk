@@ -26,6 +26,7 @@ class STDeserializer {
 
         // Bound methods
         this.deserialize = this.deserialize.bind(this);
+        this.deserializeData = this.deserializeData.bind(this);
         this.deserializePart = this.deserializePart.bind(this);
         this.attachSubparts = this.attachSubparts.bind(this);
         this.setProperties = this.setProperties.bind(this);
@@ -35,15 +36,51 @@ class STDeserializer {
         this.compilePartScript = this.compilePartScript.bind(this);
         this.refreshWorld = this.refreshWorld.bind(this);
         this.appendWorld = this.appendWorld.bind(this);
+        this.addPartsToSystem = this.addPartsToSystem.bind(this);
+        this.compileScripts = this.compileScripts.bind(this);
         this.getModelClass = this.getModelClass.bind(this);
         this.throwError = this.throwError.bind(this);
         this.flushCaches = this.flushCaches.bind(this);
     }
 
     deserialize(aJSONString){
+        this.data = JSON.parse(aJSONString);
+        let target = this.system[this.targetId];
+        return this.deserializeData()
+            .then(() => {
+                // Add all deserialized Parts to the System dict,
+                // including the new World.
+                this.addPartsToSystem(this._instanceCache);
+            })
+            .then(() => {
+                // Compile the scripts on *all* deserialized
+                // parts
+                this.compileScripts(this._instanceCache);
+            })
+            .then(() => {
+                // Insert the root Part into whatever
+                // target it should go into.
+                if(this.targetId == 'system'){
+                    this.refreshWorld();
+                } else {
+                    target.addPart(this.rootPart);
+                }
+                
+                // Finally, append the PartView root node
+                // where it should go in the view tree.
+                if(this.targetId == 'system'){
+                    this.appendWorld();
+                } else {
+                    let targetView = document.querySelector(`[part-id="${targetId}"]`);
+                    targetView.appendChild(this.rootView);
+                }
+                return this;
+            });
+    }
+
+    deserializeData(){
         return new Promise((resolve, reject) => {
             this.flushCaches();
-            this.data = JSON.parse(aJSONString);
             // First, we ensure that the target we
             // should be deserializing into actually exists
             let target = this.system.partsById[this.targetId];
@@ -89,38 +126,42 @@ class STDeserializer {
                 this.setViewModel(partInstance);
             });
 
+            // Insertion should be handled by composed
+            // promises elsewhere (see imports and deserialize()
+            // for examples)
 
-            // Seventh, add all new instances to the System
-            // model dict
-            this._instanceCache.forEach(partInstance => {
-                this.system.partsById[partInstance.id] = partInstance;
-            });
-            
-            // Eighth, compile all scripts on the new
-            // models
-            this._instanceCache.forEach(partInstance => {
-                this.compilePartScript(partInstance);
-            });
-
-            // Ninth, insert the root Part into whatever
-            // target it should go into.
-            if(this.targetId == 'system'){
-                this.refreshWorld();
-            } else {
-                target.addPart(this.rootPart);
-            }
-
-            // Tenth, append the PartView root node
-            // where it should go in the view tree.
-            if(this.targetId == 'system'){
-                this.appendWorld();
-            } else {
-                let targetView = document.querySelector(`[part-id="${targetId}"]`);
-                targetView.appendChild(this.rootView);
-            }
-
-            return resolve(this.rootPart);
+            return resolve(this);
         });
+    }
+
+    importFromSerialization(aJSONString, filterFunction){
+        this.data = JSON.parse(aJSONString);
+        let target = this.system.partsById[this.targetId];
+        let targetView = document.querySelector(`[part-id="${this.targetId}"]`);
+        return this.deserializeData()
+            .then(() => {
+                // The caller will provide a filter function over
+                // all deserialized part instances, returning only
+                // those that should be inserted into the target.
+                // For example, all Stacks in the WorldStack.
+                return this._instanceCache.filter(filterFunction);
+            })
+            .then((rootParts) => {
+                this.addPartsToSystem(rootParts);
+                
+            })
+            .then((rootParts) => {
+                this.compileScripts(rootParts);
+                return rootParts;
+            })
+            .then((rootParts) => {
+                console.log(`Importing ${rootParts.length} parts into ${target.type}[${this.targetId}]`);
+                rootParts.forEach(rootPart => {
+                    let view = this._viewsCache[rootPart.id];
+                    target.addPart(rootPart);
+                    targetView.appendChild(view);
+                });
+            });
     }
 
     deserializePart(partData){
@@ -130,11 +171,12 @@ class STDeserializer {
         // We create a new ID for this part, since we cannot
         // guarantee ID clashes with the existing System
         let newId;
-        let oldId = partData.properties.id;
-        if(partData.properties.id !== 'world'){
+        let oldId = partData.id;
+        if(partData.id !== 'world'){
             newId = idMaker.new();
             instance.id = newId;
         } else {
+            console.log("Is this ever reached?");
             newId = oldId; // World always has 'world' as id
         }
 
@@ -145,7 +187,19 @@ class STDeserializer {
         this._modelCache[newId] = instance;
         this._subpartMapCache[newId] = partData.subparts;
         this._instanceCache.push(instance);
-        this.system.partsById[newId] = instance;
+    }
+
+    addPartsToSystem(aListOfParts){
+        aListOfParts.forEach(part => {
+            console.log(`Adding ${part.type}[]${part.id}`);
+            this.system.partsById[part.id] = part;
+        });
+    }
+
+    compileScripts(aListOfParts){
+        aListOfParts.forEach(part => {
+            this.compilePartScript(part);
+        });
     }
 
     attachSubparts(aPart){
@@ -194,17 +248,17 @@ class STDeserializer {
     compilePartScript(aPart){
         let scriptString = this._scriptCache[aPart.id];
         if(scriptString && scriptString != ""){
-            this.system.sendMessage({
+            this.system.compile({
                 type: 'compile',
                 targetId: aPart.id,
                 codeString: scriptString,
                 serialize: false
-            }, this.system, this.system);
+            });
         }
     }
 
     refreshWorld(){
-        this.system['world'] = this.rootPart;
+        this.system.partsById['world'] = this.rootPart;
     }
 
     appendWorld(){

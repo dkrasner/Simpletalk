@@ -90,9 +90,13 @@ const System = {
         // attempt to load from it
         let serializationEl = document.getElementById('serialization');
         if(serializationEl && serializationEl.text != ""){
-            this.deserialize();
+            this.deserialize()
+                .then(() => {
+                    this.sendInitialOpenMessages();
+                });
         } else {
             this.loadFromEmpty();
+            this.sendInitialOpenMessages();
         }
 
         // Attach a new clipboard instance
@@ -101,27 +105,6 @@ const System = {
         // By this point we should have a WorldView with
         // a model attached.
         this.isLoaded = true;
-
-        // Send the openWorld message to the WorldStack
-        let world = this.partsById['world'];
-        world.sendMessage({
-            type: 'command',
-            commandName: 'openWorld',
-            args: [],
-            shouldIgnore: true
-        }, world);
-        world.sendMessage({
-            type: 'command',
-            commandName: 'openStack',
-            args: [],
-            shouldIgnore: true
-        }, world.currentStack);
-        world.currentStack.sendMessage({
-            type: 'command',
-            commandName: 'openCard',
-            args: [],
-            shouldIgnore: true
-        }, world.currentStack.currentCard);
     },
 
     loadFromWorldView: function(aWorldView){
@@ -200,6 +183,29 @@ const System = {
         
         // Update serialization
         this.serialize();
+    },
+
+    sendInitialOpenMessages: function(){
+        // Send the openWorld message to the WorldStack
+        let world = this.partsById['world'];
+        world.sendMessage({
+            type: 'command',
+            commandName: 'openWorld',
+            args: [],
+            shouldIgnore: true
+        }, world);
+        world.sendMessage({
+            type: 'command',
+            commandName: 'openStack',
+            args: [],
+            shouldIgnore: true
+        }, world.currentStack);
+        world.currentStack.sendMessage({
+            type: 'command',
+            commandName: 'openCard',
+            args: [],
+            shouldIgnore: true
+        }, world.currentStack.currentCard);
     },
 
     attachSubPartsFromDeserialized: function(aModel, aSerialization){
@@ -763,43 +769,8 @@ const System = {
         if(!serializationEl){
             throw new Error(`No serialization found for this page`);
         }
-        let deserializedInfo = JSON.parse(serializationEl.textContent);
-
-        // Start from the WorldStack and recursively
-        // create new Parts/Views from the deserialized
-        // dictionary
-        let worldJSON = deserializedInfo.parts['world'];
-        if(!worldJSON){
-            throw new Error(`World not found in serialization!`);
-        }
-        // Remove any existing WorldViews
-        Array.from(document.querySelectorAll('st-world')).forEach(el => {
-            el.remove();
-        });
-        this.deserializePart(
-            worldJSON,
-            null,
-            deserializedInfo.parts,
-            deserializedInfo
-        );
-
-        // set the current stack and cards (for each stack)
-        this.setCurrentStackAndCards();
-
-        this.setAllScriptProperties();
-
-        // Finally, we reset the idMaker to start its
-        // count at the highest current id
-        let numericIds = Object.keys(System.partsById).filter(id => {
-            return id !== 'world';
-        }).map(id => {
-            return parseInt(id);
-        });
-        let currentId = Math.max(...numericIds);
-        idMaker.count = currentId;
-
-        // And serialize
-        this.serialize();
+        let deserializer = new STDeserializer(this);
+        return deserializer.deserialize(serializationEl.textContent);
     },
 
     setCurrentStackAndCards: function(){
@@ -827,46 +798,6 @@ const System = {
         aPart.subparts.forEach(subpart => {
             this.serializePart(subpart, aDict);
         });
-    },
-
-    deserializePart: function(aPartJSON, ownerId, fullJSON, deserializedInfo, newId=false){
-        let newPartClass = this.availableParts[aPartJSON.type];
-        if(!newPartClass){
-            throw new Error(`Cannot deserialize Part of type ${aPartJSON.type}!`);
-        }
-        //let newPart = new newPartClass(ownerPart, null, true);
-        //newPart.setFromDeserialized(aPartJSON);
-        let newPart = newPartClass.fromSerialized(ownerId, aPartJSON);
-        if(newId){
-            newPart.id = idMaker.new();
-        }
-        this.partsById[newPart.id] = newPart;
-
-        // Add the System as a prop subscriber
-        // to the new part model
-        newPart.addPropertySubscriber(this);
-
-        // Build a view for the part
-        if(newPart.type != 'world'){
-            this.newView(newPart.type, newPart.id);
-        } else {
-            let newView = document.createElement(
-                this.tagNameForViewNamed('world')
-            );
-            newView.setModel(newPart);
-            document.body.prepend(newView);
-        }
-
-        // Recursively deserialize any referenced
-        // subpart ids in the deserialization object
-        aPartJSON.subparts.forEach(subpartId => {
-            let subpartJSON = fullJSON[subpartId];
-            if(!subpartJSON){
-                throw new Error(`Could not deserialize Part ${subpartId} -- not found in serialization!`);
-            }
-            this.deserializePart(subpartJSON, newPart.id, fullJSON, deserializedInfo, newId);
-        });
-        return newPart;
     },
 
     // Return a *complete* HTML
@@ -1054,40 +985,22 @@ System._commandHandlers['importWorld'] = function(sender, sourceUrl){
                     if(!serializationEl){
                         throw new Error(`No serialization found for this page`);
                     }
-                    let deserializedInfo = JSON.parse(serializationEl.textContent);
-
-                    // Start from the WorldStack and recursively
-                    // create new Parts/Views from the deserialized
-                    // dictionary
-                    let worldJSON = deserializedInfo.parts['world'];
-                    if(!worldJSON){
-                        throw new Error(`World not found in serialization!`);
-                    }
-
-                    // for each sub-part of world (presumably a stack)
-                    // add it to the current world
-                    let newStacks = [];
-                    worldJSON.subparts.forEach((partId) => {
-                        let stack = deserializedInfo.parts[partId];
-                        let newStack = this.deserializePart(
-                            stack,
-                            'world',
-                            deserializedInfo.parts,
-                            deserializedInfo,
-                            true // generate new ids
-                        );
-                        newStacks.push(newStack);
+                    let deserializer = new STDeserializer(this);
+                    deserializer.targetId = 'world'; // We will insert the stacks into the world
+                    return deserializer.importFromSerialization(
+                        serializationEl.textContent,
+                        (part) => {
+                            // Return only Stacks that are direct subparts
+                            // of the world.
+                            let isStack = part.type == 'stack';
+                            let isWorldSubpart = part._owner && part._owner.type == 'world';
+                            return isStack && isWorldSubpart;
+                        }
+                    ).then(() => {
+                        // Tell the world to update current, in case
+                        // a new StackView was attached with current set.
+                        document.querySelector('st-world').updateCurrentStack();
                     });
-
-                    // set all the current cards for new stacks 
-                    newStacks.forEach((stack) => {
-                        let currentCardIndex = stack.partProperties.getPropertyNamed(stack, 'current');
-                        stack.partProperties.setPropertyNamed(stack, 'current', currentCardIndex);
-                    });
-                    this.setAllScriptProperties();
-
-                    // And serialize
-                    this.serialize();
                 };
             });
         })
@@ -1100,7 +1013,7 @@ System._commandHandlers['importWorld'] = function(sender, sourceUrl){
         .catch(err => {
             console.error(err);
         });
-}
+};
 
 // Opens a basic tool window on the Part of the given
 // id. If no ID is given, we assume the tool window
@@ -1551,6 +1464,13 @@ System.grammar = languageGrammar;
 // Set the exection stack on the
 // System
 System.executionStack = new ExecutionStack();
+
+// Add a dynamic getter for the World for convenience
+Object.defineProperty(System, 'world', {
+    get: function(){
+        return this.partsById['world'];
+    }
+});
 
 document.addEventListener('DOMContentLoaded', () => {
     // Add the System object to window so
