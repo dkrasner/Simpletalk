@@ -11,6 +11,8 @@
  * propertyName: (SimpleTalk) styling property name
  * propertyValue: (SimpleTalk) styling property value
  */
+const sides = ["top", "bottom", "left", "right"];
+
 const cssStyler = (styleObj, propertyName, propertyValue) => {
     switch(propertyName){
 
@@ -22,6 +24,66 @@ const cssStyler = (styleObj, propertyName, propertyValue) => {
         // here we set the Alpha value of the current styleObj["backgroundColor"] rgba
         _setOrNot(styleObj, "backgroundColor",  _colorTransparencyToRGBA(styleObj["backgroundColor"], propertyValue));
         break;
+
+    case "border-style":
+        sides.forEach((s) => {
+            _setOrNot(styleObj, `border-${s}-style`,  propertyValue);
+        });
+        break;
+
+    case "border-top-style":
+    case "border-bottom-style":
+    case "border-left-style":
+    case "border-right-style": {
+        let s = propertyName.split("-")[1];
+        _setOrNot(styleObj, `border-${s}-style`,  propertyValue);
+        break;
+    }
+
+    case "border-width":
+        sides.forEach((s) => {
+            _setOrNot(styleObj, `border-${s}-width`,  _intToPx(propertyValue));
+        });
+        break;
+
+    case "border-top-width":
+    case "border-bottom-width":
+    case "border-left-width":
+    case "border-right-width": {
+        let s = propertyName.split("-")[1];
+        _setOrNot(styleObj, `border-${s}-width`,  _intToPx(propertyValue));
+        break;
+    }
+
+    case "border-color":
+        sides.forEach((s) => {
+            _setOrNot(styleObj, `border-${s}-color`,  _colorToRGBA(styleObj[`border-${s}-color`], propertyValue));
+        });
+        break;
+
+    case "border-top-color":
+    case "border-bottom-color":
+    case "border-top-color":
+    case "border-right-color": {
+        let s = propertyName.split("-")[1];
+        _setOrNot(styleObj, `border-${s}-color`,  _colorToRGBA(styleObj[`border-${s}-color`], propertyValue));
+        break;
+    }
+
+    case "border-transparency":
+        sides.forEach((s) => {
+            _setOrNot(styleObj, `border-${s}-color`,  _colorTransparencyToRGBA(styleObj[`border-${s}-color`], propertyValue));
+        });
+        break;
+
+    case "border-top-transparency":
+    case "border-bottom-transparency":
+    case "border-top-transparency":
+    case "border-right-transparency": {
+        let s = propertyName.split("-")[1];
+        _setOrNot(styleObj, `border-${s}-color`,  _colorTransparencyToRGBA(styleObj[`border-${s}-color`], propertyValue));
+        break;
+    }
 
     case "text-color":
         _setOrNot(styleObj, "color",  _colorToRGBA(styleObj["color"], propertyValue));
@@ -146,6 +208,8 @@ const _intToPx = (n) => {
         if(typeof(n) === "string"){
             if(n == "fill"){
                 return "100%";
+            } else if(["thin", "medium", "thick"].indexOf(n) > -1){
+                return n;
             }
             n = n.split("px")[0];
         }
