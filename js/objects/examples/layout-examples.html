@@ -131,6 +131,131 @@
   }
 
   onVideoChange(renderTranscript);
+})()</script><script>(function addTranscript() {
+  function debounce(callback, wait, immediate = false) {
+    let timeout = null;
+
+    return function () {
+      const callNow = immediate && !timeout;
+      const next = () => callback.apply(this, arguments);
+
+      clearTimeout(timeout);
+      timeout = setTimeout(next, wait);
+
+      if (callNow) {
+        next();
+      }
+    };
+  }
+
+  function waitFor(selector, callback, timeout) {
+    const element = document.querySelector(selector);
+    if (element) {
+      callback(element);
+    } else {
+      if (timeout) {
+        return window.setTimeout(() => {
+          return window.requestAnimationFrame(() => {
+            waitFor(selector, callback);
+          });
+        }, timeout);
+      }
+      return window.requestAnimationFrame(() => {
+        waitFor(selector, callback);
+      });
+    }
+  }
+
+  function onVideoChange(cb) {
+    const debouncedCallback = debounce(cb, 200);
+    waitFor(
+      "ytd-player",
+      function handlePlayer(player) {
+        const video = document.querySelector(".html5-main-video");
+        if (!video) {
+          setTimeout(() => handlePlayer(player), 1000);
+          return;
+        }
+        debouncedCallback();
+        const observer = new MutationObserver(debouncedCallback);
+        observer.observe(video, {
+          childList: false,
+          subtree: false,
+          attributes: true,
+        });
+      },
+      100
+    );
+  }
+
+  function renderTranscript() {
+    const player = document.querySelector("ytd-player")?.getPlayer();
+    if (!player) {
+      return;
+    }
+
+    const { isLive, video_id } = player.getVideoData();
+    const options = player.getOptions();
+    const hasCaptions = options.includes("captions");
+
+    if (!hasCaptions || isLive) {
+      document.querySelector("#transcript-info")?.remove();
+      return;
+    }
+
+    document.querySelector("#transcript-info")?.remove();
+
+    const wrapper = document.createElement("div");
+    wrapper.id = `transcript-info`;
+    wrapper.style = `
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      margin: 0 8px;
+    `.replace("\n", " ");
+
+    const a = document.createElement("a");
+    a.setAttribute("href", `https://video-insights.com/en/video/${video_id}`);
+    a.setAttribute("target", "_blank");
+    a.setAttribute(
+      "style",
+      `
+        color: var(--yt-spec-call-to-action);
+        background-color: transparent;
+        text-transform: uppercase;
+        border: 1px solid var(--yt-spec-call-to-action);
+        padding: var(--yt-button-padding-minus-border);
+        width: var(--yt-paper-button-width, auto);
+        height: var(--yt-paper-button-height, auto);
+        border-radius: inherit;
+        text-align: center;
+        min-width: var(--yt-paper-button-min-width, var(--ytd-paper-button-min-width, 5.14em));
+        font-size: var(--yt-paper-button-font-size, inherit);
+        transition: var(--shadow-transition_-_transition);
+        margin: var(--yt-button-margin, 0 0.29em);
+        text-transform: uppercase;
+        vertical-align: middle;
+        white-space: nowrap;
+        font-size: var(--ytd-tab-system_-_font-size);
+        font-weight: var(--ytd-tab-system_-_font-weight);
+        letter-spacing: var(--ytd-tab-system_-_letter-spacing);
+        text-decoration: none;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        min-width: var(--yt-paper-button-min-width, var(--ytd-paper-button-min-width, 5.14em));
+        cursor: pointer;
+        -webkit-font-smoothing: var(--paper-font-common-base_-_-webkit-font-smoothing);
+      `.replace(/(\r\n|\n|\r|\s)/gm, "")
+    );
+    a.appendChild(document.createTextNode("Transcript "));
+    wrapper.appendChild(a);
+
+    const root = document.querySelector("ytd-video-owner-renderer");
+    root?.appendChild(wrapper);
+  }
+
+  onVideoChange(renderTranscript);
 })()</script></head>
 
 <body cz-shortcut-listen="true">
@@ -2074,7 +2199,7 @@
                 "cssStyle": {
                     "opacity": 1,
                     "display": null,
-                    "top": "496px",
+                    "top": "497px",
                     "left": "30px",
                     "horizontal-resizing": "rigid",
                     "vertical-resizing": "rigid",
@@ -2084,7 +2209,7 @@
                     "textStyle": "plain",
                     "width": "694.4000244140625px",
                     "height": "293.6000061035156px",
-                    "backgroundColor": "rgba(241, 255, 240, 0)",
+                    "backgroundColor": "rgba(223, 255, 245, 1)",
                     "right": "unset",
                     "bottom": "unset"
                 },
@@ -2106,13 +2231,13 @@
                 "targetRangeId": null,
                 "text": "",
                 "editable": true,
-                "background-transparency": "0",
-                "background-color": "rgba(241, 255, 240, 255)",
+                "background-transparency": "1",
+                "background-color": "rgb(223, 255, 245)",
                 "transparency": 1,
                 "hide": false,
                 "width": "694.4000244140625px",
                 "height": "293.6000061035156px",
-                "top": 496,
+                "top": 497,
                 "left": 30,
                 "rotate": null,
                 "horizontal-resizing": "rigid",
@@ -2607,7 +2732,7 @@
                     "fontFamily": "default",
                     "color": "rgba(46, 255, 66, 1)",
                     "textStyle": "plain",
-                    "backgroundColor": "rgba(0, 0, 0, 0)",
+                    "backgroundColor": "rgba(0, 0, 0, 1)",
                     "width": "557px",
                     "height": "395.6000061035156px"
                 },
@@ -2627,9 +2752,9 @@
                 "mode": "editing",
                 "innerHTML": "<div>About This Example</div><div>-------------------</div><div>This page demonstrates the various \"pinning\" layout properties, which describe if and how a Part should stick to any of the sides of its enclosing container, such as another Area or the Card itself.</div><div>  </div><div>In this case, we have pinned an image to the bottom right corner of the Card.</div><div>  </div><div>Possible options for pinning are:</div><div>* top</div><div>* top-right</div><div>* top-left</div><div>* bottom</div><div>* bottom-right</div><div>* bottom-left</div><div>* left</div><div>* right</div><div>* none</div><div><br></div><div>Try any of these out by adjusting the following statement:</div><div>set \"pinning\" to \"bottom-right\" in image \"Deco Woman\" of current card</div>",
                 "targetRangeId": null,
-                "text": "",
+                "text": "About This Example\n-------------------\nThis page demonstrates the various \"pinning\" layout properties, which describe if and how a Part should stick to any of the sides of its enclosing container, such as another Area or the Card itself.\n  \nIn this case, we have pinned an image to the bottom right corner of the Card.\n  \nPossible options for pinning are:\n* top\n* top-right\n* top-left\n* bottom\n* bottom-right\n* bottom-left\n* left\n* right\n* none\n\n\nTry any of these out by adjusting the following statement:\nset \"pinning\" to \"bottom-right\" in image \"Deco Woman\" of current card",
                 "editable": true,
-                "background-transparency": 0.65,
+                "background-transparency": "1",
                 "background-color": "black",
                 "transparency": 1,
                 "hide": false,
@@ -3439,7 +3564,7 @@
                 "right-padding": null,
                 "bottom-padding": null,
                 "left-padding": null,
-                "list-alignment": "bottom",
+                "list-alignment": "center",
                 "list-distribution": null,
                 "clipping": false,
                 "allow-scrolling": false
@@ -4655,7 +4780,7 @@
                 "bottom-padding": null,
                 "left-padding": null,
                 "list-alignment": null,
-                "list-distribution": "center",
+                "list-distribution": "space-between",
                 "clipping": false,
                 "allow-scrolling": false
             },
@@ -4958,7 +5083,7 @@
                 "bottom-padding": null,
                 "left-padding": null,
                 "list-alignment": null,
-                "list-distribution": "center",
+                "list-distribution": "space-between",
                 "clipping": false,
                 "allow-scrolling": false
             },
@@ -6007,7 +6132,7 @@
                 "pinning-right": false,
                 "pinning": "",
                 "layout": "list",
-                "list-direction": "row",
+                "list-direction": "column",
                 "list-wrapping": false,
                 "top-padding": null,
                 "right-padding": null,
@@ -7288,7 +7413,7 @@
                 "editorOpen": false,
                 "events": [],
                 "cssStyle": {
-                    "width": "26.340000000000003px",
+                    "width": "171.21000000000006px",
                     "height": "50px",
                     "opacity": 1,
                     "display": null,
@@ -7310,7 +7435,7 @@
                 "background-color": "green",
                 "transparency": 1,
                 "hide": false,
-                "width": 26.340000000000003,
+                "width": 171.21000000000006,
                 "height": 50,
                 "top": 0,
                 "left": 0,

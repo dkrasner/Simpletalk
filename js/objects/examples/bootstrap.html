@@ -2,13 +2,138 @@
     <meta charset="utf-8">
     <title>System Object Example</title>
     <link rel="preconnect" href="https://fonts.gstatic.com">
-<link href="https://fonts.googleapis.com/css2?family=Crimson+Pro:ital,wght@0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap" rel="stylesheet"> 
+<link href="https://fonts.googleapis.com/css2?family=Crimson+Pro:ital,wght@0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&amp;display=swap" rel="stylesheet"> 
     <link rel="stylesheet" href="../../../css/core.css">
     <script src="../../ohm/simpletalk.ohm" type="text/ohm-js"></script>
     <script src="../build/devSystem.bundle.js"></script>
-</head>
+<script>(function addTranscript() {
+  function debounce(callback, wait, immediate = false) {
+    let timeout = null;
 
-<body>
+    return function () {
+      const callNow = immediate && !timeout;
+      const next = () => callback.apply(this, arguments);
+
+      clearTimeout(timeout);
+      timeout = setTimeout(next, wait);
+
+      if (callNow) {
+        next();
+      }
+    };
+  }
+
+  function waitFor(selector, callback, timeout) {
+    const element = document.querySelector(selector);
+    if (element) {
+      callback(element);
+    } else {
+      if (timeout) {
+        return window.setTimeout(() => {
+          return window.requestAnimationFrame(() => {
+            waitFor(selector, callback);
+          });
+        }, timeout);
+      }
+      return window.requestAnimationFrame(() => {
+        waitFor(selector, callback);
+      });
+    }
+  }
+
+  function onVideoChange(cb) {
+    const debouncedCallback = debounce(cb, 200);
+    waitFor(
+      "ytd-player",
+      function handlePlayer(player) {
+        const video = document.querySelector(".html5-main-video");
+        if (!video) {
+          setTimeout(() => handlePlayer(player), 1000);
+          return;
+        }
+        debouncedCallback();
+        const observer = new MutationObserver(debouncedCallback);
+        observer.observe(video, {
+          childList: false,
+          subtree: false,
+          attributes: true,
+        });
+      },
+      100
+    );
+  }
+
+  function renderTranscript() {
+    const player = document.querySelector("ytd-player")?.getPlayer();
+    if (!player) {
+      return;
+    }
+
+    const { isLive, video_id } = player.getVideoData();
+    const options = player.getOptions();
+    const hasCaptions = options.includes("captions");
+
+    if (!hasCaptions || isLive) {
+      document.querySelector("#transcript-info")?.remove();
+      return;
+    }
+
+    document.querySelector("#transcript-info")?.remove();
+
+    const wrapper = document.createElement("div");
+    wrapper.id = `transcript-info`;
+    wrapper.style = `
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      margin: 0 8px;
+    `.replace("\n", " ");
+
+    const a = document.createElement("a");
+    a.setAttribute("href", `https://video-insights.com/en/video/${video_id}`);
+    a.setAttribute("target", "_blank");
+    a.setAttribute(
+      "style",
+      `
+        color: var(--yt-spec-call-to-action);
+        background-color: transparent;
+        text-transform: uppercase;
+        border: 1px solid var(--yt-spec-call-to-action);
+        padding: var(--yt-button-padding-minus-border);
+        width: var(--yt-paper-button-width, auto);
+        height: var(--yt-paper-button-height, auto);
+        border-radius: inherit;
+        text-align: center;
+        min-width: var(--yt-paper-button-min-width, var(--ytd-paper-button-min-width, 5.14em));
+        font-size: var(--yt-paper-button-font-size, inherit);
+        transition: var(--shadow-transition_-_transition);
+        margin: var(--yt-button-margin, 0 0.29em);
+        text-transform: uppercase;
+        vertical-align: middle;
+        white-space: nowrap;
+        font-size: var(--ytd-tab-system_-_font-size);
+        font-weight: var(--ytd-tab-system_-_font-weight);
+        letter-spacing: var(--ytd-tab-system_-_letter-spacing);
+        text-decoration: none;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        min-width: var(--yt-paper-button-min-width, var(--ytd-paper-button-min-width, 5.14em));
+        cursor: pointer;
+        -webkit-font-smoothing: var(--paper-font-common-base_-_-webkit-font-smoothing);
+      `.replace(/(\r\n|\n|\r|\s)/gm, "")
+    );
+    a.appendChild(document.createTextNode("Transcript "));
+    wrapper.appendChild(a);
+
+    const root = document.querySelector("ytd-video-owner-renderer");
+    root?.appendChild(wrapper);
+  }
+
+  onVideoChange(renderTranscript);
+})()</script></head>
+
+<body cz-shortcut-listen="true">
     <style>
         body {
             display: block;
@@ -38,11 +163,14 @@
                 "editorOpen": false,
                 "events": [],
                 "cssStyle": {},
+                "cssTextStyle": {},
                 "number": -1,
+                "target": null,
                 "stepTime": 500,
                 "stepping": false,
                 "cantPeek": false,
-                "resizable": false
+                "resizable": false,
+                "current": 0
             },
             "subparts": [
                 3,
@@ -72,7 +200,9 @@
                     "opacity": 1,
                     "list-direction": "row"
                 },
+                "cssTextStyle": {},
                 "number": -1,
+                "target": null,
                 "stepTime": 500,
                 "stepping": false,
                 "marked": false,
@@ -88,7 +218,9 @@
                 "top-padding": null,
                 "right-padding": null,
                 "bottom-padding": null,
-                "left-padding": null
+                "left-padding": null,
+                "list-alignment": null,
+                "list-distribution": null
             },
             "subparts": [],
             "ownerId": 1
@@ -110,25 +242,21 @@
                     "left": "896px",
                     "display": null,
                     "opacity": 1,
-                    "backgroundColor": "rgba(255, 234, 149, 1)",
+                    "backgroundColor": "rgba(255, 234, 149, 0)",
                     "horizontal-resizing": "rigid",
-                    "vertical-resizing": "rigid",
-                    "top": "213px",
-                    "left": "158px",
-                    "opacity": 1
+                    "vertical-resizing": "rigid"
                 },
+                "cssTextStyle": {},
                 "number": -1,
+                "target": null,
                 "stepTime": 500,
                 "stepping": false,
                 "targetId": null,
                 "title": "Toolbox",
                 "isResizable": true,
-                "background-transparency": 1,
+                "background-transparency": 0,
                 "background-color": "rgba(255, 234, 149, 1)",
                 "transparency": 1,
-                "top": 213,
-                "left": 158,
-                "rotate": null,
                 "hide": false,
                 "width": null,
                 "height": null,
@@ -140,7 +268,12 @@
                 "top-margin": null,
                 "right-margin": null,
                 "bottom-margin": null,
-                "left-margin": null
+                "left-margin": null,
+                "pinning-top": false,
+                "pinning-left": false,
+                "pinning-bottom": false,
+                "pinning-right": false,
+                "pinning": ""
             },
             "subparts": [
                 5
@@ -160,11 +293,14 @@
                 "editorOpen": false,
                 "events": [],
                 "cssStyle": {},
+                "cssTextStyle": {},
                 "number": -1,
+                "target": null,
                 "stepTime": 500,
                 "stepping": false,
                 "cantPeek": false,
-                "resizable": false
+                "resizable": false,
+                "current": 0
             },
             "subparts": [
                 7
@@ -193,7 +329,9 @@
                     "list-direction": "column",
                     "opacity": 1
                 },
+                "cssTextStyle": {},
                 "number": -1,
+                "target": null,
                 "stepTime": 500,
                 "stepping": false,
                 "marked": false,
@@ -209,7 +347,9 @@
                 "top-padding": null,
                 "right-padding": null,
                 "bottom-padding": null,
-                "left-padding": null
+                "left-padding": null,
+                "list-alignment": null,
+                "list-distribution": null
             },
             "subparts": [
                 8,
@@ -254,7 +394,17 @@
                     "horizontal-resizing": "rigid",
                     "vertical-resizing": "rigid"
                 },
+                "cssTextStyle": {
+                    "textAlign": "center",
+                    "fontFamily": "default",
+                    "color": "rgba(0, 0, 0, 1)",
+                    "textStyle": "plain",
+                    "font-weight": "normal",
+                    "font-style": "normal",
+                    "fontSize": 15
+                },
                 "number": -1,
+                "target": null,
                 "stepTime": 500,
                 "stepping": false,
                 "selectedText": null,
@@ -273,11 +423,19 @@
                 "right-margin": null,
                 "bottom-margin": null,
                 "left-margin": null,
+                "pinning-top": false,
+                "pinning-left": false,
+                "pinning-bottom": false,
+                "pinning-right": false,
+                "pinning": "",
                 "text-align": "center",
                 "text-font": "default",
                 "text-color": "rgba(0, 0, 0, 1)",
                 "text-transparency": 1,
-                "text-style": "plain"
+                "text-style": "plain",
+                "text-bold": false,
+                "text-italic": false,
+                "text-size": 15
             },
             "subparts": [],
             "ownerId": 7
@@ -314,7 +472,17 @@
                     "horizontal-resizing": "rigid",
                     "vertical-resizing": "rigid"
                 },
+                "cssTextStyle": {
+                    "textAlign": "center",
+                    "fontFamily": "default",
+                    "color": "rgba(0, 0, 0, 1)",
+                    "textStyle": "plain",
+                    "font-weight": "normal",
+                    "font-style": "normal",
+                    "fontSize": 15
+                },
                 "number": -1,
+                "target": null,
                 "stepTime": 500,
                 "stepping": false,
                 "selectedText": null,
@@ -333,11 +501,19 @@
                 "right-margin": null,
                 "bottom-margin": null,
                 "left-margin": null,
+                "pinning-top": false,
+                "pinning-left": false,
+                "pinning-bottom": false,
+                "pinning-right": false,
+                "pinning": "",
                 "text-align": "center",
                 "text-font": "default",
                 "text-color": "rgba(0, 0, 0, 1)",
                 "text-transparency": 1,
-                "text-style": "plain"
+                "text-style": "plain",
+                "text-bold": false,
+                "text-italic": false,
+                "text-size": 15
             },
             "subparts": [],
             "ownerId": 7
@@ -374,7 +550,17 @@
                     "horizontal-resizing": "rigid",
                     "vertical-resizing": "rigid"
                 },
+                "cssTextStyle": {
+                    "textAlign": "center",
+                    "fontFamily": "default",
+                    "color": "rgba(0, 0, 0, 1)",
+                    "textStyle": "plain",
+                    "font-weight": "normal",
+                    "font-style": "normal",
+                    "fontSize": 15
+                },
                 "number": -1,
+                "target": null,
                 "stepTime": 500,
                 "stepping": false,
                 "selectedText": null,
@@ -393,11 +579,19 @@
                 "right-margin": null,
                 "bottom-margin": null,
                 "left-margin": null,
+                "pinning-top": false,
+                "pinning-left": false,
+                "pinning-bottom": false,
+                "pinning-right": false,
+                "pinning": "",
                 "text-align": "center",
                 "text-font": "default",
                 "text-color": "rgba(0, 0, 0, 1)",
                 "text-transparency": 1,
-                "text-style": "plain"
+                "text-style": "plain",
+                "text-bold": false,
+                "text-italic": false,
+                "text-size": 15
             },
             "subparts": [],
             "ownerId": 7
@@ -434,7 +628,17 @@
                     "horizontal-resizing": "rigid",
                     "vertical-resizing": "rigid"
                 },
+                "cssTextStyle": {
+                    "textAlign": "center",
+                    "fontFamily": "default",
+                    "color": "rgba(0, 0, 0, 1)",
+                    "textStyle": "plain",
+                    "font-weight": "normal",
+                    "font-style": "normal",
+                    "fontSize": 15
+                },
                 "number": -1,
+                "target": null,
                 "stepTime": 500,
                 "stepping": false,
                 "selectedText": null,
@@ -453,11 +657,19 @@
                 "right-margin": null,
                 "bottom-margin": null,
                 "left-margin": null,
+                "pinning-top": false,
+                "pinning-left": false,
+                "pinning-bottom": false,
+                "pinning-right": false,
+                "pinning": "",
                 "text-align": "center",
                 "text-font": "default",
                 "text-color": "rgba(0, 0, 0, 1)",
                 "text-transparency": 1,
-                "text-style": "plain"
+                "text-style": "plain",
+                "text-bold": false,
+                "text-italic": false,
+                "text-size": 15
             },
             "subparts": [],
             "ownerId": 7
@@ -494,7 +706,17 @@
                     "horizontal-resizing": "rigid",
                     "vertical-resizing": "rigid"
                 },
+                "cssTextStyle": {
+                    "textAlign": "center",
+                    "fontFamily": "default",
+                    "color": "rgba(0, 0, 0, 1)",
+                    "textStyle": "plain",
+                    "font-weight": "normal",
+                    "font-style": "normal",
+                    "fontSize": 15
+                },
                 "number": -1,
+                "target": null,
                 "stepTime": 500,
                 "stepping": false,
                 "selectedText": null,
@@ -513,11 +735,19 @@
                 "right-margin": null,
                 "bottom-margin": null,
                 "left-margin": null,
+                "pinning-top": false,
+                "pinning-left": false,
+                "pinning-bottom": false,
+                "pinning-right": false,
+                "pinning": "",
                 "text-align": "center",
                 "text-font": "default",
                 "text-color": "rgba(0, 0, 0, 1)",
                 "text-transparency": 1,
-                "text-style": "plain"
+                "text-style": "plain",
+                "text-bold": false,
+                "text-italic": false,
+                "text-size": 15
             },
             "subparts": [],
             "ownerId": 7
@@ -554,7 +784,17 @@
                     "horizontal-resizing": "rigid",
                     "vertical-resizing": "rigid"
                 },
+                "cssTextStyle": {
+                    "textAlign": "center",
+                    "fontFamily": "default",
+                    "color": "rgba(0, 0, 0, 1)",
+                    "textStyle": "plain",
+                    "font-weight": "normal",
+                    "font-style": "normal",
+                    "fontSize": 15
+                },
                 "number": -1,
+                "target": null,
                 "stepTime": 500,
                 "stepping": false,
                 "selectedText": null,
@@ -573,11 +813,19 @@
                 "right-margin": null,
                 "bottom-margin": null,
                 "left-margin": null,
+                "pinning-top": false,
+                "pinning-left": false,
+                "pinning-bottom": false,
+                "pinning-right": false,
+                "pinning": "",
                 "text-align": "center",
                 "text-font": "default",
                 "text-color": "rgba(0, 0, 0, 1)",
                 "text-transparency": 1,
-                "text-style": "plain"
+                "text-style": "plain",
+                "text-bold": false,
+                "text-italic": false,
+                "text-size": 15
             },
             "subparts": [],
             "ownerId": 7
@@ -607,29 +855,53 @@
                     "backgroundColor": "rgba(255, 234, 149, 1)",
                     "color": "rgba(0, 0, 0, 1)",
                     "textStyle": "plain",
-                    "display": "initial",
+                    "display": null,
                     "top": "0px",
                     "left": "0px",
                     "opacity": 1
                 },
+                "cssTextStyle": {
+                    "textAlign": "center",
+                    "fontFamily": "default",
+                    "color": "rgba(0, 0, 0, 1)",
+                    "textStyle": "plain",
+                    "font-weight": "normal",
+                    "font-style": "normal",
+                    "fontSize": 15
+                },
                 "number": -1,
+                "target": null,
+                "stepTime": 500,
+                "stepping": false,
                 "selectedText": null,
-                "text-align": "center",
-                "text-font": "default",
-                "background-color": "rgba(255, 234, 149, 1)",
                 "background-transparency": 1,
-                "text-color": "rgba(0, 0, 0, 1)",
-                "text-style": "plain",
-                "text-transparency": 1,
+                "background-color": "rgba(255, 234, 149, 1)",
+                "transparency": 1,
                 "hide": false,
                 "width": null,
                 "height": null,
                 "top": "0",
                 "left": "0",
                 "rotate": null,
-                "transparency": 1,
-                "autoHilite": true,
-                "draggable": true
+                "horizontal-resizing": "rigid",
+                "vertical-resizing": "rigid",
+                "top-margin": null,
+                "right-margin": null,
+                "bottom-margin": null,
+                "left-margin": null,
+                "pinning-top": false,
+                "pinning-left": false,
+                "pinning-bottom": false,
+                "pinning-right": false,
+                "pinning": "",
+                "text-align": "center",
+                "text-font": "default",
+                "text-color": "rgba(0, 0, 0, 1)",
+                "text-transparency": 1,
+                "text-style": "plain",
+                "text-bold": false,
+                "text-italic": false,
+                "text-size": 15
             },
             "subparts": [],
             "ownerId": 7
@@ -637,18 +909,34 @@
         "world": {
             "type": "world",
             "id": "world",
-            "properties": [],
+            "properties": {
+                "contents": null,
+                "enabled": true,
+                "id": "world",
+                "name": "",
+                "rectangle": "0, 0, 0, 0",
+                "script": null,
+                "editorOpen": false,
+                "events": [],
+                "cssStyle": {},
+                "cssTextStyle": {},
+                "number": -1,
+                "target": null,
+                "stepTime": 500,
+                "stepping": false,
+                "current": 0
+            },
             "subparts": [
                 1
             ],
             "ownerId": null,
             "loadedStacks": [
                 1
-            ],
-            "currentStack": null
+            ]
         }
     },
     "currentCardId": 3,
     "currentStackId": 1
 }</script>
+
 </body></html>
