@@ -30,14 +30,15 @@ describe("Serialization / Deserialization Tests", () => {
             let second = serializationEl.textContent;
             assert.equal(first, second);
         });
-        it("Deserializing from itself will produce and identical JSON serialization", () => {
+        it("Deserializing from itself will produce an identical JSON serialization", function(){
             let first = getSerializationString();
             // Clear models and views
             System.partsById = {};
             document.querySelector('st-world').remove();
-            System.deserialize();
-            let second = getSerializationString();
-            assert.equal(first, second);
+            return System.deserialize().then(() => {
+                let second = getSerializationString();
+                assert.equal(first, second);
+            });
         });
         it('Adding a button to current card will be serialized', () => {
             let currentCard = System.getCurrentCardModel();
@@ -58,8 +59,9 @@ describe("Serialization / Deserialization Tests", () => {
             // Clear models and viewa
             System.partsById = {};
             document.querySelector('st-world').remove();
-            System.deserialize();
-            assert.exists(System.partsById[foundButton.id]);
+            System.deserialize().then(() => {
+                assert.exists(System.partsById[foundButton.id]);
+            });
         });
     });
 

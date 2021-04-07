@@ -42,7 +42,7 @@ import STClipboard from './utils/clipboard.js';
 
 import handInterface from './utils/handInterface.js';
 
-import {STDeserializer} from './utils/serialization.js';
+import {STDeserializer, STSerializer} from './utils/serialization.js';
 
 const DOMparser = new DOMParser();
 
@@ -84,7 +84,6 @@ const System = {
     // deserializes the model and attaches it
     // to the view.
     initialLoad: function(){
-
         // If we have a serialization script tag
         // containing JSON of serialized information,
         // attempt to load from it
@@ -653,13 +652,12 @@ const System = {
     },
 
     serialize: function(){
-        let result = {
-            parts: {},
-            currentCardId: this.getCurrentCardModel().id,
-            currentStackId: this.getCurrentStackModel().id
-        };
         let world = this.partsById['world'];
-        this.serializePart(world, result.parts);
+        if(!world){
+            throw new Error(`No world found!`);
+        }
+        let serializer = new STSerializer(this);
+        let serialString = serializer.serialize(this.partsById['world'], false);
 
         // If there is not a script tag in the
         // body for the serialization, create it
@@ -670,7 +668,7 @@ const System = {
             serializationScriptEl.type = 'application/json';
             document.body.append(serializationScriptEl);
         }
-        serializationScriptEl.textContent = JSON.stringify(result, null, 4);
+        serializationScriptEl.textContent = serialString;
     },
 
     deserialize: function(){
@@ -679,34 +677,8 @@ const System = {
             throw new Error(`No serialization found for this page`);
         }
         let deserializer = new STDeserializer(this);
+        deserializer.useOriginalIds = true;
         return deserializer.deserialize(serializationEl.textContent);
-    },
-
-    setCurrentStackAndCards: function(){
-        let world = this.partsById['world'];
-        let currentStackIndex = world.partProperties.getPropertyNamed(world, 'current');
-        world.partProperties.setPropertyNamed(world, 'current', currentStackIndex);
-        world.subparts.forEach((stack) => {
-            let currentCardIndex = stack.partProperties.getPropertyNamed(stack, 'current');
-            stack.partProperties.setPropertyNamed(stack, 'current', currentCardIndex);
-        });
-    },
-
-    setAllScriptProperties: function(){
-        Object.keys(this.partsById).forEach(partId => {
-            let part = this.partsById[partId];
-            let script = part.partProperties.getPropertyNamed(part, "script");
-            if(script){
-                part.partProperties.setPropertyNamed(part, "script", script);
-            }
-        });
-    },
-
-    serializePart: function(aPart, aDict){
-        aDict[aPart.id] = aPart.toJSON();
-        aPart.subparts.forEach(subpart => {
-            this.serializePart(subpart, aDict);
-        });
     },
 
     // Return a *complete* HTML

@@ -27,6 +27,14 @@ class STDeserializer {
         // ie full deserialization.
         this.targetId = 'system';
 
+        // By default, we create new IDs for each
+        // deserialized Part (and preserve a mapping
+        // from old to new temporarily).
+        // However, there are cases, like initialLoad,
+        // where we want to preserve the originals.
+        // That flag is set here.
+        this.useOriginalIds = false;
+
         // Bound methods
         this.deserialize = this.deserialize.bind(this);
         this.deserializeData = this.deserializeData.bind(this);
@@ -43,6 +51,7 @@ class STDeserializer {
         this.compileScripts = this.compileScripts.bind(this);
         this.getFlattenedPartTree = this.getFlattenedPartTree.bind(this);
         this.getModelClass = this.getModelClass.bind(this);
+        this.handleId = this.handleId.bind(this);
         this.throwError = this.throwError.bind(this);
         this.flushCaches = this.flushCaches.bind(this);
     }
@@ -140,6 +149,18 @@ class STDeserializer {
                 return instance._owner == null || instance._owner == undefined;
             });
 
+            // If we are using the original IDs, we need
+            // to reset the idMaker to be the max of
+            // the current crop of IDs
+            if(this.useOriginalIds){
+                let allIds = this._instanceCache.map(inst => {
+                    return parseInt(inst.id);
+                }).filter(id => {
+                    return !isNaN(id) && id !== null;
+                });
+                idMaker.count = Math.max(...allIds);
+            }
+
             // Insertion should be handled by composed
             // promises elsewhere (see imports and deserialize()
             // for examples)
@@ -190,15 +211,11 @@ class STDeserializer {
         let instance = new partClass();
 
         // We create a new ID for this part, since we cannot
-        // guarantee ID clashes with the existing System
-        let newId;
-        let oldId = partData.id;
-        if(partData.id !== 'world'){
-            newId = idMaker.new();
-            instance.id = newId;
-        } else {
-            newId = oldId; // World always has 'world' as id
-        }
+        // guarantee ID clashes with the existing System.
+        // Exception is if the useOriginalids flag is set,
+        // such as at load time
+        let {newId, oldId} = this.handleId(instance, partData);
+        instance.id = newId;
 
         // Add to our caches and also to the System
         this._idCache[oldId] = newId;
@@ -207,6 +224,27 @@ class STDeserializer {
         this._modelCache[newId] = instance;
         this._subpartMapCache[newId] = partData.subparts;
         this._instanceCache.push(instance);
+    }
+
+    handleId(aPart, partData){
+        let newId, oldId;
+        if(this.useOriginalIds){
+            return {
+                newId: partData.id,
+                oldId: partData.id
+            };
+        } else {
+            oldId = partData.id;
+            newId = aPart.id;
+            if(aPart.type !== 'world'){
+                newId = idMaker.new();
+            }
+            return {
+                newId,
+                oldId
+            };
+        }
+        
     }
 
     addPartsToSystem(aListOfParts){
@@ -353,7 +391,6 @@ class STSerializer {
         this.flushCaches();
         let result = {
             version: version,
-            stamp: Date.now(),
             rootId: aRootPart.id,
             type: aRootPart.type,
             id: aRootPart.id
