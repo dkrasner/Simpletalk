@@ -8,6 +8,8 @@
  * Basic style properties are those
  * common to all (visual) Parts
  */
+const sides = ["top", "bottom", "left", "right"];
+
 const addBasicStyleProps = (target) => {
     target.partProperties.newStyleProp(
         'background-transparency',
@@ -20,6 +22,80 @@ const addBasicStyleProps = (target) => {
     target.partProperties.newStyleProp(
         'transparency',
         1.0,
+    );
+    target.partProperties.newStyleProp(
+        'border-style',
+        'solid'
+    );
+    sides.forEach((s) => {
+        target.partProperties.newStyleProp(
+            `border-${s}-style`,
+            'solid'
+        );
+    });
+    target.partProperties.newStyleProp(
+        'border-width',
+        0,
+    );
+    sides.forEach((s) => {
+        target.partProperties.newStyleProp(
+            `border-${s}-width`,
+            0,
+        );
+    });
+    target.partProperties.newStyleProp(
+        'border-color',
+        "rgb(0, 0, 0)", // black
+    );
+    sides.forEach((s) => {
+        target.partProperties.newStyleProp(
+            `border-${s}-color`,
+            "rgb(0, 0, 0)", // black
+        );
+    });
+    target.partProperties.newStyleProp(
+        'shadow-left',
+        0
+    );
+    target.partProperties.newStyleProp(
+        'shadow-right',
+        0
+    );
+    target.partProperties.newStyleProp(
+        'shadow-blur',
+        0
+    );
+    target.partProperties.newStyleProp(
+        'shadow-spread',
+        0
+    );
+    target.partProperties.newStyleProp(
+        'shadow-color',
+        "rgb(238, 238, 238)", // grey
+    );
+    target.partProperties.newStyleProp(
+        'shadow-transparency',
+        1
+    );
+    target.partProperties.newStyleProp(
+        'corner-round',
+        0
+    );
+    target.partProperties.newStyleProp(
+        'corner-top-left-round',
+        0
+    );
+    target.partProperties.newStyleProp(
+        'corner-top-right-round',
+        0
+    );
+    target.partProperties.newStyleProp(
+        'corner-bottom-left-round',
+        0
+    );
+    target.partProperties.newStyleProp(
+        'corner-bottom-right-round',
+        0
     );
 };
 
