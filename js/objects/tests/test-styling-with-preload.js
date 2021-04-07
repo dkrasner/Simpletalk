@@ -118,6 +118,54 @@ describe('CSS Styler Util', () => {
             assert.equal(stylerObj["border-left-color"], "rgba(255, 0, 0, 0.7)");
         });
     });
+    describe('Corners', () => {
+        it('Round single corner', () => {
+            cssStyler(stylerObj, "corner-top-left-round", "10");
+            assert.equal(stylerObj["border-top-left-radius"], "10px");
+            assert.isUndefined(stylerObj["border-top-right-radius"]);
+            assert.isUndefined(stylerObj["border-bottom-left-radius"]);
+            assert.isUndefined(stylerObj["border-bottom-right-radius"]);
+            cssStyler(stylerObj, "corner-top-right-round", "10");
+            assert.equal(stylerObj["border-top-right-radius"], "10px");
+            cssStyler(stylerObj, "corner-bottom-right-round", "10");
+            assert.equal(stylerObj["border-bottom-right-radius"], "10px");
+            cssStyler(stylerObj, "corner-bottom-left-round", "10");
+            assert.equal(stylerObj["border-bottom-left-radius"], "10px");
+        });
+        it('Round all corners', () => {
+            cssStyler(stylerObj, "corner-round", "50");
+            assert.equal(stylerObj["border-top-left-radius"], "50px");
+            assert.equal(stylerObj["border-top-right-radius"], "50px");
+            assert.equal(stylerObj["border-bottom-right-radius"], "50px");
+            assert.equal(stylerObj["border-bottom-left-radius"], "50px");
+        });
+    });
+    describe('Shadows', () => {
+        it('Color', () => {
+            cssStyler(stylerObj, "shadow-color", "rgb(255, 255, 255)");
+            assert.equal(stylerObj["box-shadow"], "0px 0px 0px 0px rgba(255, 255, 255, 1)");
+        });
+        it('Transparency', () => {
+            cssStyler(stylerObj, "shadow-transparency", 0.5);
+            assert.equal(stylerObj["box-shadow"], "0px 0px 0px 0px rgba(255, 255, 255, 0.5)");
+        });
+        it('Left', () => {
+            cssStyler(stylerObj, "shadow-left", 10);
+            assert.equal(stylerObj["box-shadow"], "10px 0px 0px 0px rgba(255, 255, 255, 0.5)");
+        });
+        it('Top', () => {
+            cssStyler(stylerObj, "shadow-top", 20);
+            assert.equal(stylerObj["box-shadow"], "10px 20px 0px 0px rgba(255, 255, 255, 0.5)");
+        });
+        it('Blur', () => {
+            cssStyler(stylerObj, "shadow-blur", 30);
+            assert.equal(stylerObj["box-shadow"], "10px 20px 30px 0px rgba(255, 255, 255, 0.5)");
+        });
+        it('Spread', () => {
+            cssStyler(stylerObj, "shadow-spread", 40);
+            assert.equal(stylerObj["box-shadow"], "10px 20px 30px 40px rgba(255, 255, 255, 0.5)");
+        });
+    });
     it('Transparency', () => {
         cssStyler(stylerObj, "transparency", 0.5);
         assert.equal(stylerObj["opacity"], 0.5);

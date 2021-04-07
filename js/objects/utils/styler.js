@@ -85,6 +85,55 @@ const cssStyler = (styleObj, propertyName, propertyValue) => {
         break;
     }
 
+    case "corner-round":
+        _setOrNot(styleObj, 'border-top-left-radius',  _intToPx(propertyValue));
+        _setOrNot(styleObj, 'border-top-right-radius',  _intToPx(propertyValue));
+        _setOrNot(styleObj, 'border-bottom-left-radius',  _intToPx(propertyValue));
+        _setOrNot(styleObj, 'border-bottom-right-radius',  _intToPx(propertyValue));
+        break;
+
+
+    case "corner-top-left-round":
+    case "corner-top-right-round":
+    case "corner-bottom-left-round":
+    case "corner-bottom-right-round":{
+        let c1 = propertyName.split("-")[1];
+        let c2 = propertyName.split("-")[2];
+        _setOrNot(styleObj, `border-${c1}-${c2}-radius`,  _intToPx(propertyValue));
+        break;
+    }
+
+    case "shadow-left":
+    case "shadow-top":
+    case "shadow-blur":
+    case "shadow-spread":
+    case "shadow-color":
+    case "shadow-transparency":
+        let shadowProp = propertyName.split("-")[1];
+        let [left, top, blur, spread, color] = _cssBoxShadow(styleObj["box-shadow"]);
+        switch(shadowProp){
+        case "color":
+            color = _colorToRGBA(color, propertyValue);
+            break;
+        case "transparency":
+            color = _colorTransparencyToRGBA(color, propertyValue);
+            break;
+        case "left":
+            left = _intToPx(propertyValue);
+            break;
+        case "top":
+            top = _intToPx(propertyValue);
+            break;
+        case "blur":
+            blur = _intToPx(propertyValue);
+            break;
+        case "spread":
+            spread = _intToPx(propertyValue);
+            break;
+        }
+        _setOrNot(styleObj, "box-shadow", `${left} ${top} ${blur} ${spread} ${color}`);
+        break;
+
     case "text-color":
         _setOrNot(styleObj, "color",  _colorToRGBA(styleObj["color"], propertyValue));
         break;
@@ -277,6 +326,18 @@ const basicCSSColors = {
 		teal: {hex: "#008080", r: 0, g: 128, b: 128},
 		aqua: {hex: "#00FFFF", r: 0, g: 255, b: 255},
 };
+
+// take the css box-shadow property and return its
+// components (offset-y, offset-x, blur, spread and color)
+// if the value is not defined return a default
+const _cssBoxShadow = (cssPropValue) =>{
+    if(!cssPropValue){
+        return ["0px", "0px", "0px", "0px", "rgba(0, 0, 0, 1)"];
+    }
+    let [intValues, rgba] = cssPropValue.split(" rgba");
+    let [left, top, blur, spread] = intValues.split(" ");
+    return [left, top, blur, spread, `rgba${rgba}`];
+}
 
 export {
     cssStyler,
