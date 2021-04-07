@@ -108,6 +108,16 @@ class Field extends Part {
             'background-color',
             "rgb(255, 248, 220)", // var(--palette-cornsik)
         );
+        this.partProperties.setPropertyNamed(
+            this,
+            'border-style',
+            'inset'
+        );
+        this.partProperties.setPropertyNamed(
+            this,
+            'border-width',
+            'thin'
+        );
 
         // Private command handlers
 

@@ -58,7 +58,7 @@ const addBasicStyleProps = (target) => {
         0
     );
     target.partProperties.newStyleProp(
-        'shadow-right',
+        'shadow-top',
         0
     );
     target.partProperties.newStyleProp(

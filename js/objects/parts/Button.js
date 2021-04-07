@@ -58,6 +58,31 @@ class Button extends Part {
             'background-color',
             "rgb(255, 234, 149)", // var(--palette-yellow)
         );
+        this.partProperties.setPropertyNamed(
+            this,
+            'corner-round',
+            3
+        );
+        this.partProperties.setPropertyNamed(
+            this,
+            'shadow-left',
+            1
+        );
+        this.partProperties.setPropertyNamed(
+            this,
+            'shadow-top',
+            1
+        );
+        this.partProperties.setPropertyNamed(
+            this,
+            'shadow-blur',
+            1
+        );
+        this.partProperties.setPropertyNamed(
+            this,
+            'shadow-blur',
+            1
+        );
 
     }
 
