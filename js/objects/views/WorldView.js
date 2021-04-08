@@ -26,6 +26,9 @@ class WorldView extends PartView {
             template.content.cloneNode(true)
         );
 
+        // The world never wants a halo
+        this.wantsHalo = false;
+
         // Bound methods
         this.updateCurrentStack = this.updateCurrentStack.bind(this);
         this.receiveMessage = this.receiveMessage.bind(this);
@@ -55,25 +58,23 @@ class WorldView extends PartView {
     }
 
     updateCurrentStack(){
-        let currentStack = this.querySelector('.current-stack');
         let nextCurrentIdx = this.model.partProperties.getPropertyNamed(
             this.model,
             'current'
         );
         let stackViews = Array.from(this.querySelectorAll(':scope > st-stack'));
-        let nextCurrentStack = stackViews[nextCurrentIdx];
-        if(nextCurrentStack){
-            nextCurrentStack.classList.add('current-stack');
-        } else {
-            return;
-        }
-        if(currentStack){
-            currentStack.classList.remove('current-stack');
-        }
+        stackViews.forEach((stackView, idx) => {
+            if(idx == nextCurrentIdx){
+                stackView.classList.add('current-stack');
+            } else {
+                stackView.classList.remove('current-stack');
+            }
+        });
     }
 
     handleKeyDown(event){
         if(event.altKey && event.ctrlKey && event.code == "Space"){
+            console.log('nav toggle');
             let navigator = document.querySelector('st-navigator');
             navigator.toggle();
         }

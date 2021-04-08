@@ -61,7 +61,7 @@ class Part {
         this.removePropertySubscriber = this.removePropertySubscriber.bind(this);
         this.serialize = this.serialize.bind(this);
         this.toJSON = this.toJSON.bind(this);
-        this.setFromDeserialized = this.setFromDeserialized.bind(this);
+        this.setPropsFromDeserializer = this.setPropsFromDeserializer.bind(this);
         this.deleteModelCmdHandler = this.deleteModelCmdHandler.bind(this);
         this.openEditorCmdHandler = this.openEditorCmdHandler.bind(this);
         this.closeEditorCmdHandler = this.closeEditorCmdHandler.bind(this);
@@ -652,10 +652,7 @@ class Part {
      * attributes of this Part model
      * from a deserialized JSON object.
      */
-    setFromDeserialized(anObject){
-        // First, set all writeable properties
-        // to the incoming values
-        let incomingProps = anObject.properties;
+    setPropsFromDeserializer(incomingProps, deserializer){
         Object.keys(incomingProps).forEach(propName => {
             let property = this.partProperties.findPropertyNamed(propName);
             if(!property){
@@ -680,17 +677,6 @@ class Part {
     toJSON(){
         return this.serialize();
     }
-
-    static fromSerialized(ownerId, json){
-        let ownerPart = window.System.partsById[ownerId];
-        if(!ownerPart){
-            throw new Error(`Could not find owner part id ${ownerId} on deserialization!`);
-        }
-        let instance = new this(ownerPart, null, true);
-        instance.setFromDeserialized(json);
-        ownerPart.addPart(instance);
-        return instance;
-    };
 };
 
 export {

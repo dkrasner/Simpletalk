@@ -243,16 +243,6 @@ class WorldStack extends Part {
         }
         return null;
     }
-
-    static fromSerialized(ownerId, json){
-        // Unlike the default Part.js implementation,
-        // the WorldStack will not have any ownerId
-        // since it is the root in the hierarchy.
-        // so it ignores the first value passed in
-        let instance = new this();
-        instance.setFromDeserialized(json);
-        return instance;
-    }
 };
 
 export {

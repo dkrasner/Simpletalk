@@ -184,14 +184,19 @@ describe("Lifecycle Scripting Tests", () => {
             );
             assert.equal(name, '');
         });
-        it("Has the openWorld name change after System.initialLoad", () => {
+        it("Has the openWorld name change after System.initialLoad", (done) => {
             System.initialLoad();
-            world = System.partsById['world']; // Refer to new object
-            let name = world.partProperties.getPropertyNamed(
-                world,
-                'name'
-            );
-            assert.equal(name, 'World Opened');
+            // We need to wait a little bit because the deserialization
+            // in initialLoad is now an async (promise) operation
+            setTimeout(() => {
+                world = System.partsById['world']; // Refer to new object
+                let name = world.partProperties.getPropertyNamed(
+                    world,
+                    'name'
+                );
+                assert.equal(name, 'World Opened');
+                done();
+            }, 1800);
         });
     });
 });
