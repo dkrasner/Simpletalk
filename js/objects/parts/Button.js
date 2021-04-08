@@ -60,8 +60,43 @@ class Button extends Part {
         );
         this.partProperties.setPropertyNamed(
             this,
-            'corner-round',
+            'corner-top-left-round',
             3
+        );
+        this.partProperties.setPropertyNamed(
+            this,
+            'corner-top-right-round',
+            3
+        );
+        this.partProperties.setPropertyNamed(
+            this,
+            'corner-bottom-left-round',
+            3
+        );
+        this.partProperties.setPropertyNamed(
+            this,
+            'corner-bottom-right-round',
+            3
+        );
+        this.partProperties.setPropertyNamed(
+            this,
+            'border-top-width',
+            1
+        );
+        this.partProperties.setPropertyNamed(
+            this,
+            'border-bottom-width',
+            1
+        );
+        this.partProperties.setPropertyNamed(
+            this,
+            'border-left-width',
+            1
+        );
+        this.partProperties.setPropertyNamed(
+            this,
+            'border-right-width',
+            1
         );
         this.partProperties.setPropertyNamed(
             this,

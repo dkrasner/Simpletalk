@@ -33,24 +33,22 @@ const addBasicStyleProps = (target) => {
             'solid'
         );
     });
-    target.partProperties.newStyleProp(
-        'border-width',
-        0,
-    );
     sides.forEach((s) => {
         target.partProperties.newStyleProp(
             `border-${s}-width`,
             0,
         );
     });
-    target.partProperties.newStyleProp(
-        'border-color',
-        "rgb(0, 0, 0)", // black
-    );
     sides.forEach((s) => {
         target.partProperties.newStyleProp(
             `border-${s}-color`,
             "rgb(0, 0, 0)", // black
+        );
+    });
+    sides.forEach((s) => {
+        target.partProperties.newStyleProp(
+            `border-${s}-transparency`,
+            1
         );
     });
     target.partProperties.newStyleProp(
@@ -76,10 +74,6 @@ const addBasicStyleProps = (target) => {
     target.partProperties.newStyleProp(
         'shadow-transparency',
         1
-    );
-    target.partProperties.newStyleProp(
-        'corner-round',
-        0
     );
     target.partProperties.newStyleProp(
         'corner-top-left-round',

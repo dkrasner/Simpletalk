@@ -62,21 +62,7 @@ describe('CSS Styler Util', () => {
             cssStyler(stylerObj, "border-bottom-style", "outset");
             assert.equal(stylerObj["border-bottom-style"], "outset");
         });
-        it('Border Style (all sides)', () => {
-            cssStyler(stylerObj, "border-style", "solid");
-            assert.equal(stylerObj["border-top-style"], "solid");
-            assert.equal(stylerObj["border-bottom-style"], "solid");
-            assert.equal(stylerObj["border-right-style"], "solid");
-            assert.equal(stylerObj["border-left-style"], "solid");
-        });
-        it('Border Style Unsetting (all sides)', () => {
-            cssStyler(stylerObj, "border-style", "none");
-            assert.equal(stylerObj["border-top-style"], "none");
-            assert.equal(stylerObj["border-bottom-style"], "none");
-            assert.equal(stylerObj["border-right-style"], "none");
-            assert.equal(stylerObj["border-left-style"], "none");
-        });
-        it('Border Width (single side)', () => {
+        it('Border Width', () => {
             cssStyler(stylerObj, "border-top-width", 100);
             assert.equal(stylerObj["border-top-width"], "100px");
             assert.isUndefined(stylerObj["border-bottom-width"]);
@@ -89,37 +75,21 @@ describe('CSS Styler Util', () => {
             cssStyler(stylerObj, "border-bottom-width", "1");
             assert.equal(stylerObj["border-bottom-width"], "1px");
         });
-        it('Border Color (all sides)', () => {
-            cssStyler(stylerObj, "border-color", "rgb(255, 255, 255)");
+        it('Border Color', () => {
+            cssStyler(stylerObj, "border-top-color", "rgb(255, 255, 255)");
             assert.equal(stylerObj["border-top-color"], "rgba(255, 255, 255, 1)");
-            assert.equal(stylerObj["border-bottom-color"], "rgba(255, 255, 255, 1)");
-            assert.equal(stylerObj["border-right-color"], "rgba(255, 255, 255, 1)");
-            assert.equal(stylerObj["border-left-color"], "rgba(255, 255, 255, 1)");
         });
-        it('Border Color Keyword (all sides)', () => {
-            cssStyler(stylerObj, "border-color", "red");
+        it('Border Color Keyword', () => {
+            cssStyler(stylerObj, "border-top-color", "red");
             assert.equal(stylerObj["border-top-color"], "rgba(255, 0, 0, 1)");
-            assert.equal(stylerObj["border-bottom-color"], "rgba(255, 0, 0, 1)");
-            assert.equal(stylerObj["border-right-color"], "rgba(255, 0, 0, 1)");
-            assert.equal(stylerObj["border-left-color"], "rgba(255, 0, 0, 1)");
         });
-        it('Border Transparency (single side)', () => {
+        it('Border Transparency', () => {
             cssStyler(stylerObj, "border-top-transparency", "0.5");
             assert.equal(stylerObj["border-top-color"], "rgba(255, 0, 0, 0.5)");
-            assert.equal(stylerObj["border-bottom-color"], "rgba(255, 0, 0, 1)");
-            assert.equal(stylerObj["border-right-color"], "rgba(255, 0, 0, 1)");
-            assert.equal(stylerObj["border-left-color"], "rgba(255, 0, 0, 1)");
-        });
-        it('Border Transparency (all sides)', () => {
-            cssStyler(stylerObj, "border-transparency", "0.7");
-            assert.equal(stylerObj["border-top-color"], "rgba(255, 0, 0, 0.7)");
-            assert.equal(stylerObj["border-bottom-color"], "rgba(255, 0, 0, 0.7)");
-            assert.equal(stylerObj["border-right-color"], "rgba(255, 0, 0, 0.7)");
-            assert.equal(stylerObj["border-left-color"], "rgba(255, 0, 0, 0.7)");
         });
     });
     describe('Corners', () => {
-        it('Round single corner', () => {
+        it('Round corner', () => {
             cssStyler(stylerObj, "corner-top-left-round", "10");
             assert.equal(stylerObj["border-top-left-radius"], "10px");
             assert.isUndefined(stylerObj["border-top-right-radius"]);
@@ -131,13 +101,6 @@ describe('CSS Styler Util', () => {
             assert.equal(stylerObj["border-bottom-right-radius"], "10px");
             cssStyler(stylerObj, "corner-bottom-left-round", "10");
             assert.equal(stylerObj["border-bottom-left-radius"], "10px");
-        });
-        it('Round all corners', () => {
-            cssStyler(stylerObj, "corner-round", "50");
-            assert.equal(stylerObj["border-top-left-radius"], "50px");
-            assert.equal(stylerObj["border-top-right-radius"], "50px");
-            assert.equal(stylerObj["border-bottom-right-radius"], "50px");
-            assert.equal(stylerObj["border-bottom-left-radius"], "50px");
         });
     });
     describe('Shadows', () => {

@@ -68,7 +68,7 @@ class Card extends Part {
         addLayoutStyleProps(this);
         this.setupStyleProperties();
     }
-    
+
     get type(){
         return 'card';
     }

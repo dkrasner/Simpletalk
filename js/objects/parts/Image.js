@@ -51,6 +51,17 @@ class Image extends Part {
         addBasicStyleProps(this);
         addPositioningStyleProps(this);
         this.setupStyleProperties();
+        // part specific default style properties
+        this.partProperties.setPropertyNamed(
+            this,
+            'background-transparency',
+            0
+        );
+        this.partProperties.setPropertyNamed(
+            this,
+            'background-color',
+            "black"
+        );
 
         // Private command handlers
         this.setPrivateCommandHandler("loadImageFrom", this.loadImageFromSource);

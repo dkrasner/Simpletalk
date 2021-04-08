@@ -11,7 +11,6 @@
  * propertyName: (SimpleTalk) styling property name
  * propertyValue: (SimpleTalk) styling property value
  */
-const sides = ["top", "bottom", "left", "right"];
 
 const cssStyler = (styleObj, propertyName, propertyValue) => {
     switch(propertyName){
@@ -25,12 +24,6 @@ const cssStyler = (styleObj, propertyName, propertyValue) => {
         _setOrNot(styleObj, "backgroundColor",  _colorTransparencyToRGBA(styleObj["backgroundColor"], propertyValue));
         break;
 
-    case "border-style":
-        sides.forEach((s) => {
-            _setOrNot(styleObj, `border-${s}-style`,  propertyValue);
-        });
-        break;
-
     case "border-top-style":
     case "border-bottom-style":
     case "border-left-style":
@@ -39,12 +32,6 @@ const cssStyler = (styleObj, propertyName, propertyValue) => {
         _setOrNot(styleObj, `border-${s}-style`,  propertyValue);
         break;
     }
-
-    case "border-width":
-        sides.forEach((s) => {
-            _setOrNot(styleObj, `border-${s}-width`,  _intToPx(propertyValue));
-        });
-        break;
 
     case "border-top-width":
     case "border-bottom-width":
@@ -55,12 +42,6 @@ const cssStyler = (styleObj, propertyName, propertyValue) => {
         break;
     }
 
-    case "border-color":
-        sides.forEach((s) => {
-            _setOrNot(styleObj, `border-${s}-color`,  _colorToRGBA(styleObj[`border-${s}-color`], propertyValue));
-        });
-        break;
-
     case "border-top-color":
     case "border-bottom-color":
     case "border-top-color":
@@ -70,12 +51,6 @@ const cssStyler = (styleObj, propertyName, propertyValue) => {
         break;
     }
 
-    case "border-transparency":
-        sides.forEach((s) => {
-            _setOrNot(styleObj, `border-${s}-color`,  _colorTransparencyToRGBA(styleObj[`border-${s}-color`], propertyValue));
-        });
-        break;
-
     case "border-top-transparency":
     case "border-bottom-transparency":
     case "border-top-transparency":
@@ -84,14 +59,6 @@ const cssStyler = (styleObj, propertyName, propertyValue) => {
         _setOrNot(styleObj, `border-${s}-color`,  _colorTransparencyToRGBA(styleObj[`border-${s}-color`], propertyValue));
         break;
     }
-
-    case "corner-round":
-        _setOrNot(styleObj, 'border-top-left-radius',  _intToPx(propertyValue));
-        _setOrNot(styleObj, 'border-top-right-radius',  _intToPx(propertyValue));
-        _setOrNot(styleObj, 'border-bottom-left-radius',  _intToPx(propertyValue));
-        _setOrNot(styleObj, 'border-bottom-right-radius',  _intToPx(propertyValue));
-        break;
-
 
     case "corner-top-left-round":
     case "corner-top-right-round":

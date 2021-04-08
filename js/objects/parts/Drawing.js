@@ -7,6 +7,8 @@ import {
     addPositioningStyleProps
 } from '../utils/styleProperties.js';
 
+const sides = ["top", "bottom", "left", "right"];
+
 class Drawing extends Part {
     constructor(owner){
         super(owner);
@@ -31,6 +33,27 @@ class Drawing extends Part {
             'background-transparency',
             0
         );
+        sides.forEach((s) => {
+            this.partProperties.setPropertyNamed(
+                this,
+                `border-${s}-width`,
+                1,
+            );
+        });
+        sides.forEach((s) => {
+            this.partProperties.setPropertyNamed(
+                this,
+                `border-${s}-color`,
+                "rgb(238, 238, 238)", //grey
+            );
+        });
+        sides.forEach((s) => {
+            this.partProperties.setPropertyNamed(
+                this,
+                `border-${s}-transparency`,
+                0.5,
+            );
+        });
 
         // We are using a distinct show-border
         // property to deal with being able to see

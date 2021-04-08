@@ -17,6 +17,8 @@ import {
     addTextStyleProps
 } from '../utils/styleProperties.js';
 
+const sides = ["top", "bottom", "left", "right"];
+
 class Field extends Part {
     constructor(owner, name){
         super(owner);
@@ -108,16 +110,27 @@ class Field extends Part {
             'background-color',
             "rgb(255, 248, 220)", // var(--palette-cornsik)
         );
-        this.partProperties.setPropertyNamed(
-            this,
-            'border-style',
-            'inset'
-        );
-        this.partProperties.setPropertyNamed(
-            this,
-            'border-width',
-            'thin'
-        );
+        sides.forEach((s) => {
+            this.partProperties.setPropertyNamed(
+                this,
+                `border-${s}-width`,
+                "medium",
+            );
+        });
+        sides.forEach((s) => {
+            this.partProperties.setPropertyNamed(
+                this,
+                `border-${s}-style`,
+                "inset",
+            );
+        });
+        sides.forEach((s) => {
+            this.partProperties.setPropertyNamed(
+                this,
+                `border-${s}-color`,
+                "rgb(238, 238, 238)",
+            );
+        });
 
         // Private command handlers
 
