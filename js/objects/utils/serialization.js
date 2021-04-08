@@ -54,6 +54,7 @@ class STDeserializer {
         this.handleId = this.handleId.bind(this);
         this.throwError = this.throwError.bind(this);
         this.flushCaches = this.flushCaches.bind(this);
+        this.dispatchViewAdded = this.dispatchViewAdded.bind(this);
     }
 
     deserialize(aJSONString){
@@ -88,6 +89,7 @@ class STDeserializer {
                 } else {
                     let targetView = document.querySelector(`[part-id="${this.targetId}"]`);
                     targetView.appendChild(rootView);
+                    this.dispatchViewAdded(rootView);
                 }
                 return this;
             });
@@ -202,6 +204,7 @@ class STDeserializer {
                     let view = this._viewsCache[rootPart.id];
                     target.addPart(rootPart);
                     targetView.appendChild(view);
+                    this.dispatchViewAdded(view);
                 });
             });
     }
@@ -332,6 +335,7 @@ class STDeserializer {
         } else {
             document.body.prepend(this.rootViews[0]);
         }
+        this.dispatchViewAdded(document.querySelector('st-world'));
     }
 
     getFlattenedPartTree(aPart, list=[]){
@@ -363,6 +367,17 @@ class STDeserializer {
         this._viewsCache = {};
         this._scriptCache = {};
         this._rootsCache = [];
+    }
+
+    dispatchViewAdded(aView){
+        let event = new CustomEvent('st-view-added', {
+            detail: {
+                partType: aView.model.type,
+                partId: aView.model.id,
+                //ownerId: aView.model._owner.id || null
+            } 
+        });
+        aView.parentElement.dispatchEvent(event);
     }
 
     get rootParts(){

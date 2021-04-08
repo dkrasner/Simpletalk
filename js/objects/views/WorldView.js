@@ -26,6 +26,9 @@ class WorldView extends PartView {
             template.content.cloneNode(true)
         );
 
+        // The world never wants a halo
+        this.wantsHalo = false;
+
         // Bound methods
         this.updateCurrentStack = this.updateCurrentStack.bind(this);
         this.receiveMessage = this.receiveMessage.bind(this);
@@ -71,6 +74,7 @@ class WorldView extends PartView {
 
     handleKeyDown(event){
         if(event.altKey && event.ctrlKey && event.code == "Space"){
+            console.log('nav toggle');
             let navigator = document.querySelector('st-navigator');
             navigator.toggle();
         }
