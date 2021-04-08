@@ -15,6 +15,7 @@ global.document = window.document;
 global.HTMLElement = window.HTMLElement;
 global.fetch = require("node-fetch");
 global.DOMParser = window.DOMParser;
+global.CustomEvent = window.CustomEvent;
 global.alert = function alert(arg) {};
 document.execCommand = function execCommandMock() { };
 

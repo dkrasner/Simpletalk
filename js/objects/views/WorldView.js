@@ -30,6 +30,7 @@ class WorldView extends PartView {
         this.updateCurrentStack = this.updateCurrentStack.bind(this);
         this.receiveMessage = this.receiveMessage.bind(this);
         this.setupPropHandlers = this.setupPropHandlers.bind(this);
+        this.handleKeyDown = this.handleKeyDown.bind(this);
 
         // Setup prop handlers
         this.setupPropHandlers();
@@ -37,6 +38,14 @@ class WorldView extends PartView {
 
     setupPropHandlers(){
         this.onPropChange('current', this.updateCurrentStack);
+    }
+
+    afterConnected(){
+        document.addEventListener('keydown', this.handleKeyDown);
+    }
+
+    afterDisconnected(){
+        document.removeEventListener('keydown', this.handleKeyDown);
     }
 
     afterModelSet(){
@@ -60,6 +69,13 @@ class WorldView extends PartView {
         }
         if(currentStack){
             currentStack.classList.remove('current-stack');
+        }
+    }
+
+    handleKeyDown(event){
+        if(event.altKey && event.ctrlKey && event.code == "Space"){
+            let navigator = document.querySelector('st-navigator');
+            navigator.toggle();
         }
     }
 };

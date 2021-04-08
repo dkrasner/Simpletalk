@@ -45,6 +45,7 @@ body {
     height: 100vh;
     overflow: hidden;
     font-family: "Crimson Pro";
+    background-color: purple;
 }
 
 .active {
@@ -83,7 +84,8 @@ st-card {
     height: 100%;
 }
 
-.current-card {
+.current-card,
+st-card[role="lens"] {
     display: block;
     visibility: initial;
     background-color: var(--palette-blue);
@@ -296,6 +298,23 @@ st-world > st-stack > :not(.current-card).list-layout {
     left: unset !important;
 }
 
+/* =Layout Exceptions
+ * --------------------------------------------------------*/
+/* We don't want list-layout to display on Cards when they
+ * are not current in the current stack (but we want this
+ * in stack windows) */
+/* st-stack.current-stack > st-card.list-layout:not(.current-card){ */
+/*     display: none; */
+/* } */
+wrapped-view st-stack st-card:not(.current-card){
+    display: none;
+}
+
+wrapped-view > st-card,
+wrapped-view > st-stack {
+    display: block;
+}
+
 /* =Utility Classes
  * --------------------------------------------------------*/
 .editing {
@@ -312,3 +331,7 @@ st-world > st-stack > :not(.current-card).list-layout {
 .editable {
     outline: solid 1px var(--palette-orange);
 }
+
+
+/* = TESTING: TODO: Remove
+ * --------------------------------------------------*/

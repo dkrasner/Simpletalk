@@ -254,9 +254,12 @@ class Part {
             'number',
             null, // No setter; readOnly
             function(propOwner, propObject){
-                return propOwner.subparts.filter(subpart => {
-                    return subpart.type == this.type;
-                }).indexOf(this);
+                if(!propOwner._owner){
+                    return -1;
+                }
+                return propOwner._owner.subparts.filter(subpart => {
+                    return subpart.type == propOwner.type;
+                }).indexOf(propOwner) + 1;
             },
             true, // Is readOnly,
             [] // No aliases

@@ -31,6 +31,7 @@ import AudioView from './views/AudioView.js';
 
 import Halo from './views/Halo.js';
 import EditorView from './views/editors/EditorView.js';
+import STNavigator from './views/navigator/Navigator.js';
 
 import ohm from 'ohm-js';
 import interpreterSemantics from '../ohm/interpreter-semantics.js';
@@ -42,6 +43,8 @@ import STClipboard from './utils/clipboard.js';
 import handInterface from './utils/handInterface.js';
 
 const DOMparser = new DOMParser();
+
+
 
 
 const System = {
@@ -454,7 +457,6 @@ const System = {
             this.partsById[subpart.id] = subpart;
         });
 
-
         // If there is a valid owner part for
         // the newly created part model,
         // add the new model to the owner's
@@ -559,6 +561,10 @@ const System = {
         views.forEach(view => {
             view.parentElement.removeChild(view);
         });
+        let lenses = this.findLensViewsById(modelId);
+        lenses.forEach(lensView => {
+            lensView.parentElement.removeChild(lensView);
+        });
     },
 
     newView: function(partName, modelId, parentId){
@@ -600,6 +606,32 @@ const System = {
         } else {
             parentElement.appendChild(newView);
         }
+
+        // Dispatch a CustomEvent on the parentElement
+        // indicating that this part has been created, and
+        // any view utilities that care can be notified.
+        let event = new CustomEvent('st-view-added', {
+            detail: {
+                partType: model.type,
+                partId: model.id,
+                ownerId: model._owner.id || null
+            } 
+        });
+        parentElement.dispatchEvent(event);
+
+        // See if there are lens views and update
+        // those as well
+        let lensViews = this.findLensViewsById(parentId);
+        lensViews.forEach(lensView => {
+            let newLensView = document.createElement(
+                this.tagNameForViewNamed(partName)
+            );
+            newLensView.setModel(model);
+            newLensView.removeAttribute('part-id');
+            newLensView.setAttribute('lens-part-id', modelId);
+            newLensView.setAttribute('role', 'lens');
+            lensView.appendChild(newLensView);
+        });
 
         // TODO do we want to allow the possibiliy of a view on an
         // element but no subpart of that view on the element?
@@ -658,6 +690,10 @@ const System = {
     // with the given id
     findViewById: function(id){
         return document.querySelector(`[part-id="${id}"]`);
+    },
+
+    findLensViewsById: function(id){
+        return Array.from(document.querySelectorAll(`[lens-part-id="${id}"]`));
     },
 
     // Find all matching view elements with
@@ -1526,10 +1562,26 @@ document.addEventListener('DOMContentLoaded', () => {
     // like the halo
     window.customElements.define('st-halo', Halo);
     window.customElements.define('st-editor', EditorView);
+    window.customElements.define('st-navigator', STNavigator);
+    
 
     // Perform the initial setup of
     // the system
     System.initialLoad();
+    
+    // If there is already a Navigator element in the body,
+    // remove it and add a new one
+    Array.from(document.querySelectorAll('st-navigator')).forEach(el => {
+        el.remove();
+    });
+    System.navigator = document.createElement('st-navigator');
+    System.navigator.setModel(
+        System.partsById['world']
+    );
+    let worldView = document.querySelector('st-world');
+    worldView.appendChild(System.navigator);
+    //document.body.appendChild(System.navigator);
+    //document.querySelector('st-world').scrollIntoView(); // Fixes janky movement and scaling!
 });
 
 // global interrupt

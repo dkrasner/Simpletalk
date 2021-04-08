@@ -16,6 +16,7 @@ class PartView extends HTMLElement {
         super();
         this.model = null;
         this.isPartView = true;
+        this.isLensed = false;
         this.name = this.constructor.name;
         this.propChangeHandlers = {};
         this.setupBasePropHandlers();
@@ -76,6 +77,7 @@ class PartView extends HTMLElement {
 
         // Bind lifecycle methods
         this.afterModelSet = this.afterModelSet.bind(this);
+        this.afterModelUnset = this.afterModelUnset.bind(this);
         this.afterConnected = this.afterConnected.bind(this);
         this.afterDisconnected = this.afterDisconnected.bind(this);
     }
@@ -106,14 +108,27 @@ class PartView extends HTMLElement {
     }
 
     setModel(aModel){
+        this.unsetModel();
         this.model = aModel;
         aModel.addPropertySubscriber(this);
-        this.setAttribute('part-id', aModel.id);
+        if(this.isLensed){
+            this.removeAttribute('part-id');
+            this.setAttribute('lens-part-id', aModel.id);
+        } else {
+            this.removeAttribute('lens-part-id');
+            this.setAttribute('part-id', aModel.id);
+        }
+
         // set onevent DOM element handlers for events property
         // NOTE: run here as opposed to in this.connectedCallback() because
         // the latter can technically be invoked before the model is set
         let events = this.model.partProperties.getPropertyNamed(this.model, "events");
-        events.forEach((eventName) => this.eventRespond(eventName));
+
+        // If this view is not currently used as a Lens,
+        // then we want to setup the events
+        if(!this.isLensed){
+            events.forEach((eventName) => this.eventRespond(eventName));
+        }
         // load all the initial styling
         this.styleCSS();
         this.styleTextCSS();
@@ -121,10 +136,14 @@ class PartView extends HTMLElement {
         this.afterModelSet();
     }
 
-    unsetModel(aModel){
-        this.model = null;
-        aModel.removePropertySubscriber(this);
-        this.setAttribute('part-id', "");
+    unsetModel(){
+        if(this.model){
+            let removedModel = this.model;
+            this.model.removePropertySubscriber(this);
+            this.model = null;
+            this.setAttribute('part-id', "");
+            this.afterModelUnset(removedModel);
+        }
     }
 
     setupBasePropHandlers(){
@@ -222,7 +241,10 @@ class PartView extends HTMLElement {
     }
 
     sendMessage(aMessage, target){
-        window.System.sendMessage(aMessage, this, target);
+        if(!this.isLensed){
+            // Lensed views should not send messages
+            window.System.sendMessage(aMessage, this, target);
+        }
     }
 
     receiveMessage(aMessage){
@@ -487,6 +509,11 @@ class PartView extends HTMLElement {
 
     /* Lifecycle Method Defaults */
     afterModelSet(){
+        // Does nothing.
+        // Should be implemented in subclasses
+    }
+
+    afterModelUnset(removedModel){
         // Does nothing.
         // Should be implemented in subclasses
     }

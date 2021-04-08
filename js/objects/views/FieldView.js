@@ -147,8 +147,7 @@ class FieldView extends PartView {
         // system-web events that we don't want meddled with at the moment, like
         // entering text in a field, and ones exposed in the environemnt for scripting
         this.textarea = this._shadowRoot.querySelector('.field-textarea');
-        let isEditable = this.model.partProperties.getPropertyNamed(this.model, "editable");
-        this.textarea.setAttribute('contenteditable', isEditable);
+
         this.textarea.addEventListener('input', this.onInput);
         this.textarea.addEventListener('keydown', this.onKeydown);
         this.textarea.focus();
@@ -171,6 +170,9 @@ class FieldView extends PartView {
         );
         this.textarea.innerHTML = innerHTML;
 
+        let isEditable = this.model.partProperties.getPropertyNamed(this.model, "editable");
+        this.textarea.setAttribute('contenteditable', isEditable);
+        
         // setup the lock/unlock halo button
         this.initCustomHaloButtons();
         let editable = this.model.partProperties.getPropertyNamed(
