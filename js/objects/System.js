@@ -97,10 +97,10 @@ const System = {
                     );
                 });
         } else {
+            this.loadFromEmpty();
             System.navigator.setModel(
                 System.partsById['world']
             );
-            this.loadFromEmpty();
             this.sendInitialOpenMessages();
         }
 
@@ -1373,22 +1373,13 @@ document.addEventListener('DOMContentLoaded', () => {
     window.customElements.define('st-halo', Halo);
     window.customElements.define('st-editor', EditorView);
     window.customElements.define('st-navigator', STNavigator);
-    
+
+    System.navigator = document.createElement('st-navigator');
+    document.body.appendChild(System.navigator);
 
     // Perform the initial setup of
     // the system
     System.initialLoad();
-    
-    // If there is already a Navigator element in the body,
-    // remove it and add a new one
-    Array.from(document.querySelectorAll('st-navigator')).forEach(el => {
-        el.remove();
-    });
-    System.navigator = document.createElement('st-navigator');
-    // let worldView = document.querySelector('st-world');
-    // worldView.appendChild(System.navigator);
-    document.body.appendChild(System.navigator);
-    //document.querySelector('st-world').scrollIntoView(); // Fixes janky movement and scaling!
 });
 
 // global interrupt
