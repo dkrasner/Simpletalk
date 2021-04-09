@@ -1289,6 +1289,36 @@ System._commandHandlers['toggleHandDetection'] = () => {
     }
 };
 
+System._commandHandlers['merriam'] = () => {
+    const url = "https://patents.merriamtech.com/_api/merriam/"
+    const payload = {
+        "fields": [
+            "title",
+            "date_publ"
+        ],
+        "weights": {
+            "merriam":0.7,
+            "date":0.3,
+            "hierarchy":0.1
+        },
+        "doc_ids": [
+            "20130240603"
+        ],
+        "limit": 5}
+    const params = {
+        "method": "POST",
+        "headers": {
+            "content-type": "application/json"
+        },
+        "body": JSON.stringify(payload)
+    }
+    fetch(url, params).then(data => {
+        return data.json();
+    }).then(json => {
+        console.log(json);
+    });
+};
+
 System._commandHandlers['globalInterrupt'] = () => {
     // cycle through all the parts and set the "stepping" property to false
     Object.values(System.partsById).forEach((part) => {
