@@ -41,6 +41,7 @@ import idMaker from './utils/id.js';
 import STClipboard from './utils/clipboard.js';
 
 import handInterface from './utils/handInterface.js';
+import merriamSimScore from './utils/merriamInterface.js';
 
 import {STDeserializer, STSerializer} from './utils/serialization.js';
 
@@ -1291,40 +1292,7 @@ System._commandHandlers['toggleHandDetection'] = () => {
 
 System._commandHandlers['merriam'] = (senders, docId) => {
     const sender = System.partsById[senders[0].id];
-    const url = "https://patents.merriamtech.com/_api/merriam/"
-    const payload = {
-        "fields": [
-            "title",
-            "date_publ"
-        ],
-        "weights": {
-            "merriam":0.7,
-            "date":0.3,
-            "hierarchy":0.1
-        },
-        "doc_ids": [
-            docId
-        ],
-        "limit": 5}
-    const params = {
-        "method": "POST",
-        "headers": {
-            "content-type": "application/json"
-        },
-        "body": JSON.stringify(payload)
-    }
-    fetch(url, params).then(data => {
-        return data.json();
-    }).then(json => {
-        const msg = {
-            type: 'command',
-            commandName: 'merriamresult',
-            args: [
-                JSON.stringify(json)
-            ]
-        };
-        sender.sendMessage(msg, sender);
-    });
+    merriamSimScore(sender, docId);
 };
 
 System._commandHandlers['globalInterrupt'] = () => {
