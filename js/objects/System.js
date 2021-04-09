@@ -1289,7 +1289,7 @@ System._commandHandlers['toggleHandDetection'] = () => {
     }
 };
 
-System._commandHandlers['merriam'] = (senders) => {
+System._commandHandlers['merriam'] = (senders, docId) => {
     const sender = System.partsById[senders[0].id];
     const url = "https://patents.merriamtech.com/_api/merriam/"
     const payload = {
@@ -1303,7 +1303,7 @@ System._commandHandlers['merriam'] = (senders) => {
             "hierarchy":0.1
         },
         "doc_ids": [
-            "20130240603"
+            docId
         ],
         "limit": 5}
     const params = {
