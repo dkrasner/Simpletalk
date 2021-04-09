@@ -8,6 +8,8 @@
  * Basic style properties are those
  * common to all (visual) Parts
  */
+const sides = ["top", "bottom", "left", "right"];
+
 const addBasicStyleProps = (target) => {
     target.partProperties.newStyleProp(
         'background-transparency',
@@ -15,11 +17,79 @@ const addBasicStyleProps = (target) => {
     );
     target.partProperties.newStyleProp(
         'background-color',
-        null
+        "rgb(255, 255, 255)", // white 
     );
     target.partProperties.newStyleProp(
         'transparency',
         1.0,
+    );
+    target.partProperties.newStyleProp(
+        'border-style',
+        'solid'
+    );
+    sides.forEach((s) => {
+        target.partProperties.newStyleProp(
+            `border-${s}-style`,
+            'solid'
+        );
+    });
+    sides.forEach((s) => {
+        target.partProperties.newStyleProp(
+            `border-${s}-width`,
+            0,
+        );
+    });
+    sides.forEach((s) => {
+        target.partProperties.newStyleProp(
+            `border-${s}-color`,
+            "rgb(0, 0, 0)", // black
+        );
+    });
+    sides.forEach((s) => {
+        target.partProperties.newStyleProp(
+            `border-${s}-transparency`,
+            1
+        );
+    });
+    target.partProperties.newStyleProp(
+        'shadow-left',
+        0
+    );
+    target.partProperties.newStyleProp(
+        'shadow-top',
+        0
+    );
+    target.partProperties.newStyleProp(
+        'shadow-blur',
+        0
+    );
+    target.partProperties.newStyleProp(
+        'shadow-spread',
+        0
+    );
+    target.partProperties.newStyleProp(
+        'shadow-color',
+        "rgb(238, 238, 238)", // grey
+    );
+    target.partProperties.newStyleProp(
+        'shadow-transparency',
+        1
+    );
+    target.partProperties.newStyleProp(
+        'corner-top-left-round',
+        0
+    );
+    target.partProperties.newStyleProp(
+        'corner-top-right-round',
+        0
+    );
+    target.partProperties.newStyleProp(
+        'corner-bottom-left-round',
+        0
+    );
+    target.partProperties.newStyleProp(
+        'corner-bottom-right-round',
+        0
     );
 };
 
@@ -73,7 +143,7 @@ const addPositioningStyleProps = (target) => {
         'horizontal-resizing',
         'rigid'
     );
-    
+
     // vertical-resizing specifies a strategy
     // for how this Part should adjust its
     // vertical axis relative to the parent.
@@ -214,7 +284,7 @@ const addTextStyleProps = (target) => {
     );
     target.partProperties.newStyleProp(
         'text-color',
-        "rgba(0, 0, 0, 1)", // black
+        "rgb(0, 0, 0)", // black
         'cssTextStyle'
     );
     target.partProperties.newStyleProp(
@@ -257,7 +327,7 @@ const addLayoutStyleProps = (target) => {
     // list - Will force items into either a row
     // or column list, based on the pairing with
     // the 'listDirection' property
-    target.partProperties.newStyleProp(
+    target.partProperties.newBasicProp(
         'layout',
         'strict'
     );
@@ -265,14 +335,14 @@ const addLayoutStyleProps = (target) => {
     // list-direction specifies row or column
     // and will only have an effect whent the
     // layout property is set to 'list'
-    target.partProperties.newStyleProp(
+    target.partProperties.newBasicProp(
         'list-direction',
         'row'
     );
 
     // Wrapping specifies whether a list should
     // wrap along its dominant dimension (row or column)
-    target.partProperties.newStyleProp(
+    target.partProperties.newBasicProp(
         'list-wrapping',
         false
     );

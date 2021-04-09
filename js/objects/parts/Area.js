@@ -17,6 +17,8 @@ import {
     addLayoutStyleProps
 } from '../utils/styleProperties.js';
 
+const sides = ["top", "bottom", "left", "right"];
+
 class Area extends Part {
     constructor(...args){
         super(...args);
@@ -56,6 +58,33 @@ class Area extends Part {
             false
         );
         this.setupStyleProperties();
+        // part specific default style properties
+        this.partProperties.setPropertyNamed(
+            this,
+            'background-transparency',
+            0
+        );
+        sides.forEach((s) => {
+            this.partProperties.setPropertyNamed(
+                this,
+                `border-${s}-width`,
+                1,
+            );
+        });
+        sides.forEach((s) => {
+            this.partProperties.setPropertyNamed(
+                this,
+                `border-${s}-color`,
+                "rgb(238, 238, 238)",
+            );
+        });
+        sides.forEach((s) => {
+            this.partProperties.setPropertyNamed(
+                this,
+                `border-${s}-transparency`,
+                0.5,
+            );
+        });
     }
 
 

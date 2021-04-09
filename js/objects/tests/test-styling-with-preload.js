@@ -24,8 +24,6 @@ describe('CSS Styler Util', () => {
         it('Text color conversion', () => {
             cssStyler(stylerObj, "text-color", "rgb(255, 0, 0)");
             assert.equal(stylerObj["color"], "rgba(255, 0, 0, 1)");
-            cssStyler(stylerObj, "text-color", "rgba(255, 0, 0, 1)");
-            assert.equal(stylerObj["color"], "rgba(255, 0, 0, 1)");
             cssStyler(stylerObj, "text-color", "red");
             assert.equal(stylerObj["color"], "rgba(255, 0, 0, 1)");
         });
@@ -34,6 +32,101 @@ describe('CSS Styler Util', () => {
             assert.equal(stylerObj["color"], "rgba(255, 0, 0, 0.5)");
             cssStyler(stylerObj, "text-transparency", ".5");
             assert.equal(stylerObj["color"], "rgba(255, 0, 0, .5)");
+        });
+    });
+    describe('Background', () => {
+        it('Background color conversion', () => {
+            cssStyler(stylerObj, "background-color", "rgb(0, 0, 0)");
+            assert.equal(stylerObj["backgroundColor"], "rgba(0, 0, 0, 1)");
+            cssStyler(stylerObj, "background-color", "red");
+            assert.equal(stylerObj["backgroundColor"], "rgba(255, 0, 0, 1)");
+        });
+        it('Background transparency', () => {
+            cssStyler(stylerObj, "background-transparency", .5);
+            assert.equal(stylerObj["backgroundColor"], "rgba(255, 0, 0, 0.5)");
+            cssStyler(stylerObj, "background-transparency", ".5");
+            assert.equal(stylerObj["backgroundColor"], "rgba(255, 0, 0, .5)");
+        });
+    });
+    describe('Borders', () => {
+        it('Border Style (single side)', () => {
+            cssStyler(stylerObj, "border-top-style", "solid");
+            assert.equal(stylerObj["border-top-style"], "solid");
+            assert.isUndefined(stylerObj["border-bottom-style"]);
+            assert.isUndefined(stylerObj["border-left-style"]);
+            assert.isUndefined(stylerObj["border-right-style"]);
+            cssStyler(stylerObj, "border-right-style", "dashed");
+            assert.equal(stylerObj["border-right-style"], "dashed");
+            cssStyler(stylerObj, "border-left-style", "inset");
+            assert.equal(stylerObj["border-left-style"], "inset");
+            cssStyler(stylerObj, "border-bottom-style", "outset");
+            assert.equal(stylerObj["border-bottom-style"], "outset");
+        });
+        it('Border Width', () => {
+            cssStyler(stylerObj, "border-top-width", 100);
+            assert.equal(stylerObj["border-top-width"], "100px");
+            assert.isUndefined(stylerObj["border-bottom-width"]);
+            assert.isUndefined(stylerObj["border-left-width"]);
+            assert.isUndefined(stylerObj["border-right-width"]);
+            cssStyler(stylerObj, "border-right-width", "20");
+            assert.equal(stylerObj["border-right-width"], "20px");
+            cssStyler(stylerObj, "border-left-width", 10);
+            assert.equal(stylerObj["border-left-width"], "10px");
+            cssStyler(stylerObj, "border-bottom-width", "1");
+            assert.equal(stylerObj["border-bottom-width"], "1px");
+        });
+        it('Border Color', () => {
+            cssStyler(stylerObj, "border-top-color", "rgb(255, 255, 255)");
+            assert.equal(stylerObj["border-top-color"], "rgba(255, 255, 255, 1)");
+        });
+        it('Border Color Keyword', () => {
+            cssStyler(stylerObj, "border-top-color", "red");
+            assert.equal(stylerObj["border-top-color"], "rgba(255, 0, 0, 1)");
+        });
+        it('Border Transparency', () => {
+            cssStyler(stylerObj, "border-top-transparency", "0.5");
+            assert.equal(stylerObj["border-top-color"], "rgba(255, 0, 0, 0.5)");
+        });
+    });
+    describe('Corners', () => {
+        it('Round corner', () => {
+            cssStyler(stylerObj, "corner-top-left-round", "10");
+            assert.equal(stylerObj["border-top-left-radius"], "10px");
+            assert.isUndefined(stylerObj["border-top-right-radius"]);
+            assert.isUndefined(stylerObj["border-bottom-left-radius"]);
+            assert.isUndefined(stylerObj["border-bottom-right-radius"]);
+            cssStyler(stylerObj, "corner-top-right-round", "10");
+            assert.equal(stylerObj["border-top-right-radius"], "10px");
+            cssStyler(stylerObj, "corner-bottom-right-round", "10");
+            assert.equal(stylerObj["border-bottom-right-radius"], "10px");
+            cssStyler(stylerObj, "corner-bottom-left-round", "10");
+            assert.equal(stylerObj["border-bottom-left-radius"], "10px");
+        });
+    });
+    describe('Shadows', () => {
+        it('Color', () => {
+            cssStyler(stylerObj, "shadow-color", "rgb(255, 255, 255)");
+            assert.equal(stylerObj["box-shadow"], "0px 0px 0px 0px rgba(255, 255, 255, 1)");
+        });
+        it('Transparency', () => {
+            cssStyler(stylerObj, "shadow-transparency", 0.5);
+            assert.equal(stylerObj["box-shadow"], "0px 0px 0px 0px rgba(255, 255, 255, 0.5)");
+        });
+        it('Left', () => {
+            cssStyler(stylerObj, "shadow-left", 10);
+            assert.equal(stylerObj["box-shadow"], "10px 0px 0px 0px rgba(255, 255, 255, 0.5)");
+        });
+        it('Top', () => {
+            cssStyler(stylerObj, "shadow-top", 20);
+            assert.equal(stylerObj["box-shadow"], "10px 20px 0px 0px rgba(255, 255, 255, 0.5)");
+        });
+        it('Blur', () => {
+            cssStyler(stylerObj, "shadow-blur", 30);
+            assert.equal(stylerObj["box-shadow"], "10px 20px 30px 0px rgba(255, 255, 255, 0.5)");
+        });
+        it('Spread', () => {
+            cssStyler(stylerObj, "shadow-spread", 40);
+            assert.equal(stylerObj["box-shadow"], "10px 20px 30px 40px rgba(255, 255, 255, 0.5)");
         });
     });
     it('Transparency', () => {

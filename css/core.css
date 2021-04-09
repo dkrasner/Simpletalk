@@ -88,7 +88,6 @@ st-card {
 st-card[role="lens"] {
     display: block;
     visibility: initial;
-    background-color: var(--palette-blue);
 }
 
 /* =Button Styles
@@ -100,12 +99,10 @@ st-button {
     flex-direction: column;
     justify-content: center;
     align-items: center;
-    background-color: var(--palette-yellow);
     padding-left: 10px;
     padding-right: 10px;
     padding-top: 5px;
     padding-bottom: 5px;
-    border: 1px solid rgb(50, 50, 50);
     user-select: none;
     margin-left: -1px;
     margin-right: -1px;
@@ -126,7 +123,6 @@ st-window {
     display: flex;
     position: absolute;
     flex-direction: column;
-    background-color: var(--palette-blue);
     border: 1px solid rgba(100, 100, 100, 0.2);
     box-shadow: 3px 4px 4px 0px rgba(50, 50, 50, 0.3);
     z-index: 100;
@@ -175,8 +171,8 @@ st-drawing {
 st-field {
     width: var(--field-default-width);
     height: var(--field-default-height);
-    position: absolute;
     background-color: var(--palette-cornsik);
+    position: absolute;
 }
 
 /* =Layout Class Styles

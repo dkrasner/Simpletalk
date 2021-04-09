@@ -49,14 +49,75 @@ class Button extends Part {
 
         // Styling
         addBasicStyleProps(this);
-        this.partProperties.setPropertyNamed(
-            this,
-            'background-color',
-            "rgba(255, 234, 149, 1)", // var(--palette-yellow)
-        );
         addPositioningStyleProps(this);
         addTextStyleProps(this);
         this.setupStyleProperties();
+        // part specific default style properties
+        this.partProperties.setPropertyNamed(
+            this,
+            'background-color',
+            "rgb(255, 234, 149)", // var(--palette-yellow)
+        );
+        this.partProperties.setPropertyNamed(
+            this,
+            'corner-top-left-round',
+            3
+        );
+        this.partProperties.setPropertyNamed(
+            this,
+            'corner-top-right-round',
+            3
+        );
+        this.partProperties.setPropertyNamed(
+            this,
+            'corner-bottom-left-round',
+            3
+        );
+        this.partProperties.setPropertyNamed(
+            this,
+            'corner-bottom-right-round',
+            3
+        );
+        this.partProperties.setPropertyNamed(
+            this,
+            'border-top-width',
+            1
+        );
+        this.partProperties.setPropertyNamed(
+            this,
+            'border-bottom-width',
+            1
+        );
+        this.partProperties.setPropertyNamed(
+            this,
+            'border-left-width',
+            1
+        );
+        this.partProperties.setPropertyNamed(
+            this,
+            'border-right-width',
+            1
+        );
+        this.partProperties.setPropertyNamed(
+            this,
+            'shadow-left',
+            1
+        );
+        this.partProperties.setPropertyNamed(
+            this,
+            'shadow-top',
+            1
+        );
+        this.partProperties.setPropertyNamed(
+            this,
+            'shadow-blur',
+            1
+        );
+        this.partProperties.setPropertyNamed(
+            this,
+            'shadow-blur',
+            1
+        );
 
     }
 

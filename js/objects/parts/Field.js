@@ -17,6 +17,8 @@ import {
     addTextStyleProps
 } from '../utils/styleProperties.js';
 
+const sides = ["top", "bottom", "left", "right"];
+
 class Field extends Part {
     constructor(owner, name){
         super(owner);
@@ -102,6 +104,33 @@ class Field extends Part {
         addPositioningStyleProps(this);
         addTextStyleProps(this);
         this.setupStyleProperties();
+        // part specific default style properties
+        this.partProperties.setPropertyNamed(
+            this,
+            'background-color',
+            "rgb(255, 248, 220)", // var(--palette-cornsik)
+        );
+        sides.forEach((s) => {
+            this.partProperties.setPropertyNamed(
+                this,
+                `border-${s}-width`,
+                "medium",
+            );
+        });
+        sides.forEach((s) => {
+            this.partProperties.setPropertyNamed(
+                this,
+                `border-${s}-style`,
+                "inset",
+            );
+        });
+        sides.forEach((s) => {
+            this.partProperties.setPropertyNamed(
+                this,
+                `border-${s}-color`,
+                "rgb(238, 238, 238)",
+            );
+        });
 
         // Private command handlers
 

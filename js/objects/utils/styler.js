@@ -11,20 +11,98 @@
  * propertyName: (SimpleTalk) styling property name
  * propertyValue: (SimpleTalk) styling property value
  */
+
 const cssStyler = (styleObj, propertyName, propertyValue) => {
     switch(propertyName){
 
     case "background-color":
-        _setOrNot(styleObj, "backgroundColor",  _colorToRGBA(propertyValue));
+        _setOrNot(styleObj, "backgroundColor",  _colorToRGBA(styleObj["backgroundColor"], propertyValue));
         break;
 
     case "background-transparency":
         // here we set the Alpha value of the current styleObj["backgroundColor"] rgba
-        _setOrNot(styleObj, "backgroundColor",  _colorToRGBA(styleObj["backgroundColor"], propertyValue));
+        _setOrNot(styleObj, "backgroundColor",  _colorTransparencyToRGBA(styleObj["backgroundColor"], propertyValue));
+        break;
+
+    case "border-top-style":
+    case "border-bottom-style":
+    case "border-left-style":
+    case "border-right-style": {
+        let s = propertyName.split("-")[1];
+        _setOrNot(styleObj, `border-${s}-style`,  propertyValue);
+        break;
+    }
+
+    case "border-top-width":
+    case "border-bottom-width":
+    case "border-left-width":
+    case "border-right-width": {
+        let s = propertyName.split("-")[1];
+        _setOrNot(styleObj, `border-${s}-width`,  _intToPx(propertyValue));
+        break;
+    }
+
+    case "border-top-color":
+    case "border-bottom-color":
+    case "border-top-color":
+    case "border-right-color": {
+        let s = propertyName.split("-")[1];
+        _setOrNot(styleObj, `border-${s}-color`,  _colorToRGBA(styleObj[`border-${s}-color`], propertyValue));
+        break;
+    }
+
+    case "border-top-transparency":
+    case "border-bottom-transparency":
+    case "border-top-transparency":
+    case "border-right-transparency": {
+        let s = propertyName.split("-")[1];
+        _setOrNot(styleObj, `border-${s}-color`,  _colorTransparencyToRGBA(styleObj[`border-${s}-color`], propertyValue));
+        break;
+    }
+
+    case "corner-top-left-round":
+    case "corner-top-right-round":
+    case "corner-bottom-left-round":
+    case "corner-bottom-right-round":{
+        let c1 = propertyName.split("-")[1];
+        let c2 = propertyName.split("-")[2];
+        _setOrNot(styleObj, `border-${c1}-${c2}-radius`,  _intToPx(propertyValue));
+        break;
+    }
+
+    case "shadow-left":
+    case "shadow-top":
+    case "shadow-blur":
+    case "shadow-spread":
+    case "shadow-color":
+    case "shadow-transparency":
+        let shadowProp = propertyName.split("-")[1];
+        let [left, top, blur, spread, color] = _cssBoxShadow(styleObj["box-shadow"]);
+        switch(shadowProp){
+        case "color":
+            color = _colorToRGBA(color, propertyValue);
+            break;
+        case "transparency":
+            color = _colorTransparencyToRGBA(color, propertyValue);
+            break;
+        case "left":
+            left = _intToPx(propertyValue);
+            break;
+        case "top":
+            top = _intToPx(propertyValue);
+            break;
+        case "blur":
+            blur = _intToPx(propertyValue);
+            break;
+        case "spread":
+            spread = _intToPx(propertyValue);
+            break;
+        }
+        _setOrNot(styleObj, "box-shadow", `${left} ${top} ${blur} ${spread} ${color}`);
         break;
 
     case "text-color":
-        _setOrNot(styleObj, "color",  _colorToRGBA(propertyValue));
+        _setOrNot(styleObj, "color",  _colorToRGBA(styleObj["color"], propertyValue));
         break;
 
     case "text-font":
@@ -69,7 +147,7 @@ const cssStyler = (styleObj, propertyName, propertyValue) => {
 
     case "text-transparency":
         // here we set the Alpha value of the current styleObj["color"] rgba
-        _setOrNot(styleObj, "color",  _colorToRGBA(styleObj["color"], propertyValue));
+        _setOrNot(styleObj, "color",  _colorTransparencyToRGBA(styleObj["color"], propertyValue));
         break;
 
     case "top":
@@ -146,6 +224,8 @@ const _intToPx = (n) => {
         if(typeof(n) === "string"){
             if(n == "fill"){
                 return "100%";
+            } else if(["thin", "medium", "thick"].indexOf(n) > -1){
+                return n;
             }
             n = n.split("px")[0];
         }
@@ -154,36 +234,44 @@ const _intToPx = (n) => {
 };
 
 // Convert colors to rgba
-// If a color string is a referenced name from the list
-// below then use its RGB values. Else if the string is
-// of the form RGBA with A=1. If A is provided
-// convert and/or replace the current value of A with the
-// argument value.
-const _colorToRGBA = (color, A) => {
-    if(color == null || color === undefined){
+// change a css color RGB values, preserving the A(lpha) value
+const _colorToRGBA = (cssColor, STColor) => {
+    if(!STColor){
         return;
     }
-    let r, g, b, a;
-    // either RGB or RGBA is accepted
-    if(color.startsWith("rgb")){
-        [r, g, b, a] = color.match(/\d+/g);
+    let r, g, b, a, _;
+    // ST colors are RGB
+    if(STColor.startsWith("rgb")){
+        [r, g, b] = STColor.match(/\d+/g);
     } else {
-        let colorInfo = basicCSSColors[color];
+        let colorInfo = basicCSSColors[STColor];
         if(colorInfo){
             r = colorInfo["r"];
             g = colorInfo["g"];
             b = colorInfo["b"];
-            a = colorInfo["a"];
         } else {
             return;
         }
     }
-    if(A){
-        a = A;
-    } else if(a === undefined){
+    if(cssColor){
+        [_, _, _, a] = cssColor.match(/[\d\.]+/g);
+        // if Alpha is not defined then we set it to 1
+        // default for browsers
+    }
+    if(!a){
         a = 1;
     }
     return `rgba(${r}, ${g}, ${b}, ${a})`;
+}
+
+// change the A(alpha) value, preserving the RGB values
+const _colorTransparencyToRGBA = (cssColor, tValue) => {
+    if(!cssColor){
+        return;
+    }
+    let r, g, b;
+    [r, g, b] = cssColor.match(/\d+/g);
+    return `rgba(${r}, ${g}, ${b}, ${tValue})`;
 }
 
 // Add more colors as needed
@@ -205,6 +293,18 @@ const basicCSSColors = {
 		teal: {hex: "#008080", r: 0, g: 128, b: 128},
 		aqua: {hex: "#00FFFF", r: 0, g: 255, b: 255},
 };
+
+// take the css box-shadow property and return its
+// components (offset-y, offset-x, blur, spread and color)
+// if the value is not defined return a default
+const _cssBoxShadow = (cssPropValue) =>{
+    if(!cssPropValue){
+        return ["0px", "0px", "0px", "0px", "rgba(0, 0, 0, 1)"];
+    }
+    let [intValues, rgba] = cssPropValue.split(" rgba");
+    let [left, top, blur, spread] = intValues.split(" ");
+    return [left, top, blur, spread, `rgba${rgba}`];
+}
 
 export {
     cssStyler,

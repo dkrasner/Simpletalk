@@ -55,6 +55,12 @@ class Window extends Part {
         addBasicStyleProps(this);
         addPositioningStyleProps(this);
         this.setupStyleProperties();
+        // part specific default style properties
+        this.partProperties.setPropertyNamed(
+            this,
+            'background-transparency',
+            0
+        );
 
         // Bind methods
         this.setTarget = this.setTarget.bind(this);
