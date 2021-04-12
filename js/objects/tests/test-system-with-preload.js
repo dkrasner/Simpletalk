@@ -11,10 +11,10 @@ const expect = chai.expect;
 
 describe('System methods', () => {
     it('Can setup world with a multi-stack multi-card stack', () => {
-        let currentStackViews = document.querySelectorAll('st-stack.current-stack');
+        let currentStackViews = document.querySelectorAll('st-world st-stack.current-stack');
         assert.equal(currentStackViews.length, 1);
         let currentStackModel = currentStackViews[0].model;
-        let cardViews = document.querySelectorAll('st-stack.current-stack > st-card');
+        let cardViews = document.querySelectorAll('st-world st-stack.current-stack > st-card');
         assert.equal(cardViews.length, 1);
         // add a few more cards
         let newCardMsg = {
@@ -24,9 +24,9 @@ describe('System methods', () => {
         };
         System.receiveMessage(newCardMsg);
         System.receiveMessage(newCardMsg);
-        cardViews = document.querySelectorAll('st-stack.current-stack > st-card');
+        cardViews = document.querySelectorAll('st-world st-stack.current-stack > st-card');
         assert.equal(cardViews.length, 3);
-        let currentCardViews = document.querySelectorAll('st-stack.current-stack > st-card.current-card');
+        let currentCardViews = document.querySelectorAll('st-world st-stack.current-stack > st-card.current-card');
         assert.equal(currentCardViews.length, 1);
         // add a few more stacks
         let worldView = document.querySelector('st-world');

@@ -74,7 +74,6 @@ class WorldView extends PartView {
 
     handleKeyDown(event){
         if(event.altKey && event.ctrlKey && event.code == "Space"){
-            console.log('nav toggle');
             let navigator = document.querySelector('st-navigator');
             navigator.toggle();
         }

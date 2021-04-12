@@ -24,14 +24,15 @@ describe('Audio Part & View Tests', () => {
             assert.exists(currentCard.model);
         });
         it('Can add audio model+view to current card (via message)', () => {
-            let currentCard = document.querySelector('st-card.current-card');
+            let currentCard = document.querySelector('st-world st-card.current-card');
+            assert.exists(currentCard.model);
             let msg = {
                 type: "command",
                 commandName: "newModel",
                 args: ["audio", currentCard.model.id]
             };
             currentCard.sendMessage(msg, currentCard.model);
-            let audio = document.querySelector('st-card.current-card > st-audio');
+            let audio = currentCard.querySelector('st-audio');
             assert.exists(audio);
             assert.exists(audio.model);
         });

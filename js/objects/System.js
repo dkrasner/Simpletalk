@@ -92,10 +92,6 @@ const System = {
                 });
         } else {
             this.loadFromEmpty();
-            System.navigator.setModel(
-                System.partsById['world']
-            );
-            this.sendInitialOpenMessages();
         }
 
         // Attach a new clipboard instance
@@ -135,6 +131,11 @@ const System = {
         );
         // Update serialization
         this.serialize();
+
+        this.sendInitialOpenMessages();
+        System.navigator.setModel(
+            System.partsById['world']
+        );
     },
 
     sendInitialOpenMessages: function(){
