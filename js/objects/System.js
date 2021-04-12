@@ -947,67 +947,9 @@ System._commandHandlers['openScriptEditor'] = function(senders, targetId){
     };
 };
 
-System._commandHandlers['openSimpletalkGrammar'] = function(senders, ruleName){
-    // The stack where the window will be inserted will
-    // be the current stack
-    let currentStackView = document.querySelector('.current-stack');
-    let insertStack = currentStackView.model;
-
-    let winModel = this.newModel('window', insertStack.id);
-    let winTitle = "Simpltetalk Grammar";
-    winModel.partProperties.setPropertyNamed(
-        winModel,
-        'title',
-        winTitle
-    );
-    let winView = this.findViewById(winModel.id);
-    let winStackModel = this.newModel('stack', winModel.id);
-    let winStackView = this.findViewById(winStackModel.id);
-    winStackView.classList.add('window-stack');
-    let currentCard = this.newModel('card', winStackModel.id);
-    winStackModel.partProperties.setPropertyNamed(
-        winStackModel,
-        'current',
-        0
-    );
-
-    // Set the current card's layout to be a column list
-    currentCard.partProperties.setPropertyNamed(
-        currentCard,
-        'layout',
-        'list'
-    );
-
-    // Create the Field model and attach to current card
-    // of the new window.
-    let fieldModel = this.newModel('field', currentCard.id);
-    let fieldView = this.findViewById(fieldModel.id);
-    let grammar = System.grammar.source.sourceString;
-
-    fieldModel.partProperties.setPropertyNamed(
-        fieldModel,
-        'text',
-        grammar
-    );
-
-    // if the ruleName has been provided, scroll that into view
-    // TODO this doesn't work properly
-    let textArea = fieldView._shadowRoot.querySelector(".field-textarea");
-    if(ruleName){
-        let regex = `${ruleName}`;
-        for(var i = 0; i < textArea.children.length; i++){
-            let line = textArea.children[i];
-            let text = line.textContent;
-            if(text.match(regex)){
-                try{
-                    line.scrollIntoView();
-                } catch (e) {
-                    console.log("script editor does not support line.scrollInfoView()");
-                };
-            }
-        };
-    }
-};
+System._commandHandlers['SimpleTalk'] = function(senders){
+    return System.grammar.source.sourceString;
+}
 
 System._commandHandlers['openDebugger'] = function(senders, partId){
     let target = this.partsById[partId];
