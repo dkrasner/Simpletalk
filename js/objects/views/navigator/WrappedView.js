@@ -7,6 +7,8 @@
  * I make a cloned copy of the underlying view and
  * attach it to the same model as the original.
  **/
+import PartView from '../PartView.js';
+
 const templateString = `
 <style>
     :host {
@@ -33,14 +35,7 @@ const templateString = `
         transition: box-shadow 0.1s linear, border 0.1s linear;
     }
 
-    :host(.hide),
-    :host(.hide.current){
-        transform: translateY(100%);
-        opacity: 0.01;
-        transition: transform 0.2s ease-out, opacity 0.2s ease-out, box-shadow 0.2s linear;
-    }
-
-    :host(.hide) > st-card {
+    :host(:not(.current)) > st-card {
         display: none;
     }
 
@@ -89,7 +84,7 @@ const templateString = `
 `;
 
 
-class WrappedView extends HTMLElement {
+class WrappedView extends PartView {
     constructor(){
         super();
 
@@ -104,8 +99,8 @@ class WrappedView extends HTMLElement {
         // Bind methods
         this.onChildSlotted = this.onChildSlotted.bind(this);
         this.updateScaling = this.updateScaling.bind(this);
-        this.hideContent = this.hideContent.bind(this);
-        this.showContent = this.showContent.bind(this);
+        this.addWrappedView = this.addWrappedView.bind(this);
+        this._recursivelyUpdateLensViews = this._recursivelyUpdateLensViews.bind(this);
     }
 
     connectedCallback(){
@@ -126,7 +121,13 @@ class WrappedView extends HTMLElement {
     }
 
     onChildSlotted(event){
-        this.updateScaling();
+        //this.updateScaling();
+        //this.updateNumberDisplay();
+    }
+
+    afterModelSet(){
+        this.removeAttribute('part-id');
+        this.addWrappedView(this.model);
         this.updateNumberDisplay();
     }
 
@@ -143,7 +144,7 @@ class WrappedView extends HTMLElement {
         let refElementBox = refElement.getBoundingClientRect();
         firstChild.style.width = `${refElementBox.width}px`;
         firstChild.style.height = `${refElementBox.height}px`;
-        firstChild.style.transform = `scale(${scalingX, scalingX})`;
+        firstChild.style.transform = `scale(${scalingX})`;
         firstChild.style.transformOrigin = "0px 0px";
     }
 
@@ -155,12 +156,61 @@ class WrappedView extends HTMLElement {
         numDisplay.innerText = number.toString();
     }
 
-    hideContent(){
-        this.children[0].style.display = "none";
+    addWrappedView(aPartModel){
+        // First, clear out any existing
+        // child elements
+        this.innerHTML = "";
+
+        // Create a lensed copy of the given
+        // view and update key attributes on it
+        let originalView = document.querySelector(`[part-id="${aPartModel.id}"]`);
+        let lensedView = originalView.cloneNode(true);
+        lensedView.setAttribute('lens-part-id', aPartModel.id);
+        lensedView.setAttribute('slot', 'wrapped-view');
+        lensedView.style.pointerEvents = "none";
+
+        // Inline the initial scaling style properties.
+        // We begin with an extremely small amount which will
+        // be adjusted later during updateScaling();
+        lensedView.style.transform = `scale(${0.001})`;
+        lensedView.style.transformOrigin = "0px 0px";
+        
+        // Recursively create lens views of all subpart children
+        // and append them in the correct places
+        lensedView.isLensed = true;
+        lensedView.setModel(aPartModel);
+        lensedView.removeAttribute('part-id');
+        if(lensedView.handleCurrentChange){
+            lensedView.handleCurrentChange();
+        }
+        this._recursivelyUpdateLensViews(lensedView, aPartModel.id);
+
+        // Insert the root lensed view into the wrapper
+        this.setAttribute('wrapped-id', aPartModel.id);
+        this.appendChild(lensedView);
+        this.updateScaling();
     }
 
-    showContent(){
-        this.children[0].style.display = "block";
+    _recursivelyUpdateLensViews(lensedView, anId){
+        let subViews = Array.from(lensedView.children);
+        subViews.forEach(subView => {
+            subView.isLensed = true;
+            let subId = subView.getAttribute('part-id');
+            subView.setAttribute('lens-part-id', subId);
+            let model = window.System.partsById[subId];
+            subView.setModel(model);
+            subView.removeAttribute('part-id');
+            this._recursivelyUpdateLensViews(subView, subId);
+        });
+    }
+
+    /** PartView Overrides **/
+    styleCSS(){
+        // Do nothing
+    }
+
+    styleTextCSS(){
+        // Do nothing
     }
 };
 
