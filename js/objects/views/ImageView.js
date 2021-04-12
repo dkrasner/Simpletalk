@@ -10,7 +10,7 @@ const linkIcon = `
 
 const templateString = `
 <img id="wrapped-image" class="hidden" />
-<svg class="hidden" id="wrapped-svg" draggable=true xmlns="http://www.w3.org/2000/svg">
+<svg class="hidden" id="wrapped-svg" xmlns="http://www.w3.org/2000/svg">
 </svg>
 <style>
 :host {
@@ -57,9 +57,6 @@ class ImageView extends PartView {
         this.onPropChange("imageData", (imageData) => {
             this.updateImageData(imageData);
         });
-        this.onPropChange("draggable", (value) => {
-            this.setAttribute("draggable", value);
-        });
 
         // Make sure we have imageData. If not, try
         // to load from a src.
@@ -85,7 +82,6 @@ class ImageView extends PartView {
 
     afterConnected(){
         this['onclick'] = this.onClick;
-        //this['ondragstart'] = this.onDragstart;
 
         if(!this.haloButton){
             this.initCustomHaloButton();
@@ -94,7 +90,6 @@ class ImageView extends PartView {
 
     afterDisconnected(){
         this['onclick'] = null;
-        this['ondragstart'] = null;
     }
 
     updateImageData(imageData){
@@ -103,7 +98,6 @@ class ImageView extends PartView {
         } else {
             this.updateBinaryImage(imageData);
         }
-        
     }
 
     updateBinaryImage(imageData){
@@ -175,7 +169,6 @@ class ImageView extends PartView {
         // than the current remaining subrectangle of its origin
         // and the corner of the viewport
         let padding = 40;
-        
         // First, we need to find the absolute top corner
         // locations for the element
         let el = this._shadowRoot.querySelector('.currently-wrapped');
@@ -276,7 +269,6 @@ class ImageView extends PartView {
                 newHeight
             );
         }
-        
     }
 
     initCustomHaloButton(){

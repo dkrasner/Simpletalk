@@ -30,8 +30,6 @@ class ButtonView extends PartView {
         this.onMouseDown = this.onMouseDown.bind(this);
         this.onMouseUp = this.onMouseUp.bind(this);
         this.onMouseEnter = this.onMouseEnter.bind(this);
-        this.onDragstart = this.onDragstart.bind(this);
-        this.onDragend = this.onDragend.bind(this);
         this.onClick = this.onClick.bind(this);
         this.setupPropHandlers = this.setupPropHandlers.bind(this);
 
@@ -49,21 +47,14 @@ class ButtonView extends PartView {
         this.onPropChange('text-color', (value) =>{
             this.style.color = value;
         });
-        this.onPropChange("draggable", (value) => {
-            this.setAttribute('draggable', value);
-        });
     }
 
     afterConnected(){
-        //Atributes
-        this.setAttribute('draggable', true);
         // Setup mouse event handling
         this['onmousedown'] = this.onMouseDown;
         this['onmouseup'] = this.onMouseUp;
         this['onmouseenter'] = this.onMouseEnter;
         this['onclick'] = this.onClick;
-        this['ondragstart'] = this.onDragstart;
-        this['ondragend'] = this.onDragend;
     }
 
     afterDisconnected(){
@@ -71,8 +62,6 @@ class ButtonView extends PartView {
         this['onmouseup'] = null;
         this['onmouseenter'] = null;
         this['onclick'] = null;
-        this['ondragstart'] = null;
-        this['ondragend'] = null;
     }
 
     afterModelSet(){
@@ -153,19 +142,6 @@ class ButtonView extends PartView {
             shouldIgnore: true
         }, this.model);
     }
-
-    onDragstart(event){
-        if(this.hasOpenHalo){
-            event.stopPropagation();
-            event.preventDefault();
-        }
-        event.dataTransfer.setData("text/plain", this.model.id);
-        event.dataTransfer.dropEffect = "copy";
-    };
-
-    onDragend(event){
-        this.classList.remove('active');
-    };
 
     // Overwriting the base class open/close editor methods
     openEditor(){

@@ -765,10 +765,6 @@ System._commandHandlers['newModel'] = function(senders, ...rest){
     System.newModel(...rest);
     this.serialize();
 };
-//System._commandHandlers['copyModel'] = System.copyModel;
-System._commandHandlers['copyModel'] = function(senders, ...rest){
-    System.copyModel(...rest);
-};
 //System._commandHandlers['newView'] = System.newView;
 System._commandHandlers['newView'] = function(senders, ...rest){
     System.newView(...rest);
