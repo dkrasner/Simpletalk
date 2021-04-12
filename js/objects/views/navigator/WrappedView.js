@@ -63,6 +63,7 @@ const templateString = `
     #number-display > span {
         transform: translateY(-10px);
         transition: transform 0.2s linear;
+        pointer-events: none;
     }
 
     :host(:not(.current)) > #number-display {
@@ -168,6 +169,7 @@ class WrappedView extends PartView {
         lensedView.setAttribute('lens-part-id', aPartModel.id);
         lensedView.setAttribute('slot', 'wrapped-view');
         lensedView.style.pointerEvents = "none";
+        lensedView.wantsHalo = false;
 
         // Inline the initial scaling style properties.
         // We begin with an extremely small amount which will
@@ -195,6 +197,7 @@ class WrappedView extends PartView {
         let subViews = Array.from(lensedView.children);
         subViews.forEach(subView => {
             subView.isLensed = true;
+            subView.wantsHalo = false;
             let subId = subView.getAttribute('part-id');
             subView.setAttribute('lens-part-id', subId);
             let model = window.System.partsById[subId];
@@ -210,6 +213,10 @@ class WrappedView extends PartView {
     }
 
     styleTextCSS(){
+        // Do nothing
+    }
+
+    layoutChanged(){
         // Do nothing
     }
 };
