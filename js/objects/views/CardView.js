@@ -46,14 +46,6 @@ class CardView extends PartView {
         if(event.button == 0 && event.shiftKey){
             event.preventDefault();
             event.stopPropagation();
-            // TODO
-            // in the future this should probably be a message
-            if (event.altKey){
-                this.openWorldCatalog();
-            } else {
-                // Disabling for now
-                //this.openToolbox();
-            }
         }
     }
 };

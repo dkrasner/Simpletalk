@@ -56,12 +56,6 @@ const System = {
     _commandHandlers: {},
     _functionHandlers: {},
 
-    // a list of "current" toolbox elements
-    // these can be added or remove from the World Catalog
-    // TODO: we might want toolbox to be tied to context, example:
-    // world or stack , account or some notion of project context
-    toolbox: [],
-
     // A dictionary mapping part types like
     // 'button' to their classes (Button)
     availableParts: {},
@@ -346,14 +340,6 @@ const System = {
             throw new Error(`System could not locate owner part with id ${ownerId}`);
         }
 
-        // TODO This is an exception to the general newModel
-        // message and method structure; potentially should be
-        // reworked
-        // if (ownerPart === "toolbox"){
-        //     this.addToToolbox(kind, context, name);
-        //     return true;
-        // }
-
         // Find the class constructor for the kind of
         // part requested as a new model. If not known,
         // throw an error
@@ -468,9 +454,6 @@ const System = {
 
         delete this.partsById[modelId];
         this.removeViews(modelId);
-        // in case the model/partView was in the toolbox
-        // remove the id reference
-        this.removeFromToolbox(modelId);
 
         // Serialize the state
         this.serialize();
@@ -566,35 +549,6 @@ const System = {
         });
 
         return newView;
-    },
-
-    addToToolbox(kind, context, name){
-        let toolboxModel = this.findToolbox();
-        let model = this.newModel(kind, toolboxModel.id, name);
-        this.toolbox.push(model.id);
-    },
-
-    removeFromToolbox(partId){
-        let index = this.toolbox.indexOf(partId);
-        if (index > -1){
-            this.toolbox.splice(index, 1);
-        }
-    },
-
-    findToolbox(){
-        // TODO this is an awkward way to see if an element is there!
-        let toolboxCardModel = null;
-        document.querySelectorAll('st-window').forEach((stWindow) => {
-            let windowId = stWindow.getAttribute("part-id");
-            let part = window.System.partsById[windowId];
-            let titleProperty = part.partProperties.findPropertyNamed("title");
-            if(titleProperty.getValue() === "Toolbox"){
-               // Note: we return the toolbox card not window since this is where
-               // toolbox subparts are attached.
-               toolboxCardModel = stWindow.querySelector("st-card").model;
-            };
-        });
-        return toolboxCardModel;
     },
 
     registerPart: function(name, cls){
@@ -896,153 +850,6 @@ System._commandHandlers['importWorld'] = function(sender, sourceUrl){
         .catch(err => {
             console.error(err);
         });
-};
-
-// Opens a basic tool window on the Part of the given
-// id. If no ID is given, we assume the tool window
-// is for the current stack.
-System._commandHandlers['openToolbox'] = function(senders, targetId){
-    let targetPart;
-    if(!targetId){
-        targetId = Object.keys(this.partsById).find(key => {
-            return this.partsById[key].type == 'stack';
-        });
-        targetPart = this.partsById[targetId];
-    } else {
-        targetPart = this.partsById[targetId];
-    }
-
-    if(!targetPart || targetPart == undefined){
-        throw new Error(`Could not locate current Stack or Part with id ${targetId}`);
-    }
-
-    // Find the existing toolbox
-    let toolboxPart = targetPart.subparts.find(subpart => {
-        let name = subpart.partProperties.getPropertyNamed(
-            subpart,
-            'name'
-        );
-        return subpart.type == 'window' && name == 'Toolbox';
-    });
-
-    if(!toolboxPart){
-        throw new Error(`Could not locate Toolbox!`);
-    }
-
-    // Unhide it if it isn't shown already
-    toolboxPart.partProperties.setPropertyNamed(
-        toolboxPart,
-        'hide',
-        false
-    );
-};
-
-System._commandHandlers['openWorldCatalog'] = function(senders, targetId){
-    let targetPart;
-    if(!targetId){
-        targetPart = this.getCurrentStackModel();
-    } else {
-        targetPart = this.partsById[targetId];
-    }
-
-    if(!targetPart || targetPart == undefined){
-        throw new Error(`Could not locate current Stack or Part with id ${targetId}`);
-    }
-
-    let windowModel = this.newModel('window', targetPart.id);
-    let windowStack = this.newModel('stack', windowModel.id);
-    windowModel.partProperties.setPropertyNamed(
-        windowModel,
-        'title',
-        'World Catalog'
-    );
-
-    // Get the current card on the window stack etc
-    let windowStackView = this.findViewById(windowStack.id);
-    let windowCurrentCardModel = windowStackView.querySelector('.current-card').model;
-
-    // Set the current card of the window to have a list layout,
-    // which defaults to a column list-direction
-    windowCurrentCardModel.partProperties.setPropertyNamed(
-        windowCurrentCardModel,
-        'list-direction',
-        'column'
-    );
-    windowCurrentCardModel.partProperties.setPropertyNamed(
-        windowCurrentCardModel,
-        'layout',
-        'list'
-    );
-
-    windowStackView.classList.add('window-stack');
-    //TODO this should be updated as parts, views mature
-    const ignoreParts = ["field", "field", "background", "world"];
-    Object.keys(System.availableParts).forEach((partName) => {
-        if (ignoreParts.indexOf(partName) === -1){
-            let partModel;
-            let script;
-            if (partName === "stack"){
-                script = 'on click\n    add  stack "new stack" to world \nend click';
-                partModel = this.newModel(
-                    "image",
-                    windowCurrentCardModel.id,
-                    '/images/stack.svg'
-                );
-            } else if (partName === "card"){
-                script = 'on click\n    add card "new card" to current stack \nend click';
-                partModel = this.newModel(
-                    "image",
-                    windowCurrentCardModel.id,
-                    '/images/card.svg'
-                );
-            } else if (partName === "window"){
-                script = 'on click\n    add window "new window" to current stack \nend click';
-                partModel = this.newModel(
-                    "image",
-                    windowCurrentCardModel.id,
-                    '/images/window.svg'
-                );
-            } else if (partName === "container"){
-                script = 'on click\n    add container "new container" to current card \nend click';
-                partModel = this.newModel(
-                    "image",
-                    windowCurrentCardModel.id,
-                    '/images/container.svg'
-                );
-            } else if (partName === "button"){
-                script = 'on click\n    add button "new button" to current card \nend click';
-                partModel = this.newModel(partName, windowCurrentCardModel.id);
-            } else if (partName === "drawing"){
-                script = 'on click\n    add drawing "new drawing" to current card \nend click';
-                partModel = this.newModel(
-                    "image",
-                    windowCurrentCardModel.id,
-                    '/images/drawing.svg'
-                );
-            } else if (partName === "image"){
-                script = 'on click\n    add image to current card \nend click';
-                partModel = this.newModel("image", windowCurrentCardModel.id);
-            }
-
-            let view = this.findViewById(partModel.id);
-            view.wantsHaloResize = false;
-            partModel.partProperties.setPropertyNamed(
-                partModel,
-                'name',
-                partName
-            );
-            partModel.partProperties.setPropertyNamed(
-                partModel,
-                'script',
-                script
-            );
-            System.sendMessage(
-                {type: "compile", codeString: script, targetId: partModel.id},
-                System,
-                System
-            );
-        }
-    });
 };
 
 System._commandHandlers['openScriptEditor'] = function(senders, targetId){

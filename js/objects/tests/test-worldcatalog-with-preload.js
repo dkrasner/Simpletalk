@@ -11,7 +11,7 @@ import chai from 'chai';
 const assert = chai.assert;
 const expect = chai.expect;
 
-describe('Opening a WorldCatalog', () => {
+describe.skip('Opening a WorldCatalog', () => {
     describe('Sending openWorldCatalog message', () => {
         /**
          * this test is currently being skipped due to the
