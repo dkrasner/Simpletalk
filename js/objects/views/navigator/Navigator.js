@@ -75,14 +75,16 @@ const templateString = `
         box-sizing: border-box;
         position: absolute;
         width: 100%;
-        top: 100%;
+        bottom: 0;
         min-height: 271px;
         background-color: white;
         backdrop-filter: blur(4px);
-        transition: top 0.2s ease-out;
+        transition: transform 0.2s ease-out;
         padding: 20px;
+        transform: translateY(100%);
         border-top: 1px solid rgba(50, 50, 50, 0.4);
         overflow-y: hidden;
+        overflow-x: auto;
         z-index: 1000;
     }
 
@@ -160,6 +162,11 @@ class STNavigator extends PartView {
         }).forEach(stackPart => {
             this.createCardRowFor(stackPart);
         });
+
+        // Init the StackRow
+        this.stackRowEl.initView();
+        
+        // Update the current card/stack values
         this.handleCurrentChange();
 
         // Respond to eventual current-ness prop
@@ -211,17 +218,11 @@ class STNavigator extends PartView {
     }
 
     open(){
-        if(!this.initialized && this.model){
-            this.stackRowEl.initView();
-            this.initialized = true;
-        }
-        let height = this.getBoundingClientRect().height;
-        let heightPx = `calc(100% - ${height}px)`;
-        this.style.top = heightPx;
+        this.style.transform = "translateY(0)";
     }
 
     close(){
-        this.style.top = null;
+        this.style.transform = "translateY(100%)";
     }
 
     
