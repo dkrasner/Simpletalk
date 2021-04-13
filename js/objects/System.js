@@ -133,7 +133,6 @@ const System = {
             'current',
             0
         );
-        
         // Update serialization
         this.serialize();
     },
@@ -218,7 +217,7 @@ const System = {
             id: source.id,
         });
 
-        this.passDevToolMessage(aMessage, source, target);
+        // this.passDevToolMessage(aMessage, source, target);
         return target.receiveMessage(aMessage);
     },
 
@@ -451,6 +450,10 @@ const System = {
         if(ownerModel){
             ownerModel.removePart(foundModel);
         }
+
+        // close all open editors, otherwise they will
+        // be orphaned in the view
+        foundModel.partProperties.setPropertyNamed(foundModel, "editorOpen", false);
 
         delete this.partsById[modelId];
         this.removeViews(modelId);
@@ -853,98 +856,61 @@ System._commandHandlers['importWorld'] = function(sender, sourceUrl){
 };
 
 System._commandHandlers['openScriptEditor'] = function(senders, targetId){
-    let targetPart = this.partsById[targetId];
-    if(!targetPart){
-        throw new Error(`No such part with id ${targetId}!`);
+    let target = this.partsById[targetId];
+    let currentCard = this.getCurrentCardModel();
+    let area = this.newModel('area', currentCard.id);
+    let titleField = this.newModel('field', area.id);
+    let scriptField = this.newModel('field', area.id);
+    let saveButton = this.newModel('button', area.id);
+
+    let targetName = target.partProperties.getPropertyNamed(target, "name");
+    if(targetName){
+        targetName = `"${targetName}"`;
     }
+    let name = `Script For ${target.name} ${targetName} id ${target.id}`;
 
-    // The stack where the window will be inserted will
-    // be the current stack
-    let insertStack = this.getCurrentStackModel();
+    // setup the area properties
+    area.partProperties.setPropertyNamed(area, "name", name);
+    area.partProperties.setPropertyNamed(area, "layout", "list");
+    area.partProperties.setPropertyNamed(area, "list-direction", "column");
+    area.partProperties.setPropertyNamed(area, "horizontal-resizing", "shrink-wrap");
+    area.partProperties.setPropertyNamed(area, "vertical-resizing", "shrink-wrap");
 
+    // setup the title field properties
+    titleField.partProperties.setPropertyNamed(titleField, "text", name);
+    titleField.partProperties.setPropertyNamed(titleField, "text-bold", true);
+    titleField.partProperties.setPropertyNamed(titleField, "text-size", 17);
+    titleField.partProperties.setPropertyNamed(titleField, "text-align", "center");
+    titleField.partProperties.setPropertyNamed(titleField, "editable", false);
+    titleField.partProperties.setPropertyNamed(titleField, "width", "fill");
+    titleField.partProperties.setPropertyNamed(titleField, "height", 30);
+    titleField.partProperties.setPropertyNamed(titleField, "background-color", "rgb(218, 218, 218)");
 
-    if(!insertStack){
-        throw new Error(`Could not find a Stack parent for ${targetPart.type}[${targetId}]`);
-    }    let winModel = this.newModel('window', insertStack.id);
-    winModel.setTarget(targetPart);
-    let targetName = targetPart.partProperties.getPropertyNamed(targetPart, "name");
-    let winTitle = `Script: ${targetName}(${targetPart.type}[${targetId}])`;
-    winModel.partProperties.setPropertyNamed(
-        winModel,
-        'title',
-        winTitle
-    );
+    // script field
+    let targetScript = target.partProperties.getPropertyNamed(target, "script");
+    scriptField.partProperties.setPropertyNamed(scriptField, "text", targetScript);
+    scriptField.partProperties.setPropertyNamed(scriptField, "width", "fill");
 
-    let winView = this.findViewById(winModel.id);
-    let winStackModel = this.newModel('stack', winModel.id);
-    let winStackView = this.findViewById(winStackModel.id);
-    winStackView.classList.add('window-stack');
-    let currentCard = this.newModel('card', winStackModel.id);
-    winStackModel.partProperties.setPropertyNamed(
-        winStackModel,
-        'current',
-        0
-    );
+    // setup up the save button properties
+    saveButton.partProperties.setPropertyNamed(saveButton, "name", "Save");
+    saveButton.partProperties.setPropertyNamed(saveButton, "text-size", 20);
+    saveButton.partProperties.setPropertyNamed(saveButton, "width", "fill");
+    saveButton.partProperties.setPropertyNamed(saveButton, "height", 30);
+    saveButton.partProperties.setPropertyNamed(saveButton, "target", `part id ${target.id}`);
 
-    // Set the current card's layout to be a column list
-    currentCard.partProperties.setPropertyNamed(
-        currentCard,
-        'layout',
-        'list'
-    );
-    currentCard.partProperties.setPropertyNamed(
-        currentCard,
-        'list-direction',
-        'column'
-    );
-
-    // Create the Field model and attach to current card
-    // of the new window.
-    let fieldModel = this.newModel('field', currentCard.id);
-    fieldModel.partProperties.setPropertyNamed(
-        fieldModel,
-        'vertical-resizing',
-        'space-fill'
-    );
-    fieldModel.partProperties.setPropertyNamed(
-        fieldModel,
-        'horizontal-resizing',
-        'space-fill'
-    );
-    let fieldView = this.findViewById(fieldModel.id);
-    let currentScript = targetPart.partProperties.getPropertyNamed(
-        targetPart,
-        'script'
-    );
-    let textArea = fieldView._shadowRoot.querySelector(".field-textarea");
-    fieldModel.partProperties.setPropertyNamed(
-        fieldModel,
-        'text',
-        currentScript
-    );
-
-    let saveBtnModel = this.newModel('button', currentCard.id);
-    saveBtnModel.partProperties.setPropertyNamed(
-        saveBtnModel,
-        'name',
-        'Save Script'
-    );
-
-    let saveBtnView = this.findViewById(saveBtnModel.id);
-
-    // Set the save button's action to be to save the script
-    // on the part
-    saveBtnModel._commandHandlers['click'] = function(){
-        let text = fieldModel.partProperties.getPropertyNamed(
-            fieldModel,
-            'text'
-        );
-        targetPart.partProperties.setPropertyNamed(
-            targetPart,
-            'script',
-            text
-        );
-    };
+    let saveScript = [
+        "on click",
+        "answer target",
+        "end click"
+    ];
+    saveButton.partProperties.setPropertyNamed(saveButton, "target", `part id ${target.id}`);
+    // TODO sort out why this goes into an infinite recursion loop
+    //saveButton.partProperties.setPropertyNamed(saveButton, "script", saveScript);
+    let saveButtonView = this.findViewsById(saveButton.id)[0];
+    saveButtonView.addEventListener("click", () => {
+        let newScript = scriptField.partProperties.getPropertyNamed(scriptField, "text");
+        target.partProperties.setPropertyNamed(target, "script", newScript);
+    });
 };
 
 System._commandHandlers['SimpleTalk'] = function(senders){
@@ -953,42 +919,10 @@ System._commandHandlers['SimpleTalk'] = function(senders){
 
 System._commandHandlers['openDebugger'] = function(senders, partId){
     let target = this.partsById[partId];
-    // The stack where the window will be inserted will
-    // be the current stack
-    let currentStackView = document.querySelector('.current-stack');
-    let insertStack = currentStackView.model;
-
-    let winModel = this.newModel('window', insertStack.id);
-    let winTitle = "Command Handlers";
-    winModel.partProperties.setPropertyNamed(
-        winModel,
-        'title',
-        winTitle
-    );
-    let winView = this.findViewById(winModel.id);
-    let winStackModel = this.newModel('stack', winModel.id);
-    let winStackView = this.findViewById(winStackModel.id);
-    winStackView.classList.add('window-stack');
-    let currentCard = this.newModel('card', winStackModel.id);
-    winStackModel.partProperties.setPropertyNamed(
-        winStackModel,
-        'current',
-        0
-    );
-
-    // Set the current card's layout to be a column list
-    currentCard.partProperties.setPropertyNamed(
-        currentCard,
-        'layout',
-        'list'
-    );
-
     // Create the Field model and attach to current card
-    // of the new window.
+    let currentCard = this.getCurrentCardModel();
     let fieldModel = this.newModel('field', currentCard.id);
-    let fieldView = this.findViewById(fieldModel.id);
-
-    let text = "";
+    let text = `Available Commands for ${target.name} (id ${target.id})\n\n`;
     Object.keys(target.commandHandlerRegistry).forEach((name) =>{
         let info = target.commandHandlerRegistry[name];
         text += `${name}: ${JSON.stringify(info)}\n`;
@@ -997,6 +931,11 @@ System._commandHandlers['openDebugger'] = function(senders, partId){
         fieldModel,
         'text',
         text
+    );
+    fieldModel.partProperties.setPropertyNamed(
+        fieldModel,
+        'editable',
+        false
     );
 };
 
