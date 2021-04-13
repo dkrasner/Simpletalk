@@ -604,11 +604,11 @@ const System = {
     // but return its st-field subpart
     findScriptEditorByTargetId: function(id){
         let scriptEditorField;
-        let windows = document.querySelectorAll("st-window");
-        windows.forEach((w) => {
-            let target = w.model.target;
-            if(target && target.id === id){
-                scriptEditorField = w.querySelector("st-field");
+        let areas = document.querySelectorAll("st-area");
+        areas.forEach((a) => {
+            let name = a.model.partProperties.getPropertyNamed(a.model, "name");
+            if(name && name === `Script ${id}`){
+                scriptEditorField = a.querySelectorAll("st-field")[1];
             }
         });
         return scriptEditorField;
@@ -870,7 +870,7 @@ System._commandHandlers['openScriptEditor'] = function(senders, targetId){
     let name = `Script For ${target.name} ${targetName} id ${target.id}`;
 
     // setup the area properties
-    area.partProperties.setPropertyNamed(area, "name", name);
+    area.partProperties.setPropertyNamed(area, "name", `Script ${target.id}`);
     area.partProperties.setPropertyNamed(area, "layout", "list");
     area.partProperties.setPropertyNamed(area, "list-direction", "column");
     area.partProperties.setPropertyNamed(area, "horizontal-resizing", "shrink-wrap");
@@ -902,15 +902,14 @@ System._commandHandlers['openScriptEditor'] = function(senders, targetId){
         "on click",
         "answer target",
         "end click"
-    ];
+    ].join("\n");
     saveButton.partProperties.setPropertyNamed(saveButton, "target", `part id ${target.id}`);
     // TODO sort out why this goes into an infinite recursion loop
-    //saveButton.partProperties.setPropertyNamed(saveButton, "script", saveScript);
-    let saveButtonView = this.findViewsById(saveButton.id)[0];
-    saveButtonView.addEventListener("click", () => {
+    // saveButton.partProperties.setPropertyNamed(saveButton, "script", saveScript, false);
+    saveButton._commandHandlers['click'] = function(){
         let newScript = scriptField.partProperties.getPropertyNamed(scriptField, "text");
         target.partProperties.setPropertyNamed(target, "script", newScript);
-    });
+    };
 };
 
 System._commandHandlers['SimpleTalk'] = function(senders){
