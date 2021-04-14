@@ -64,22 +64,22 @@ describe('Opening a Script Editor', () => {
 
         expect(sendMessageFunc).to.not.throw(Error);
     });
-    it('Current StackView now has WindowView as a child element', () => {
-        let currStackView = document.querySelector('.current-stack');
-        assert.exists(currStackView);
+    it('Current CardView now has WindowView as a child element', () => {
+        let currCardView = document.querySelector('.current-card');
+        assert.exists(currCardView);
         let windowView = document.querySelector('st-window');
         assert.exists(windowView);
 
         let foundWindow = document.querySelector('st-window');
         assert.equal(foundWindow, windowView);
     });
-    it('Current Stack Part now has a Window as a subpart', () => {
-        let currentStack = document.querySelector('st-stack.current-stack').model;
-        assert.exists(currentStack);
+    it('Current Card Part now has a Window as a subpart', () => {
+        let currentCard = document.querySelector('st-card.current-card').model;
+        assert.exists(currentCard);
         let windowModel = document.querySelector('st-window').model;
         assert.exists(windowModel);
 
-        assert.include(currentStack.subparts, windowModel);
+        assert.include(currentCard.subparts, windowModel);
     });
     it('Window model is targeting the current card', () => {
         let winModel = document.querySelector('st-window').model;

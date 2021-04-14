@@ -121,14 +121,21 @@ class Field extends Part {
             this.partProperties.setPropertyNamed(
                 this,
                 `border-${s}-style`,
-                "inset",
+                "solid",
             );
         });
         sides.forEach((s) => {
             this.partProperties.setPropertyNamed(
                 this,
                 `border-${s}-color`,
-                "rgb(238, 238, 238)",
+                "black",
+            );
+        });
+        sides.forEach((s) => {
+            this.partProperties.setPropertyNamed(
+                this,
+                `border-${s}-width`,
+                "1",
             );
         });
 

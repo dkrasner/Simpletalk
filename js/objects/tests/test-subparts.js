@@ -79,6 +79,11 @@ describe('Subpart Validity Tests', () => {
             let card = new Card();
             assert.isTrue(card.acceptsSubpart(audio.type));
         });
+        it('Accepts Window', () => {
+            let win = new Window();
+            let card = new Card();
+            assert.isTrue(card.acceptsSubpart(win.type));
+        });
         it('Rejects Stack', () => {
             let stack = new Stack();
             let card = new Card();
@@ -99,11 +104,6 @@ describe('Subpart Validity Tests', () => {
             assert.isFalse(
                 card.acceptsSubpart(background.type)
             );
-        });
-        it('Rejects Window', () => {
-            let win = new Window();
-            let card = new Card();
-            assert.isFalse(card.acceptsSubpart(win.type));
         });
     });
 

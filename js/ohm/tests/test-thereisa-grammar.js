@@ -25,7 +25,7 @@ const semanticMatchFailTest = (str, semanticType) => {
 // Available system objects
 const objects = [
     "background", "card", "area", "field", "button", "stack", "window",
-    "toolbox", "drawing", "audio", "image"
+    "drawing", "audio", "image"
 ];
 
 describe("'there is a' ObjectSpecifier" , () => {

@@ -29,7 +29,7 @@ String.prototype.unCapitalize = function() {
 
 const objects = [
     "background", "card", "area", "field", "button", "stack", "window",
-    "toolbox", "drawing", "audio", "image"
+    "drawing", "audio", "image"
 ];
 
 describe("SimpleTalk Grammar", () => {

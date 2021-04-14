@@ -136,12 +136,30 @@ const errorHandler = {
 
     _openGrammar: function(partId, ruleName){
         let target = window.System.partsById[partId];
-        let msg = {
-            type: "command",
-            "commandName": "openSimpletalkGrammar",
-            args: [ruleName]
-        };
-        target.sendMessage(msg, target);
+        let statementLines = [
+            'add field "SimpleTalk" to current card',
+            'tell field "SimpleTalk" of current card to set "editable" to false',
+            'SimpleTalk',
+            'tell field "SimpleTalk"of current card to set "text" to it'
+        ];
+        let script = `on doIt\n   ${statementLines.join('\n')}\nend doIt`;
+        target.sendMessage(
+            {
+                type: "compile",
+                codeString: script,
+                targetId: target.id
+            },
+            target
+        );
+        target.sendMessage(
+            {
+                type: "command",
+                commandName: "doIt",
+                args: [],
+                shouldIgnore: true // Should ignore if System DNU
+            },
+            target
+        );
     },
 
     // At the moment this simply opens a st-window st-field with

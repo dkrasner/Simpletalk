@@ -56,12 +56,6 @@ const System = {
     _commandHandlers: {},
     _functionHandlers: {},
 
-    // a list of "current" toolbox elements
-    // these can be added or remove from the World Catalog
-    // TODO: we might want toolbox to be tied to context, example:
-    // world or stack , account or some notion of project context
-    toolbox: [],
-
     // A dictionary mapping part types like
     // 'button' to their classes (Button)
     availableParts: {},
@@ -139,7 +133,6 @@ const System = {
             'current',
             0
         );
-        
         // Update serialization
         this.serialize();
     },
@@ -224,7 +217,7 @@ const System = {
             id: source.id,
         });
 
-        this.passDevToolMessage(aMessage, source, target);
+        // this.passDevToolMessage(aMessage, source, target);
         return target.receiveMessage(aMessage);
     },
 
@@ -346,14 +339,6 @@ const System = {
             throw new Error(`System could not locate owner part with id ${ownerId}`);
         }
 
-        // TODO This is an exception to the general newModel
-        // message and method structure; potentially should be
-        // reworked
-        // if (ownerPart === "toolbox"){
-        //     this.addToToolbox(kind, context, name);
-        //     return true;
-        // }
-
         // Find the class constructor for the kind of
         // part requested as a new model. If not known,
         // throw an error
@@ -466,11 +451,12 @@ const System = {
             ownerModel.removePart(foundModel);
         }
 
+        // close all open editors, otherwise they will
+        // be orphaned in the view
+        foundModel.partProperties.setPropertyNamed(foundModel, "editorOpen", false);
+
         delete this.partsById[modelId];
         this.removeViews(modelId);
-        // in case the model/partView was in the toolbox
-        // remove the id reference
-        this.removeFromToolbox(modelId);
 
         // Serialize the state
         this.serialize();
@@ -566,35 +552,6 @@ const System = {
         });
 
         return newView;
-    },
-
-    addToToolbox(kind, context, name){
-        let toolboxModel = this.findToolbox();
-        let model = this.newModel(kind, toolboxModel.id, name);
-        this.toolbox.push(model.id);
-    },
-
-    removeFromToolbox(partId){
-        let index = this.toolbox.indexOf(partId);
-        if (index > -1){
-            this.toolbox.splice(index, 1);
-        }
-    },
-
-    findToolbox(){
-        // TODO this is an awkward way to see if an element is there!
-        let toolboxCardModel = null;
-        document.querySelectorAll('st-window').forEach((stWindow) => {
-            let windowId = stWindow.getAttribute("part-id");
-            let part = window.System.partsById[windowId];
-            let titleProperty = part.partProperties.findPropertyNamed("title");
-            if(titleProperty.getValue() === "Toolbox"){
-               // Note: we return the toolbox card not window since this is where
-               // toolbox subparts are attached.
-               toolboxCardModel = stWindow.querySelector("st-card").model;
-            };
-        });
-        return toolboxCardModel;
     },
 
     registerPart: function(name, cls){
@@ -765,10 +722,6 @@ System._commandHandlers['newModel'] = function(senders, ...rest){
     System.newModel(...rest);
     this.serialize();
 };
-//System._commandHandlers['copyModel'] = System.copyModel;
-System._commandHandlers['copyModel'] = function(senders, ...rest){
-    System.copyModel(...rest);
-};
 //System._commandHandlers['newView'] = System.newView;
 System._commandHandlers['newView'] = function(senders, ...rest){
     System.newView(...rest);
@@ -902,348 +855,59 @@ System._commandHandlers['importWorld'] = function(sender, sourceUrl){
         });
 };
 
-// Opens a basic tool window on the Part of the given
-// id. If no ID is given, we assume the tool window
-// is for the current stack.
-System._commandHandlers['openToolbox'] = function(senders, targetId){
-    let targetPart;
-    if(!targetId){
-        targetId = Object.keys(this.partsById).find(key => {
-            return this.partsById[key].type == 'stack';
-        });
-        targetPart = this.partsById[targetId];
-    } else {
-        targetPart = this.partsById[targetId];
-    }
-
-    if(!targetPart || targetPart == undefined){
-        throw new Error(`Could not locate current Stack or Part with id ${targetId}`);
-    }
-
-    // Find the existing toolbox
-    let toolboxPart = targetPart.subparts.find(subpart => {
-        let name = subpart.partProperties.getPropertyNamed(
-            subpart,
-            'name'
-        );
-        return subpart.type == 'window' && name == 'Toolbox';
-    });
-
-    if(!toolboxPart){
-        throw new Error(`Could not locate Toolbox!`);
-    }
-
-    // Unhide it if it isn't shown already
-    toolboxPart.partProperties.setPropertyNamed(
-        toolboxPart,
-        'hide',
-        false
-    );
-};
-
-System._commandHandlers['openWorldCatalog'] = function(senders, targetId){
-    let targetPart;
-    if(!targetId){
-        targetPart = this.getCurrentStackModel();
-    } else {
-        targetPart = this.partsById[targetId];
-    }
-
-    if(!targetPart || targetPart == undefined){
-        throw new Error(`Could not locate current Stack or Part with id ${targetId}`);
-    }
-
-    let windowModel = this.newModel('window', targetPart.id);
-    let windowStack = this.newModel('stack', windowModel.id);
-    windowModel.partProperties.setPropertyNamed(
-        windowModel,
-        'title',
-        'World Catalog'
-    );
-
-    // Get the current card on the window stack etc
-    let windowStackView = this.findViewById(windowStack.id);
-    let windowCurrentCardModel = windowStackView.querySelector('.current-card').model;
-
-    // Set the current card of the window to have a list layout,
-    // which defaults to a column list-direction
-    windowCurrentCardModel.partProperties.setPropertyNamed(
-        windowCurrentCardModel,
-        'list-direction',
-        'column'
-    );
-    windowCurrentCardModel.partProperties.setPropertyNamed(
-        windowCurrentCardModel,
-        'layout',
-        'list'
-    );
-
-    windowStackView.classList.add('window-stack');
-    //TODO this should be updated as parts, views mature
-    const ignoreParts = ["field", "field", "background", "world"];
-    Object.keys(System.availableParts).forEach((partName) => {
-        if (ignoreParts.indexOf(partName) === -1){
-            let partModel;
-            let script;
-            if (partName === "stack"){
-                script = 'on click\n    add  stack "new stack" to world \nend click';
-                partModel = this.newModel(
-                    "image",
-                    windowCurrentCardModel.id,
-                    '/images/stack.svg'
-                );
-            } else if (partName === "card"){
-                script = 'on click\n    add card "new card" to current stack \nend click';
-                partModel = this.newModel(
-                    "image",
-                    windowCurrentCardModel.id,
-                    '/images/card.svg'
-                );
-            } else if (partName === "window"){
-                script = 'on click\n    add window "new window" to current stack \nend click';
-                partModel = this.newModel(
-                    "image",
-                    windowCurrentCardModel.id,
-                    '/images/window.svg'
-                );
-            } else if (partName === "container"){
-                script = 'on click\n    add container "new container" to current card \nend click';
-                partModel = this.newModel(
-                    "image",
-                    windowCurrentCardModel.id,
-                    '/images/container.svg'
-                );
-            } else if (partName === "button"){
-                script = 'on click\n    add button "new button" to current card \nend click';
-                partModel = this.newModel(partName, windowCurrentCardModel.id);
-            } else if (partName === "drawing"){
-                script = 'on click\n    add drawing "new drawing" to current card \nend click';
-                partModel = this.newModel(
-                    "image",
-                    windowCurrentCardModel.id,
-                    '/images/drawing.svg'
-                );
-            } else if (partName === "image"){
-                script = 'on click\n    add image to current card \nend click';
-                partModel = this.newModel("image", windowCurrentCardModel.id);
-            }
-
-            let view = this.findViewById(partModel.id);
-            view.wantsHaloResize = false;
-            partModel.partProperties.setPropertyNamed(
-                partModel,
-                'name',
-                partName
-            );
-            partModel.partProperties.setPropertyNamed(
-                partModel,
-                'script',
-                script
-            );
-            System.sendMessage(
-                {type: "compile", codeString: script, targetId: partModel.id},
-                System,
-                System
-            );
-        }
-    });
-};
-
 System._commandHandlers['openScriptEditor'] = function(senders, targetId){
-    let targetPart = this.partsById[targetId];
-    if(!targetPart){
-        throw new Error(`No such part with id ${targetId}!`);
+    let target = this.partsById[targetId];
+    let currentCard = this.getCurrentCardModel();
+    let window = this.newModel('window', currentCard.id);
+    let stack = this.newModel('stack', window.id);
+    let card = this.newModel('card', stack.id);
+    let scriptField = this.newModel('field', card.id);
+    let saveButton = this.newModel('button', card.id);
+
+    let targetName = target.partProperties.getPropertyNamed(target, "name");
+    if(targetName){
+        targetName = `"${targetName}"`;
     }
+    let name = `Script For ${target.name} ${targetName} id ${target.id}`;
 
-    // The stack where the window will be inserted will
-    // be the current stack
-    let insertStack = this.getCurrentStackModel();
+    // setup the window and stack properties
+    window.setTarget(target);
+    window.partProperties.setPropertyNamed(window, "title", name);
+    stack.partProperties.setPropertyNamed(stack, "current", 0);
 
+    card.partProperties.setPropertyNamed(card, "layout", "list");
+    card.partProperties.setPropertyNamed(card, "list-direction", "column");
 
-    if(!insertStack){
-        throw new Error(`Could not find a Stack parent for ${targetPart.type}[${targetId}]`);
-    }    let winModel = this.newModel('window', insertStack.id);
-    winModel.setTarget(targetPart);
-    let targetName = targetPart.partProperties.getPropertyNamed(targetPart, "name");
-    let winTitle = `Script: ${targetName}(${targetPart.type}[${targetId}])`;
-    winModel.partProperties.setPropertyNamed(
-        winModel,
-        'title',
-        winTitle
-    );
+    // script field
+    let targetScript = target.partProperties.getPropertyNamed(target, "script");
+    scriptField.partProperties.setPropertyNamed(scriptField, "text", targetScript);
+    scriptField.partProperties.setPropertyNamed(scriptField, "horizontal-resizing", "space-fill");
+    scriptField.partProperties.setPropertyNamed(scriptField, "vertical-resizing", "space-fill");
 
-    let winView = this.findViewById(winModel.id);
-    let winStackModel = this.newModel('stack', winModel.id);
-    let winStackView = this.findViewById(winStackModel.id);
-    winStackView.classList.add('window-stack');
-    let currentCard = this.newModel('card', winStackModel.id);
-    winStackModel.partProperties.setPropertyNamed(
-        winStackModel,
-        'current',
-        0
-    );
+    // setup up the save button properties
+    saveButton.partProperties.setPropertyNamed(saveButton, "name", "Save Script");
+    saveButton.partProperties.setPropertyNamed(saveButton, "text-size", 20);
+    saveButton.partProperties.setPropertyNamed(saveButton, "target", `part id ${target.id}`);
 
-    // Set the current card's layout to be a column list
-    currentCard.partProperties.setPropertyNamed(
-        currentCard,
-        'layout',
-        'list'
-    );
-    currentCard.partProperties.setPropertyNamed(
-        currentCard,
-        'list-direction',
-        'column'
-    );
-
-    // Create the Field model and attach to current card
-    // of the new window.
-    let fieldModel = this.newModel('field', currentCard.id);
-    fieldModel.partProperties.setPropertyNamed(
-        fieldModel,
-        'vertical-resizing',
-        'space-fill'
-    );
-    fieldModel.partProperties.setPropertyNamed(
-        fieldModel,
-        'horizontal-resizing',
-        'space-fill'
-    );
-    let fieldView = this.findViewById(fieldModel.id);
-    let currentScript = targetPart.partProperties.getPropertyNamed(
-        targetPart,
-        'script'
-    );
-    let textArea = fieldView._shadowRoot.querySelector(".field-textarea");
-    fieldModel.partProperties.setPropertyNamed(
-        fieldModel,
-        'text',
-        currentScript
-    );
-
-    let saveBtnModel = this.newModel('button', currentCard.id);
-    saveBtnModel.partProperties.setPropertyNamed(
-        saveBtnModel,
-        'name',
-        'Save Script'
-    );
-
-    let saveBtnView = this.findViewById(saveBtnModel.id);
-
-    // Set the save button's action to be to save the script
-    // on the part
-    saveBtnModel._commandHandlers['click'] = function(){
-        let text = fieldModel.partProperties.getPropertyNamed(
-            fieldModel,
-            'text'
-        );
-        targetPart.partProperties.setPropertyNamed(
-            targetPart,
-            'script',
-            text
-        );
+    saveButton.partProperties.setPropertyNamed(saveButton, "target", `part id ${target.id}`);
+    // TODO sort out why compiling a script on this button goes into an infinite recursion loop
+    // saveButton.partProperties.setPropertyNamed(saveButton, "script", saveScript, false);
+    saveButton._commandHandlers['click'] = function(){
+        let newScript = scriptField.partProperties.getPropertyNamed(scriptField, "text");
+        target.partProperties.setPropertyNamed(target, "script", newScript);
     };
 };
 
-System._commandHandlers['openSimpletalkGrammar'] = function(senders, ruleName){
-    // The stack where the window will be inserted will
-    // be the current stack
-    let currentStackView = document.querySelector('.current-stack');
-    let insertStack = currentStackView.model;
-
-    let winModel = this.newModel('window', insertStack.id);
-    let winTitle = "Simpltetalk Grammar";
-    winModel.partProperties.setPropertyNamed(
-        winModel,
-        'title',
-        winTitle
-    );
-    let winView = this.findViewById(winModel.id);
-    let winStackModel = this.newModel('stack', winModel.id);
-    let winStackView = this.findViewById(winStackModel.id);
-    winStackView.classList.add('window-stack');
-    let currentCard = this.newModel('card', winStackModel.id);
-    winStackModel.partProperties.setPropertyNamed(
-        winStackModel,
-        'current',
-        0
-    );
-
-    // Set the current card's layout to be a column list
-    currentCard.partProperties.setPropertyNamed(
-        currentCard,
-        'layout',
-        'list'
-    );
-
-    // Create the Field model and attach to current card
-    // of the new window.
-    let fieldModel = this.newModel('field', currentCard.id);
-    let fieldView = this.findViewById(fieldModel.id);
-    let grammar = System.grammar.source.sourceString;
-
-    fieldModel.partProperties.setPropertyNamed(
-        fieldModel,
-        'text',
-        grammar
-    );
-
-    // if the ruleName has been provided, scroll that into view
-    // TODO this doesn't work properly
-    let textArea = fieldView._shadowRoot.querySelector(".field-textarea");
-    if(ruleName){
-        let regex = `${ruleName}`;
-        for(var i = 0; i < textArea.children.length; i++){
-            let line = textArea.children[i];
-            let text = line.textContent;
-            if(text.match(regex)){
-                try{
-                    line.scrollIntoView();
-                } catch (e) {
-                    console.log("script editor does not support line.scrollInfoView()");
-                };
-            }
-        };
-    }
-};
+System._commandHandlers['SimpleTalk'] = function(senders){
+    return System.grammar.source.sourceString;
+}
 
 System._commandHandlers['openDebugger'] = function(senders, partId){
     let target = this.partsById[partId];
-    // The stack where the window will be inserted will
-    // be the current stack
-    let currentStackView = document.querySelector('.current-stack');
-    let insertStack = currentStackView.model;
-
-    let winModel = this.newModel('window', insertStack.id);
-    let winTitle = "Command Handlers";
-    winModel.partProperties.setPropertyNamed(
-        winModel,
-        'title',
-        winTitle
-    );
-    let winView = this.findViewById(winModel.id);
-    let winStackModel = this.newModel('stack', winModel.id);
-    let winStackView = this.findViewById(winStackModel.id);
-    winStackView.classList.add('window-stack');
-    let currentCard = this.newModel('card', winStackModel.id);
-    winStackModel.partProperties.setPropertyNamed(
-        winStackModel,
-        'current',
-        0
-    );
-
-    // Set the current card's layout to be a column list
-    currentCard.partProperties.setPropertyNamed(
-        currentCard,
-        'layout',
-        'list'
-    );
-
     // Create the Field model and attach to current card
-    // of the new window.
+    let currentCard = this.getCurrentCardModel();
     let fieldModel = this.newModel('field', currentCard.id);
-    let fieldView = this.findViewById(fieldModel.id);
-
-    let text = "";
+    let text = `Available Commands for ${target.name} (id ${target.id})\n\n`;
     Object.keys(target.commandHandlerRegistry).forEach((name) =>{
         let info = target.commandHandlerRegistry[name];
         text += `${name}: ${JSON.stringify(info)}\n`;
@@ -1252,6 +916,11 @@ System._commandHandlers['openDebugger'] = function(senders, partId){
         fieldModel,
         'text',
         text
+    );
+    fieldModel.partProperties.setPropertyNamed(
+        fieldModel,
+        'editable',
+        false
     );
 };
 

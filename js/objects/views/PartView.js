@@ -60,8 +60,6 @@ class PartView extends HTMLElement {
         // Bind Halo related methods
         this.openHalo = this.openHalo.bind(this);
         this.closeHalo = this.closeHalo.bind(this);
-        this.openToolbox = this.openToolbox.bind(this);
-        this.openWorldCatalog = this.openWorldCatalog.bind(this);
         this.onHaloDelete = this.onHaloDelete.bind(this);
         this.onHaloOpenEditor = this.onHaloOpenEditor.bind(this);
         this.onHaloResize = this.onHaloResize.bind(this);
@@ -470,41 +468,6 @@ class PartView extends HTMLElement {
     eventIgnore(eventName, partId){
         // remove eventListener
         this[`on${eventName}`] = null;
-    }
-
-    openToolbox(){
-        // Check to see if there's a toolbox in
-        // the component's shadow root already
-        let foundToolbox = window.System.findToolbox();;
-        if(!foundToolbox){
-            this.sendMessage({
-                type: 'command',
-                commandName: 'openToolbox',
-                args: []
-            }, window.System);
-        }
-    }
-
-    openWorldCatalog(){
-        // Check to see if there's a world catalogue in
-        // the component's shadow root already
-        let foundWorldCatalog = false;
-        // TODO this is an awkward way to see if an element is there!
-        document.querySelectorAll('st-window').forEach((stWindow) => {
-            let windowId = stWindow.getAttribute("part-id");
-            let part = window.System.partsById[windowId];
-            let titleProperty = part.partProperties.findPropertyNamed("title");
-            if(titleProperty.getValue() === "World Catalog"){
-                foundWorldCatalog = true;
-            };
-        });
-        if(!foundWorldCatalog){
-            this.sendMessage({
-                type: 'command',
-                commandName: 'openWorldCatalog',
-                args: []
-            }, window.System);
-        }
     }
 
     /* Lifecycle Method Defaults */

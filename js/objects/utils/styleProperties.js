@@ -23,10 +23,6 @@ const addBasicStyleProps = (target) => {
         'transparency',
         1.0,
     );
-    target.partProperties.newStyleProp(
-        'border-style',
-        'solid'
-    );
     sides.forEach((s) => {
         target.partProperties.newStyleProp(
             `border-${s}-style`,

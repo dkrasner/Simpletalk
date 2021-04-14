@@ -26,7 +26,6 @@ const partTypes = [
     "field",
     "stack",
     "window",
-    "toolbox",
     "drawing",
     "image",
     "area",
