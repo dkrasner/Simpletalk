@@ -59,7 +59,7 @@ const detectHands = async () => {
     const vw = Math.max(document.documentElement.clientWidth || 0, window.innerWidth || 0)
     const vh = Math.max(document.documentElement.clientHeight || 0, window.innerHeight || 0)
     const p = [0.5 * (x1 + x2) * vw, 0.5 * (y1 + y2) * vh];
-    handInterface.positions = [].concat(handInterface.positions.slice(-2), p);
+    handInterface.positions = [].concat(handInterface.positions.slice(-2), [p]);
     var target = handInterface.targetElement;
     if (target === null) {
         target = handInterface.leninHand;
