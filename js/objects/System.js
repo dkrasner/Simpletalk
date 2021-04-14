@@ -92,10 +92,6 @@ const System = {
                 });
         } else {
             this.loadFromEmpty();
-            System.navigator.setModel(
-                System.partsById['world']
-            );
-            this.sendInitialOpenMessages();
         }
 
         // Attach a new clipboard instance
@@ -135,6 +131,11 @@ const System = {
         );
         // Update serialization
         this.serialize();
+
+        this.sendInitialOpenMessages();
+        System.navigator.setModel(
+            System.partsById['world']
+        );
     },
 
     sendInitialOpenMessages: function(){
@@ -650,9 +651,14 @@ const System = {
     getFullHTMLString: function(){
         let clonedDocument = document.cloneNode(true);
         let world = clonedDocument.querySelector('st-world');
+        let nav = clonedDocument.querySelector('st-navigator');
         if(world){
             world.remove();
         }
+        if(nav){
+            nav.remove();
+        }
+        
         return clonedDocument.documentElement.outerHTML;
     },
 

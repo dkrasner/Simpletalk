@@ -150,8 +150,6 @@ class FieldView extends PartView {
 
         this.textarea.addEventListener('input', this.onInput);
         this.textarea.addEventListener('keydown', this.onKeydown);
-        this.textarea.focus();
-        // document.execCommand("defaultParagraphSeparator", false, "br");
         // No need to add a click listener as the base PartView class does that
     }
 

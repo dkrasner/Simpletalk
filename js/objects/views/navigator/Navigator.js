@@ -75,14 +75,16 @@ const templateString = `
         box-sizing: border-box;
         position: absolute;
         width: 100%;
-        top: 100%;
+        bottom: 0;
         min-height: 271px;
         background-color: white;
         backdrop-filter: blur(4px);
-        transition: top 0.2s ease-out;
+        transition: transform 0.2s ease-out;
         padding: 20px;
+        transform: translateY(100%);
         border-top: 1px solid rgba(50, 50, 50, 0.4);
         overflow-y: hidden;
+        overflow-x: auto;
         z-index: 1000;
     }
 
@@ -128,51 +130,82 @@ class STNavigator extends PartView {
         this.open = this.open.bind(this);
         this.close = this.close.bind(this);
         this.handleCurrentChange = this.handleCurrentChange.bind(this);
+        this.handlePartAdded = this.handlePartAdded.bind(this);
+        this.createCardRowFor = this.createCardRowFor.bind(this);
     }
 
-    afterConnected(){
+    afterDisconnected(){
+        let worldView = document.querySelector('st-world');
+        worldView.removeEventListener('st-view-added', this.handlePartAdded);
+    }
+
+    afterModelSet(){
+        this.removeAttribute('part-id');
+
+        // Respond to the System part-added CustomEvent
+        let worldView = document.querySelector('st-world');
+        worldView.addEventListener('st-view-added', this.handlePartAdded);
+
+        // Add a StackRow view.
         this.stackRowEl = this.querySelector(':scope > nav-stack-row');
         if(!this.stackRowEl){
             this.stackRowEl = document.createElement('nav-stack-row');
             this.stackRowEl.setAttribute('slot', 'stack-row');
             this.appendChild(this.stackRowEl);
         }
-        this.cardRowEl = this.querySelector(':scope > nav-card-row');
-        if(!this.cardRowEl){
-            this.cardRowEl = document.createElement('nav-card-row');
-            this.cardRowEl.setAttribute('slot', 'card-row');
-            this.appendChild(this.cardRowEl);
-        }
+        this.stackRowEl.setModel(this.model);
+
+        // Create any needed CardRow views for all stacks
+        // currently in the world
+        this.model.subparts.filter(subpart => {
+            return subpart.type == 'stack';
+        }).forEach(stackPart => {
+            this.createCardRowFor(stackPart);
+        });
+
+        // Init the StackRow
+        this.stackRowEl.initView();
+        
+        // Update the current card/stack values
+        this.handleCurrentChange();
 
         // Respond to eventual current-ness prop
         // changes from the WorldStack.
         this.onPropChange('current', this.handleCurrentChange);
     }
 
-    afterModelSet(){
-        this.removeAttribute('part-id');
-        this.stackRowEl = this.querySelector(':scope > nav-stack-row');
-        if(!this.stackRowEl){
-            this.stackRowEl = document.createElement('nav-stack-row');
-            this.stackRowEl.setAttribute('slot', 'stack-row');
-            this.appendChild(this.stackRowEl);
-        }
-        this.cardRowEl = this.querySelector(':scope > nav-card-row');
-        if(!this.cardRowEl){
-            this.cardRowEl = document.createElement('nav-card-row');
-            this.cardRowEl.setAttribute('slot', 'card-row');
-            this.appendChild(this.cardRowEl);
-        }
-        this.stackRowEl.setModel(this.model);
-        this.cardRowEl.setModel(this.model.currentStack);
-    }
-
     handleCurrentChange(){
         // If we get here, this means that the current *stack* has changed.
-        // Therefore we need to re-initialize the CardRow view.
-        this.cardRowEl.setModel(this.model.currentStack);
-        this.cardRowEl.initView();
-        this.cardRowEl.showInitially();
+        // So we need to find the correct CardRow for it and set it
+        // to be the slotted one in the shadow DOM
+        let currentStackId = this.model.currentStack.id.toString();
+        Array.from(this.querySelectorAll('nav-card-row')).forEach(cardRow => {
+            let rowId = cardRow.getAttribute('stack-id');
+            cardRow.removeAttribute('slot');
+            if(currentStackId == rowId){
+                cardRow.setAttribute('slot', 'card-row');
+                Array.from(cardRow.querySelectorAll('wrapped-view')).forEach(wrapper => {
+                    wrapper.updateScaling();
+                });
+            }
+        });
+    }
+
+    handlePartAdded(event){
+        // If a new stack is added, we need to create
+        // a new CardRow for it.
+        if(event.detail.partType == 'stack'){
+            let stackPart = window.System.partsById[event.detail.partId];
+            this.createCardRowFor(stackPart);
+        }
+    }
+
+    createCardRowFor(aStack){
+        let cardRow = document.createElement('nav-card-row');
+        cardRow.setAttribute('stack-id', aStack.id);
+        cardRow.setModel(aStack);
+        this.appendChild(cardRow);
+        cardRow.initView();
     }
 
     toggle(){
@@ -185,23 +218,14 @@ class STNavigator extends PartView {
     }
 
     open(){
-        if(!this.initialized && this.model){
-            this.stackRowEl.initView();
-            this.cardRowEl.initView();
-            this.initialized = true;
-            setTimeout(() => {
-                this.cardRowEl.showInitially();
-                this.stackRowEl.showInitially();
-            }, 330);
-        }
-        let height = this.getBoundingClientRect().height;
-        let heightPx = `calc(100% - ${height}px)`;
-        this.style.top = heightPx;
+        this.style.transform = "translateY(0)";
     }
 
     close(){
-        this.style.top = null;
+        this.style.transform = "translateY(100%)";
     }
+
+    
 };
 
 export {

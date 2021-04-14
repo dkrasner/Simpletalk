@@ -59,6 +59,31 @@ class STClipboard {
                     
                     // Open Halo on the new view
                     deserializer.rootViews[0].openHalo();
+
+                    // Dispatch the CustomEvent that notifies listeners
+                    // that a new view was added (used by Nav etc)
+                    let event = new CustomEvent('st-view-added', {
+                        detail: {
+                            partType: newPart.type,
+                            partId: newPart.id,
+                            ownerId: newPart._owner.id
+                        }
+                    });
+                    deserializer.rootViews[0].dispatchEvent(event);
+
+                    // Add any lensed views that might be needed
+                    let rootLensViews = this.system.findLensViewsById(newPart._owner.id);
+                    rootLensViews.forEach(lensView => {
+                        let newLensView = document.createElement(
+                            this.system.tagNameForViewNamed(newPart.type)
+                        );
+                        newLensView.setModel(newPart);
+                        newLensView.removeAttribute('part-id');
+                        newLensView.setAttribute('lens-part-id', newPart.id);
+                        newLensView.setAttribute('role', 'lens');
+                        lensView.appendChild(newLensView);
+                    });
+                    
                     return;
                 })
                 .catch(err => {

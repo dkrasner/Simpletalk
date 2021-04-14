@@ -39,7 +39,6 @@ class StackRow extends PartView {
         this.handlePartAdded = this.handlePartAdded.bind(this);
         this.showInitially = this.showInitially.bind(this);
         this.onWrapperClick = this.onWrapperClick.bind(this);
-        this._recursivelyUpdateLensViewSubparts = this._recursivelyUpdateLensViewSubparts.bind(this);
     }
 
     afterModelSet(){
@@ -65,12 +64,12 @@ class StackRow extends PartView {
         let wrappedViews = Array.from(
             this.querySelectorAll('wrapped-view')
         );
-        wrappedViews.forEach(wrappedView => {
-            let wrappedChild = wrappedView.children[0];
-            if(wrappedChild.model.id == currentId){
-                wrappedView.classList.add('current');
+        wrappedViews.forEach(wrapper => {
+            let wrappedId = wrapper.getAttribute('wrapped-id');
+            if(wrappedId == this.model.currentStack.id.toString()){
+                wrapper.classList.add('current');
             } else {
-                wrappedView.classList.remove('current');
+                wrapper.classList.remove('current');
             }
         });
     }
@@ -96,6 +95,9 @@ class StackRow extends PartView {
     }
 
     initView(){
+        // Remove any existing wrapped views
+        this.innerHTML = "";
+
         // We iterate over each corresponding Stack and:
         // * Create a clone of its view node;
         // * Attach the correct model;
@@ -112,51 +114,16 @@ class StackRow extends PartView {
     }
 
     showInitially(){
-        let wrappers = Array.from(this.querySelectorAll('wrapped-view'));
-        wrappers.forEach(wrapper => {
-            wrapper.classList.remove('hide');
-            wrapper.showContent();
-        });
+        // Nothing for now
     }
 
-    addWrappedStack(aStack){
-        // Create a lensed copy of the StackView
-        let stackView = document.querySelector(`[part-id="${aStack.id}"]`);
-        let stackLensView = stackView.cloneNode(true);
-        stackLensView.setAttribute('lens-part-id', aStack.id);
-        stackLensView.setAttribute('slot', 'wrapped-view');
-        stackLensView.style.pointerEvents = "none";
-
-        // Recursively create lens views of all subpart children
-        // and append them in the correct places
-        stackLensView.isLensed = true;
-        stackLensView.setModel(aStack);
-        stackLensView.removeAttribute('part-id');
-        stackLensView.handleCurrentChange();
-        this._recursivelyUpdateLensViewSubparts(stackLensView, aStack.id);
-        
+    addWrappedStack(aStack){  
         // Insert the lensed StackView into the wrapper
         let wrapper = document.createElement('wrapped-view');
         wrapper.setAttribute("slot", "stacks");
-        wrapper.setAttribute("wrapped-id", aStack.id);
         wrapper.addEventListener('click', this.onWrapperClick);
-        wrapper.appendChild(stackLensView);
-        wrapper.hideContent();
-        wrapper.classList.add('hide');
         this.appendChild(wrapper);
-    }
-
-    _recursivelyUpdateLensViewSubparts(aLensView, aLensId){
-        let subViews = Array.from(aLensView.children);
-        subViews.forEach(subView => {
-            subView.isLensed = true;
-            let id = subView.getAttribute('part-id');
-            subView.setAttribute('lens-part-id', id);
-            let model = window.System.partsById[id];
-            subView.setModel(model);
-            subView.removeAttribute('part-id');
-            this._recursivelyUpdateLensViewSubparts(subView, id);
-        });
+        wrapper.setModel(aStack);
     }
 };
 

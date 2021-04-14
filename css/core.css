@@ -23,8 +23,8 @@
     --container-default-height: 15vh;
     --drawing-default-width: 500px;
     --drawing-default-height: 300px;
-    --field-default-width: 40vw;
-    --field-default-height: 30vh;
+    --field-default-width: 300px;
+    --field-default-height: 200px;
 }
 
 /* Keyframe Animations */
@@ -41,8 +41,7 @@
 
 body {
     display: block;
-    width: 100vw;
-    height: 100vh;
+    position: relative;
     overflow: hidden;
     font-family: "Crimson Pro";
     background-color: purple;
@@ -55,7 +54,11 @@ body {
 /* =World Styles
  *----------------------------------------------------*/
 st-world {
-    visibility: hidden;
+    display: block;
+    position: absolute;
+    overflow: hidden;
+    width: 100vw;
+    height: 100vh;
 }
 
 
@@ -173,6 +176,7 @@ st-field {
     height: var(--field-default-height);
     background-color: var(--palette-cornsik);
     position: absolute;
+    display: block;
 }
 
 /* =Layout Class Styles

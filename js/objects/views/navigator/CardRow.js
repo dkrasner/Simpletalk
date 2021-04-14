@@ -39,7 +39,6 @@ class CardRow extends PartView {
         this.handlePartAdded = this.handlePartAdded.bind(this);
         this.showInitially = this.showInitially.bind(this);
         this.onWrapperClick = this.onWrapperClick.bind(this);
-        this._recursivelyUpdateLensViewSubparts = this._recursivelyUpdateLensViewSubparts.bind(this);
     }
 
     afterModelSet(){
@@ -64,16 +63,13 @@ class CardRow extends PartView {
         if(!this.model.currentCard){
             return;
         }
-        let currentId = this.model.currentCard.id;
-        let wrappedViews = Array.from(
-            this.querySelectorAll('wrapped-view')
-        );
-        wrappedViews.forEach(wrappedView => {
-            let wrappedChild = wrappedView.children[0];
-            if(wrappedChild.model.id == currentId){
-                wrappedView.classList.add('current');
+        let wrappers = Array.from(this.querySelectorAll('wrapped-view'));
+        wrappers.forEach(wrapper => {
+            let wrappedId = wrapper.getAttribute('wrapped-id');
+            if(wrappedId == this.model.currentCard.id.toString()){
+                wrapper.classList.add('current');
             } else {
-                wrappedView.classList.remove('current');
+                wrapper.classList.remove('current');
             }
         });
     }
@@ -116,60 +112,16 @@ class CardRow extends PartView {
     }
 
     showInitially(){
-        let wrappers = Array.from(this.querySelectorAll('wrapped-view'));
-        let delay = 100;
-        for(let i = 0; i < wrappers.length; i++){
-            let wrapper = wrappers[i];
-            setTimeout(() => {
-                wrapper.classList.remove('hide');
-            }, delay * (i + 1));
-            setTimeout(() => {
-                wrapper.showContent();
-            }, delay * (i + 2));
-        }
+        // Nothing for now
     }
 
     addWrappedCard(aCard){
-        // Create a lensed copy of the CardView
-        let cardView = document.querySelector(`[part-id="${aCard.id}"]`);
-        let cardLensView = cardView.cloneNode(true);
-        cardLensView.setAttribute('lens-part-id', aCard.id);
-        cardLensView.setAttribute('slot', 'wrapped-view');
-        cardLensView.style.pointerEvents = "none";
-
-        // The wrapper will handle current-ness, so remove
-        // the class from the lensed version
-        cardLensView.classList.remove('current-card');
-
-        // Recursively create lens views of all subpart
-        // children and append them in the correct places
-        cardLensView.isLensed = true;
-        cardLensView.setModel(aCard);
-        cardLensView.removeAttribute('part-id');
-        this._recursivelyUpdateLensViewSubparts(cardLensView, aCard.id);
-
         // Insert the lensed CardView into the wrapper
         let wrapper = document.createElement('wrapped-view');
         wrapper.setAttribute('slot', 'cards');
-        wrapper.setAttribute('wrapped-id', aCard.id);
         wrapper.addEventListener('click', this.onWrapperClick);
-        wrapper.appendChild(cardLensView);
-        wrapper.hideContent();
-        wrapper.classList.add('hide');
         this.appendChild(wrapper);
-    }
-
-    _recursivelyUpdateLensViewSubparts(aLensView, aLensId){
-        let subViews = Array.from(aLensView.children);
-        subViews.forEach(subView => {
-            subView.isLensed = true;
-            let id = subView.getAttribute('part-id');
-            subView.setAttribute('lens-part-id', id);
-            let model = window.System.partsById[id];
-            subView.setModel(model);
-            subView.removeAttribute('part-id');
-            this._recursivelyUpdateLensViewSubparts(subView, id);
-        });
+        wrapper.setModel(aCard);
     }
 };
 
