@@ -69,7 +69,7 @@ describe('Editor tests', () => {
         });
         it('Script editor target is correct (has the correct script)', () => {
             // TODO return to this when we have better script editor target attribution
-            let fieldView = document.querySelectorAll('st-area st-field')[1];
+            let fieldView = document.querySelector('st-window st-field');
             let textArea = fieldView._shadowRoot.querySelector('.field-textarea');
             // you can't use textArea.innerText here so we need to replace the newlines
             // to check for equivalence

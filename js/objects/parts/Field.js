@@ -135,7 +135,7 @@ class Field extends Part {
             this.partProperties.setPropertyNamed(
                 this,
                 `border-${s}-width`,
-                "2",
+                "1",
             );
         });
 

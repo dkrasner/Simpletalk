@@ -22,58 +22,90 @@ let originalScript = `on click\n\tanswer "hello"\nend click`;
 
 
 describe('Opening a Script Editor', () => {
-    let currentCardView = document.querySelector('.current-stack .current-card');
-    let currentCardModel = currentCardView.model;
+
+    // Toolbox is a result of bootstrap serialization and no
+    // longer hard coded into the init of the System
+    it.skip('There is exactly one window (toolbox) in the world', () => {
+        let foundWindows = document.querySelectorAll('st-window');
+        assert.equal(1, foundWindows.length);
+    });
+    it('Can remove the current window from the world for further testing (TODO! make programmatic) ', () => {
+        let foundWindows = document.querySelectorAll('st-window');
+        foundWindows.forEach((node) => {node.remove()});
+        foundWindows = document.querySelectorAll('st-window');
+        assert.equal(0, foundWindows.length);
+    });
     it('Can set the script of the current card without issue', () => {
-        currentCardModel.partProperties.setPropertyNamed(
-            currentCardModel,
+        let currentCard = document.querySelector('.current-stack .current-card').model;
+        currentCard.partProperties.setPropertyNamed(
+            currentCard,
             'script',
             originalScript
         );
 
-        let foundScript = currentCardModel.partProperties.getPropertyNamed(
-            currentCardModel,
+        let foundScript = currentCard.partProperties.getPropertyNamed(
+            currentCard,
             'script'
         );
 
         assert.equal(originalScript, foundScript);
     });
     it('Can open a script editor with current card as target', () => {
+        let currentCard = document.querySelector('.current-stack .current-card').model;
         let message = {
             type: 'command',
             commandName: 'openScriptEditor',
-            args: [currentCardModel.id]
+            args: [currentCard.id]
         };
 
         let sendMessageFunc = function(){
-            currentCardModel.sendMessage(message, System);
+            currentCard.sendMessage(message, System);
         };
 
         expect(sendMessageFunc).to.not.throw(Error);
     });
-    it('Corresponding script editor is open', () => {
-        let editorArea = currentCardView.querySelector('st-area');
-        assert.exists(editorArea);
+    it('Current CardView now has WindowView as a child element', () => {
+        let currCardView = document.querySelector('.current-card');
+        assert.exists(currCardView);
+        let windowView = document.querySelector('st-window');
+        assert.exists(windowView);
+
+        let foundWindow = document.querySelector('st-window');
+        assert.equal(foundWindow, windowView);
+    });
+    it('Current Card Part now has a Window as a subpart', () => {
+        let currentCard = document.querySelector('st-card.current-card').model;
+        assert.exists(currentCard);
+        let windowModel = document.querySelector('st-window').model;
+        assert.exists(windowModel);
+
+        assert.include(currentCard.subparts, windowModel);
+    });
+    it('Window model is targeting the current card', () => {
+        let winModel = document.querySelector('st-window').model;
+        let cardModel = document.querySelector('.current-stack .current-card').model;
+        let foundTarget = winModel.target;
+
+        assert.equal(foundTarget, cardModel);
     });
 });
 
 describe('ScriptEditor Functionality', () => {
-    let editorAreaView;
+    let editorCurrentCardView;
     let editorSaveButtonView;
-    let editorTitleFieldView;
-    let editorScriptFieldView;
+    let editorFieldView;
     before(() => {
-        editorAreaView = document.querySelector('st-area');
-        editorSaveButtonView = editorAreaView.querySelector('st-button');
-        [editorTitleFieldView, editorScriptFieldView] = editorAreaView.querySelectorAll('st-field');
+        editorCurrentCardView = document.querySelector('st-window > st-stack > .current-card');
+        editorSaveButtonView = editorCurrentCardView.querySelector('st-button');
+        editorFieldView = editorCurrentCardView.querySelector('st-field');
     });
     it('Has all appropriate views', () => {
-        assert.exists(editorAreaView);
+        assert.exists(editorCurrentCardView);
         assert.exists(editorSaveButtonView);
-        assert.exists(editorScriptFieldView);
+        assert.exists(editorFieldView);
     });
     it('Editor has the current script html for the Card in its field', () => {
-        let textArea = editorScriptFieldView._shadowRoot.querySelector('.field-textarea');
+        let textArea = editorFieldView._shadowRoot.querySelector('.field-textarea');
         assert.exists(textArea);
         let displayedScriptHTML = textArea.innerHTML;
 
@@ -83,11 +115,11 @@ describe('ScriptEditor Functionality', () => {
             'script'
         );
 
-        assert.equal(editorScriptFieldView.htmlToText(textArea), cardScript);
+        assert.equal(editorFieldView.htmlToText(textArea), cardScript);
     });
     it('Editor has the current script text for the Card in its field', () => {
-        let fieldModel = editorScriptFieldView.model;
-        let textArea = editorScriptFieldView._shadowRoot.querySelector('.field-textarea');
+        let fieldModel = editorFieldView.model;
+        let textArea = editorFieldView._shadowRoot.querySelector('.field-textarea');
         assert.exists(textArea);
         let text = fieldModel.partProperties.getPropertyNamed(
             fieldModel,
@@ -103,10 +135,10 @@ describe('ScriptEditor Functionality', () => {
     it('Can set a new script for the Card by changing field value and triggering button', () => {
         let newScript = `on foo\n\tanswer "foo"\n end foo`;
         let cardModel = document.querySelector('.current-stack > .current-card').model;
-        let fieldModel = editorScriptFieldView.model;
+        let fieldModel = editorFieldView.model;
         let saveButtonModel = editorSaveButtonView.model;
 
-        let textArea = editorScriptFieldView._shadowRoot.querySelector('.field-textarea');
+        let textArea = editorFieldView._shadowRoot.querySelector('.field-textarea');
         fieldModel.partProperties.setPropertyNamed(
             fieldModel,
             'innerHTML',
@@ -136,7 +168,7 @@ describe('ScriptEditor Functionality', () => {
 
         assert.equal(cardScript, newScript);
     });
-    describe.skip('Simpletalk Completer', () => {
+    describe('Simpletalk Completer', () => {
         before(() => {
             // make sure that the simpleTalkCompleter is set
             editorFieldView.editorCompleter = editorFieldView.simpleTalkCompleter;

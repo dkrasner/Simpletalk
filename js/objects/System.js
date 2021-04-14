@@ -604,11 +604,11 @@ const System = {
     // but return its st-field subpart
     findScriptEditorByTargetId: function(id){
         let scriptEditorField;
-        let areas = document.querySelectorAll("st-area");
-        areas.forEach((a) => {
-            let name = a.model.partProperties.getPropertyNamed(a.model, "name");
-            if(name && name === `Script ${id}`){
-                scriptEditorField = a.querySelectorAll("st-field")[1];
+        let windows = document.querySelectorAll("st-window");
+        windows.forEach((w) => {
+            let target = w.model.target;
+            if(target && target.id === id){
+                scriptEditorField = w.querySelector("st-field");
             }
         });
         return scriptEditorField;
@@ -858,10 +858,11 @@ System._commandHandlers['importWorld'] = function(sender, sourceUrl){
 System._commandHandlers['openScriptEditor'] = function(senders, targetId){
     let target = this.partsById[targetId];
     let currentCard = this.getCurrentCardModel();
-    let area = this.newModel('area', currentCard.id);
-    let titleField = this.newModel('field', area.id);
-    let scriptField = this.newModel('field', area.id);
-    let saveButton = this.newModel('button', area.id);
+    let window = this.newModel('window', currentCard.id);
+    let stack = this.newModel('stack', window.id);
+    let card = this.newModel('card', stack.id);
+    let scriptField = this.newModel('field', card.id);
+    let saveButton = this.newModel('button', card.id);
 
     let targetName = target.partProperties.getPropertyNamed(target, "name");
     if(targetName){
@@ -869,42 +870,27 @@ System._commandHandlers['openScriptEditor'] = function(senders, targetId){
     }
     let name = `Script For ${target.name} ${targetName} id ${target.id}`;
 
-    // setup the area properties
-    area.partProperties.setPropertyNamed(area, "name", `Script ${target.id}`);
-    area.partProperties.setPropertyNamed(area, "layout", "list");
-    area.partProperties.setPropertyNamed(area, "list-direction", "column");
-    area.partProperties.setPropertyNamed(area, "horizontal-resizing", "shrink-wrap");
-    area.partProperties.setPropertyNamed(area, "vertical-resizing", "shrink-wrap");
+    // setup the window and stack properties
+    window.setTarget(target);
+    window.partProperties.setPropertyNamed(window, "title", name);
+    stack.partProperties.setPropertyNamed(stack, "current", 0);
 
-    // setup the title field properties
-    titleField.partProperties.setPropertyNamed(titleField, "text", name);
-    titleField.partProperties.setPropertyNamed(titleField, "text-bold", true);
-    titleField.partProperties.setPropertyNamed(titleField, "text-size", 17);
-    titleField.partProperties.setPropertyNamed(titleField, "text-align", "center");
-    titleField.partProperties.setPropertyNamed(titleField, "editable", false);
-    titleField.partProperties.setPropertyNamed(titleField, "width", "fill");
-    titleField.partProperties.setPropertyNamed(titleField, "height", 30);
-    titleField.partProperties.setPropertyNamed(titleField, "background-color", "rgb(218, 218, 218)");
+    card.partProperties.setPropertyNamed(card, "layout", "list");
+    card.partProperties.setPropertyNamed(card, "list-direction", "column");
 
     // script field
     let targetScript = target.partProperties.getPropertyNamed(target, "script");
     scriptField.partProperties.setPropertyNamed(scriptField, "text", targetScript);
-    scriptField.partProperties.setPropertyNamed(scriptField, "width", "fill");
+    scriptField.partProperties.setPropertyNamed(scriptField, "horizontal-resizing", "space-fill");
+    scriptField.partProperties.setPropertyNamed(scriptField, "vertical-resizing", "space-fill");
 
     // setup up the save button properties
-    saveButton.partProperties.setPropertyNamed(saveButton, "name", "Save");
+    saveButton.partProperties.setPropertyNamed(saveButton, "name", "Save Script");
     saveButton.partProperties.setPropertyNamed(saveButton, "text-size", 20);
-    saveButton.partProperties.setPropertyNamed(saveButton, "width", "fill");
-    saveButton.partProperties.setPropertyNamed(saveButton, "height", 30);
     saveButton.partProperties.setPropertyNamed(saveButton, "target", `part id ${target.id}`);
 
-    let saveScript = [
-        "on click",
-        "answer target",
-        "end click"
-    ].join("\n");
     saveButton.partProperties.setPropertyNamed(saveButton, "target", `part id ${target.id}`);
-    // TODO sort out why this goes into an infinite recursion loop
+    // TODO sort out why compiling a script on this button goes into an infinite recursion loop
     // saveButton.partProperties.setPropertyNamed(saveButton, "script", saveScript, false);
     saveButton._commandHandlers['click'] = function(){
         let newScript = scriptField.partProperties.getPropertyNamed(scriptField, "text");
