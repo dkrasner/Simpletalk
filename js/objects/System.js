@@ -41,6 +41,7 @@ import idMaker from './utils/id.js';
 import STClipboard from './utils/clipboard.js';
 
 import handInterface from './utils/handInterface.js';
+import merriamSimScore from './utils/merriamInterface.js';
 
 import {STDeserializer, STSerializer} from './utils/serialization.js';
 
@@ -918,6 +919,11 @@ System._commandHandlers['toggleHandDetection'] = () => {
     } else {
         handInterface.stop();
     }
+};
+
+System._commandHandlers['merriam'] = (senders, docId) => {
+    const sender = System.partsById[senders[0].id];
+    merriamSimScore(sender, docId);
 };
 
 System._commandHandlers['globalInterrupt'] = () => {
