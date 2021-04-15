@@ -461,13 +461,13 @@ const System = {
         newView.setModel(model);
         // if the new model is a Card we make sure add it after the last card
         // on the stack
-        if(newView.name === 'CardView' && parentElement.childNodes.length){
-            let lastCard;
+        if((newView.name === 'CardView' || newView.name === 'StackView') && parentElement.childNodes.length){
+            let lastNode;
             parentElement.childNodes.forEach((child) => {
-                if(child.name === "CardView"){
-                    lastCard = child;
+                if(child.name === newView.name){
+                    lastNode = child;
                 }
-                lastCard.after(newView);
+                lastNode.after(newView);
             });
         } else {
             parentElement.appendChild(newView);
