@@ -18,7 +18,7 @@ class WorldStack extends Part {
     constructor(){
         super(null);
 
-        this.acceptedSubpartTypes = ["stack"];
+        this.acceptedSubpartTypes = ["stack", "image"];
 
         this.isWorld = true;
 
