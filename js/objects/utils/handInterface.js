@@ -102,9 +102,6 @@ const detectHands = async () => {
 const findClosestView = (point) => {
     let views = [];
     window.System.getCurrentCardModel().subparts.forEach((part) => {
-        if (part.id === handInterface.leninHand.id) {
-            return;
-        }
         let partViews = window.System.findViewsById(part.id);
         partViews.forEach((view) => {
             views.push(view);
@@ -159,7 +156,7 @@ const loadHandDetectionModel = () => {
             canvas.height = video.videoHeight;
             ctx.setTransform(-1, 0, 0, 1, canvas.width, 0); // Mirror incoming video
             handInterface.handDetectionRunning = true;
-            handInterface.leninHand = window.System.newModel('image', undefined, "/images/leninHand.png");
+            handInterface.leninHand = window.System.newModel('image', window.System.getCurrentStackModel().id, "/images/leninHand.png");
             handInterface.targetElement = null;
             window.requestAnimationFrame(detectHands);
         }).catch(err => {
