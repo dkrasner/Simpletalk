@@ -194,7 +194,9 @@ class WrappedView extends PartView {
     }
 
     _recursivelyUpdateLensViews(lensedView, anId){
-        let subViews = Array.from(lensedView.children);
+        let subViews = Array.from(lensedView.children).filter(child => {
+            return child.isPartView;
+        });
         subViews.forEach(subView => {
             subView.isLensed = true;
             subView.wantsHalo = false;
