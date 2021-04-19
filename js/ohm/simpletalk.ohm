@@ -68,8 +68,8 @@
                | "not" Expression --notFactor
                | PropertyValue
                | anyLiteral
-               | variableName
                | ObjectSpecifier
+               | variableName
 
         // For now, expressions are just the
         // value of a given factor.
