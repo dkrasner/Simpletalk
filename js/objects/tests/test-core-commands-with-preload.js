@@ -149,19 +149,6 @@ describe('Core command tests', () => {
             let prop = button1.partProperties.getPropertyNamed(button1, "target");
             assert.equal(prop, "second button of current card");
         });
-        it('Can tell the target', () => {
-            let script = `tell button id ${button1.id} to tell target to set "text-color" to "blue"`;
-            let match = testLanguageGrammar.match(script, 'Command');
-            assert.isTrue(match.succeeded());
-            let msg = semantics(match).interpret();
-            assert.exists(msg);
-            let sendMsg = function(){
-                currentCard.sendMessage(msg, currentCard);
-            };
-            expect(sendMsg).to.not.throw();
-            let prop = button2.partProperties.getPropertyNamed(button2, "text-color");
-            assert.equal(prop, "blue");
-        });
         it('Can tell button to set target property (object specifier)', () => {
             let script = `tell button id ${button1.id} to set "target" to second button of current card`;
             let match = testLanguageGrammar.match(script, 'Command');
@@ -175,7 +162,20 @@ describe('Core command tests', () => {
             let prop = button1.partProperties.getPropertyNamed(button1, "target");
             assert.equal(prop, `part id ${button2.id}`);
         });
-        it('Can tell the target', () => {
+        it('Can tell button to set target property (object specifier by name)', () => {
+            let script = `tell button id ${button1.id} to set "target" to button "Test Button 2"`;
+            let match = testLanguageGrammar.match(script, 'Command');
+            assert.isTrue(match.succeeded());
+            let msg = semantics(match).interpret();
+            assert.exists(msg);
+            let sendMsg = function(){
+                currentCard.sendMessage(msg, currentCard);
+            };
+            expect(sendMsg).to.not.throw();
+            let prop = button1.partProperties.getPropertyNamed(button1, "target");
+            assert.equal(prop, `part id ${button2.id}`);
+        });
+        it.skip('Can tell the target', () => {
             let script = `tell button id ${button1.id} to tell target to set "text-color" to "black"`;
             let match = testLanguageGrammar.match(script, 'Command');
             assert.isTrue(match.succeeded());
