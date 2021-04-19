@@ -803,34 +803,20 @@ System._commandHandlers['importWorld'] = function(sender, sourceUrl){
                         // Tell the world to update current, in case
                         // a new StackView was attached with current set.
                         document.querySelector('st-world').updateCurrentStack();
-                        // This reorders all children of world so that non-stacks are at the end.
-                        // Other than that, this preserves order. Meaning that all stacks stay
-                        // ordered with respect to each other and all non-stacks stay ordered
-                        // with respect to each other. Say the children are
-                        //
-                        //      [S1, S2, N1, S3, N2],
-                        //
-                        // where the S's are stacks and the N's are not stacks, then the
-                        // resulting order is
-                        //
-                        //      [S1, S2, S3, N2, N2].
+                        // This moves all image children of world to the end preserving stack order.
                         const world = document.querySelector('st-world');
-                        var stackChildren = [];
-                        var nonStackChildren = [];
+                        var imageChildren = [];
                         for (var i = 0; i < world.children.length; ++i ) {
                             const child = world.children[i];
-                            if (child.localName == 'st-stack') {
-                              stackChildren.push(child);
-                            } else {
-                              nonStackChildren.push(child)
+                            if (child.localName == 'st-image') {
+                              imageChildren.push(child)
                             }
                         }
-                        const orderedChildren = [].concat(stackChildren, nonStackChildren);
                         // Appending a child to the dom that already exists is apparently equivalent to a move. See here:
                         //
                         //      https://stackoverflow.com/questions/34685316/reorder-html-elements-in-dom/51704111#51704111
-                        for (var i = 0; i < orderedChildren.length; ++i) {
-                            const child = orderedChildren[i];
+                        for (var i = 0; i < imageChildren.length; ++i) {
+                            const child = imageChildren[i];
                             world.appendChild(child);
                         }
                     });
