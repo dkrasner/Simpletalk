@@ -27,6 +27,10 @@ describe('#tell command tests', () => {
             let str = `tell this card to myCustomCommand 3, "hello", -0.5`;
             semanticMatchTest(str, 'Command_tellCommand');
         });
+        it("Can tell a target to perform some arbitrary command with args", () => {
+            let str = `tell target to myCustomCommand 3, "hello", -0.5`;
+            semanticMatchTest(str, 'Command_tellCommand');
+        });
         it("Can tell a nested specifier to perform an arbitrary command", () => {
             let str = `tell second button of card 5 of stack "myStack" to myCustomCommand 3, "hello", -0.3`;
             semanticMatchTest(str, 'Command_tellCommand');
