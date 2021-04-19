@@ -932,8 +932,17 @@ const createInterpreterSemantics = (partContext, systemContext) => {
             // be the card or the stack in which the current context part
             // exists.
             let systemObject = partialSpecifier.children[0].children.find((child) => {
-                return (child.sourceString == "part" || child.ctorName == 'systemObject');
+                return (child.sourceString == "part" || child.sourceString == "target" || child.ctorName == 'systemObject');
             });
+            // the systemObject is the target (defined in it's "target" part property), then we need to
+            // first get the target property value (string) and interpret that
+            if(systemObject.sourceString == "target"){
+                let targetPropValue = partContext.partProperties.getPropertyNamed(partContext, "target");
+                let semantics = partContext._semantics;
+                let matchObject = systemContext.grammar.match(targetPropValue, 'ObjectSpecifier');
+                let targetId = semantics(matchObject).interpret();
+                return targetId;
+            }
             let finalPart = findFirstPossibleAncestor(partContext, systemObject.sourceString);
             let result = partialSpecifier.interpret()(finalPart);
             return result.id;
