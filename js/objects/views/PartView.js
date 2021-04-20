@@ -584,7 +584,6 @@ class PartView extends HTMLElement {
     onHaloTarget(event){
         // Add targeting receive listeners to all PartViews
         // on the current card.
-        console.log('calling onHaloTarget');
         let currentStackView = document.querySelector(`[part-id="${window.System.world.currentStack.id}"]`);
         let currentCardView = document.querySelector(`[part-id="${window.System.world.currentStack.currentCard.id}"]`);
         let targetCardParts = Array.from(currentCardView.querySelectorAll('[part-id]'));
@@ -604,7 +603,6 @@ class PartView extends HTMLElement {
         // Remove all targeting related event listeners
         // that were added during the onHaloTarget
         // handler
-        console.log('calling endHaloTarget');
         let currentStackView = document.querySelector(`[part-id="${window.System.world.currentStack.id}"]`);
         let currentCardView = document.querySelector(`[part-id="${window.System.world.currentStack.currentCard.id}"]`);
         let targetCardParts = Array.from(currentCardView.querySelectorAll('[part-id]'));
@@ -621,28 +619,27 @@ class PartView extends HTMLElement {
     }
 
     handleTargetKey(event){
-        console.log('targeting keypress');
         if(event.key == 'Escape'){
-            console.log('Escape');
             this.endHaloTarget();
         }
     }
 
     handleTargetMouseOver(event){
-        console.log(event.target);
-        event.target.classList.add('targeting');
+        if(!event.target.classList.contains('targeting')){
+            event.target.classList.add('targeting');
+            event.target['onclick'] = null;
+        }
     }
 
     handleTargetMouseLeave(event){
-        console.log(event.target);
-        event.target.classList.remove('targeting');
+        if(event.target.classList.contains('targeting')){
+            event.target.classList.remove('targeting');
+            event.target['onclick'] = event.target.onClick;
+        }
     }
 
     handleTargetMouseClick(event){
-        console.log('target click');
         event.target.classList.remove('targeting');
-        alert(event.target.model.id);
-        event.stopPropagation();
         event.preventDefault();
         this.model.partProperties.setPropertyNamed(
             this.model,
@@ -650,6 +647,8 @@ class PartView extends HTMLElement {
             event.target.model.id
         );
         this.endHaloTarget();
+        event.stopImmediatePropagation();
+        event.target.onclick = event.target.onClick;
     }
 
     onAuxClick(event){

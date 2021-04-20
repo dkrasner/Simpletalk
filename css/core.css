@@ -343,7 +343,8 @@ wrapped-view > st-stack {
     background-color: red;
 }
 
-body.targeting-mode {
+body.targeting-mode,
+body.targeting-mode [part-id] {
     cursor: crosshair !important;
 }
 
