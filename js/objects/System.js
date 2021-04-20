@@ -893,6 +893,11 @@ System._commandHandlers['openDebugger'] = function(senders, partId){
 };
 
 System._commandHandlers['saveHTML'] = function(senders){
+    // Stop hand recognition if it's running.
+    let handRecognitionOriginallyRunning = handInterface.handDetectionRunning;
+    if (handRecognitionOriginallyRunning) {
+        handInterface.stop();
+    }
     this.serialize();
 
     let stamp = Date.now().toString();
@@ -908,6 +913,10 @@ System._commandHandlers['saveHTML'] = function(senders){
     anchor.click();
     window.URL.revokeObjectURL(url);
     anchor.parentElement.removeChild(anchor);
+    // Start hand recognition if it was running.
+    if (handRecognitionOriginallyRunning) {
+        handInterface.start();
+    }
 };
 
 System._commandHandlers['tell'] = (senders, targetId, deferredMessage) => {
