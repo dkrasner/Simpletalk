@@ -1,59 +1,59 @@
-SimpleTalk {
-		Script
-				= ScriptPart+ end
+  SimpleTalk {
+ 	Script
+		= ScriptPart+ end
 
-		ScriptPart
-				= MessageHandler
-				| comment
-				| lineTerminator
+	ScriptPart
+		= MessageHandler
+		| comment
+		| lineTerminator
 
-		// Function definition follows the HT convention
-		// """
-		// message messageName [parameterList]
-		//     statementList
-		// end messageName
-		// """
-		// Note: to distinguish from functions message handler parameters are not
-		// parenthetical; moreover, message names are more restrictive
-		MessageHandlerOpen
-				= "on" messageName ParameterList? lineTerminator
+	// Function definition follows the HT convention
+	// """
+	// message messageName [parameterList]
+	//     statementList
+	// end messageName
+	// """
+	// Note: to distinguish from functions message handler parameters are not
+	// parenthetical; moreover, message names are more restrictive
+	MessageHandlerOpen
+		= "on" messageName ParameterList? lineTerminator
 
-		MessageHandlerClose
-				= "end" messageName
+	MessageHandlerClose
+		= "end" messageName
 
-		MessageHandler
-				= MessageHandlerOpen StatementList? MessageHandlerClose
+	MessageHandler
+		= MessageHandlerOpen StatementList? MessageHandlerClose
 
-		// TODO should we insist that authered messages start with a lower case letter?
-		Message
-				= systemMessage ParameterList? --system
-				// TODO do we need to prevent keyword/built in message overload?
-				| messageName ParameterList? --authoredMessage
+	// TODO should we insist that authered messages start with a lower case letter?
+	Message
+		= systemMessage ParameterList? --system
+		// TODO do we need to prevent keyword/built in message overload?
+		| messageName ParameterList? --authoredMessage
 
-		// Any comma-separated string of tokens
-		// that can be used either as arguments to
-		// a called function, arguments in a function
-		// definition, or args in a message handler
-		// definition
-		ParameterList (parameter list)
-				// TODO do we need to prevent keyword overload?
-				= NonemptyListOf<Expression, ", ">
+	// Any comma-separated string of tokens
+	// that can be used either as arguments to
+	// a called function, arguments in a function
+	// definition, or args in a message handler
+	// definition
+	ParameterList (parameter list)
+		// TODO do we need to prevent keyword overload?
+		= NonemptyListOf<Expression, ", ">
 
-		StatementList (a statement list, comments included)
-				= StatementLine+
+	StatementList (a statement list, comments included)
+		= StatementLine+
 
-		StatementLine (a statement line)
-				= comment lineTerminator+
-				| Statement lineTerminator+
+	StatementLine (a statement line)
+                = comment lineTerminator+
+		| Statement lineTerminator+
 	
-		// Note we explicitly exclude keywords, i.e. control
-		Statement (a statement)
-				= ~"end" IfThenInline comment?
-				| ~"end" IfThenSingleline comment?
-				| ~"end" IfThenMultiline comment?
-				| ~"end" RepeatBlock comment?
-				| ~"end" RepeatAdjust comment?
-				| ~"end" Command comment?
+	// Note we explicitly exclude keywords, i.e. control
+	Statement (a statement)
+                = ~"end" IfThenInline comment?
+                | ~"end" IfThenSingleline comment?
+                | ~"end" IfThenMultiline comment?
+                | ~"end" RepeatBlock comment?
+                | ~"end" RepeatAdjust comment?
+                | ~"end" Command comment?
 
 
         // The HT manual describes a Factor as being:
@@ -64,65 +64,65 @@ SimpleTalk {
         // * an expression with the word 'not' in front
         //   of it that evaluates to true or false
         Factor (a factor)
-				= "(" Expression ")" --parenFactor
-				| "not" Expression --notFactor
-				| PropertyValue
-				| anyLiteral
-				| ObjectSpecifier
-				| variableName
+               = "(" Expression ")" --parenFactor
+               | "not" Expression --notFactor
+               | PropertyValue
+               | anyLiteral
+               | ObjectSpecifier
+               | variableName
 
-		// For now, expressions are just the
-		// value of a given factor.
-		// In the future, it should be that or
-		// any two expressions with an operator
-		// between them
-		Expression
-				= Expression "+" Expression --addExpr
-				| Expression "*" Expression --timesExpr
-				| Expression "/" Expression --divideExpr
-				| Expression "%" Expression --moduloDivideExpr
-				| Expression "-" Expression --minusExpr
-				| Expression "&" Expression --stringConcatExpr
-				| Factor
+        // For now, expressions are just the
+        // value of a given factor.
+        // In the future, it should be that or
+        // any two expressions with an operator
+        // between them
+        Expression
+               = Expression "+" Expression --addExpr
+               | Expression "*" Expression --timesExpr
+               | Expression "/" Expression --divideExpr
+               | Expression "%" Expression --moduloDivideExpr
+	       | Expression "-" Expression --minusExpr
+               | Expression "&" Expression --stringConcatExpr
+               | Factor
 
 
-		// A conditional is a form where two Expressions
-		// are compared using an operator, and the result
-		// is expected to be a boolean value
-		EqualityConditional
-				= Expression "==" Expression
-				| Expression "is" Expression
+        // A conditional is a form where two Expressions
+        // are compared using an operator, and the result
+        // is expected to be a boolean value
+        EqualityConditional
+               = Expression "==" Expression
+               | Expression "is" Expression
         
-		NonEqualityConditional
-				= Expression "!=" Expression
+        NonEqualityConditional
+               = Expression "!=" Expression
         
-		KindConditional
-				= Expression "is an" Expression
-				| Expression "is a" Expression
+        KindConditional
+               = Expression "is an" Expression
+               | Expression "is a" Expression
         
-		NotKindConditional
-				= Expression "is not a" Expression
-				| Expression "is not an" Expression
+        NotKindConditional
+               = Expression "is not a" Expression
+               | Expression "is not an" Expression
 
         ThereIsAnObjectConditional
-				= "there is " ("an" | "a") ObjectSpecifier
+               = "there is " ("an" | "a") ObjectSpecifier
         
-       	ThereIsNotAnObjectConditional
-				= "there is not" ("an" | "a") ObjectSpecifier
+        ThereIsNotAnObjectConditional
+               = "there is not" ("an" | "a") ObjectSpecifier
         
         Conditional
-				= booleanLiteral --booleanLiteral
-				| ThereIsAnObjectConditional
-				| ThereIsNotAnObjectConditional
-				| EqualityConditional
-				| NonEqualityConditional
-				| KindConditional
-				| NotKindConditional
-				| Expression ">" Expression --gtComparison
-				| Expression "<" Expression --ltComparison
-				| Expression ">=" Expression --gteComparison
-				| Expression "<=" Expression --lteComparison
-				| Factor // This gives us variableName and some other literals should we need them
+               = booleanLiteral --booleanLiteral
+               | ThereIsAnObjectConditional
+               | ThereIsNotAnObjectConditional
+               | EqualityConditional
+               | NonEqualityConditional
+               | KindConditional
+               | NotKindConditional
+               | Expression ">" Expression --gtComparison
+               | Expression "<" Expression --ltComparison
+               | Expression ">=" Expression --gteComparison
+               | Expression "<=" Expression --lteComparison
+               | Factor // This gives us variableName and some other literals should we need them
                
         IfThenInline
                = "if" Conditional "then" Statement comment?
@@ -156,18 +156,18 @@ SimpleTalk {
 
 		// Looping (repeat)
 		RepeatControlForm
-				= "repeat" "for"? (integerLiteral|variableName) "times" --forNumTimes
-				| "repeat" "until" Conditional --untilCondition
-				| "repeat" "while" Conditional --whileCondition
-				| "repeat" "with" variableName "=" (integerLiteral|variableName) "to" (integerLiteral|variableName) --withStartFinish
-				| "repeat" --forever
+			= "repeat" "for"? (integerLiteral|variableName) "times" --forNumTimes
+			| "repeat" "until" Conditional --untilCondition
+			| "repeat" "while" Conditional --whileCondition
+			| "repeat" "with" variableName "=" (integerLiteral|variableName) "to" (integerLiteral|variableName) --withStartFinish
+			| "repeat" --forever
 
 		RepeatAdjust
-				= "exit repeat" --exit
-				| "next repeat" --next
+			= "exit repeat" --exit
+			| "next repeat" --next
 
 		RepeatBlock
-				= RepeatControlForm lineTerminator (StatementLine|RepeatAdjust)+ "end repeat"
+			= RepeatControlForm lineTerminator (StatementLine|RepeatAdjust)+ "end repeat"
                 
 
         // Expression lists are those that are passed
@@ -219,123 +219,121 @@ SimpleTalk {
                 = "in" ObjectSpecifier
 
 
-		Command (a command statement)
-				= "go to" ("next" | "previous") systemObject --goToDirection
-				| "go to" systemObject objectId --goToByReference
-				| "answer" Expression --answer
-				| "delete" "this"? systemObject objectId? --deleteModel
-				| "set" propertyName "to" Expression InClause? --setProperty
-				| "add" systemObject stringLiteral? "to" ObjectSpecifier --addModelTo
-				| "add" systemObject stringLiteral? --addModel
-				| "put" Expression "into" "global"? variableName --putVariable
-				| "ask" anyLiteral --ask
-				| "tell" ObjectSpecifier "to" Command --tellCommand
-				| messageName CommandArgumentList? --arbitraryCommand
+	Command (a command statement)
+		= "go to" ("next" | "previous") systemObject --goToDirection
+		| "go to" systemObject objectId --goToByReference
+		| "answer" Expression --answer
+		| "delete" "this"? systemObject objectId? --deleteModel
+                | "set" propertyName "to" Expression InClause? --setProperty
+                | "add" systemObject stringLiteral? "to" ObjectSpecifier --addModelTo
+		| "add" systemObject stringLiteral? --addModel
+		| "put" Expression "into" "global"? variableName --putVariable
+		| "ask" anyLiteral --ask
+                | "tell" ObjectSpecifier "to" Command --tellCommand
+		| messageName CommandArgumentList? --arbitraryCommand
 
-		CommentLines
-				= (comment lineTerminator)+
+	CommentLines
+		= (comment lineTerminator)+
 
-		systemObject (system object such as card, stack etc)
-				= ("w" | "W") "orld" | ("a" | "A") "rea" | ("b"| "B") "ackground" | ("b" | "B") "utton" | ("c" | "C") "ard" | ("f" | "F") "ield" | ("s" | "S") "tack" | ("w" | "W") "indow" | ("d" | "D") "rawing" | ("i" | "I") "mage" | ("a" | "A") "udio"
+	systemObject (system object such as card, stack etc)
+		= ("w" | "W") "orld" | ("a" | "A") "rea" | ("b"| "B") "ackground" | ("b" | "B") "utton" | ("c" | "C") "ard" | ("f" | "F") "ield" | ("s" | "S") "tack" | ("w" | "W") "indow" | ("d" | "D") "rawing" | ("i" | "I") "mage" | ("a" | "A") "udio"
 
-		// TODO do we want to restrict message names (start with lowercase etc)?
-		// Note: we prevent keyword overloading
-		messageName (message name)
-				= ~(keyword " " | keyword end) letter+
+	// TODO do we want to restrict message names (start with lowercase etc)?
+	// Note: we prevent keyword overloading
+	messageName (message name)
+		= ~(keyword " " | keyword end) letter+
 
-		systemMessage (system message)
-				= "systemEvent" | "arrowKey"
-				| "close" systemObject? --closeObject
-				| "commandKeyDown"| "controlKey"
-				| "delete" systemObject --deleteObject
-				| "doMenu" | "enterInField" | "enterKey" | "exitField" | "functionKey"
-				| "help" | "hide menubar" | "idle" | "keyDown"
-				| "mouse" ("DoubleClick" | "DownInPicture" | "Down" | "Enter" | "Leave" | "StillDown" | "UpInPicture" | "Up" | "Within") --mouseEvent
-				| "moveWindow"
-				| "new" systemObject --newObject
-				| "open" systemObject --openObject
-				| "quit" | "resumeStack" | "resume" | "returnInField" | "returnKey" | "show menubar"
-				| "sizeWindow" | "startUp" | "suspendStack" | "suspend" | "tabKey"
-				
-		
-		// We need to prevent keyword overload since these are core control flow indicators
-		keyword (a keyword)
-				= "do" | "next" | "else" | "on" | "end" | "pass" | "exit" | "repeat" | "function" | "return" | "global" | "send" | "if" | "then" | "true" | "false" | numericalKeyword
+	systemMessage (system message)
+		= "systemEvent" | "arrowKey"
+		| "close" systemObject? --closeObject
+		| "commandKeyDown"| "controlKey"
+		| "delete" systemObject --deleteObject
+		| "doMenu" | "enterInField" | "enterKey" | "exitField" | "functionKey"
+		| "help" | "hide menubar" | "idle" | "keyDown"
+		| "mouse" ("DoubleClick" | "DownInPicture" | "Down" | "Enter" | "Leave" | "StillDown" | "UpInPicture" | "Up" | "Within") --mouseEvent
+		| "moveWindow"
+		| "new" systemObject --newObject
+		| "open" systemObject --openObject
+		| "quit" | "resumeStack" | "resume" | "returnInField" | "returnKey" | "show menubar"
+		| "sizeWindow" | "startUp" | "suspendStack" | "suspend" | "tabKey"
+
+	// We need to prevent keyword overload since these are core control flow indicators
+	keyword (a keyword)
+		= "do" | "next" | "else" | "on" | "end" | "pass" | "exit" | "repeat" | "function" | "return" | "global" | "send" | "if" | "then" | "true" | "false" | numericalKeyword
 
         // These are convenience keywords used in place of indexing
         numericalKeyword (a number in English)
                 = "first" | "second" | "third" | "fourth" | "fifth" | "sixth"
                 | "seventh" | "eighth" | "ninth" | "tenth" | "last"
-				
-		objectId (an identifier of an object, string, numeric or mixed)
-				= ~systemObject (letter | digit)+
-				
-		// Helper utilities
-		// Accounts for singular and plural word (i.e. with and without 's')
-		singPlu<x> = x "s"?
-		
-		// User defined variable
-		variableName
-				= ~(keyword " " | keyword end) letter+ (digit+)?
-				
-		// Numbers
-		integerLiteral
-				= "-"? digit+
-		
-		floatLiteral
-				= "-"? digit+ "." digit+
-	
-		// Boolean
-		trueLiteral
-				= "true"
-		
-		falseLiteral
-				= "false"
-				
-		booleanLiteral
-				= (falseLiteral | trueLiteral)
-		
-		// TODO
-		comment
-				= "--" (~lineTerminator any)*
+
+	objectId (an identifier of an object, string, numeric or mixed)
+		= ~systemObject (letter | digit)+
 
 
-		// A string literal in SimpleTalk is any string
-		// without line terminators wrapped in open and
-		// closing quotes
-		stringLiteral
-				= quoteMark (~lineTerminator ~quoteMark any)* quoteMark
+	// Helper utilities
+	// Accounts for singular and plural word (i.e. with and without 's')
+	singPlu<x> = x "s"?
+
+	// User defined variable
+	variableName
+		= ~(keyword " " | keyword end) letter+ (digit+)?
+
+	// Numbers
+	integerLiteral
+		= "-"? digit+
+
+	floatLiteral
+		= "-"? digit+ "." digit+
+
+        // Booleans
+        trueLiteral
+             = "true"
+
+        falseLiteral
+             = "false"
+
+        booleanLiteral
+             = (falseLiteral | trueLiteral)
+
+	// TODO
+	comment
+		= "--" (~lineTerminator any)*
 
 
-		// For now, a property name is wrapped in quotes, ie it
-		// is the same as a stringLiteral
-		propertyName
-				= stringLiteral
-				
-		quoteMark = "\""
-		
-		punctuation = (":" | ";" | "." | "," | "?" | "!" | "-")
-		
-		// The "any" literal is any string or numerical
-		// literal
-		anyLiteral
-				= (stringLiteral | floatLiteral | integerLiteral | booleanLiteral)
+	// A string literal in SimpleTalk is any string
+	// without line terminators wrapped in open and
+	// closing quotes
+	stringLiteral
+		= quoteMark (~lineTerminator ~quoteMark any)* quoteMark
 
-		// Basic whitespace and line termination handling.
-		// Note that we override the default Ohm definition
-		// of `space` to only be spaces or tabs, and NOT
-		// any of the newline characters
-		space := whitespace
-		whitespace
-				= "\t"
-				| "\x0B"    -- verticalTab
-				| "\x0C"    -- formFeed
-				| " "
-				| "\u00A0"  -- noBreakSpace
-				| "\uFEFF"  -- byteOrderMark
-				| unicodeSpaceSeparator
+        // For now, a property name is wrapped in quotes, ie it
+        // is the same as a stringLiteral
+        propertyName
+                = stringLiteral
 
-		unicodeSpaceSeparator = "\u2000".."\u200B" | "\u3000"
-		lineTerminator = "\n" | "\r" | "\u2028" | "\u2029" | "\r\n"
-		nonLineTerminator = ~lineTerminator (alnum | whitespace | punctuation | "/" | "_")
+	quoteMark = "\""
+
+	punctuation = (":" | ";" | "." | "," | "?" | "!" | "-")
+
+  // The "any" literal is any string or numerical
+	// literal
+	anyLiteral
+		= (stringLiteral | floatLiteral | integerLiteral | booleanLiteral)
+
+	// Basic whitespace and line termination handling.
+	// Note that we override the default Ohm definition
+	// of `space` to only be spaces or tabs, and NOT
+	// any of the newline characters
+	space := whitespace
+		whitespace = "\t"
+		| "\x0B"    -- verticalTab
+		| "\x0C"    -- formFeed
+		| " "
+		| "\u00A0"  -- noBreakSpace
+		| "\uFEFF"  -- byteOrderMark
+		| unicodeSpaceSeparator
+
+	unicodeSpaceSeparator = "\u2000".."\u200B" | "\u3000"
+	lineTerminator = "\n" | "\r" | "\u2028" | "\u2029" | "\r\n"
+	nonLineTerminator = ~lineTerminator (alnum | whitespace | punctuation | "/" | "_")
 }
