@@ -803,22 +803,6 @@ System._commandHandlers['importWorld'] = function(sender, sourceUrl){
                         // Tell the world to update current, in case
                         // a new StackView was attached with current set.
                         document.querySelector('st-world').updateCurrentStack();
-                        // This moves all image children of world to the end preserving stack order.
-                        const world = document.querySelector('st-world');
-                        var imageChildren = [];
-                        for (var i = 0; i < world.children.length; ++i ) {
-                            const child = world.children[i];
-                            if (child.localName == 'st-image') {
-                              imageChildren.push(child)
-                            }
-                        }
-                        // Appending a child to the dom that already exists is apparently equivalent to a move. See here:
-                        //
-                        //      https://stackoverflow.com/questions/34685316/reorder-html-elements-in-dom/51704111#51704111
-                        for (var i = 0; i < imageChildren.length; ++i) {
-                            const child = imageChildren[i];
-                            world.appendChild(child);
-                        }
                     });
                 };
             });
@@ -828,6 +812,11 @@ System._commandHandlers['importWorld'] = function(sender, sourceUrl){
             // This ensures that we don't infinitely
             // call the load operation
             this._src = sourceUrl;
+            // Stop and restart hand interface if it's running.
+            if (handInterface.handDetectionRunning) {
+                handInterface.stop();
+                handInterface.start();
+            }
         })
         .catch(err => {
             console.error(err);
