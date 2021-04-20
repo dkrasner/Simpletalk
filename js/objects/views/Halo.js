@@ -50,6 +50,14 @@ const pasteIcon = `
 </svg>
 `;
 
+const targetIcon = `
+<svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-focus" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+   <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
+   <circle cx="12" cy="12" r=".5" fill="currentColor"></circle>
+   <circle cx="12" cy="12" r="9"></circle>
+</svg>
+`;
+
 const templateString = `
 <style>
  :host {
@@ -160,6 +168,9 @@ const templateString = `
     <div id="halo-paste" class="halo-button" title="Paste the contents of clipboard into this Part">
         ${pasteIcon}
     </div>
+    <div id="halo-target" class="halo-button" title="Select this Part's target">
+        ${targetIcon}
+    </div>
     <slot name="left-column"></slot>
 </div>
 
@@ -234,6 +245,10 @@ class Halo extends HTMLElement {
             // Paste button
             this.paster = this.shadowRoot.getElementById('halo-paste');
             this.paster.addEventListener('click', this.targetElement.onHaloPaste);
+
+            // Target button
+            this.targeter = this.shadowRoot.getElementById('halo-target');
+            this.targeter.addEventListener('click', this.targetElement.onHaloTarget);
         }
     }
 
