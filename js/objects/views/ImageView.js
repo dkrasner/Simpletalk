@@ -29,6 +29,11 @@ img {
     height: auto;
     display: block;
 }
+
+.currently-wrapped {
+    width: 100%;
+    height: 100%;
+}
 </style>
 `;
 
@@ -111,7 +116,7 @@ class ImageView extends PartView {
         imgEl.classList.add('currently-wrapped');
         imgEl.src = imageData;
         imgEl.onload = () => {
-            this.updateSizingForViewport();
+            //this.updateSizingForViewport();
         };
         this.preserveAspectOnResize = true;
         imgEl.classList.remove('hidden');
@@ -251,8 +256,8 @@ class ImageView extends PartView {
         } else {
             newWidth = rect.width + movementX;
             newHeight = rect.height + movementY;
-            wrappedImage.style.width = `${newWidth}px`;
-            wrappedImage.style.height = `${newHeight}px`;
+            //wrappedImage.style.width = `${newWidth}px`;
+            //wrappedImage.style.height = `${newHeight}px`;
         }
 
         if(newWidth && newHeight){
