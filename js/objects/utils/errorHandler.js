@@ -83,8 +83,8 @@ const errorHandler = {
             // located in the corresponding field text, not the script, property and
             // we want the error to be marked up in the field textarea
             if(executionStack[0] && executionStack[0].messageName == "doIt"){
-                text = originalSenderModel.partProperties.getPropertyNamed(originalSenderModel, 'text');
-                target = originalSenderModel;
+                target = executionStack[0].part;
+                text = target.partProperties.getPropertyNamed(originalSenderModel, 'text');
             } else {
                 text = originalSenderModel.partProperties.getPropertyNamed(originalSenderModel, 'script');
                 let scriptEditor = window.System.findScriptEditorByTargetId(originalSender.id);

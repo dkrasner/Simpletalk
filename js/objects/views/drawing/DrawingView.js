@@ -38,7 +38,7 @@ const templateString = `
         display: none;
     }
 </style>
-<canvas width="500" height="300"></canvas >
+<canvas></canvas >
 <div id="tool-buttons">
 <slot></slot>
 </div>
@@ -93,6 +93,18 @@ class DrawingView extends PartView {
                 this.classList.remove('show-border');
             }
         });
+        this.onPropChange('width', (val) => {
+            // Note: what we want is the calculated CSS, not the ST part property value
+            let cssStyle = this.model.partProperties.getPropertyNamed(this.model, "cssStyle");
+            let canvas = this.shadow.querySelector('canvas');
+            canvas.setAttribute("width", cssStyle.width);
+        });
+        this.onPropChange('height', (val) => {
+            // Note: what we want is the calculated CSS, not the ST part property value
+            let cssStyle = this.model.partProperties.getPropertyNamed(this.model, "cssStyle");
+            let canvas = this.shadow.querySelector('canvas');
+            canvas.setAttribute("height", cssStyle.height);
+        });
     }
 
     modeChanged(value){
@@ -140,6 +152,12 @@ class DrawingView extends PartView {
     }
 
     afterModelSet(){
+        // setup the canvas height and width
+        // Note: what we want is the calculated CSS, not the ST part property value
+        let cssStyle = this.model.partProperties.getPropertyNamed(this.model, "cssStyle");
+        let canvas = this.shadow.querySelector('canvas');
+        canvas.setAttribute("height", cssStyle.height);
+        canvas.setAttribute("width", cssStyle.width);
         let currentImage = this.model.partProperties.getPropertyNamed(
             this.model,
             'image'
@@ -228,8 +246,26 @@ class DrawingView extends PartView {
             this.model,
             'image'
         );
-        canvas.width = canvas.width + movementX;
-        canvas.height = canvas.height + movementY;
+        // canvas.width = canvas.width + movementX;
+        // canvas.height = canvas.height + movementY;
+        let newWidth = canvas.width + movementX;
+        let newHeight = canvas.height + movementY;
+        if(newWidth && newHeight){
+            // this.style.width = `${newWidth}px`;
+            // this.style.height = `${newHeight}px`;
+            this.model.partProperties.setPropertyNamed(
+                this.model,
+                'width',
+                newWidth,
+                true
+            );
+            this.model.partProperties.setPropertyNamed(
+                this.model,
+                'height',
+                newHeight,
+                true
+            );
+        }
         this.restoreImageFromModel(currentImage);
     }
 
@@ -264,34 +300,6 @@ class DrawingView extends PartView {
                 'show-border',
                 false
             );
-        }
-    }
-
-    widthChanged(value, _){
-        if(this.canvas.width != value){
-            this.canvas.setAttribute('width', value);
-
-            // Because we resized, we need to redraw the
-            // underlying image cached in the model
-            let modelImage = this.model.partProperties.getPropertyNamed(
-                this.model,
-                'image'
-            );
-            this.restoreImageFromModel(modelImage);
-        }
-    }
-
-    heightChanged(value, partId){
-        if(this.canvas.height != value){
-            this.canvas.setAttribute('height', value);
-
-            // Because we resized, we need to redraw the
-            // underlying image cached in the model
-            let modelImage = this.model.partProperties.getPropertyNamed(
-                this.model,
-                'image'
-            );
-            this.restoreImageFromModel(modelImage);
         }
     }
 
@@ -341,16 +349,6 @@ class DrawingView extends PartView {
         }
         return false;
     }
-
-    // attributeChangedCallback(name, oldVal, newVal){
-    //     if(name == 'mode'){
-    //         debugger;
-    //     }
-    // }
-
-    // static get observedAttributes(){
-    //     return [ 'mode' ];
-    // }
 };
 
 export {

@@ -54,6 +54,16 @@ class Drawing extends Part {
                 0.5,
             );
         });
+        this.partProperties.setPropertyNamed(
+            this,
+            'width',
+            300
+        );
+        this.partProperties.setPropertyNamed(
+            this,
+            'height',
+            200
+        );
 
         // We are using a distinct show-border
         // property to deal with being able to see
