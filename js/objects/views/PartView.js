@@ -587,7 +587,7 @@ class PartView extends HTMLElement {
         let currentStackView = document.querySelector(`[part-id="${window.System.world.currentStack.id}"]`);
         let currentCardView = document.querySelector(`[part-id="${window.System.world.currentStack.currentCard.id}"]`);
         let targetCardParts = Array.from(currentCardView.querySelectorAll('[part-id]'));
-        let targetStackParts = Array.from(currentStackView.querySelectorAll('[part-id]:not(st-card, st-stack)'));
+        let targetStackParts = Array.from(currentStackView.querySelectorAll('[part-id]:not(st-card):not(st-stack)'));
         let allTargets = targetCardParts.concat(targetStackParts);
         allTargets.forEach(partView => {
             document.addEventListener('keydown', this.handleTargetKey);
@@ -606,7 +606,7 @@ class PartView extends HTMLElement {
         let currentStackView = document.querySelector(`[part-id="${window.System.world.currentStack.id}"]`);
         let currentCardView = document.querySelector(`[part-id="${window.System.world.currentStack.currentCard.id}"]`);
         let targetCardParts = Array.from(currentCardView.querySelectorAll('[part-id]'));
-        let targetStackParts = Array.from(currentStackView.querySelectorAll('[part-id]:not(st-card, st-stack)'));
+        let targetStackParts = Array.from(currentStackView.querySelectorAll('[part-id]:not(st-card):not(st-stack)'));
         let allTargets = targetCardParts.concat(targetStackParts);
         allTargets.forEach(partView => {
             document.removeEventListener('keydown', this.handleTargetKey);
