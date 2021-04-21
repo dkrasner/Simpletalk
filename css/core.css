@@ -332,6 +332,22 @@ wrapped-view > st-stack {
     outline: solid 1px var(--palette-orange);
 }
 
+.targeting:after {
+    content: " ";
+    display: block;
+    width: 100%;
+    height: 100%;
+    position: absolute;
+    top: 0;
+    left: 0;
+    background-color: red;
+}
+
+body.targeting-mode,
+body.targeting-mode [part-id] {
+    cursor: crosshair !important;
+}
+
 
 /* = TESTING: TODO: Remove
  * --------------------------------------------------*/

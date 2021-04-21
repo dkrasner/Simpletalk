@@ -65,9 +65,15 @@ class PartView extends HTMLElement {
         this.onHaloResize = this.onHaloResize.bind(this);
         this.onHaloPaste = this.onHaloPaste.bind(this);
         this.onHaloCopy = this.onHaloCopy.bind(this);
+        this.onHaloTarget = this.onHaloTarget.bind(this);
+        this.endHaloTarget = this.endHaloTarget.bind(this);
         this.onHaloActivationClick = this.onHaloActivationClick.bind(this);
         this.onAuxClick = this.onAuxClick.bind(this);
         this.onClick = this.onClick.bind(this);
+        this.handleTargetKey = this.handleTargetKey.bind(this);
+        this.handleTargetMouseClick = this.handleTargetMouseClick.bind(this);
+        this.handleTargetMouseOver = this.handleTargetMouseOver.bind(this);
+        this.handleTargetMouseLeave = this.handleTargetMouseLeave.bind(this);
 
         // Bind editor related methods
         this.openEditor = this.openEditor.bind(this);
@@ -573,6 +579,76 @@ class PartView extends HTMLElement {
     onHaloPaste(){
         window.System.clipboard.pasteContentsInto(this.model);
         this.closeHalo();
+    }
+
+    onHaloTarget(event){
+        // Add targeting receive listeners to all PartViews
+        // on the current card.
+        let currentStackView = document.querySelector(`[part-id="${window.System.world.currentStack.id}"]`);
+        let currentCardView = document.querySelector(`[part-id="${window.System.world.currentStack.currentCard.id}"]`);
+        let targetCardParts = Array.from(currentCardView.querySelectorAll('[part-id]'));
+        let targetStackParts = Array.from(currentStackView.querySelectorAll('[part-id]:not(st-card):not(st-stack)'));
+        let allTargets = targetCardParts.concat(targetStackParts);
+        allTargets.forEach(partView => {
+            document.addEventListener('keydown', this.handleTargetKey);
+            partView.addEventListener('mouseover', this.handleTargetMouseOver);
+            partView.addEventListener('mouseleave', this.handleTargetMouseLeave);
+            partView.addEventListener('click', this.handleTargetMouseClick);
+        });
+        document.body.classList.add('targeting-mode');
+        event.stopPropagation();
+    }
+
+    endHaloTarget(){
+        // Remove all targeting related event listeners
+        // that were added during the onHaloTarget
+        // handler
+        let currentStackView = document.querySelector(`[part-id="${window.System.world.currentStack.id}"]`);
+        let currentCardView = document.querySelector(`[part-id="${window.System.world.currentStack.currentCard.id}"]`);
+        let targetCardParts = Array.from(currentCardView.querySelectorAll('[part-id]'));
+        let targetStackParts = Array.from(currentStackView.querySelectorAll('[part-id]:not(st-card):not(st-stack)'));
+        let allTargets = targetCardParts.concat(targetStackParts);
+        allTargets.forEach(partView => {
+            document.removeEventListener('keydown', this.handleTargetKey);
+            partView.removeEventListener('keydown', this.handleTargetKey);
+            partView.removeEventListener('mouseover', this.handleTargetMouseOver);
+            partView.removeEventListener('mouseleave', this.handleTargetMouseLeave);
+            partView.removeEventListener('click', this.handleTargetMouseClick);
+        });
+        document.body.classList.remove('targeting-mode');
+    }
+
+    handleTargetKey(event){
+        if(event.key == 'Escape'){
+            this.endHaloTarget();
+        }
+    }
+
+    handleTargetMouseOver(event){
+        if(!event.target.classList.contains('targeting')){
+            event.target.classList.add('targeting');
+            event.target['onclick'] = null;
+        }
+    }
+
+    handleTargetMouseLeave(event){
+        if(event.target.classList.contains('targeting')){
+            event.target.classList.remove('targeting');
+            event.target['onclick'] = event.target.onClick;
+        }
+    }
+
+    handleTargetMouseClick(event){
+        event.target.classList.remove('targeting');
+        event.preventDefault();
+        this.model.partProperties.setPropertyNamed(
+            this.model,
+            'target',
+            event.target.model.id
+        );
+        this.endHaloTarget();
+        event.stopImmediatePropagation();
+        event.target.onclick = event.target.onClick;
     }
 
     onAuxClick(event){
