@@ -674,6 +674,24 @@ const createInterpreterSemantics = (partContext, systemContext) => {
         },
 
         /**
+         * The currentCard Partial Specifier
+         * refers to partials that specify the current card
+         * depending on the stack context. Note: if the stack
+         * is living in a window then we impose that the current
+         * card remains the main one in view.
+         */
+        PartialSpecifier_currentCard: function(currentCardLiteral){
+            return function(contextPart){
+                // contextPart is a stack. If it is in a window then we impose that the
+                // current card remains current to the main view
+                if(contextPart._owner.name == "Window"){
+                    return systemContext.getCurrentCardModel();
+                }
+                return contextPart.currentCard;
+            };
+        },
+
+        /**
          * The partByIndex Partial Specifier
          * refers to partials that specify a part
          * type and an integer literal, for ex:
@@ -814,20 +832,12 @@ const createInterpreterSemantics = (partContext, systemContext) => {
 
         /**
          * The 'current' specifier is a terminal (final)
-         * specifier that refers to either the current card or stack
+         * specifier that refers to the current stack
          * being displayed to the user.
-         * There are only two possible valid options:
-         *     `current card`
-         *     `current stack`
          */
-        TerminalSpecifier_currentSystemObject: function(currentLiteral, systemObject){
-            let targetType = systemObject.sourceString;
+        TerminalSpecifier_currentStack: function(currentStackLiteral){
             return function(contextPart){
-                if(targetType == 'stack'){
-                    return systemContext.getCurrentStackModel();
-                } else {
-                    return systemContext.getCurrentCardModel();
-                }
+                return systemContext.getCurrentStackModel();
             };
         },
 
@@ -932,18 +942,21 @@ const createInterpreterSemantics = (partContext, systemContext) => {
             // be the card or the stack in which the current context part
             // exists.
             let systemObject = partialSpecifier.children[0].children.find((child) => {
-                return (child.sourceString == "part" || child.sourceString == "target" || child.ctorName == 'systemObject');
+                return (child.sourceString == "part" || child.sourceString == "target" || child.sourceString == "current card"|| child.ctorName == 'systemObject');
             });
+            let systemObjectString = systemObject.sourceString;
             // the systemObject is the target (defined in it's "target" part property), then we need to
             // first get the target property value (string) and interpret that
-            if(systemObject.sourceString == "target"){
-                let targetPropValue = partContext.partProperties.getPropertyNamed(partContext, "target");
+            if(systemObjectString == "target"){
+                let targetPropValue = partContext.partProperties.getPropertyNamedd(partContext, "target");
                 let semantics = partContext._semantics;
                 let matchObject = systemContext.grammar.match(targetPropValue, 'ObjectSpecifier');
                 let targetId = semantics(matchObject).interpret();
                 return targetId;
+            } else if(systemObjectString == "current card"){
+                systemObjectString = "card";
             }
-            let finalPart = findFirstPossibleAncestor(partContext, systemObject.sourceString);
+            let finalPart = findFirstPossibleAncestor(partContext, systemObjectString);
             let result = partialSpecifier.interpret()(finalPart);
             return result.id;
         },
