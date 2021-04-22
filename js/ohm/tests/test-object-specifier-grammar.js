@@ -64,14 +64,15 @@ describe("Terminal Specifier Tests", () => {
         });
     });
     it('currentSystemObject (card and stack only)', () => {
-        let valid = ['card', 'stack'];
         let invalid = partTypes.filter(partName => {
-            return !valid.includes(partName);
+            return !["card", "stack"].includes(partName);
         });
-        valid.forEach(validPart => {
-            var str = `current ${validPart}`;
-            semanticMatchTest(str, "TerminalSpecifier");
-        });
+        let str = `current card`;
+        semanticMatchTest(str, "PartialSpecifier");
+        semanticMatchTest(str, "PartialSpecifier_currentCard");
+        str = `current stack`;
+        semanticMatchTest(str, "TerminalSpecifier");
+        semanticMatchTest(str, "TerminalSpecifier_currentStack");
         invalid.forEach(invalidPart => {
             var str = `current ${invalidPart}`;
             semanticMatchFailTest(str, "TerminalSpecifier");

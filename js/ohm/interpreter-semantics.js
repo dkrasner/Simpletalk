@@ -919,9 +919,13 @@ const createInterpreterSemantics = (partContext, systemContext) => {
             // if the partialSpecfier refers to either area, card or stack
             // then go to its owner for the context
             let systemObject = partialSpecifier.children[0].children.find((child) => {
-                return child.ctorName == "systemObject";
+                return (child.sourceString == "current card" || child.ctorName == "systemObject");
             });
-            let finalPart = findFirstPossibleAncestor(partContext, systemObject.sourceString);
+            let systemObjectString = systemObject.sourceString;
+            if(systemObjectString == "current card"){
+                systemObjectString = "card";
+            }
+            let finalPart = findFirstPossibleAncestor(partContext, systemObjectString);
             let finalPartial = partialSpecifier.interpret()(finalPart);
             let result = queriedSpecifier.interpret()(finalPartial);
             return result.id;
