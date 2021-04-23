@@ -204,8 +204,8 @@ SimpleTalk {
     ObjectSpecifier (a object specifier)
       = QueriedSpecifier PartialSpecifier --compoundQueryWithoutTerminal
       | QueriedSpecifier TerminalSpecifier --compoundQueryWithTerminal
-      | TerminalSpecifier --singleTerminal
       | PartialSpecifier --singleNonTerminal
+      | TerminalSpecifier --singleTerminal
 
     QueriedSpecifier
       = QueriedSpecifier QueriedSpecifier --nested

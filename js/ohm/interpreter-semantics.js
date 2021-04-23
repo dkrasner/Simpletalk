@@ -910,7 +910,7 @@ const createInterpreterSemantics = (partContext, systemContext) => {
         },
 
         /**
-         * A Compound with terminal specifier is a QueriedSpecifier
+         * A Compound without terminal specifier is a QueriedSpecifier
          * that finishes with a Partial specifier.
          * Example: `of button 3 of first card` (which can continue `..of current stack` etc)
          * `first button of first area of stack 3`
@@ -951,10 +951,17 @@ const createInterpreterSemantics = (partContext, systemContext) => {
             // whose terminal object is implicitly assumed to
             // be the card or the stack in which the current context part
             // exists.
-            let systemObject = partialSpecifier.children[0].children.find((child) => {
-                return (child.sourceString == "part" || child.sourceString == "target" || child.sourceString == "current card"|| child.ctorName == 'systemObject');
-            });
-            let systemObjectString = systemObject.sourceString;
+            let children = partialSpecifier.children[0].children;
+            let systemObjectString;
+            if(children[0].sourceString == "current" && children[1].sourceString == "card"){
+                return systemContext.getCurrentCardModel().id;
+            } else {
+                children.forEach((child) => {
+                    if(child.sourceString == "part" || child.sourceString == "target" || child.ctorName == 'systemObject'){
+                        systemObjectString = child.sourceString;
+                    }
+                });
+            }
             // the systemObject is the target (defined in it's "target" part property), then we need to
             // first get the target property value (string) and interpret that
             if(systemObjectString == "target"){
