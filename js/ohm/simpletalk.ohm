@@ -189,22 +189,22 @@ SimpleTalk {
     TerminalSpecifier
       = ("part" | systemObject) "id" objectId --partById
       | "this" systemObject --thisSystemObject
-      | "current stack" --currentStack
+      | "current" ("stack" | "card") --currentSystemObject
 
     // Partial specifiers are those that can sometimes be terminal,
     // like when `card "some card name"` which will assume the current
     // stack as its target
     PartialSpecifier
       = "target" --partByTarget
-      | "current card" --currentCard
+      | "current" "card" --currentCard
       | (systemObject | "part") stringLiteral --partByName
       | (systemObject | "part") integerLiteral --partByIndex
       | numericalKeyword (systemObject | "part") --partByNumericalIndex
 
     ObjectSpecifier (a object specifier)
-      = TerminalSpecifier --singleTerminal
+      = QueriedSpecifier PartialSpecifier --compoundQueryWithoutTerminal
       | QueriedSpecifier TerminalSpecifier --compoundQueryWithTerminal
-      | QueriedSpecifier PartialSpecifier --compoundQueryWithoutTerminal
+      | TerminalSpecifier --singleTerminal
       | PartialSpecifier --singleNonTerminal
 
     QueriedSpecifier

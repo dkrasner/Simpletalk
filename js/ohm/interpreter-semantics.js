@@ -676,17 +676,10 @@ const createInterpreterSemantics = (partContext, systemContext) => {
         /**
          * The currentCard Partial Specifier
          * refers to partials that specify the current card
-         * depending on the stack context. Note: if the stack
-         * is living in a window then we impose that the current
-         * card remains the main one in view.
+         * depending on the stack context.
          */
-        PartialSpecifier_currentCard: function(currentCardLiteral){
+        PartialSpecifier_currentCard: function(currentLiteral, cardLiteral){
             return function(contextPart){
-                // contextPart is a stack. If it is in a window then we impose that the
-                // current card remains current to the main view
-                if(contextPart._owner.name == "Window"){
-                    return systemContext.getCurrentCardModel();
-                }
                 return contextPart.currentCard;
             };
         },
@@ -832,12 +825,20 @@ const createInterpreterSemantics = (partContext, systemContext) => {
 
         /**
          * The 'current' specifier is a terminal (final)
-         * specifier that refers to the current stack
+         * specifier that refers to either the current card or stack
          * being displayed to the user.
+         * There are only two possible valid options:
+         *     `current card`
+         *     `current stack`
          */
-        TerminalSpecifier_currentStack: function(currentStackLiteral){
+        TerminalSpecifier_currentSystemObject: function(currentLiteral, systemObject){
+            let targetType = systemObject.sourceString;
             return function(contextPart){
-                return systemContext.getCurrentStackModel();
+                if(targetType == 'stack'){
+                    return systemContext.getCurrentStackModel();
+                } else {
+                    return systemContext.getCurrentCardModel();
+                }
             };
         },
 
@@ -918,12 +919,17 @@ const createInterpreterSemantics = (partContext, systemContext) => {
         ObjectSpecifier_compoundQueryWithoutTerminal: function(queriedSpecifier, partialSpecifier){
             // if the partialSpecfier refers to either area, card or stack
             // then go to its owner for the context
-            let systemObject = partialSpecifier.children[0].children.find((child) => {
-                return (child.sourceString == "current card" || child.ctorName == "systemObject");
-            });
-            let systemObjectString = systemObject.sourceString;
-            if(systemObjectString == "current card"){
+            // if it refers to the current card then find the owner for the context
+            let children = partialSpecifier.children[0].children;
+            let systemObjectString;
+            if(children[0].sourceString == "current" && children[1].sourceString == "card"){
                 systemObjectString = "card";
+            } else {
+                children.forEach((child) => {
+                    if(child.ctorName == "systemObject"){
+                        systemObjectString = child.sourceString;
+                    }
+                });
             }
             let finalPart = findFirstPossibleAncestor(partContext, systemObjectString);
             let finalPartial = partialSpecifier.interpret()(finalPart);
