@@ -12,40 +12,30 @@ const expect = chai.expect;
 import Window from '../parts/Window.js';
 
 // Import valid subpart kinds
-import Stack from '../parts/Stack.js';
-import WorldStack from '../parts/WorldStack';
+import Area from '../parts/Area.js';
+import Stack from '../parts/Stack';
 
 // Import one invalid subpart kind
 import Button from '../parts/Button.js';
 
 let windowModel;
 describe('Window Part Tests', () => {
-    it('#addPart will add Stack as a subpart successfully', () => {
+    it('#addPart will add Area as a subpart successfully', () => {
         let win = new Window();
-        let stack = new Stack();
+        let area = new Area();
         let addPartFunc = function(){
+            win.addPart(area);
+        };
+
+        expect(addPartFunc).to.not.throw(Error);
+    });
+
+    it('#addPart will NOT add a stack Part successfully', () => {
+        let win = new Window();
+        let Stack;
+        let addPartFunc = function(){
+            stack = new Stack(win);
             win.addPart(stack);
-        };
-
-        expect(addPartFunc).to.not.throw(Error);
-    });
-
-    it('#addPart will add a WorldStack as a subpart successfully', () => {
-        let win = new Window();
-        let worldstack = new WorldStack();
-        let addPartFunc = function(){
-            win.addPart(worldstack);
-        };
-
-        expect(addPartFunc).to.not.throw(Error);
-    });
-
-    it('#addPart will NOT add a non-stack Part successfully', () => {
-        let win = new Window();
-        let button;
-        let addPartFunc = function(){
-            button = new Button(win);
-            win.addPart(button);
         };
 
         expect(addPartFunc).to.throw(Error);

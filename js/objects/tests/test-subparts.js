@@ -9,8 +9,6 @@ import chai from 'chai';
 const assert = chai.assert;
 const expect = chai.expect;
 
-import Window from '../parts/Window.js';
-
 // Import valid subpart kinds
 import WorldStack from '../parts/WorldStack';
 import Stack from '../parts/Stack.js';
@@ -21,36 +19,9 @@ import Field from '../parts/Field.js';
 import Image from '../parts/Image.js';
 import Drawing from '../parts/Drawing.js';
 import Audio from '../parts/Audio.js';
+import Area from '../parts/Area.js';
+import Window from '../parts/Window.js';
 
-
-/*describe('Subpart Validity Tests', () => {
-    it('#addPart will add Stack to World successfully', () => {
-        let world = new WorldStack();
-        let stack = new Stack();
-        let addPartFunc = function(){
-            world.addPart(stack);
-        };
-        expect(addPartFunc).to.not.throw(Error);
-    });
-    it('#addPart will not add Card to World', () => {
-        let world = new WorldStack();
-        let stack = new Stack();
-        let card = new Card(stack);
-        let addPartFunc = function(){
-            world.addPart(card);
-        };
-        expect(addPartFunc).to.throw("card is not a valid subpart of world");
-    });
-    it('#addPart will not add Background to Card', () => {
-        let stack = new Stack();
-        let card = new Card(stack);
-        let background = new Background(stack);
-        let addPartFunc = function(){
-            card.addPart(background);
-        };
-        expect(addPartFunc).to.throw("background is not a valid subpart of card");
-    });
-});*/
 
 describe('Subpart Validity Tests', () => {
     describe('Card', () => {
@@ -226,6 +197,34 @@ describe('Subpart Validity Tests', () => {
             let win = new Window();
             let field = new Field();
             assert.isFalse(field.acceptsSubpart(win.type));
+        });
+    });
+
+    describe('Window', () => {
+        it('Rejects World', () => {
+            let world = new WorldStack();
+            let window = new Window();
+            assert.isFalse(window.acceptsSubpart(world.type));
+        });
+        it('Rejects Stack', () => {
+            let stack = new Stack();
+            let window = new Window();
+            assert.isFalse(window.acceptsSubpart(stack.type));
+        });
+        it('Rejects Card', () => {
+            let card = new Card();
+            let window = new Window();
+            assert.isFalse(window.acceptsSubpart(card.type));
+        });
+        it('Rejects Window', () => {
+            let win = new Window();
+            let window = new Window();
+            assert.isFalse(window.acceptsSubpart(win.type));
+        });
+        it('Accepts Area', () => {
+            let area = new Area();
+            let window = new Window();
+            assert.isTrue(window.acceptsSubpart(area.type));
         });
     });
 });

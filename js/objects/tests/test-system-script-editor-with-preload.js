@@ -23,12 +23,6 @@ let originalScript = `on click\n\tanswer "hello"\nend click`;
 
 describe('Opening a Script Editor', () => {
 
-    // Toolbox is a result of bootstrap serialization and no
-    // longer hard coded into the init of the System
-    it.skip('There is exactly one window (toolbox) in the world', () => {
-        let foundWindows = document.querySelectorAll('st-window');
-        assert.equal(1, foundWindows.length);
-    });
     it('Can remove the current window from the world for further testing (TODO! make programmatic) ', () => {
         let foundWindows = document.querySelectorAll('st-window');
         foundWindows.forEach((node) => {node.remove()});
@@ -91,16 +85,16 @@ describe('Opening a Script Editor', () => {
 });
 
 describe('ScriptEditor Functionality', () => {
-    let editorCurrentCardView;
+    let editorAreaView;
     let editorSaveButtonView;
     let editorFieldView;
     before(() => {
-        editorCurrentCardView = document.querySelector('st-window > st-stack > .current-card');
-        editorSaveButtonView = editorCurrentCardView.querySelector('st-button');
-        editorFieldView = editorCurrentCardView.querySelector('st-field');
+        editorAreaView = document.querySelector('st-window > st-area');
+        editorSaveButtonView = editorAreaView.querySelector('st-button');
+        editorFieldView = editorAreaView.querySelector('st-field');
     });
     it('Has all appropriate views', () => {
-        assert.exists(editorCurrentCardView);
+        assert.exists(editorAreaView);
         assert.exists(editorSaveButtonView);
         assert.exists(editorFieldView);
     });

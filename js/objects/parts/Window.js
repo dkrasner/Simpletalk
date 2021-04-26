@@ -16,7 +16,8 @@ import Part from './Part.js';
 import Stack from './Stack.js';
 import {
     addBasicStyleProps,
-    addPositioningStyleProps
+    addPositioningStyleProps,
+    addLayoutStyleProps
 } from '../utils/styleProperties.js';
 
 class Window extends Part {
@@ -24,9 +25,11 @@ class Window extends Part {
         super(owner, name);
 
         this.acceptedSubpartTypes = [
-            'card',
-            'stack',
-            'world'
+            "area",
+            "button",
+            "field",
+            "image",
+            "drawing",
         ];
 
         // If we pass in a target,

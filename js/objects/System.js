@@ -471,6 +471,14 @@ const System = {
                 lastCard.after(newView);
             });
         } else {
+            if(parentElement.type == "window"){
+                // slot the new view into the window
+                let parentViews = this.findViewsById(parentElement.id);
+                parentViews.forEach((window) => {
+                    let pane = window._shadowRoot.querySelector('.st-window-pane');
+                    pane.append(newView);
+                });
+            }
             parentElement.appendChild(newView);
         }
 
@@ -827,10 +835,9 @@ System._commandHandlers['openScriptEditor'] = function(senders, targetId){
     let target = this.partsById[targetId];
     let currentCard = this.getCurrentCardModel();
     let window = this.newModel('window', currentCard.id);
-    let stack = this.newModel('stack', window.id);
-    let card = this.newModel('card', stack.id);
-    let scriptField = this.newModel('field', card.id);
-    let saveButton = this.newModel('button', card.id);
+    let area = this.newModel('area', window.id);
+    let scriptField = this.newModel('field', area.id);
+    let saveButton = this.newModel('button', area.id);
 
     let targetName = target.partProperties.getPropertyNamed(target, "name");
     if(targetName){
@@ -841,10 +848,13 @@ System._commandHandlers['openScriptEditor'] = function(senders, targetId){
     // setup the window and stack properties
     window.setTarget(target);
     window.partProperties.setPropertyNamed(window, "title", name);
-    stack.partProperties.setPropertyNamed(stack, "current", 0);
+    window.partProperties.setPropertyNamed(window, "height", 200);
+    window.partProperties.setPropertyNamed(window, "width", 500);
 
-    card.partProperties.setPropertyNamed(card, "layout", "list");
-    card.partProperties.setPropertyNamed(card, "list-direction", "column");
+    area.partProperties.setPropertyNamed(area, "layout", "list");
+    area.partProperties.setPropertyNamed(area, "list-direction", "column");
+    area.partProperties.setPropertyNamed(area, "width", "fill");
+    area.partProperties.setPropertyNamed(area, "height", "fill");
 
     // script field
     let targetScript = target.partProperties.getPropertyNamed(target, "script");
