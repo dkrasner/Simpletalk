@@ -836,8 +836,10 @@ const createInterpreterSemantics = (partContext, systemContext) => {
             return function(contextPart){
                 if(targetType == 'stack'){
                     return systemContext.getCurrentStackModel();
-                } else {
+                } else if(targetType == 'card'){
                     return systemContext.getCurrentCardModel();
+                } else {
+                    throw new Error(`${targetType} cannot be a 'current' system object`);
                 }
             };
         },
