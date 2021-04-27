@@ -967,7 +967,7 @@ const createInterpreterSemantics = (partContext, systemContext) => {
             // the systemObject is the target (defined in it's "target" part property), then we need to
             // first get the target property value (string) and interpret that
             if(systemObjectString == "target"){
-                let targetPropValue = partContext.partProperties.getPropertyNamedd(partContext, "target");
+                let targetPropValue = partContext.partProperties.getPropertyNamed(partContext, "target");
                 let semantics = partContext._semantics;
                 let matchObject = systemContext.grammar.match(targetPropValue, 'ObjectSpecifier');
                 let targetId = semantics(matchObject).interpret();
