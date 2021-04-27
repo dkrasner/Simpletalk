@@ -196,15 +196,16 @@ SimpleTalk {
     // stack as its target
     PartialSpecifier
       = "target" --partByTarget
+      | "current" "card" --currentCard
       | (systemObject | "part") stringLiteral --partByName
       | (systemObject | "part") integerLiteral --partByIndex
       | numericalKeyword (systemObject | "part") --partByNumericalIndex
 
     ObjectSpecifier (a object specifier)
-      = TerminalSpecifier --singleTerminal
+      = QueriedSpecifier PartialSpecifier --compoundQueryWithoutTerminal
       | QueriedSpecifier TerminalSpecifier --compoundQueryWithTerminal
-      | QueriedSpecifier PartialSpecifier --compoundQueryWithoutTerminal
       | PartialSpecifier --singleNonTerminal
+      | TerminalSpecifier --singleTerminal
 
     QueriedSpecifier
       = QueriedSpecifier QueriedSpecifier --nested

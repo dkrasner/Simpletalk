@@ -674,6 +674,17 @@ const createInterpreterSemantics = (partContext, systemContext) => {
         },
 
         /**
+         * The currentCard Partial Specifier
+         * refers to partials that specify the current card
+         * depending on the stack context.
+         */
+        PartialSpecifier_currentCard: function(currentLiteral, cardLiteral){
+            return function(contextPart){
+                return contextPart.currentCard;
+            };
+        },
+
+        /**
          * The partByIndex Partial Specifier
          * refers to partials that specify a part
          * type and an integer literal, for ex:
@@ -825,8 +836,10 @@ const createInterpreterSemantics = (partContext, systemContext) => {
             return function(contextPart){
                 if(targetType == 'stack'){
                     return systemContext.getCurrentStackModel();
-                } else {
+                } else if(targetType == 'card'){
                     return systemContext.getCurrentCardModel();
+                } else {
+                    throw new Error(`${targetType} cannot be a 'current' system object`);
                 }
             };
         },
@@ -899,7 +912,7 @@ const createInterpreterSemantics = (partContext, systemContext) => {
         },
 
         /**
-         * A Compound with terminal specifier is a QueriedSpecifier
+         * A Compound without terminal specifier is a QueriedSpecifier
          * that finishes with a Partial specifier.
          * Example: `of button 3 of first card` (which can continue `..of current stack` etc)
          * `first button of first area of stack 3`
@@ -908,10 +921,19 @@ const createInterpreterSemantics = (partContext, systemContext) => {
         ObjectSpecifier_compoundQueryWithoutTerminal: function(queriedSpecifier, partialSpecifier){
             // if the partialSpecfier refers to either area, card or stack
             // then go to its owner for the context
-            let systemObject = partialSpecifier.children[0].children.find((child) => {
-                return child.ctorName == "systemObject";
-            });
-            let finalPart = findFirstPossibleAncestor(partContext, systemObject.sourceString);
+            // if it refers to the current card then find the owner for the context
+            let children = partialSpecifier.children[0].children;
+            let systemObjectString;
+            if(children[0].sourceString == "current" && children[1].sourceString == "card"){
+                systemObjectString = "card";
+            } else {
+                children.forEach((child) => {
+                    if(child.ctorName == "systemObject"){
+                        systemObjectString = child.sourceString;
+                    }
+                });
+            }
+            let finalPart = findFirstPossibleAncestor(partContext, systemObjectString);
             let finalPartial = partialSpecifier.interpret()(finalPart);
             let result = queriedSpecifier.interpret()(finalPartial);
             return result.id;
@@ -931,19 +953,29 @@ const createInterpreterSemantics = (partContext, systemContext) => {
             // whose terminal object is implicitly assumed to
             // be the card or the stack in which the current context part
             // exists.
-            let systemObject = partialSpecifier.children[0].children.find((child) => {
-                return (child.sourceString == "part" || child.sourceString == "target" || child.ctorName == 'systemObject');
-            });
+            let children = partialSpecifier.children[0].children;
+            let systemObjectString;
+            if(children[0].sourceString == "current" && children[1].sourceString == "card"){
+                return systemContext.getCurrentCardModel().id;
+            } else {
+                children.forEach((child) => {
+                    if(child.sourceString == "part" || child.sourceString == "target" || child.ctorName == 'systemObject'){
+                        systemObjectString = child.sourceString;
+                    }
+                });
+            }
             // the systemObject is the target (defined in it's "target" part property), then we need to
             // first get the target property value (string) and interpret that
-            if(systemObject.sourceString == "target"){
-                let targetPropValue = partContext.partProperties.getPropertyNamed(partContext, "target");
+            if(systemObjectString == "target"){
+                let targetPropValue = partContext.partProperties.getPropertyNamedd(partContext, "target");
                 let semantics = partContext._semantics;
                 let matchObject = systemContext.grammar.match(targetPropValue, 'ObjectSpecifier');
                 let targetId = semantics(matchObject).interpret();
                 return targetId;
+            } else if(systemObjectString == "current card"){
+                systemObjectString = "card";
             }
-            let finalPart = findFirstPossibleAncestor(partContext, systemObject.sourceString);
+            let finalPart = findFirstPossibleAncestor(partContext, systemObjectString);
             let result = partialSpecifier.interpret()(finalPart);
             return result.id;
         },

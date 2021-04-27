@@ -18,8 +18,7 @@ let area = null;
 // We add 3 buttons and fields each to
 // three cards total (including the current one)
 // in an alternating pattern
-function setupCardsAndParts(){
-    let stack = window.System.getCurrentStackModel();
+function setupCardsAndParts(stack){
     for(let i = 0; i < 3; i++){
         let currentCard = window.System.getCurrentCardModel();
         window.System.newModel(
@@ -82,7 +81,17 @@ describe("ObjectSpecifier Tests", () => {
             assert.exists(currentCardModel);
         });
         it("Can add all the cards and test parts without error", () => {
-            expect(setupCardsAndParts).to.not.throw();
+            let stack = window.System.getCurrentStackModel();
+            let setup = function(){
+                return setupCardsAndParts(stack);
+            };
+            expect(setup).to.not.throw();
+            // add one more stack and do the same
+            let stack2 = window.System.newModel("stack", "world", "Stack 2");
+            setup = function(){
+                return setupCardsAndParts(stack2);
+            };
+            expect(setup).to.not.throw();
         });
         it("Can load the language grammar", () => {
             assert.exists(testLanguageGrammar);
@@ -398,6 +407,43 @@ describe("ObjectSpecifier Tests", () => {
             let expectedPart = secondCard.subparts.filter(subpart => {
                 return subpart.type == 'field';
             })[2];
+            let expectedValue = expectedPart.id;
+            let result = semantics(matchObject).interpret();
+            assert.equal(expectedValue, result);
+        });
+    });
+    describe("Complex Specifiers with non-current stack", () => {
+        let semantics;
+        let partContext;
+
+        before(() => {
+            partContext = window.System.getCurrentStackModel();
+            semantics = testLanguageGrammar.createSemantics();
+            semantics.addOperation(
+                'interpret',
+                interpreterSemantics(partContext, window.System)
+            ); 
+        });
+
+        it("Can get current card of current stack", () => {
+            let str = `current card of current stack`;
+            let matchObject = testLanguageGrammar.match(str, 'ObjectSpecifier');
+            assert.isTrue(matchObject.succeeded());
+            let currentStack = window.System.getCurrentStackModel();
+            let expectedPart = currentStack.currentCard;
+            let expectedValue = expectedPart.id;
+            let result = semantics(matchObject).interpret();
+            assert.equal(expectedValue, result);
+        });
+        it("Can get current card of second stack", () => {
+            let str = `current card of second stack`;
+            let matchObject = testLanguageGrammar.match(str, 'ObjectSpecifier');
+            assert.isTrue(matchObject.succeeded());
+            let world = window.System.partsById["world"];
+            let secondStack = world.subparts.filter(subpart => {
+                return subpart.type == 'stack';
+            })[1];
+            let expectedPart = secondStack.currentCard;
             let expectedValue = expectedPart.id;
             let result = semantics(matchObject).interpret();
             assert.equal(expectedValue, result);
