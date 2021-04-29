@@ -56,7 +56,6 @@ class Part {
         this.receiveMessage = this.receiveMessage.bind(this);
         this.delegateMessage = this.delegateMessage.bind(this);
         this.sendMessage = this.sendMessage.bind(this);
-        this.newModelCmdHandler = this.newModelCmdHandler.bind(this);
         this.addPropertySubscriber = this.addPropertySubscriber.bind(this);
         this.removePropertySubscriber = this.removePropertySubscriber.bind(this);
         this.serialize = this.serialize.bind(this);
@@ -80,7 +79,6 @@ class Part {
 
         // command handlers
         this.setPrivateCommandHandler("deleteModel", this.deleteModelCmdHandler);
-        this.setPrivateCommandHandler("newModel", this.newModelCmdHandler);
         this.setPrivateCommandHandler("openEditor", this.openEditorCmdHandler);
         this.setPrivateCommandHandler("closeEditor", this.closeEditorCmdHandler);
         this.setPrivateCommandHandler("setTargetTo", this.setTargetProp);
@@ -144,41 +142,6 @@ class Part {
         };
         return this._owner.getOwnerBranch(branch);
     }
-
-    newModelCmdHandler(senders, partType, ownerId, name){
-        if(ownerId){
-            this.delegateMessage({
-                type: 'command',
-                commandName: 'newModel',
-                args: [
-                    partType,
-                    ownerId,
-                    name
-                ]
-            });
-        } else if(this.acceptsSubpart(partType)){
-            this.sendMessage({
-                type: 'command',
-                commandName: 'newModel',
-                args: [
-                    partType,
-                    this.id,
-                    name
-                ]
-            }, window.System);
-        } else {
-            this.delegateMessage({
-                type: 'command',
-                commandName: 'newModel',
-                args: [
-                    partType,
-                    ownerId,
-                    name
-                ]
-            });
-        }
-    }
-
 
     // Configures the specific properties that the
     // given part can expect, along with any default

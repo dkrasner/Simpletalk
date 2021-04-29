@@ -43,7 +43,6 @@ describe('Basic functionality', () => {
             // we just check for a few of the core handlers and make sure these
             // are present, as these evolve too quickly to keep a comprehensive list
             assert.deepEqual(button.commandHandlerRegistry["deleteModel"], {partId: button.id, partType: "button", override: true, private: true});
-            assert.deepEqual(button.commandHandlerRegistry["newModel"], {partId: button.id, partType: "button", override: true, private: true});
             assert.deepEqual(button.commandHandlerRegistry["answer"], {partId: -1, partType: "System", override: false, private: false});
         });
         it('Adding a new command handler adds it to the registry', () => {
