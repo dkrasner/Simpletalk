@@ -586,7 +586,7 @@ const System = {
             throw new Error(`No world found!`);
         }
         let serializer = new STSerializer(this);
-        let serialString = serializer.serialize(this.partsById['world'], false);
+        let serialString = serializer.serialize(this.partsById['world'], true);
 
         // If there is not a script tag in the
         // body for the serialization, create it
