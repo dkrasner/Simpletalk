@@ -237,25 +237,6 @@ describe('deleteModel tests', () => {
 
         expect(sendFunc).to.not.throw(Error);
     });
-    it('Can send deleteModel message without error (delete the button without id, self referentially)', () => {
-        let targetButton = currentCard.subparts.filter(part => {
-            return part.type == 'button';
-        })[0];
-
-        assert.exists(targetButton);
-
-        let msg = {
-            type: 'command',
-            commandName: 'deleteModel',
-            args: [undefined, "button"]
-        };
-
-        let sendFunc = function(){
-            currentCard.sendMessage(msg, targetButton);
-        };
-
-        expect(sendFunc).to.not.throw(Error);
-    });
     it('Current card should delete button subpart by Id', () => {
         let targetButton = currentCard.subparts.filter(part => {
             return part.type == 'button';
@@ -266,7 +247,7 @@ describe('deleteModel tests', () => {
         let msg = {
             type: 'command',
             commandName: 'deleteModel',
-            args: [targetButton.id, '']
+            args: [targetButton.id]
         };
 
         currentCard.sendMessage(msg, targetButton);
@@ -294,26 +275,4 @@ describe('deleteModel tests', () => {
         let buttonViews = currentCardView.querySelectorAll(`[part-id="{targetButton.id}"]`);
         assert.equal(buttonViews.length, 0);
     });
-
-    it('Current card should delete button subpart wihout Id, self-referentially', () => {
-        let targetButton = currentCard.subparts.filter(part => {
-            return part.type == 'button';
-        })[0];
-
-        assert.exists(targetButton);
-
-        let msg = {
-            type: 'command',
-            commandName: 'deleteModel',
-            args: [undefined, "button"]
-        };
-
-        currentCard.sendMessage(msg, targetButton);
-
-        let matchingButtons = currentCard.subparts.filter(subpart => {
-            return subpart.id == targetButton.id;
-        });
-        assert.equal(matchingButtons.length, 0);
-    });
-
 });

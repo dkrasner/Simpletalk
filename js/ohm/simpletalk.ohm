@@ -218,7 +218,7 @@ SimpleTalk {
       = "go to" ("next" | "previous") systemObject --goToDirection
       | "go to" systemObject objectId --goToByReference
       | "answer" Expression --answer
-      | "delete" "this"? systemObject objectId? --deleteModel
+      | "delete" ObjectSpecifier --deleteModel
       | "set" propertyName "to" Expression InClause? --setProperty
       | "add" systemObject stringLiteral? "to" ObjectSpecifier --addModelTo
       | "add" systemObject stringLiteral? --addModel
