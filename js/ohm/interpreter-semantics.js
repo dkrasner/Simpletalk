@@ -315,31 +315,41 @@ const createInterpreterSemantics = (partContext, systemContext) => {
 
         Expression_addExpr: function(firstExpression, operation, secondExpression){
             let first = firstExpression.interpret();
+            first = Number(first);
             let second = secondExpression.interpret();
+            second = Number(second);
             return first + second;
         },
 
         Expression_minusExpr: function(firstExpr, operation, secondExpr){
             let first = firstExpr.interpret();
+            first = Number(first);
             let second = secondExpr.interpret();
+            second = Number(second);
             return first - second;
         },
 
         Expression_divideExpr: function(firstExpr, operation, secondExpr){
             let first = firstExpr.interpret();
+            first = Number(first);
             let second = secondExpr.interpret();
+            second = Number(second);
             return first / second;
         },
 
         Expression_moduloDivideExpr: function(firstExpr, operation, secondExpr){
             let first = firstExpr.interpret();
+            first = Number(first);
             let second = secondExpr.interpret();
+            second = Number(second);
             return first % second;
         },
 
         Expression_timesExpr: function(firstExpression, operation, secondExpression){
             let first = firstExpression.interpret();
+            first = Number(first);
             let second = secondExpression.interpret();
+            second = Number(second);
             return first * second;
         },
 
