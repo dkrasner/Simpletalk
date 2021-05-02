@@ -29,10 +29,7 @@ class Area extends Part {
             "field",
             "image",
             "audio",
-<<<<<<< HEAD
-=======
             "resource",
->>>>>>> creating resource part and view
             "drawing",
             "window"
         ];
