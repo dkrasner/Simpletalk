@@ -74,7 +74,11 @@ class AudioView extends PartView {
         let audio = this._shadowRoot.querySelector("audio");
         audio.addEventListener('loadeddata', () => {
             let stateCode = audio.readyState;
-            this.model.partProperties.setPropertyNamed(this.model, "readyState", mediaStates[stateCode]);
+            this.model.partProperties.setPropertyNamed(
+                this.model,
+                "readyState",
+                mediaStates[stateCode]
+            );
         });
 
         if(!this.haloButton){
@@ -88,6 +92,16 @@ class AudioView extends PartView {
     afterModelSet(){
         let nameSpan = this._shadowRoot.querySelector(".name");
         nameSpan.innerText = this.model.partProperties.getPropertyNamed(this.model, "name");
+        this.model.partProperties.setPropertyNamed(
+            this.model,
+            "readyState",
+           "HAVE_NOTHING" 
+        );
+        let audio = this._shadowRoot.querySelector("audio");
+        let src = this.model.partProperties.getPropertyNamed(this.model, "src");
+        if(src){
+            audio.src = src;
+        }
         // prop changes
         this.onPropChange("name", (value) => {
             nameSpan.innerText = value;
@@ -110,13 +124,13 @@ class AudioView extends PartView {
         });
         this.onPropChange("stop", (value) => {
             if(value === true){
-                this._shadowRoot.querySelector("audio").currentTime = 0;
+                audio.currentTime = 0;
             }
         });
         this.onPropChange("src", (url) => {
             try{
                 // resource load is auto-loaded by the <audio> element
-                this._shadowRoot.querySelector("audio").src = url;
+                audio.src = url;
             } catch(error){
                 let errorMsg = {
                     type: "error",
