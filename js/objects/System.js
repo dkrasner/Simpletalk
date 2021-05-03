@@ -284,14 +284,8 @@ const System = {
     },
 
     newModel: function(kind, ownerId, name, buildView=true){
-        // If no ownerId is provided, we assume
-        // current card to be the owner of the new part
-        if(!ownerId){
-            ownerId = this.getCurrentCardModel().id;
-        }
-
         // Lookup the instance of the model that
-        // matches the owner's id        
+        // matches the owner's id
         let ownerPart = this.partsById[ownerId];
         if(!ownerPart || ownerPart == undefined){
             throw new Error(`System could not locate owner part with id ${ownerId}`);

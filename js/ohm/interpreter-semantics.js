@@ -167,9 +167,11 @@ const createInterpreterSemantics = (partContext, systemContext) => {
         },
 
         Command_addModel: function(addLiteral, newPartType, optionalPartName){
+            // here no owner has been provided so we assume it is the first possible one
+            let parent = findFirstPossibleAncestor(partContext, newPartType.sourceString);
             let args = [
                 newPartType.sourceString,
-                null // We assume no specific owner context. Should be handled in Part.js
+                parent.id
             ];
             let optionalName = optionalPartName.interpret();
             if(optionalName && optionalName.length){
