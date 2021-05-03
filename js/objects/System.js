@@ -13,6 +13,7 @@ import WorldStack from './parts/WorldStack.js';
 import Window from './parts/Window.js';
 import Drawing from './parts/Drawing.js';
 import Audio from './parts/Audio.js';
+import Resource from './parts/Resource.js';
 import Image from './parts/Image.js';
 import Area from './parts/Area.js';
 
@@ -27,6 +28,7 @@ import DrawingView from './views/drawing/DrawingView.js';
 import ImageView from './views/ImageView.js';
 import AreaView from './views/AreaView.js';
 import AudioView from './views/AudioView.js';
+import ResourceView from './views/ResourceView.js';
 
 
 import Halo from './views/Halo.js';
@@ -996,6 +998,7 @@ System.registerPart('drawing', Drawing);
 System.registerPart('image', Image);
 System.registerPart('area', Area);
 System.registerPart('audio', Audio);
+System.registerPart('resource', Resource);
 
 /** Register the initial set of views in the system **/
 System.registerView('button', ButtonView);
@@ -1008,6 +1011,7 @@ System.registerView('drawing', DrawingView);
 System.registerView('image', ImageView);
 System.registerView('area', AreaView);
 System.registerView('audio', AudioView);
+System.registerView('resource', ResourceView);
 
 
 // Convenience method for adding all of the

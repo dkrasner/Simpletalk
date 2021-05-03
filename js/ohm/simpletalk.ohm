@@ -231,7 +231,7 @@ SimpleTalk {
       = (comment lineTerminator)+
 
     systemObject (system object such as card, stack etc)
-      = ("w" | "W") "orld" | ("a" | "A") "rea" | ("b"| "B") "ackground" | ("b" | "B") "utton" | ("c" | "C") "ard" | ("f" | "F") "ield" | ("s" | "S") "tack" | ("w" | "W") "indow" | ("d" | "D") "rawing" | ("i" | "I") "mage" | ("a" | "A") "udio"
+      = ("w" | "W") "orld" | ("a" | "A") "rea" | ("b"| "B") "ackground" | ("b" | "B") "utton" | ("c" | "C") "ard" | ("f" | "F") "ield" | ("s" | "S") "tack" | ("w" | "W") "indow" | ("d" | "D") "rawing" | ("i" | "I") "mage" | ("a" | "A") "udio" | ("r" | "R") "esource"
 
     // TODO do we want to restrict message names (start with lowercase etc)?
     // Note: we prevent keyword overloading
