@@ -426,7 +426,19 @@ const System = {
     removeViews: function(modelId){
         let views = Array.from(this.findViewsById(modelId));
         views.forEach(view => {
+            let parentEl = view.parentElement;
             view.parentElement.removeChild(view);
+            // Dispatch a CustomEvent on the parentElement
+            // indicating that this part has been removed, and
+            // any view utilities that care can be notified.
+            let event = new CustomEvent('st-view-removed', {
+                detail: {
+                    partType: view.model.type,
+                    partId: modelId,
+                    ownerId: null
+                } 
+            });
+            parentEl.dispatchEvent(event);
         });
         let lenses = this.findLensViewsById(modelId);
         lenses.forEach(lensView => {
