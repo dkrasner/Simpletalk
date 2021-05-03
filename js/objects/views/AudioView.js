@@ -16,6 +16,7 @@ const templateString = `
     position: absolute;
     padding: 1px;
     user-select: none;
+    cursor: pointer;
 }
 
 .wrapper{
