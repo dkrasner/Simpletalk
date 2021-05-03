@@ -47,10 +47,12 @@ class Resource extends Part {
         // Private command handlers
         this.setPrivateCommandHandler("loadResource", this.loadResource);
         this.setPrivateCommandHandler("get", this.get);
+        this.setPrivateCommandHandler("retrieve", this.retrieve);
 
         // Bind component methods
         this.loadResource = this.loadResource.bind(this);
         this.get = this.get.bind(this);
+        this.retrieve = this.retrieve.bind(this);
 
         // load the src if provided
         if(src){
@@ -83,16 +85,24 @@ class Resource extends Part {
         this.partProperties.setPropertyNamed(this, "src", sourceUrl);
     }
 
-    get(senders, ...args){
+    async get(senders, ...args){
         let sourceUrl = this.partProperties.getPropertyNamed(this, "src");
-        fetch(sourceUrl)
-            .then(response => {
-                console.log(response);
-                this.partProperties.setPropertyNamed(this, "response", response);
-            })
-            .catch(err => {
-                console.error(err);
-            });
+        let response = await fetch(sourceUrl);
+        if (response.ok) { // if HTTP-status is 200-299
+            // get the response body (the method explained below)
+            let json = await response.json();
+            this.partProperties.setPropertyNamed(this, "response", json);
+        } else {
+            console.error("HTTP-Error: " + response.status);
+        }
+    }
+
+    retrieve(senders, ...args){
+        let key = args[0];
+        let response = this.partProperties.getPropertyNamed(this, "response");
+        if(response){
+            return response[key];
+        }
     }
 };
 
