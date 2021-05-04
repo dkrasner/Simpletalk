@@ -398,6 +398,22 @@ const System = {
         if(!foundModel){
             return false;
         }
+        // When removing a card or a stack be sure it is not the only one
+        // and if it is the current card or stack we should go to the next one
+        // before removing it
+        if(foundModel.type == "card" || foundModel.type == "stack"){
+            let sameTypeSubparts = foundModel._owner.subparts.filter((p) => {return p.type == foundModel.type;});
+            if(sameTypeSubparts.length == 1){
+                // TODO this should be a ST error 
+                throw new Error(`Cannot remove the only ${foundModel.type}`);
+            } else {
+                if(foundModel.type == "card" && modelId == this.getCurrentCardModel().id){
+                    this.goToNextCard();
+                } else if(modelId == this.getCurrentStackModel().id){
+                    this.goToNextStack();
+                }
+            }
+        }
 
         // Make sure to stop all stepping
         // on the Part, otherwise stepping
