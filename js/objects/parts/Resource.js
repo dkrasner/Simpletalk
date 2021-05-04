@@ -8,6 +8,7 @@ import {
 class Resource extends Part {
     constructor(owner, src, name) {
         super(owner);
+        this.resource = null;
 
         // Properties
         this.partProperties.newBasicProp(
@@ -31,6 +32,23 @@ class Resource extends Part {
         this.partProperties.newBasicProp(
             "prerequisite",
             ""
+        );
+
+        this.partProperties.newDynamicProp(
+            "resourceName",
+            (owner, prop, value, notify) => {
+                if(!window.System.availableResources || !window.System.availableResources[value]){
+                    // TODO this should be a ST error
+                    throw Error(`resource ${value} not found`);
+                }
+                prop._value = value;
+                this.resource = window.System.availableResources[value];
+            },
+            (owner, prop) => {
+                return prop._value;
+            },
+            false, // not read only
+            ''     // default is empty string
         );
 
         this.partProperties.newBasicProp(
@@ -83,18 +101,13 @@ class Resource extends Part {
 
     loadResource(senders, sourceUrl){
         this.partProperties.setPropertyNamed(this, "src", sourceUrl);
+        this.resource.load(sourceUrl);
     }
 
-    async get(senders, ...args){
-        let sourceUrl = this.partProperties.getPropertyNamed(this, "src");
-        let response = await fetch(sourceUrl);
-        if (response.ok) { // if HTTP-status is 200-299
-            // get the response body (the method explained below)
-            let json = await response.json();
-            this.partProperties.setPropertyNamed(this, "response", json);
-        } else {
-            console.error("HTTP-Error: " + response.status);
-        }
+    get(senders, ...args){
+        this.resource.get(...args).then((response) => {
+            this.partProperties.setPropertyNamed(this, "response", response);
+        });
     }
 
     retrieve(senders, ...args){

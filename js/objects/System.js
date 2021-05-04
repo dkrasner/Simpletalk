@@ -47,6 +47,8 @@ import merriamSimScore from './utils/merriamInterface.js';
 
 import {STDeserializer, STSerializer} from './utils/serialization.js';
 
+import plugins from '../../plugins/plugins.js';
+
 const DOMparser = new DOMParser();
 
 
@@ -58,6 +60,9 @@ const System = {
     partsById: {},
     _commandHandlers: {},
     _functionHandlers: {},
+
+    // A dictionary mapping available ST resource (such as plugin) names
+    availableResources: {},
 
     // A dictionary mapping part types like
     // 'button' to their classes (Button)
@@ -81,6 +86,10 @@ const System = {
     // deserializes the model and attaches it
     // to the view.
     initialLoad: function(){
+        // load the available resources
+        // these might be needed down the line
+        this.loadResources();
+
         // If we have a serialization script tag
         // containing JSON of serialized information,
         // attempt to load from it
@@ -105,6 +114,11 @@ const System = {
         this.isLoaded = true;
     },
 
+    loadResources: function() {
+        Object.keys(plugins).forEach((k) => {
+            this.availableResources[k] = plugins[k];
+        });
+    },
 
     loadFromEmpty: function(){
         let worldModel = new this.availableParts['world']();
