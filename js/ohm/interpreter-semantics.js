@@ -318,6 +318,9 @@ const createInterpreterSemantics = (partContext, systemContext) => {
             first = Number(first);
             let second = secondExpression.interpret();
             second = Number(second);
+            if (!Number.isFinite(first) || !Number.isFinite(second)) {
+                throw "parameters must be finite numbers";
+            }
             return first + second;
         },
 
@@ -326,6 +329,9 @@ const createInterpreterSemantics = (partContext, systemContext) => {
             first = Number(first);
             let second = secondExpr.interpret();
             second = Number(second);
+            if (!Number.isFinite(first) || !Number.isFinite(second)) {
+                throw "parameters must be finite numbers";
+            }
             return first - second;
         },
 
@@ -334,6 +340,9 @@ const createInterpreterSemantics = (partContext, systemContext) => {
             first = Number(first);
             let second = secondExpr.interpret();
             second = Number(second);
+            if (!Number.isFinite(first) || !Number.isFinite(second)) {
+                throw "parameters must be finite numbers";
+            }
             return first / second;
         },
 
@@ -342,6 +351,9 @@ const createInterpreterSemantics = (partContext, systemContext) => {
             first = Number(first);
             let second = secondExpr.interpret();
             second = Number(second);
+            if (!Number.isFinite(first) || !Number.isFinite(second)) {
+                throw "parameters must be finite numbers";
+            }
             return first % second;
         },
 
@@ -350,6 +362,9 @@ const createInterpreterSemantics = (partContext, systemContext) => {
             first = Number(first);
             let second = secondExpression.interpret();
             second = Number(second);
+            if (!Number.isFinite(first) || !Number.isFinite(second)) {
+                throw "parameters must be finite numbers";
+            }
             return first * second;
         },
 
