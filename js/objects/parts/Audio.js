@@ -1,4 +1,9 @@
 import {Part} from './Part.js';
+import {
+    addBasicStyleProps,
+    addPositioningStyleProps,
+    addTextStyleProps
+} from '../utils/styleProperties.js';
 
 class Audio extends Part {
     constructor(owner, src, name) {
@@ -15,7 +20,12 @@ class Audio extends Part {
         this.partProperties.setPropertyNamed(
             this,
             'name',
-            name
+            myName
+        );
+
+        this.partProperties.newBasicProp(
+            'readyState',
+            "HAVE_NOTHING"
         );
 
         this.partProperties.newBasicProp(
@@ -26,6 +36,13 @@ class Audio extends Part {
         this.partProperties.newBasicProp(
             "stop",
             null
+        );
+
+        // set up DOM events to be handled
+        this.partProperties.setPropertyNamed(
+            this,
+            'events',
+            new Set(['mousedown', 'mouseup', 'mouseenter', 'click'])
         );
 
         // Private command handlers
@@ -44,6 +61,23 @@ class Audio extends Part {
         if(src){
             this.partProperties.setPropertyNamed(this, "src", url);
         }
+        // Style properties
+        addBasicStyleProps(this);
+        addPositioningStyleProps(this);
+        addTextStyleProps(this);
+        this.setupStyleProperties();
+        this.partProperties.setPropertyNamed(
+            this,
+            'background-transparency',
+            0
+        );
+        ["right", "left", "top", "bottom"].forEach((side) => {
+            this.partProperties.setPropertyNamed(
+                this,
+                `border-${side}-width`,
+                1
+            );
+        });
     }
 
     get type(){

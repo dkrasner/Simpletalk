@@ -28,6 +28,7 @@ class Area extends Part {
             "button",
             "field",
             "image",
+            "audio",
             "drawing",
             "window"
         ];

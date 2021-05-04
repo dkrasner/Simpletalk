@@ -284,14 +284,8 @@ const System = {
     },
 
     newModel: function(kind, ownerId, name, buildView=true){
-        // If no ownerId is provided, we assume
-        // current card to be the owner of the new part
-        if(!ownerId){
-            ownerId = this.getCurrentCardModel().id;
-        }
-
         // Lookup the instance of the model that
-        // matches the owner's id        
+        // matches the owner's id
         let ownerPart = this.partsById[ownerId];
         if(!ownerPart || ownerPart == undefined){
             throw new Error(`System could not locate owner part with id ${ownerId}`);
@@ -611,7 +605,7 @@ const System = {
             throw new Error(`No world found!`);
         }
         let serializer = new STSerializer(this);
-        let serialString = serializer.serialize(this.partsById['world'], false);
+        let serialString = serializer.serialize(this.partsById['world'], true);
 
         // If there is not a script tag in the
         // body for the serialization, create it

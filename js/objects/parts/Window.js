@@ -29,6 +29,7 @@ class Window extends Part {
             "button",
             "field",
             "image",
+            "audio",
             "drawing",
         ];
 

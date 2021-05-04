@@ -67,60 +67,16 @@ describe('newModel tests', () => {
         expect(sendFunc).to.not.throw(Error);
     });
 
-    it.skip('Can send newModel message without error (add default image)', () => {
-        // TODO: figure out how to deal with relative paths (default svg icon) in
-        // tests or get rid of them all together
-        let msg = {
-            type: 'command',
-            commandName: 'newModel',
-            args: ['image']
-        };
-
-        let sendFunc = function(){
-            currentCard.sendMessage(msg, currentCard);
-        };
-
-        expect(sendFunc).to.not.throw(Error);
-    });
-
-    it('Can send newModel message without error (add image to current card without id)', () => {
-        let msg = {
-            type: 'command',
-            commandName: 'newModel',
-            args: ['image', undefined, "https://www.svgrepo.com/show/9838/test.svg"]
-        };
-
-        let sendFunc = function(){
-            currentCard.sendMessage(msg, currentCard);
-        };
-
-        expect(sendFunc).to.not.throw(Error);
-    });
-
-    it('Can send newModel message without error (add image to current card, in context)', () => {
-        let msg = {
-            type: 'command',
-            commandName: 'newModel',
-            args: ['image', undefined, "https://www.svgrepo.com/show/9838/test.svg"]
-        };
-
-        let sendFunc = function(){
-            currentCard.sendMessage(msg, currentCard);
-        };
-
-        expect(sendFunc).to.not.throw(Error);
-    });
-
     it('Current card view has a child button view', () => {
         let buttonViews = Array.from(currentCardView.querySelectorAll('st-button'));
         assert.equal(buttonViews.length, 1);
     });
 
-    it('Can send newModel message in a context (without ownerId) without error (add button to current card)', () => {
+    it('Can send newModel message without error (add button to current card)', () => {
         let msg = {
             type: 'command',
             commandName: 'newModel',
-            args: ['button']
+            args: ['button', currentCard.id]
         };
         let sendFunc = function(){
             currentCard.sendMessage(msg, currentCard);
@@ -134,44 +90,6 @@ describe('newModel tests', () => {
         assert.equal(buttonViews.length, 2);
     });
 
-    it('Can send newModel message in a context (without targetId, current)', () => {
-        let msg = {
-            type: 'command',
-            commandName: 'newModel',
-            args: ['button']
-        };
-        let sendFunc = function(){
-            currentCard.sendMessage(msg, currentCard);
-        };
-
-        expect(sendFunc).to.not.throw(Error);
-    });
-
-    it('Can send newModel message in a context (without targetId, this)', () => {
-        let msg = {
-            type: 'command',
-            commandName: 'newModel',
-            args: ['button']
-        };
-        let sendFunc = function(){
-            currentCard.sendMessage(msg, currentCard);
-        };
-
-        expect(sendFunc).to.not.throw(Error);
-    });
-
-    it('Can send newModel message in a context (without targetId, targetType nor context)', () => {
-        let msg = {
-            type: 'command',
-            commandName: 'newModel',
-            args: ['button']
-        };
-        let sendFunc = function(){
-            currentCard.sendMessage(msg, currentCard);
-        };
-
-        expect(sendFunc).to.not.throw(Error);
-    });
     it('Can add button to current stack', () => {
         let msg = {
             type: 'command',
