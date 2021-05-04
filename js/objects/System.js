@@ -404,14 +404,11 @@ const System = {
         if(foundModel.type == "card" || foundModel.type == "stack"){
             let sameTypeSubparts = foundModel._owner.subparts.filter((p) => {return p.type == foundModel.type;});
             if(sameTypeSubparts.length == 1){
-                // TODO this should be a ST error 
+                // TODO this should be a ST error
                 throw new Error(`Cannot remove the only ${foundModel.type}`);
-            } else {
-                if(foundModel.type == "card" && modelId == this.getCurrentCardModel().id){
-                    this.goToNextCard();
-                } else if(modelId == this.getCurrentStackModel().id){
-                    this.goToNextStack();
-                }
+            } else if(modelId == this.getCurrentStackModel().id  || modelId == this.getCurrentCardModel().id){
+                // TODO this should be a ST error
+                throw new Error(`Cannot remove the current ${foundModel.type}`);
             }
         }
 
