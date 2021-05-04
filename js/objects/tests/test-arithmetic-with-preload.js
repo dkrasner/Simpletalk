@@ -81,5 +81,76 @@ describe("Arithmetic Interpreter Tests", () => {
         let result = semantics(matchObject).interpret();
         assert.equal(expected, result);
     });
-
+    it("Error add without numerals", () => {
+        let input = "5 + \"a\"";
+        let matchObject = testLanguageGrammar.match(input, "Expression");
+        assert.isTrue(matchObject.succeeded());
+        expect(function(){
+            semantics(matchObject).interpret();
+        }).to.throw();
+    });
+    it("Error add with parantheses without numerals", () => {
+        let input = "(5 + \"a\")";
+        let matchObject = testLanguageGrammar.match(input, "Expression");
+        assert.isTrue(matchObject.succeeded());
+        expect(function(){
+            semantics(matchObject).interpret();
+        }).to.throw();
+    });
+    it("Error subtract without numerals", () => {
+        let input = "5 - \"a\"";
+        let matchObject = testLanguageGrammar.match(input, "Expression");
+        assert.isTrue(matchObject.succeeded());
+        expect(function(){
+            semantics(matchObject).interpret();
+        }).to.throw();
+    });
+    it("Error subtract with parantheses without numerals", () => {
+        let input = "(5 - \"a\")";
+        let matchObject = testLanguageGrammar.match(input, "Expression");
+        assert.isTrue(matchObject.succeeded());
+        expect(function(){
+            semantics(matchObject).interpret();
+        }).to.throw();
+    });
+    it("Error divide without numerals", () => {
+        let input = "6 / \"a\"";
+        let matchObject = testLanguageGrammar.match(input, "Expression");
+        assert.isTrue(matchObject.succeeded());
+        expect(function(){
+            semantics(matchObject).interpret();
+        }).to.throw();
+    });
+    it("Error divide with parantheses without numerals", () => {
+        let input = "(6 / \"a\")";
+        let matchObject = testLanguageGrammar.match(input, "Expression");
+        assert.isTrue(matchObject.succeeded());
+        expect(function(){
+            semantics(matchObject).interpret();
+        }).to.throw();
+    });
+    it("Error modulo divide without numerals", () => {
+        let input = "5 % \"a\"";
+        let matchObject = testLanguageGrammar.match(input, "Expression");
+        assert.isTrue(matchObject.succeeded());
+        expect(function(){
+            semantics(matchObject).interpret();
+        }).to.throw();
+    });
+    it("Error modulo divide with parantheses without numerals", () => {
+        let input = "(5 % \"a\")";
+        let matchObject = testLanguageGrammar.match(input, "Expression");
+        assert.isTrue(matchObject.succeeded());
+        expect(function(){
+            semantics(matchObject).interpret();
+        }).to.throw();
+    });
+    it("Error add strings", () => {
+        let input = "\"a\" + \"a\"";
+        let matchObject = testLanguageGrammar.match(input, "Expression");
+        assert.isTrue(matchObject.succeeded());
+        expect(function(){
+            semantics(matchObject).interpret();
+        }).to.throw();
+    });
 });
