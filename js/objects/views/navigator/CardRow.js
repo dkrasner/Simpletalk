@@ -37,6 +37,7 @@ class CardRow extends PartView {
         this.addWrappedCard = this.addWrappedCard.bind(this);
         this.handleCurrentChange = this.handleCurrentChange.bind(this);
         this.handlePartAdded = this.handlePartAdded.bind(this);
+        this.handlePartRemoved = this.handlePartRemoved.bind(this);
         this.showInitially = this.showInitially.bind(this);
         this.onWrapperClick = this.onWrapperClick.bind(this);
     }
@@ -52,11 +53,13 @@ class CardRow extends PartView {
         // to the Stack (and not, say, to Windows or other nested kinds)
         let stackView = window.System.findViewById(this.model.id);
         stackView.addEventListener('st-view-added', this.handlePartAdded);
+        stackView.addEventListener('st-view-removed', this.handlePartRemoved);
     }
 
     afterModelUnset(removedModel){
         let stackView = window.System.findViewById(removedModel.id);
         stackView.removeEventListener('st-view-added', this.handlePartAdded);
+        stackView.removeEventListener('st-view-removed', this.handlePartRemoved);
     }
 
     handleCurrentChange(){
@@ -82,6 +85,20 @@ class CardRow extends PartView {
             let cardPart = window.System.partsById[event.detail.partId];
             this.addWrappedCard(cardPart);
             this.showInitially();
+        }
+    }
+
+    handlePartRemoved(event){
+        if(event.detail.partType == 'card'){
+            let wrappedView = this.querySelector(`wrapped-view[wrapped-id="${event.detail.partId}"]`);
+            if(wrappedView){
+                wrappedView.remove();
+            }
+
+            // Update number display of all wrapped views in the row
+            Array.from(this.querySelectorAll(`wrapped-view`)).forEach(wrapper => {
+                wrapper.updateNumberDisplay();
+            });
         }
     }
 

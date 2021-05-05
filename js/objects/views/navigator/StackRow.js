@@ -37,6 +37,7 @@ class StackRow extends PartView {
         this.addWrappedStack = this.addWrappedStack.bind(this);
         this.handleCurrentChange = this.handleCurrentChange.bind(this);
         this.handlePartAdded = this.handlePartAdded.bind(this);
+        this.handlePartRemoved = this.handlePartRemoved.bind(this);
         this.showInitially = this.showInitially.bind(this);
         this.onWrapperClick = this.onWrapperClick.bind(this);
     }
@@ -52,11 +53,13 @@ class StackRow extends PartView {
         // to the WorldStack (and not, say, to Windows or other nested kinds)
         let worldView = document.querySelector('st-world');
         worldView.addEventListener('st-view-added', this.handlePartAdded);
+        worldView.addEventListener('st-view-removed', this.handlePartRemoved);
     }
 
     afterModelUnset(){
         let worldView = document.querySelector('st-world');
         worldView.removeEventListener('st-view-added', this.handlePartAdded);
+        worldView.removeEventListener('st-view-removed', this.handlePartRemoved);
     }
 
     handleCurrentChange(){
@@ -82,6 +85,20 @@ class StackRow extends PartView {
             let stackPart = window.System.partsById[event.detail.partId];
             this.addWrappedStack(stackPart);
             this.showInitially();
+        }
+    }
+
+    handlePartRemoved(event){
+        if(event.detail.partType == 'stack'){
+            let wrappedView = this.querySelector(`wrapped-view[wrapped-id="${event.detail.partId}"]`);
+            if(wrappedView){
+                wrappedView.remove();
+            }
+
+            // Update numbers of remaining wrapped views in this StackRow
+            Array.from(this.querySelectorAll('wrapped-view')).forEach(wrapper => {
+                wrapper.updateNumberDisplay();
+            });
         }
     }
 

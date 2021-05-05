@@ -61,7 +61,6 @@ class Part {
         this.serialize = this.serialize.bind(this);
         this.toJSON = this.toJSON.bind(this);
         this.setPropsFromDeserializer = this.setPropsFromDeserializer.bind(this);
-        this.deleteModelCmdHandler = this.deleteModelCmdHandler.bind(this);
         this.openEditorCmdHandler = this.openEditorCmdHandler.bind(this);
         this.closeEditorCmdHandler = this.closeEditorCmdHandler.bind(this);
         this.copyCmdHandler = this.copyCmdHandler.bind(this);
@@ -78,7 +77,6 @@ class Part {
         this.setupProperties();
 
         // command handlers
-        this.setPrivateCommandHandler("deleteModel", this.deleteModelCmdHandler);
         this.setPrivateCommandHandler("openEditor", this.openEditorCmdHandler);
         this.setPrivateCommandHandler("closeEditor", this.closeEditorCmdHandler);
         this.setPrivateCommandHandler("setTargetTo", this.setTargetProp);
@@ -488,17 +486,6 @@ class Part {
 
     closeEditorCmdHandler(){
         this.partProperties.setPropertyNamed(this, 'editorOpen', false);
-    }
-
-    deleteModelCmdHandler(senders, objectId, modelType){
-        if (modelType && modelType.toLowerCase() === this.type && !objectId){
-            objectId = this.id;
-        }
-        this.delegateMessage({
-            type: 'command',
-            commandName: 'deleteModel',
-            args: [objectId, modelType]
-        });
     }
 
     setTargetProp(senders, ...args){

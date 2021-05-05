@@ -72,7 +72,7 @@ describe('Core command tests', () => {
             button = currentCard.subparts[0];
         });
         it('Can remove button (by id)', () => {
-            let script = `delete button ${button.id}`;
+            let script = `delete button id ${button.id}`;
             let match = testLanguageGrammar.match(script, 'Command');
             assert.isTrue(match.succeeded());
             let msg = semantics(match).interpret();
@@ -87,13 +87,13 @@ describe('Core command tests', () => {
             assert.equal(currentCard.subparts.length, 1);
             button = currentCard.subparts[0];
         });
-        it('Can remove button (in context: "this")', () => {
-            let script = `delete this button`;
+        it('Can remove first button', () => {
+            let script = `delete first button`;
             let match = testLanguageGrammar.match(script, 'Command');
             assert.isTrue(match.succeeded());
             let msg = semantics(match).interpret();
             assert.exists(msg);
-            currentCard.sendMessage(msg, button);
+            currentCard.sendMessage(msg, currentCard);
             assert.equal(currentCard.subparts.length, 0);
         });
     });

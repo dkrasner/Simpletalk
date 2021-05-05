@@ -131,12 +131,14 @@ class STNavigator extends PartView {
         this.close = this.close.bind(this);
         this.handleCurrentChange = this.handleCurrentChange.bind(this);
         this.handlePartAdded = this.handlePartAdded.bind(this);
+        this.handlePartRemoved = this.handlePartRemoved.bind(this);
         this.createCardRowFor = this.createCardRowFor.bind(this);
     }
 
     afterDisconnected(){
         let worldView = document.querySelector('st-world');
         worldView.removeEventListener('st-view-added', this.handlePartAdded);
+        worldView.removeEventListener('st-view-removed', this.handlePartRemoved);
     }
 
     afterModelSet(){
@@ -145,6 +147,7 @@ class STNavigator extends PartView {
         // Respond to the System part-added CustomEvent
         let worldView = document.querySelector('st-world');
         worldView.addEventListener('st-view-added', this.handlePartAdded);
+        worldView.addEventListener('st-view-removed', this.handlePartRemoved);
 
         // Add a StackRow view.
         this.stackRowEl = this.querySelector(':scope > nav-stack-row');
@@ -197,6 +200,17 @@ class STNavigator extends PartView {
         if(event.detail.partType == 'stack'){
             let stackPart = window.System.partsById[event.detail.partId];
             this.createCardRowFor(stackPart);
+        }
+    }
+
+    handlePartRemoved(event){
+        // If a stack has been removed, we need to
+        // remove the corresponding CardRow
+        if(event.detail.partType == 'stack'){
+            let cardRow = this.querySelector(`[stack-id="${event.detail.partId}"]`);
+            if(cardRow){
+                cardRow.remove();
+            }
         }
     }
 

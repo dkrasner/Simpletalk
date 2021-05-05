@@ -392,6 +392,19 @@ const System = {
         if(!foundModel){
             return false;
         }
+        // When removing a card or a stack be sure it is not the only one
+        // and if it is the current card or stack we should go to the next one
+        // before removing it
+        if(foundModel.type == "card" || foundModel.type == "stack"){
+            let sameTypeSubparts = foundModel._owner.subparts.filter((p) => {return p.type == foundModel.type;});
+            if(sameTypeSubparts.length == 1){
+                // TODO this should be a ST error
+                throw new Error(`Cannot remove the only ${foundModel.type}`);
+            } else if(modelId == this.getCurrentStackModel().id  || modelId == this.getCurrentCardModel().id){
+                // TODO this should be a ST error
+                throw new Error(`Cannot remove the current ${foundModel.type}`);
+            }
+        }
 
         // Make sure to stop all stepping
         // on the Part, otherwise stepping
@@ -420,7 +433,19 @@ const System = {
     removeViews: function(modelId){
         let views = Array.from(this.findViewsById(modelId));
         views.forEach(view => {
+            let parentEl = view.parentElement;
             view.parentElement.removeChild(view);
+            // Dispatch a CustomEvent on the parentElement
+            // indicating that this part has been removed, and
+            // any view utilities that care can be notified.
+            let event = new CustomEvent('st-view-removed', {
+                detail: {
+                    partType: view.model.type,
+                    partId: modelId,
+                    ownerId: null
+                } 
+            });
+            parentEl.dispatchEvent(event);
         });
         let lenses = this.findLensViewsById(modelId);
         lenses.forEach(lensView => {
