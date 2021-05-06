@@ -6,19 +6,22 @@ const test = {
     },
     response: null,
     src: null,
-    get: async function(key){
+    get: async function(prerequisite, key){
         if(key){
             if(!this.response){
                 throw Error("No result has been fetched");
             }
             return this.response[key];
         }
-        let response = await fetch(this.src);
+        let src = this.src;
+        if(prerequisite){
+            src = src + "/" + prerequisite;
+        }
+        let response = await fetch(src);
         if (response.ok) { // if HTTP-status is 200-299
             // get the response body (the method explained below)
             let json = await response.json();
             this.response = json;
-            console.log(JSON.stringify(json));
             return JSON.stringify(json);
         } else {
             console.error("HTTP-Error: " + response.status);

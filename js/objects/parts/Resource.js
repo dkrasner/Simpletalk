@@ -107,7 +107,8 @@ class Resource extends Part {
     }
 
     get(senders, ...args){
-        this.resource.get(...args).then((response) => {
+        let prerequisite = this.partProperties.getPropertyNamed(this, "prerequisite");
+        this.resource.get(prerequisite, ...args).then((response) => {
             this.partProperties.setPropertyNamed(this, "response", response);
         });
     }

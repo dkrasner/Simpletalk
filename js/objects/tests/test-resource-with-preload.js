@@ -9,11 +9,15 @@ import chai from 'chai';
 const assert = chai.assert;
 const expect = chai.expect;
 
-const response = {
+const responseBasic = {
     id: 1,
-    name: "the name"
+    name: "Basic response"
 };
 
+const responseWithPrerequisite = {
+    id: 1,
+    name: "Prerequisite response"
+};
 const test = {
     name: "TestAPI",
     load: function(url){
@@ -22,15 +26,19 @@ const test = {
     },
     response: null,
     src: null,
-    get: async function(key){
+    get: async function(prerequisite, key){
         if(key){
             if(!this.response){
                 throw Error("No result has been fetched");
             }
             return this.response[key];
         }
-        this.response = response;
-        return JSON.stringify(response);
+        if(prerequisite){
+            this.response = responseWithPrerequisite;
+        } else {
+            this.response = responseBasic;
+        }
+        return JSON.stringify(this.response);
     },
 };
 
@@ -85,13 +93,11 @@ describe('Resource', () => {
             done();
         };
         expect(msgFunc).to.not.throw();
-        assert.equal(response, test.response);
+        assert.equal(responseBasic, test.response);
         let responseProp = resource.partProperties.getPropertyNamed(resource, "response");
-        assert.equal(responseProp, JSON.stringify(response));
+        assert.equal(responseProp, JSON.stringify(responseBasic));
     });
-    it('Can get with argument from resource', (done) => {
-        // NOTE: the use of "done" since .get is async
-        // see more here: https://mochajs.org/#asynchronous-code
+    it('Can get with argument from resource', () => {
         let msg = {
             type: "command",
             commandName: "get",
@@ -99,10 +105,27 @@ describe('Resource', () => {
         };
         let msgFunc = () => {
             resource.sendMessage(msg, resource);
-            done();
         };
         expect(msgFunc).to.not.throw();
+    });
+    it('Response property is properly set', () => {
         let responseProp = resource.partProperties.getPropertyNamed(resource, "response");
-        assert.equal(response["name"], responseProp);
+        assert.equal(responseBasic["name"], responseProp);
+    });
+    it('Can get from resource with prerequisite', () => {
+        resource.partProperties.setPropertyNamed(resource, "prerequisite", "someInfo");
+        let msg = {
+            type: "command",
+            commandName: "get",
+            args: []
+        };
+        let msgFunc = () => {
+            resource.sendMessage(msg, resource);
+        };
+        expect(msgFunc).to.not.throw();
+    });
+    it('Response property is properly set', () => {
+        let responseProp = resource.partProperties.getPropertyNamed(resource, "response");
+        assert.equal(responseProp, JSON.stringify(responseWithPrerequisite));
     });
 });
