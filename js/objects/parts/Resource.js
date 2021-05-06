@@ -31,24 +31,12 @@ class Resource extends Part {
 
         this.partProperties.newBasicProp(
             "prerequisite",
-            ""
+            null
         );
 
-        this.partProperties.newDynamicProp(
+        this.partProperties.newBasicProp(
             "resourceName",
-            (owner, prop, value, notify) => {
-                if(!window.System.availableResources || !window.System.availableResources[value]){
-                    // TODO this should be a ST error
-                    throw Error(`resource ${value} not found`);
-                }
-                prop._value = value;
-                this.resource = window.System.availableResources[value];
-            },
-            (owner, prop) => {
-                return prop._value;
-            },
-            false, // not read only
-            ''     // default is empty string
+            null
         );
 
         this.partProperties.newBasicProp(
@@ -64,6 +52,7 @@ class Resource extends Part {
 
         // Private command handlers
         this.setPrivateCommandHandler("loadResource", this.loadResource);
+        this.setPrivateCommandHandler("setSourceTo", this.setSourceTo);
         this.setPrivateCommandHandler("get", this.get);
         this.setPrivateCommandHandler("retrieve", this.retrieve);
 
@@ -99,7 +88,20 @@ class Resource extends Part {
         return 'resource';
     }
 
-    loadResource(senders, sourceUrl){
+    loadResource(senders, resourceName){
+        if(!window.System.availableResources || !window.System.availableResources[resourceName]){
+            // TODO this should be a ST error
+            throw Error(`resource ${resourceName} not found`);
+        }
+        this.resource = window.System.availableResources[resourceName];
+        this.partProperties.setPropertyNamed(this, "resourceName", resourceName);
+    }
+
+    setSourceTo(senders, sourceUrl){
+        if(!this.resource){
+            // TODO this should be a ST error
+            throw Error(`no resource loaded for resource part id ${this.id}`);
+        }
         this.partProperties.setPropertyNamed(this, "src", sourceUrl);
         this.resource.load(sourceUrl);
     }
