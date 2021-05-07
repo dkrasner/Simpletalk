@@ -53,7 +53,7 @@ const cssStyler = (styleObj, propertyName, propertyValue) => {
 
     case "border-top-transparency":
     case "border-bottom-transparency":
-    case "border-top-transparency":
+    case "border-left-transparency":
     case "border-right-transparency": {
         let s = propertyName.split("-")[1];
         _setOrNot(styleObj, `border-${s}-color`,  _colorTransparencyToRGBA(styleObj[`border-${s}-color`], propertyValue));
@@ -166,6 +166,24 @@ const cssStyler = (styleObj, propertyName, propertyValue) => {
         _setOrNot(styleObj, "height",  _intToPx(propertyValue));
         break;
 
+    case "left-margin":
+    case "right-margin":
+    case "bottom-margin":
+    case "top-margin":
+        let marginSide = propertyName.split("-")[0];
+        marginSide = `${marginSide[0].toUpperCase()}${marginSide.slice(1)}`;
+        _setOrNot(styleObj, `margin${marginSide}`, _intToPx(propertyValue));
+        break;
+
+    case "left-padding":
+    case "right-padding":
+    case "bottom-padding":
+    case "top-padding":
+        let paddingSide = propertyName.split("-")[0];
+        paddingSide = `${paddingSide[0].toUpperCase()}${paddingSide.slice(1)}`;
+        _setOrNot(styleObj, `padding${paddingSide}`, _intToPx(propertyValue));
+        break;
+
     case "text-style":
         _setOrNot(styleObj, "textStyle",  propertyValue);
         break;
@@ -269,8 +287,17 @@ const _colorTransparencyToRGBA = (cssColor, tValue) => {
     if(!cssColor){
         return;
     }
+
     let r, g, b;
-    [r, g, b] = cssColor.match(/\d+/g);
+    let mappedColor = basicCSSColors[cssColor];
+    if(mappedColor){
+        r = mappedColor.r;
+        g = mappedColor.g;
+        b = mappedColor.b;
+    } else {
+        [r, g, b] = cssColor.match(/\d+/g);
+    }
+    
     return `rgba(${r}, ${g}, ${b}, ${tValue})`;
 }
 
