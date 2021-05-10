@@ -65,6 +65,16 @@ class ResourceView extends PartView {
     }
 
     afterModelSet(){
+        // if the resourceName property is set then make sure it is loaded
+        // TODO: i don't like this view asking the model to load!
+        let resourceName = this.model.partProperties.getPropertyNamed(this.model, "resourceName");
+        if(resourceName){
+            this.model.loadResource([this], resourceName);
+        }
+        let src = this.model.partProperties.getPropertyNamed(this.model, "src");
+        if(src){
+            this.model.setSourceTo([this], src);
+        }
         let nameSpan = this._shadowRoot.querySelector(".name");
         nameSpan.innerText = this.model.partProperties.getPropertyNamed(this.model, "name");
         let state = this.model.partProperties.getPropertyNamed(
