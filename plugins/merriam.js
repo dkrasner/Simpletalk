@@ -20,7 +20,7 @@ const merriam = {
                     this.currentResponseItemIndex = 0;
                 }
                 this.response = this.cache.results[this.currentResponseItemIndex];
-                return JSON.stringify(this.response);
+                return JSON.stringify(this.response, null, '\t');
             }
             this.response = this.response[arg];
             return this.response;
@@ -39,7 +39,7 @@ const merriam = {
             let json = await response.json();
             this.response = json;
             this.cache = json;
-            return JSON.stringify(this.response);
+            return JSON.stringify(this.response, null, '\t');
         } else {
             console.error("HTTP-Error: " + response.status);
             return false;

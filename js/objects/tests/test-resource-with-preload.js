@@ -80,6 +80,12 @@ describe('Resource', () => {
         assert.equal(sourceProp, "someurl.com");
         assert.equal(test.src, "someurl.com");
     });
+    it('Resource "response" and "readyState properties are null, "notReady," resp', () => {
+        let responseProp = resource.partProperties.getPropertyNamed(resource, "response");
+        let readyStateProp = resource.partProperties.getPropertyNamed(resource, "readyState");
+        assert.isNull(responseProp);
+        assert.equal(readyStateProp, "notReady");
+    });
     it('Can get from resource', (done) => {
         // NOTE: the use of "done" since .get is async
         // see more here: https://mochajs.org/#asynchronous-code
@@ -96,6 +102,10 @@ describe('Resource', () => {
         assert.equal(responseBasic, test.response);
         let responseProp = resource.partProperties.getPropertyNamed(resource, "response");
         assert.equal(responseProp, JSON.stringify(responseBasic));
+    });
+    it('Resource "readyState property is "ready"', () => {
+        let readyStateProp = resource.partProperties.getPropertyNamed(resource, "readyState");
+        assert.equal(readyStateProp, "ready");
     });
     it('Can get with argument from resource', () => {
         let msg = {

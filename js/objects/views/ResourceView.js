@@ -38,17 +38,6 @@ const templateString = `
 </div>
 `;
 
-// TODO Copied over from
-// https://developer.mozilla.org/en-US/docs/Web/API/HTMLMediaElement/readyState
-// but we should prob have our ownd
-const resourceStates = {
-    0: "HAVE_NOTHING",
-    1: "HAVE_METADATA",
-    2: "HAVE_CURRENT_DATA",
-    3: "HAVE_FUTURE_DATA",
-    4: "HAVE_ENOUGH_DATA"
-};
-
 class ResourceView extends PartView {
     constructor(){
         super();
@@ -63,6 +52,7 @@ class ResourceView extends PartView {
         this.onClick = this.onClick.bind(this);
         this.initCustomHaloButton = this.initCustomHaloButton.bind(this);
         this.updateResourceLink = this.updateResourceLink.bind(this);
+        this.indicateReadyState = this.indicateReadyState.bind(this);
     }
 
     afterConnected(){
@@ -77,17 +67,16 @@ class ResourceView extends PartView {
     afterModelSet(){
         let nameSpan = this._shadowRoot.querySelector(".name");
         nameSpan.innerText = this.model.partProperties.getPropertyNamed(this.model, "name");
-        this.model.partProperties.setPropertyNamed(
+        let state = this.model.partProperties.getPropertyNamed(
             this.model,
             "readyState",
-           "HAVE_NOTHING"
         );
+        this.indicateReadyState(state);
         // prop changes
         this.onPropChange("name", (value) => {
             nameSpan.innerText = value;
         });
-        this.onPropChange("readyState", (value) => {
-        });
+        this.onPropChange("readyState", this.indicateReadyState);
         this.onPropChange("src", (url) => {
         });
     }
@@ -112,6 +101,18 @@ class ResourceView extends PartView {
                 }, this.model);
             }
         }
+    }
+
+    indicateReadyState(value){
+        let borderColor = "red";
+        if(value == "fetching"){
+            borderColor = "yellow";
+        } else if(value == "ready"){
+            borderColor = "green";
+        };
+        ["right", "left", "top", "bottom"].forEach((side) => {
+            this.model.partProperties.setPropertyNamed(this.model, `border-${side}-color`, borderColor);
+        });
     }
 
     openHalo(){

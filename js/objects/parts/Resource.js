@@ -26,7 +26,7 @@ class Resource extends Part {
 
         this.partProperties.newBasicProp(
             'readyState',
-            "HAVE_NOTHING"
+            "notReady"
         );
 
         this.partProperties.newBasicProp(
@@ -54,12 +54,11 @@ class Resource extends Part {
         this.setPrivateCommandHandler("loadResource", this.loadResource);
         this.setPrivateCommandHandler("setSourceTo", this.setSourceTo);
         this.setPrivateCommandHandler("get", this.get);
-        this.setPrivateCommandHandler("retrieve", this.retrieve);
 
         // Bind component methods
         this.loadResource = this.loadResource.bind(this);
         this.get = this.get.bind(this);
-        this.retrieve = this.retrieve.bind(this);
+        this.reset = this.reset.bind(this);
 
         // load the src if provided
         if(src){
@@ -95,6 +94,8 @@ class Resource extends Part {
         }
         this.resource = window.System.availableResources[resourceName];
         this.partProperties.setPropertyNamed(this, "resourceName", resourceName);
+        // we can't guarantee the state of a resource and so it should be re-set every time
+        this.reset();
     }
 
     setSourceTo(senders, sourceUrl){
@@ -104,21 +105,23 @@ class Resource extends Part {
         }
         this.partProperties.setPropertyNamed(this, "src", sourceUrl);
         this.resource.load(sourceUrl);
+        // we can't guarantee the state of a resource and so it should be re-set every time
+        this.reset();
+
     }
 
     get(senders, ...args){
+        this.partProperties.setPropertyNamed(this, "readyState", "fetching");
         let prerequisite = this.partProperties.getPropertyNamed(this, "prerequisite");
         this.resource.get(prerequisite, ...args).then((response) => {
             this.partProperties.setPropertyNamed(this, "response", response);
+            this.partProperties.setPropertyNamed(this, "readyState", "ready");
         });
     }
 
-    retrieve(senders, ...args){
-        let key = args[0];
-        let response = this.partProperties.getPropertyNamed(this, "response");
-        if(response){
-            return response[key];
-        }
+    reset(){
+        this.partProperties.setPropertyNamed(this, "readyState", "notReady");
+        this.partProperties.setPropertyNamed(this, "response", null);
     }
 };
 
