@@ -55,6 +55,14 @@ class AreaView extends PartView {
         this.onPropChange('allow-scrolling', this.allowScrollingChanged);
     }
 
+    afterModelSet(){
+        let clipping = this.model.partProperties.getPropertyNamed(
+            this.model,
+            "clipping"
+        );
+        this.clippingChanged(clipping, this.model.id);
+    }
+
     clippingChanged(newVal, id){
         let wrapper = this._shadowRoot.getElementById('area-wrapper');
         if(newVal == true){
