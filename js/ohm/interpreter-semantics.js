@@ -348,9 +348,13 @@ const createInterpreterSemantics = (partContext, systemContext) => {
             let second = secondExpression.interpret().toString();
             return `${first}${second}`;
         },
-        
+
         Factor_parenFactor: function(leftParen, expression, rightParen){
             return expression.interpret();
+        },
+
+        Factor_notFactor: function(notLiteral, expression){
+            return !expression.interpret();
         },
 
         EqualityConditional: function(expr1, comparatorLiteral, expr2){

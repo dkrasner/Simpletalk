@@ -157,3 +157,14 @@ describe("Expression Lists (Command Args)", () => {
         semanticMatchTest(str, "CommandArgumentList");
     });
 });
+
+describe("Factors", () => {
+    it("Not factor via 'not' (basic)", () => {
+        let str = `not 3`;
+        semanticMatchTest(str, "Factor_notFactor");
+    });
+    it("Not factor via 'not' (with expression)", () => {
+        let str = `not the "text" of first button`;
+        semanticMatchTest(str, "Factor_notFactor");
+    });
+});
