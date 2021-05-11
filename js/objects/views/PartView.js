@@ -70,6 +70,9 @@ class PartView extends HTMLElement {
         this.onHaloActivationClick = this.onHaloActivationClick.bind(this);
         this.onAuxClick = this.onAuxClick.bind(this);
         this.onClick = this.onClick.bind(this);
+        this.onMouseDown = this.onMouseDown.bind(this);
+        this.onMouseUp = this.onMouseUp.bind(this);
+        this.onMouseMove = this.onMouseMove.bind(this);
         this.handleTargetKey = this.handleTargetKey.bind(this);
         this.handleTargetMouseClick = this.handleTargetMouseClick.bind(this);
         this.handleTargetMouseOver = this.handleTargetMouseOver.bind(this);
@@ -179,6 +182,13 @@ class PartView extends HTMLElement {
         this.onPropChange('pinning-right', this.pinningRightChanged);
         this.onPropChange('pinning-left', this.pinningLeftChanged);
         this.onPropChange('pinning-bottom', this.pinningBottomChanged);
+        this.onPropChange('can-move', (value) => {
+            if(value){
+                this.addEventListener('mousedown', this.onMouseDown);
+            } else {
+                this.removeEventListener('mousedown', this.onMouseDown);
+            }
+        });
     }
 
     initLayout(){
@@ -686,6 +696,26 @@ class PartView extends HTMLElement {
         }
     }
 
+    onMouseDown(event){
+        if(event.button == 0 && !event.shiftKey){
+            document.addEventListener('mousemove', this.onMouseMove);
+            document.addEventListener('mouseup', this.onMouseUp);
+        }
+    }
+
+    onMouseMove(event){
+        this.sendMessage({
+            type: 'command',
+            commandName: 'move',
+            args: [event.movementX, event.movementY]
+        }, this.model);
+    }
+
+    onMouseUp(event){
+        document.removeEventListener('mousemove', this.onMouseMove);
+        document.removeEventListener('mouseup', this.onMouseUp);
+    }
+
     get wantsHaloMove(){
         if(!this.parentElement || !this.isConnected){
             return false;
@@ -703,7 +733,7 @@ class PartView extends HTMLElement {
         if(!hasLayout){
             return true;
         }
-        
+
         let parentLayout = parentModel.partProperties.getPropertyNamed(
             parentModel,
             'layout'
