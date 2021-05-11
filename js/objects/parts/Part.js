@@ -167,7 +167,7 @@ class Part {
                 true
             ),
             new BasicProperty(
-                'can-move',
+                'wants-move',
                 false
             ),
             new BasicProperty(
@@ -513,8 +513,8 @@ class Part {
     }
 
     move(senders, movementX, movementY){
-        if(!this.partProperties.getPropertyNamed(this, "can-move")){
-            throw Error(`Part ${this.id} trying to move with 'can-move' property false`);
+        if(!this.partProperties.getPropertyNamed(this, "wants-move")){
+            throw Error(`Part ${this.id} trying to move with 'wants-move' property false`);
         }
         let top = this.partProperties.getPropertyNamed(this, "top");
         top += movementY;
@@ -605,11 +605,6 @@ class Part {
         this.partProperties._properties.forEach(prop => {
             let name = prop.name;
             let value = prop.getValue(this);
-            // If this is the events set, transform
-            // it to an Array first (for serialization)
-            if(name == 'events'){
-                value = Array.from(value);
-            } 
             result.properties[name] = value;
         });
         return result;
@@ -628,10 +623,6 @@ class Part {
                 // present in the deserialization, simply provide
                 // a warning and then skip this one.
                 console.warn(`Deserialized property "${propName}" is not a valid property name for ${this.type} (id ${this.id}) and will be ignored`);
-            } else if(property.name == 'events'){
-                // The events property uses a Set, but sets are serialized as Arrays.
-                // We need to return them to being sets.
-                property.setValue(this, new Set(incomingProps[propName]), false);
             } else if(!property.readOnly){
                 // Last arg is false, which tells the property
                 // not to notify its owner's subscribers of

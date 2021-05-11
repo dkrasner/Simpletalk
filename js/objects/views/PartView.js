@@ -54,8 +54,6 @@ class PartView extends HTMLElement {
         this.pinningRightChanged = this.pinningRightChanged.bind(this);
         this.listAlignmentChanged = this.listAlignmentChanged.bind(this);
         this.listDistributionChanged = this.listDistributionChanged.bind(this);
-        this.eventRespond = this.eventRespond.bind(this);
-        this.eventIgnore = this.eventIgnore.bind(this);
 
         // Bind Halo related methods
         this.openHalo = this.openHalo.bind(this);
@@ -100,7 +98,7 @@ class PartView extends HTMLElement {
             this.addEventListener('auxclick', this.onAuxClick);
 
             // Register default event handlers manually]
-            this['onclick'] = this.onClick;
+            this.addEventListener('click', this.onClick);
 
             // Call the lifecycle method when done
             // with the above
@@ -110,7 +108,7 @@ class PartView extends HTMLElement {
 
     disconnectedCallback(){
         this.removeEventListener('auxclick', this.onAuxClick);
-        this['onclick'] = null;
+        this.removeEventListener('click', this.onClick);
         this.afterDisconnected();
     }
 
@@ -126,16 +124,6 @@ class PartView extends HTMLElement {
             this.setAttribute('part-id', aModel.id);
         }
 
-        // set onevent DOM element handlers for events property
-        // NOTE: run here as opposed to in this.connectedCallback() because
-        // the latter can technically be invoked before the model is set
-        let events = this.model.partProperties.getPropertyNamed(this.model, "events");
-
-        // If this view is not currently used as a Lens,
-        // then we want to setup the events
-        if(!this.isLensed){
-            events.forEach((eventName) => this.eventRespond(eventName));
-        }
         // load all the initial styling
         this.styleCSS();
         this.styleTextCSS();
@@ -182,7 +170,7 @@ class PartView extends HTMLElement {
         this.onPropChange('pinning-right', this.pinningRightChanged);
         this.onPropChange('pinning-left', this.pinningLeftChanged);
         this.onPropChange('pinning-bottom', this.pinningBottomChanged);
-        this.onPropChange('can-move', (value) => {
+        this.onPropChange('wants-move', (value) => {
             if(value){
                 this.addEventListener('mousedown', this.onMouseDown);
             } else {
@@ -465,25 +453,6 @@ class PartView extends HTMLElement {
             });
             this.classList.add(`list-distribution-${value}`);
         }
-    }
-
-    // add the event to "event" property and an event listener to the DOM
-    // element which will send a corresponding message
-    eventRespond(eventName){
-        let message = {
-            type: "command",
-            commandName: eventName,
-            args: [],
-            shouldIgnore: true
-        };
-        this[`on${eventName}`] = () => this.sendMessage(message, this.model);
-    }
-
-    // remove the event from "event" property and the event listener from
-    // the DOM element
-    eventIgnore(eventName, partId){
-        // remove eventListener
-        this[`on${eventName}`] = null;
     }
 
     /* Lifecycle Method Defaults */

@@ -27,10 +27,6 @@ class ButtonView extends PartView {
         this._shadowRoot.appendChild(this.template.content.cloneNode(true));
 
         // Bound methods
-        this.onMouseDown = this.onMouseDown.bind(this);
-        this.onMouseUp = this.onMouseUp.bind(this);
-        this.onMouseEnter = this.onMouseEnter.bind(this);
-        this.onClick = this.onClick.bind(this);
         this.setupPropHandlers = this.setupPropHandlers.bind(this);
 
         // Setup prop change handlers
@@ -41,27 +37,12 @@ class ButtonView extends PartView {
         this.onPropChange('name', (value, partId) => {
             this.innerText = value;
         });
-        this.onPropChange('background-color', (value) => {
-            this.style.backgroundColor = value;
-        });
-        this.onPropChange('text-color', (value) =>{
-            this.style.color = value;
-        });
     }
 
     afterConnected(){
-        // Setup mouse event handling
-        this['onmousedown'] = this.onMouseDown;
-        this['onmouseup'] = this.onMouseUp;
-        this['onmouseenter'] = this.onMouseEnter;
-        this['onclick'] = this.onClick;
     }
 
     afterDisconnected(){
-        this['onmousedown'] = null;
-        this['onmouseup'] = null;
-        this['onmouseenter'] = null;
-        this['onclick'] = null;
     }
 
     afterModelSet(){
@@ -85,6 +66,7 @@ class ButtonView extends PartView {
         }, this.model);
     }
 
+    // override the base class implementation
     onClick(event){
         if(event.button == 0){
             if(event.shiftKey){
@@ -101,46 +83,6 @@ class ButtonView extends PartView {
                 }, this.model);
             }
         }
-    }
-
-    onMouseDown(event){
-        if(event.shiftKey){
-            event.preventDefault();
-        } else if(!this.hasOpenHalo){
-            this.classList.add('active');
-        }
-
-        this.model.sendMessage({
-            type: 'command',
-            commandName: 'mouseDown',
-            args: [],
-            shouldIgnore: true
-        }, this.model);
-    }
-
-    onMouseUp(event){
-        if(event.shiftKey){
-            event.preventDefault();
-        } else if(!this.hasOpenHalo){
-            // Send the mouseUp command
-            // message to Button Part.
-            this.model.sendMessage({
-                type: 'command',
-                commandName: 'mouseUp',
-                args: [],
-                shouldIgnore: true // Should ignore if System DNU
-            }, this.model);
-            this.classList.remove('active');
-        }
-    }
-
-    onMouseEnter(event){
-        this.model.sendMessage({
-            type: 'command',
-            commandName: 'mouseEnter',
-            args: [],
-            shouldIgnore: true
-        }, this.model);
     }
 
     // Overwriting the base class open/close editor methods
