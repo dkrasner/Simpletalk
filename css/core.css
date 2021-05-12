@@ -239,7 +239,7 @@ st-world > st-stack > :not(.current-card).list-layout {
     align-content: start;
 }
 
-.list-layout > * {
+.list-layout > *:not(st-window):not(st-button-editor) {
     position: relative !important;
     top: auto !important;
     left: auto !important;
@@ -247,9 +247,7 @@ st-world > st-stack > :not(.current-card).list-layout {
 
 .list-layout > st-window,
 .list-layout > st-button-editor {
-    position: absolute;
-    top: unset;
-    left: unset;
+    position: absolute !important;
 }
 
 .list-layout.list-column > .h-space-fill {
