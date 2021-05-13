@@ -43,12 +43,6 @@ class Resource extends Part {
             "response",
             null
         );
-        // set up DOM events to be handled
-        this.partProperties.setPropertyNamed(
-            this,
-            'events',
-            new Set(['mousedown', 'mouseup', 'mouseenter', 'click'])
-        );
 
         // Private command handlers
         this.setPrivateCommandHandler("loadResource", this.loadResource);

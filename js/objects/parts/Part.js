@@ -192,13 +192,6 @@ class Part {
                 'editorOpen',
                 false
             ),
-            // List of (web) events the part subscribes to
-            new BasicProperty(
-                'events',
-                new Set(),
-                false,
-                []
-            ),
             // Styling
             // css (really JS style) key-values
             new BasicProperty(
