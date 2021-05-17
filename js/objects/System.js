@@ -369,6 +369,59 @@ const System = {
         return model;
     },
 
+    newProperty(senders, propName, objectId){
+        let target;
+        let originalSender = senders[0].id;
+
+        if(objectId){
+            // Otherwise, if there is an objectId, we are
+            // setting the property of a specific part by
+            // id
+            target = this.partsById[objectId];
+        } else {
+            // Otherwise we are setting the property on the part
+            // that originally sent the message
+            target = this.partsById[originalSender];
+        }
+
+        if(!target){
+            throw new Error(`Could not find newProperty target!`);
+        }
+
+        // we only add basic property and the default value is null
+        target.partProperties.newBasicProp(
+            propName,
+            null
+        );
+    },
+
+    deleteProperty(senders, propName, objectId){
+        let target;
+        let originalSender = senders[0].id;
+
+        if(objectId){
+            // Otherwise, if there is an objectId, we are
+            // setting the property of a specific part by
+            // id
+            target = this.partsById[objectId];
+        } else {
+            // Otherwise we are setting the property on the part
+            // that originally sent the message
+            target = this.partsById[originalSender];
+        }
+
+        if(!target){
+            throw new Error(`Could not find deleteProperty target!`);
+        }
+
+        let prop = target.partProperties.findPropertyNamed(propName);
+        // if the target doesn't have this property don't do anything
+        // b/c why not?
+        if(prop){
+            target.partProperties.removeProperty(prop);
+        }
+    },
+
     setProperty(senders, propName, value, objectId){
         let target;
         let originalSender = senders[0].id;
@@ -668,7 +721,7 @@ const System = {
         if(nav){
             nav.remove();
         }
-        
+
         return clonedDocument.documentElement.outerHTML;
     },
 
@@ -742,7 +795,9 @@ System._commandHandlers['newModel'] = function(senders, ...rest){
 System._commandHandlers['newView'] = function(senders, ...rest){
     System.newView(...rest);
 };
+System._commandHandlers['newProperty'] = System.newProperty;
 System._commandHandlers['setProperty'] = System.setProperty;
+System._commandHandlers['deleteProperty'] = System.deleteProperty;
 
 System._commandHandlers['ask'] = function(senders, question){
     // Use the native JS prompt function to ask the question

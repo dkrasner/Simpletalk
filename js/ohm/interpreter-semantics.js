@@ -175,7 +175,7 @@ const createInterpreterSemantics = (partContext, systemContext) => {
 
             let msg = {
                 type: "command",
-                commandName: "addProperty",
+                commandName: "newProperty",
                 args: args
             };
             return msg;

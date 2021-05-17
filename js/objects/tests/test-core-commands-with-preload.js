@@ -126,11 +126,6 @@ describe('Core command tests', () => {
                 };
                 expect(interpretFunc).to.not.throw();
                 assert.exists(msg);
-            });
-            it.skip('Delete property msg does not throw error and deletes property', () => {
-                let script = `delete property "test-prop" from button id ${button.id}`;
-                let match = testLanguageGrammar.match(script, 'Command_deleteProperty');
-                let msg = semantics(match).interpret();
                 let sendMsgFunc = function() {
                     currentCard.sendMessage(msg, button);
                 };
@@ -138,7 +133,7 @@ describe('Core command tests', () => {
                 assert.isNull(button.partProperties.findPropertyNamed("test-prop"));
                 // add the property back in button back in
                 button.partProperties.newBasicProp("test-prop", "test");
-                assert.notNull(button.partProperties.findPropertyNamed("test-prop"));
+                assert.isNotNull(button.partProperties.findPropertyNamed("test-prop"));
             });
             it('Delete property in context semantics', () => {
                 let script = `delete property "test-prop"`;
@@ -150,19 +145,11 @@ describe('Core command tests', () => {
                 };
                 expect(interpretFunc).to.not.throw();
                 assert.exists(msg);
-            });
-            it.skip('Delete property msg does not throw error and deletes property', () => {
-                let script = `delete property "test-prop"`;
-                let match = testLanguageGrammar.match(script, 'Command_deleteProperty');
-                let msg = semantics(match).interpret();
                 let sendMsgFunc = function() {
-                    currentCard.sendMessage(msg, button);
+                    button.sendMessage(msg, button);
                 };
                 expect(sendMsgFunc).to.not.throw();
                 assert.isNull(button.partProperties.findPropertyNamed("test-prop"));
-                // add the property back in button back in
-                button.partProperties.newBasicProp("test-prop", "test");
-                assert.notNull(button.partProperties.findPropertyNamed("test-prop"));
             });
             after('', () => {
                 let script = `delete this button`;

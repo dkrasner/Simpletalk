@@ -123,8 +123,8 @@ describe('Add command tests', () => {
             assert.isTrue(match.succeeded());
             let msg = semantics(match).interpret();
             assert.exists(msg);
-            // currentCard.sendMessage(msg, currentCard);
-            // assert.isNotNull(currentCard.partProperties.findPropertyNamed("test-prop"));
+            currentCard.sendMessage(msg, currentCard);
+            assert.isNotNull(currentCard.partProperties.findPropertyNamed("test-prop"));
         });
         it('Can add a property to the current card in context', () => {
             let script = `add property "test-prop-2"`;
@@ -132,8 +132,8 @@ describe('Add command tests', () => {
             assert.isTrue(match.succeeded());
             let msg = semantics(match).interpret();
             assert.exists(msg);
-            // currentCard.sendMessage(msg, currentCard);
-            // assert.isNotNull(currentCard.partProperties.findPropertyNamed("test-prop-2"));
+            currentCard.sendMessage(msg, currentCard);
+            assert.isNotNull(currentCard.partProperties.findPropertyNamed("test-prop-2"));
         });
     });
 });

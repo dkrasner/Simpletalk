@@ -47,6 +47,66 @@ describe("PropertyValue Interpreter Tests", () => {
             assert.exists(buttonModel);
         });
     });
+    describe('Adding and deleting properties', () => {
+        it('Can add a property to button (with object specifier) without error', () => {
+            let addProperty = function(){
+                let msg = {
+                    type: 'command',
+                    commandName: 'newProperty',
+                    args: [
+                        'test-prop',
+                        buttonModel.id,
+                    ]
+                };
+                currentCardModel.sendMessage(msg, buttonModel);
+            };
+            expect(addProperty).to.not.throw(Error);
+            assert.isNotNull(buttonModel.partProperties.findPropertyNamed("test-prop"));
+        });
+        it('Can delete a property to button (with object specifier) without error', () => {
+            let deleteProperty = function(){
+                let msg = {
+                    type: 'command',
+                    commandName: 'deleteProperty',
+                    args: [
+                        'test-prop',
+                        buttonModel.id,
+                    ]
+                };
+                currentCardModel.sendMessage(msg, buttonModel);
+            };
+            expect(deleteProperty).to.not.throw(Error);
+            assert.isNull(buttonModel.partProperties.findPropertyNamed("test-prop"));
+        });
+        it('Can add a property to button (in context)) without error', () => {
+            let addProperty = function(){
+                let msg = {
+                    type: 'command',
+                    commandName: 'newProperty',
+                    args: [
+                        'test-prop',
+                    ]
+                };
+                buttonModel.sendMessage(msg, buttonModel);
+            };
+            expect(addProperty).to.not.throw(Error);
+            assert.isNotNull(buttonModel.partProperties.findPropertyNamed("test-prop"));
+        });
+        it('Can delete a property to button (in context) without error', () => {
+            let deleteProperty = function(){
+                let msg = {
+                    type: 'command',
+                    commandName: 'deleteProperty',
+                    args: [
+                        'test-prop',
+                    ]
+                };
+                buttonModel.sendMessage(msg, buttonModel);
+            };
+            expect(deleteProperty).to.not.throw(Error);
+            assert.isNull(buttonModel.partProperties.findPropertyNamed("test-prop"));
+        });
+    });
     describe("PropertyValue lookup tests", () => {
         before(() => {
             currentCardModel.partProperties.setPropertyNamed(
