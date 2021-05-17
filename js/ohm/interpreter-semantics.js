@@ -166,6 +166,21 @@ const createInterpreterSemantics = (partContext, systemContext) => {
             return msg;
         },
 
+        Command_addProperty: function(addLiteral, propertyLiteral, propNameAsLiteral, toLiteral, systemObject){
+            let specifiedObjectId = systemObject.interpret()[0] || null;
+            let args = [
+                propNameAsLiteral.interpret(), // The property name
+                specifiedObjectId
+            ];
+
+            let msg = {
+                type: "command",
+                commandName: "addProperty",
+                args: args
+            };
+            return msg;
+        },
+
         Command_addModel: function(addLiteral, newPartType, optionalPartName){
             // here no owner has been provided so we assume it is the first possible one
             let parent = findFirstPossibleAncestor(partContext, newPartType.sourceString);
@@ -223,10 +238,29 @@ const createInterpreterSemantics = (partContext, systemContext) => {
             return msg;
         },
 
-        Command_deleteModel: function(deleteLiteral, objectSpecifier){
+        Command_deleteProperty: function(deleteLiteral, propertyLiteral, propNameAsLiteral, fromLiteral, systemObject){
+            let specifiedObjectId = systemObject.interpret()[0] || null;
             let args = [
-                objectSpecifier.interpret() // id of the object
+                propNameAsLiteral.interpret(), // The property name
+                specifiedObjectId
             ];
+
+            let msg = {
+                type: "command",
+                commandName: "deleteProperty",
+                args: args
+            };
+            return msg;
+        },
+
+        Command_deleteModel: function(deleteLiteral, thisLiteral, systemObject, objectId){
+            let args = [];
+            if (!objectId.sourceString){
+                args.push(undefined);
+            } else {
+                args.push(objectId.sourceString);
+            }
+            args.push(systemObject.sourceString);
 
             let msg = {
                 type: "command",

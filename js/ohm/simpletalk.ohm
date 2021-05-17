@@ -219,7 +219,9 @@ SimpleTalk {
       | "go to" systemObject objectId --goToByReference
       | "answer" Expression --answer
       | "delete" ObjectSpecifier --deleteModel
+      | "delete" "this"? systemObject objectId? --deleteModel
       | "set" propertyName "to" Expression InClause? --setProperty
+      | "add" "property" stringLiteral "to"? ObjectSpecifier? --addProperty
       | "add" systemObject stringLiteral? "to" ObjectSpecifier --addModelTo
       | "add" systemObject stringLiteral? --addModel
       | "put" Expression "into" "global"? variableName --putVariable

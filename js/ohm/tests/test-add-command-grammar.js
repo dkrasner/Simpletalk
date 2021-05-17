@@ -123,3 +123,22 @@ describe("Add Model", () => {
         semanticMatchFailTest(s, "Command");
     });
 });
+
+describe("Add Property", () => {
+    it("Add property with object specifier", () => {
+        let s = `add property "NewProp" to current card`;
+        semanticMatchTest(s, "Command");
+        semanticMatchTest(s, "Command_addProperty");
+        semanticMatchTest(s, "Statement");
+        s = `add property "NewProp" to this button`;
+        semanticMatchTest(s, "Command");
+        semanticMatchTest(s, "Command_addProperty");
+        semanticMatchTest(s, "Statement");
+    });
+    it("Add property without object specifier", () => {
+        let s = `add property "NewProp"`;
+        semanticMatchTest(s, "Command");
+        semanticMatchTest(s, "Command_addProperty");
+        semanticMatchTest(s, "Statement");
+    });
+});

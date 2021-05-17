@@ -55,46 +55,124 @@ describe('Core command tests', () => {
             expect(sendMsg).to.not.throw();
         });
     });
-    describe('Delete model tests', () => {
-        before('', () => {
-            currentCard = System.getCurrentCardModel();
-            let initSemantics = function(){
-                semantics = getSemanticsFor(currentCard);
-            };
-            expect(initSemantics).to.not.throw();
-            let script = `add button "Test Button 1" to current card`;
-            let match = testLanguageGrammar.match(script, 'Command');
-            assert.isTrue(match.succeeded());
-            let msg = semantics(match).interpret();
-            assert.exists(msg);
-            currentCard.sendMessage(msg, currentCard);
-            assert.equal(currentCard.subparts.length, 1);
-            button = currentCard.subparts[0];
+    describe('Delete tests', () => {
+        describe('Delete model tests', () => {
+            before('', () => {
+                currentCard = System.getCurrentCardModel();
+                let initSemantics = function(){
+                    semantics = getSemanticsFor(currentCard);
+                };
+                expect(initSemantics).to.not.throw();
+                let script = `add button "Test Button 1" to current card`;
+                let match = testLanguageGrammar.match(script, 'Command');
+                assert.isTrue(match.succeeded());
+                let msg = semantics(match).interpret();
+                assert.exists(msg);
+                currentCard.sendMessage(msg, currentCard);
+                assert.equal(currentCard.subparts.length, 1);
+                button = currentCard.subparts[0];
+            });
+            it('Can remove button (by id)', () => {
+                let script = `delete button ${button.id}`;
+                let match = testLanguageGrammar.match(script, 'Command');
+                assert.isTrue(match.succeeded());
+                let msg = semantics(match).interpret();
+                assert.exists(msg);
+                currentCard.sendMessage(msg, currentCard);
+                assert.equal(currentCard.subparts.length, 0);
+                // add the button back in
+                script = `add button "Test Button 1" to current card`;
+                match = testLanguageGrammar.match(script, 'Command');
+                msg = semantics(match).interpret();
+                currentCard.sendMessage(msg, currentCard);
+                assert.equal(currentCard.subparts.length, 1);
+                button = currentCard.subparts[0];
+            });
+            it('Can remove button (in context: "this")', () => {
+                let script = `delete this button`;
+                let match = testLanguageGrammar.match(script, 'Command');
+                assert.isTrue(match.succeeded());
+                let msg = semantics(match).interpret();
+                assert.exists(msg);
+                currentCard.sendMessage(msg, button);
+                assert.equal(currentCard.subparts.length, 0);
+            });
         });
-        it('Can remove button (by id)', () => {
-            let script = `delete button id ${button.id}`;
-            let match = testLanguageGrammar.match(script, 'Command');
-            assert.isTrue(match.succeeded());
-            let msg = semantics(match).interpret();
-            assert.exists(msg);
-            currentCard.sendMessage(msg, currentCard);
-            assert.equal(currentCard.subparts.length, 0);
-            // add the button back in
-            script = `add button "Test Button 1" to current card`;
-            match = testLanguageGrammar.match(script, 'Command');
-            msg = semantics(match).interpret();
-            currentCard.sendMessage(msg, currentCard);
-            assert.equal(currentCard.subparts.length, 1);
-            button = currentCard.subparts[0];
-        });
-        it('Can remove first button', () => {
-            let script = `delete first button`;
-            let match = testLanguageGrammar.match(script, 'Command');
-            assert.isTrue(match.succeeded());
-            let msg = semantics(match).interpret();
-            assert.exists(msg);
-            currentCard.sendMessage(msg, currentCard);
-            assert.equal(currentCard.subparts.length, 0);
+        describe('Delete property tests', () => {
+            before('', () => {
+                currentCard = System.getCurrentCardModel();
+                let initSemantics = function(){
+                    semantics = getSemanticsFor(currentCard);
+                };
+                expect(initSemantics).to.not.throw();
+                let script = `add button "Test Button 1" to current card`;
+                let match = testLanguageGrammar.match(script, 'Command');
+                assert.isTrue(match.succeeded());
+                let msg = semantics(match).interpret();
+                assert.exists(msg);
+                currentCard.sendMessage(msg, currentCard);
+                assert.equal(currentCard.subparts.length, 1);
+                button = currentCard.subparts[0];
+                button.partProperties.newBasicProp("test-prop", "test");
+                assert.isNotNull(button.partProperties.findPropertyNamed("test-prop"));
+            });
+            it('Delete property from object (id) semantics', () => {
+                let script = `delete property "test-prop" from button id ${button.id}`;
+                let match = testLanguageGrammar.match(script, 'Command_deleteProperty');
+                assert.isTrue(match.succeeded());
+                let msg;
+                let interpretFunc = function() {
+                    msg = semantics(match).interpret();
+                };
+                expect(interpretFunc).to.not.throw();
+                assert.exists(msg);
+            });
+            it.skip('Delete property msg does not throw error and deletes property', () => {
+                let script = `delete property "test-prop" from button id ${button.id}`;
+                let match = testLanguageGrammar.match(script, 'Command_deleteProperty');
+                let msg = semantics(match).interpret();
+                let sendMsgFunc = function() {
+                    currentCard.sendMessage(msg, button);
+                };
+                expect(sendMsgFunc).to.not.throw();
+                assert.isNull(button.partProperties.findPropertyNamed("test-prop"));
+                // add the property back in button back in
+                button.partProperties.newBasicProp("test-prop", "test");
+                assert.notNull(button.partProperties.findPropertyNamed("test-prop"));
+            });
+            it('Delete property in context semantics', () => {
+                let script = `delete property "test-prop"`;
+                let match = testLanguageGrammar.match(script, 'Command_deleteProperty');
+                assert.isTrue(match.succeeded());
+                let msg;
+                let interpretFunc = function() {
+                    msg = semantics(match).interpret();
+                };
+                expect(interpretFunc).to.not.throw();
+                assert.exists(msg);
+            });
+            it.skip('Delete property msg does not throw error and deletes property', () => {
+                let script = `delete property "test-prop"`;
+                let match = testLanguageGrammar.match(script, 'Command_deleteProperty');
+                let msg = semantics(match).interpret();
+                let sendMsgFunc = function() {
+                    currentCard.sendMessage(msg, button);
+                };
+                expect(sendMsgFunc).to.not.throw();
+                assert.isNull(button.partProperties.findPropertyNamed("test-prop"));
+                // add the property back in button back in
+                button.partProperties.newBasicProp("test-prop", "test");
+                assert.notNull(button.partProperties.findPropertyNamed("test-prop"));
+            });
+            after('', () => {
+                let script = `delete this button`;
+                let match = testLanguageGrammar.match(script, 'Command');
+                assert.isTrue(match.succeeded());
+                let msg = semantics(match).interpret();
+                assert.exists(msg);
+                currentCard.sendMessage(msg, button);
+                assert.equal(currentCard.subparts.length, 0);
+            });
         });
     });
     describe('Tell tests', () => {
