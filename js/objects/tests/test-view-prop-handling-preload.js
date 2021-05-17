@@ -9,6 +9,11 @@ import chai from 'chai';
 const assert = chai.assert;
 import PartView from '../views/PartView.js';
 import Part from '../parts/Part.js';
+import {
+    addBasicStyleProps,
+    addPositioningStyleProps,
+    addLayoutStyleProps
+} from '../utils/styleProperties.js';
 
 // Create a test view and part combo
 class TestView extends PartView {
@@ -130,50 +135,40 @@ describe('Test #onPropChange command delegation', () => {
     });
 });
 
-describe('Test event partProperty handling', () => {
+describe('Test wants-* partProperty handling', () => {
     let testView;
     let testModel;
     testView = document.createElement('st-test');
     testModel = new TestPart();
-    testModel.partProperties.setPropertyNamed(
-        testModel,
-        "events",
-        new Set(["click", "mouseover"])
-    );
+    addPositioningStyleProps(testModel);
     testView.setModel(testModel);
-    // event callback helpers
-    let clickResult = 0;
-    let clickHandler = function(){
-        clickResult += 1;
-    };
-    testModel._commandHandlers["click"] = clickHandler;
-    let mouseOverResult = 0;
-    it('Initial "events" property is a Set with one element: "click"', () => {
-        let events = testModel.partProperties.getPropertyNamed(testModel, "events");
-        assert.isTrue(events.has("click"));
-        assert.equal(2, events.size);
-        assert.isTrue(events instanceof Set);
-    });
-    it('The "onclick" attribute is set on the view DOM element', () => {
-        assert.isNotNull(testView["onclick"]);
-        assert.equal("function", typeof testView["onclick"]);
-    });
-    it('The "mouseover" attribute is set on the view DOM element', () => {
-        assert.isNotNull(testView["onmouseover"]);
-        assert.equal("function", typeof testView["onmouseover"]);
-    });
-    it('Dispatching the "click" event', () => {
-        let event = new window.MouseEvent('click');
-        assert.doesNotThrow(() => testView.dispatchEvent(event));
-        assert.equal(1, clickResult);
-    });
-    it('Dispatching the event', () => {
-        let mouseoverHandler = function(){
-            mouseOverResult += 1;
-        };
-        testModel._commandHandlers["mouseover"] = mouseoverHandler;
-        let event = new window.MouseEvent('mouseover');
-        assert.doesNotThrow(() => testView.dispatchEvent(event));
-        assert.equal(1, mouseOverResult);
+    let top = testModel.partProperties.getPropertyNamed(testModel, "top");
+    let left = testModel.partProperties.getPropertyNamed(testModel, "left");
+    describe('wants-move', () => {
+        it('Initially set to false, mousedown has no effect', () => {
+            let mousedownEvent = new window.MouseEvent('mousedown');
+            let mousemoveEvent = new window.MouseEvent('mousemove');
+            mousemoveEvent.movementX = 10;
+            mousemoveEvent.movementY = 20;
+            let mouseupEvent = new window.MouseEvent('mouseup');
+            testView.dispatchEvent(mousedownEvent);
+            testView.dispatchEvent(mousemoveEvent);
+            testView.dispatchEvent(mouseupEvent);
+            assert.equal(0, testModel.partProperties.getPropertyNamed(testModel, "top"));
+            assert.equal(0, testModel.partProperties.getPropertyNamed(testModel, "left"));
+        });
+        it.skip('Setting to true, mousedown has appropriate effect', () => {
+            testModel.partProperties.setPropertyNamed(testModel, "wants-move", true);
+            let mousedownEvent = new window.MouseEvent('mousedown');
+            let mousemoveEvent = new window.MouseEvent('mousemove');
+            mousemoveEvent.movementX = 10;
+            mousemoveEvent.movementY = 20;
+            let mouseupEvent = new window.MouseEvent('mouseup');
+            testView.dispatchEvent(mousedownEvent);
+            testView.dispatchEvent(mousemoveEvent);
+            testView.dispatchEvent(mouseupEvent);
+            assert.equal(20, testModel.partProperties.getPropertyNamed(testModel, "top"));
+            assert.equal(10, testModel.partProperties.getPropertyNamed(testModel, "left"));
+        });
     });
 });
