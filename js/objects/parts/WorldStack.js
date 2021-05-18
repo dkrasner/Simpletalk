@@ -23,10 +23,10 @@ class WorldStack extends Part {
         this.isWorld = true;
 
         // This property specifies the stack
-        // index of the current stack (0-indexed)
+        // id of the current stack
         this.partProperties.newBasicProp(
             'current',
-            0
+            null
         );
 
         // Set the id property to always
@@ -51,20 +51,19 @@ class WorldStack extends Part {
         if(stacks.length < 2){
             return;
         }
-        let currentIdx = this.currentStackIndex;
-        let currentStack = stacks[currentIdx];
+        let currentIdx = stacks.indexOf(this.currentStack);
         let nextIdx = currentIdx + 1;
         if(nextIdx >= stacks.length){
             nextIdx = (nextIdx % stacks.length);
         }
+        let nextStack = stacks[nextIdx];
         this.partProperties.setPropertyNamed(
             this,
             'current',
-            nextIdx
+            nextStack.id
         );
-        let nextStack = stacks[nextIdx];
-        if(currentStack.id != nextStack.id){
-            this.sendCloseStackTo(currentStack);
+        if(this.currentStackId != nextStack.id){
+            this.sendCloseStackTo(this.currentStack);
             this.sendOpenStackTo(nextStack);
         }
     }
@@ -73,22 +72,19 @@ class WorldStack extends Part {
         let stacks = this.subparts.filter(subpart => {
             return subpart.type == 'stack';
         });
-        let found = stacks.find(stack => {
+        let nextStack = stacks.find(stack => {
             return stack.id == anId;
         });
-        if(!found){
+        if(!nextStack){
             throw new Error(`The stack id: ${anId} cant be found on this stack`);
         }
-        let currentStack = this.currentStack;
-        let foundIdx = stacks.indexOf(found);
         this.partProperties.setPropertyNamed(
             this,
             'current',
-            foundIdx
+            nextStack.id
         );
-        let nextStack = stacks[foundIdx];
-        if(currentStack.id != nextStack.id){
-            this.sendCloseStackTo(currentStack);
+        if(this.currentStackId != nextStack.id){
+            this.sendCloseStackTo(this.currentStack);
             this.sendOpenStackTo(nextStack);
         }
     }
@@ -100,20 +96,19 @@ class WorldStack extends Part {
         if(stacks.length < 2){
             return;
         }
-        let currentIdx = this.currentStackIndex;
-        let currentStack = stacks[currentIdx];
+        let currentIdx = stacks.indexOf(this.currentStack);
         let nextIdx = currentIdx - 1;
         if(nextIdx < 0){
             nextIdx = stacks.length + nextIdx;
         }
+        let nextStack = stacks[nextIdx];
         this.partProperties.setPropertyNamed(
             this,
             'current',
-            nextIdx
+            nextStack.id
         );
-        let nextStack = stacks[nextIdx];
-        if(currentStack.id != nextStack.id){
-            this.sendCloseStackTo(currentStack);
+        if(this.currentStackId != nextStack.id){
+            this.sendCloseStackTo(this.currentStack);
             this.sendOpenStackTo(nextStack);
         }
     }
@@ -128,15 +123,14 @@ class WorldStack extends Part {
         if(trueIndex < 0 || trueIndex > stacks.length -1){
             throw new Error(`Cannot navigate to stack number ${anIndex} -- out of bounds`);
         }
-        let currentStack = this.currentStack;
+        let nextStack = stacks[trueIndex];
         this.partProperties.setPropertyNamed(
             this,
             'current',
-            trueIndex
+            nextStack.id
         );
-        let nextStack = stacks[trueIndex];
-        if(currentStack.id != nextStack.id){
-            this.sendCloseStackTo(currentStack);
+        if(this.currentStackId != nextStack.id){
+            this.sendCloseStackTo(this.currentStack);
             this.sendOpenStackTo(nextStack);
         }
     }
@@ -227,7 +221,7 @@ class WorldStack extends Part {
         return this.sendMessage(aMessage, window.System);
     }
 
-    get currentStackIndex(){
+    get currentStackId(){
         return this.partProperties.getPropertyNamed(
             this,
             'current'
@@ -235,13 +229,7 @@ class WorldStack extends Part {
     }
 
     get currentStack(){
-        let stacks = this.subparts.filter(subpart => {
-            return subpart.type == 'stack';
-        });
-        if(stacks.length){
-            return stacks[this.currentStackIndex];
-        }
-        return null;
+        return window.System.partsById[this.currentStackId];
     }
 };
 

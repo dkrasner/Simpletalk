@@ -58,18 +58,24 @@ class WorldView extends PartView {
     }
 
     updateCurrentStack(){
-        let nextCurrentIdx = this.model.partProperties.getPropertyNamed(
+        // The value of the current prop is the stack ID
+        // of the child Stack that should be the
+        // current one. We remove the current-stack class from
+        // the previous current stack and add it to the new one.
+        let currentStack = this.querySelector('.current-stack');
+        let nextCurrentId = this.model.partProperties.getPropertyNamed(
             this.model,
             'current'
         );
-        let stackViews = Array.from(this.querySelectorAll(':scope > st-stack'));
-        stackViews.forEach((stackView, idx) => {
-            if(idx == nextCurrentIdx){
-                stackView.classList.add('current-stack');
-            } else {
-                stackView.classList.remove('current-stack');
-            }
-        });
+        let nextCurrentStack = this.querySelector(`:scope > st-stack[part-id="${nextCurrentId}"]`);
+        if(nextCurrentStack){
+            nextCurrentStack.classList.add('current-stack');
+        } else {
+            return;
+        }
+        if(currentStack){
+            currentStack.classList.remove('current-stack');
+        }
     }
 
     handleKeyDown(event){

@@ -119,16 +119,16 @@ const System = {
         // Create initial card model for that stack
         let initCard = this.newModel('card', initStack.id);
 
-        // Update current stack and card values
+        // Update current stack and card ids 
         worldModel.partProperties.setPropertyNamed(
             worldModel,
             'current',
-            0
+            initStack.id
         );
         initStack.partProperties.setPropertyNamed(
             initStack,
             'current',
-            0
+            initCard.id
         );
         // Update serialization
         this.serialize();
@@ -826,11 +826,7 @@ System._commandHandlers['importWorld'] = function(sender, sourceUrl){
                             let isWorldSubpart = part._owner && part._owner.type == 'world';
                             return isStack && isWorldSubpart;
                         }
-                    ).then(() => {
-                        // Tell the world to update current, in case
-                        // a new StackView was attached with current set.
-                        document.querySelector('st-world').updateCurrentStack();
-                    });
+                    );
                 };
             });
         })
