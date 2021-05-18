@@ -340,6 +340,16 @@ const System = {
             }
         }
 
+        // Finally if the owner part is either a world or a stack
+        // and has only one stack or card child, respectively, set
+        // that child to be the current
+        if(ownerPart.type == "world" || ownerPart.type == "stack"){
+            let currentId = ownerPart.partProperties.getPropertyNamed(ownerPart, "current");
+            if(!currentId){
+                ownerPart.partProperties.setPropertyNamed(ownerPart, "current", model.id);
+            }
+        }
+
         return model;
     },
 

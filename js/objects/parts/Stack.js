@@ -34,7 +34,7 @@ class Stack extends Part {
         // Stack.
         this.partProperties.newBasicProp(
             'current',
-            0
+            null
         );
 
         // If we are initializing with a name,
