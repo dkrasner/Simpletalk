@@ -1,4 +1,4 @@
-import Test from './testapi.js';
+import Test from './testAPI.js';
 import Merriam from './merriam.js';
 
 const plugins = {
