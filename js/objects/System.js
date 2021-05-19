@@ -34,6 +34,7 @@ import ResourceView from './views/ResourceView.js';
 import Halo from './views/Halo.js';
 import EditorView from './views/editors/EditorView.js';
 import STNavigator from './views/navigator/Navigator.js';
+import CompEditor from './views/editors/CompEditor.js';
 
 import ohm from 'ohm-js';
 import interpreterSemantics from '../ohm/interpreter-semantics.js';
@@ -1136,9 +1137,15 @@ document.addEventListener('DOMContentLoaded', () => {
     window.customElements.define('st-halo', Halo);
     window.customElements.define('st-editor', EditorView);
     window.customElements.define('st-navigator', STNavigator);
+    window.customElements.define('st-comp-editor', CompEditor);
 
+    // Add nav
     System.navigator = document.createElement('st-navigator');
     document.body.appendChild(System.navigator);
+
+    // Add comprehensive editor pane
+    System.compEditor = document.createElement('st-comp-editor');
+    document.body.appendChild(System.compEditor);
 
     // Perform the initial setup of
     // the system
