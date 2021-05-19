@@ -239,14 +239,14 @@ st-world > st-stack > :not(.current-card).list-layout {
     align-content: start;
 }
 
-.list-layout > *:not(st-window):not(st-button-editor) {
+.list-layout > *:not(st-window):not(st-editor) {
     position: relative !important;
     top: auto !important;
     left: auto !important;
 }
 
 .list-layout > st-window,
-.list-layout > st-button-editor {
+.list-layout > st-editor {
     position: absolute !important;
 }
 
