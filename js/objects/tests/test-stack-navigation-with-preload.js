@@ -58,7 +58,7 @@ describe('World Navigation Tests', () => {
             });
         });
     });
-    describe.skip('Stack Navigation', () => {
+    describe('Stack Navigation', () => {
         it('#goToNextStack: Can go to next (2nd) stack from current (1st)', () => {
             let stackViews = Array.from(worldView.querySelectorAll('st-stack'));
             // let first = worldView.querySelector('st-stack:nth-child(1)');
@@ -206,6 +206,7 @@ describe('Stack Navigation Tests', () => {
         it('#goToNextCard: Can go to next (2nd) card from current (1st)', () => {
             let firstCard = stackView.querySelector('st-card:nth-child(1)');
             let secondCard = stackView.querySelector('st-card:nth-child(2)');
+            let thirdCard = stackView.querySelector('st-card:nth-child(3)');
             assert.isTrue(firstCard.classList.contains('current-card'));
             assert.isFalse(secondCard.classList.contains('current-card'));
 

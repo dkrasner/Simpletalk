@@ -51,7 +51,9 @@ class WorldStack extends Part {
         if(stacks.length < 2){
             return;
         }
-        let currentIdx = stacks.indexOf(this.currentStack);
+        let currentStack = this.currentStack;
+        let currentStackId = this.currentStackId;
+        let currentIdx = stacks.indexOf(currentStack);
         let nextIdx = currentIdx + 1;
         if(nextIdx >= stacks.length){
             nextIdx = (nextIdx % stacks.length);
@@ -62,8 +64,8 @@ class WorldStack extends Part {
             'current',
             nextStack.id
         );
-        if(this.currentStackId != nextStack.id){
-            this.sendCloseStackTo(this.currentStack);
+        if(currentStackId != nextStack.id){
+            this.sendCloseStackTo(currentStack);
             this.sendOpenStackTo(nextStack);
         }
     }
@@ -78,13 +80,15 @@ class WorldStack extends Part {
         if(!nextStack){
             throw new Error(`The stack id: ${anId} cant be found on this stack`);
         }
+        let currentStack = this.currentStack;
+        let currentStackId = this.currentStackId;
         this.partProperties.setPropertyNamed(
             this,
             'current',
             nextStack.id
         );
-        if(this.currentStackId != nextStack.id){
-            this.sendCloseStackTo(this.currentStack);
+        if(currentStackId != nextStack.id){
+            this.sendCloseStackTo(currentStack);
             this.sendOpenStackTo(nextStack);
         }
     }
@@ -96,7 +100,9 @@ class WorldStack extends Part {
         if(stacks.length < 2){
             return;
         }
-        let currentIdx = stacks.indexOf(this.currentStack);
+        let currentStack = this.currentStack;
+        let currentStackId = this.currentStackId;
+        let currentIdx = stacks.indexOf(currentStack);
         let nextIdx = currentIdx - 1;
         if(nextIdx < 0){
             nextIdx = stacks.length + nextIdx;
@@ -107,8 +113,8 @@ class WorldStack extends Part {
             'current',
             nextStack.id
         );
-        if(this.currentStackId != nextStack.id){
-            this.sendCloseStackTo(this.currentStack);
+        if(currentStackId != nextStack.id){
+            this.sendCloseStackTo(currentStack);
             this.sendOpenStackTo(nextStack);
         }
     }
@@ -123,14 +129,16 @@ class WorldStack extends Part {
         if(trueIndex < 0 || trueIndex > stacks.length -1){
             throw new Error(`Cannot navigate to stack number ${anIndex} -- out of bounds`);
         }
+        let currentStack = this.currentStack;
+        let currentStackId = this.currentStackId;
         let nextStack = stacks[trueIndex];
         this.partProperties.setPropertyNamed(
             this,
             'current',
             nextStack.id
         );
-        if(this.currentStackId != nextStack.id){
-            this.sendCloseStackTo(this.currentStack);
+        if(currentStackId != nextStack.id){
+            this.sendCloseStackTo(currentStack);
             this.sendOpenStackTo(nextStack);
         }
     }

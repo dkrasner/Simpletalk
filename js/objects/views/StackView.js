@@ -62,7 +62,7 @@ class StackView extends PartView {
         // the current property stored id is no longer relevant)
         if(!nextCurrentCard && !currentCard){
             nextCurrentCard = this.querySelector(`:scope > st-card`);
-            // if there are now cards at all, this must be a brand new stack
+            // if there are no cards at all, this must be a brand new stack
             if(!nextCurrentCard){
                 return;
             }

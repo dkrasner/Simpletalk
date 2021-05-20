@@ -497,8 +497,8 @@ const System = {
                 if(child.name === newView.name){
                     lastNode = child;
                 }
-                lastNode.after(newView);
             });
+            lastNode.after(newView);
         } else {
             if(parentElement.type == "window"){
                 // slot the new view into the window

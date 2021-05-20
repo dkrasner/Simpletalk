@@ -65,7 +65,9 @@ class Stack extends Part {
         if(cards.length < 2){
             return;
         }
-        let currentIdx = cards.indexOf(this.currentCard);
+        let currentCarId = this.currentCardId;
+        let currentCard = this.currentCard;
+        let currentIdx = cards.indexOf(currentCard);
         let nextIdx = currentIdx + 1;
         if(nextIdx >= cards.length){
             nextIdx = (nextIdx % cards.length);
@@ -76,13 +78,15 @@ class Stack extends Part {
             'current',
             nextCard.id
         );
-        if(this.currentCardId != nextCard.id){
-            this.sendCloseCardTo(this.currentCard);
+        if(currentCarId != nextCard.id){
+            this.sendCloseCardTo(currentCard);
             this.sendOpenCardTo(nextCard);
         }
     }
 
     goToCardById(anId){
+        let currentCarId = this.currentCardId;
+        let currentCard = this.currentCard;
         let cards = this.subparts.filter(subpart => {
             return subpart.type == 'card';
         });
@@ -97,8 +101,8 @@ class Stack extends Part {
             'current',
             nextCard.id
         );
-        if(this.currentCardId != nextCard.id){
-            this.sendCloseCardTo(this.currentCard);
+        if(currentCarId != nextCard.id){
+            this.sendCloseCardTo(currentCard);
             this.sendOpenCardTo(nextCard);
         }
     }
@@ -110,7 +114,10 @@ class Stack extends Part {
         if(cards.length < 2){
             return;
         }
-        let currentIdx = cards.indexOf(this.currentCard);
+        let currentCarId = this.currentCardId;
+        let currentCard = this.currentCard;
+        let currentIdx = cards.indexOf(currentCard);
+
         let nextIdx = currentIdx - 1;
         if(nextIdx < 0){
             nextIdx = cards.length + nextIdx;
@@ -121,8 +128,8 @@ class Stack extends Part {
             'current',
             nextCard.id
         );
-        if(this.currentCardId != nextCard.id){
-            this.sendCloseCardTo(this.currentCard);
+        if(currentCarId != nextCard.id){
+            this.sendCloseCardTo(currentCard);
             this.sendOpenCardTo(nextCard);
         }
     }
@@ -138,14 +145,16 @@ class Stack extends Part {
             console.warn(`Cannot navigate to card number ${anIndex} -- out of bounds`);
             return;
         }
+        let currentCarId = this.currentCardId;
+        let currentCard = this.currentCard;
         let nextCard = cards[trueIndex];
         this.partProperties.setPropertyNamed(
             this,
             'current',
            nextCard.id
         );
-        if(this.currentCardId != nextCard.id){
-            this.sendCloseCardTo(this.currentCard);
+        if(currentCarId != nextCard.id){
+            this.sendCloseCardTo(currentCard);
             this.sendOpenCardTo(nextCard);
         }
     }

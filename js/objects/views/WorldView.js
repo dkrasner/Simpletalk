@@ -73,7 +73,9 @@ class WorldView extends PartView {
         } else {
             return;
         }
-        if(currentStack){
+        // To prevent the setting of the same id as the current stack make sure
+        // next and current are not the same
+        if(currentStack && currentStack != nextCurrentStack){
             currentStack.classList.remove('current-stack');
         }
     }
