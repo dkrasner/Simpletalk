@@ -17,7 +17,6 @@ const templateString = `
     box-sizing: border-box;
     display: block;
     position: absolute;
-    padding: 1px;
     user-select: none;
 }
 

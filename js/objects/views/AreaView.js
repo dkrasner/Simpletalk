@@ -20,6 +20,7 @@ const templateString = `
                     position: relative; 
                     width: 100%;
                     height: 100%;
+                    border-radius: inherit;
                 }
                 .clip {
                     overflow: hidden;  
@@ -52,6 +53,14 @@ class AreaView extends PartView {
         // Prop change handlers
         this.onPropChange('clipping', this.clippingChanged);
         this.onPropChange('allow-scrolling', this.allowScrollingChanged);
+    }
+
+    afterModelSet(){
+        let clipping = this.model.partProperties.getPropertyNamed(
+            this.model,
+            "clipping"
+        );
+        this.clippingChanged(clipping, this.model.id);
     }
 
     clippingChanged(newVal, id){
