@@ -59,8 +59,6 @@ class EditorTab extends HTMLElement {
             let event = new CustomEvent("tab-activated", {
                 bubbles: true
             });
-            console.log('dispatching tab event...');
-            console.log(event);
             this.dispatchEvent(event);
         }
     }
