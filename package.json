@@ -4,7 +4,7 @@
   "description": "An ohm-js based implementation of a HyperTalk like environment.",
   "main": "index.js",
   "scripts": {
-    "test": "./node_modules/mocha/bin/mocha --require esm ./js/ohm/tests/ && ./js-tests.sh",
+    "test": "./js-tests.sh",
     "test-grammar": "./node_modules/mocha/bin/mocha --require esm ./js/ohm/tests/",
     "build-dev": "webpack --config ./webpack.config.js"
   },
@@ -34,6 +34,7 @@
     "mocha": "^8.0.1",
     "node-fetch": "^2.6.1",
     "ohm-js": "^15.3.0",
+    "uuid": "^3.4.0",
     "webpack": "^4.44.1",
     "webpack-cli": "^3.3.12"
   },

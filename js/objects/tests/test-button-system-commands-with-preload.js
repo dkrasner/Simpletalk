@@ -29,7 +29,7 @@ describe('Button System Command Tests', () => {
             assert.exists(foundEl);
             assert.exists(foundEl.model);
         });
-        it('Can get card view by its id', () => {
+        it.skip('Can get card view by its id', () => {
             let cardEl = document.querySelector('st-world st-card.current-card');
             let id = cardEl.getAttribute('part-id');
             let found = document.querySelector(`[part-id="${id}"]`);

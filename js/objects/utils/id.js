@@ -1,5 +1,7 @@
 // ID related utilities
 
+import { v4 as uuidv4 } from 'uuid';
+
 /**
  * ID Maker
  * ------------------------------------
@@ -16,10 +18,8 @@
  * For now we just increment an integer.
  */
 const idMaker = {
-    count: -1, // Will be incremented to 0 on first use
     new: function(){
-        this.count = this.count + 1;
-        return this.count;
+        return uuidv4().replaceAll('-','');
     }
 };
 
@@ -32,15 +32,8 @@ const isValidId = function(id) {
     if(id === null || id === undefined || id === ""){
         return false;
     }
-    if(Number.isInteger(id) && id >= 0){
-        return id;
-    }
-    id = id.toString();
-    // check to see if the id has any non [0-9]
-    // characters
-    if(id.match(/(?!\d)/g).length > 1){
+    if(id.length != 32 || id.match('[a-z0-9]*')[0].length != 32) {
         return false;
-
     }
     return id;
 };
