@@ -1,5 +1,4 @@
 import EditorPropItem from './EditorPropItem.js';
-import PartView from '../PartView.js';
 
 // PREAMBLE
 window.customElements.define('editor-prop-item', EditorPropItem);
@@ -12,7 +11,7 @@ const templateString = `
         width: 100%;
         height: 100%;
         font-family: 'Helvetica', sans-serif;
-        font-size: 1.0rem;
+        font-size: 0.8rem;
     }
 
     #props-list {
@@ -54,7 +53,7 @@ const specialProps = [
     'script'
 ];
 
-class EditorPropList extends PartView {
+class EditorPropList extends HTMLElement {
     constructor(){
         super();
 
@@ -67,17 +66,22 @@ class EditorPropList extends PartView {
         );
 
         // Bound methods
+        this.render = this.render.bind(this);
         this.onInput = this.onInput.bind(this);
         this.onFilterClearClick = this.onFilterClearClick.bind(this);
     }
 
-    afterConnected(){
-        this.filterInputElement = this._shadowRoot.getElementById('filter-input');
-        this.clearButton = this._shadowRoot.getElementById('clear');
-        this.clearButton.addEventListener('click', this.onFilterClearClick);
+    connectedCallback(){
+        if(this.isConnected){
+            this.filterInputElement = this._shadowRoot.getElementById('filter-input');
+            this.clearButton = this._shadowRoot.getElementById('clear');
+            this.clearButton.addEventListener('click', this.onFilterClearClick);
+        }
     }
 
-    afterModelSet(){
+    render(aModel){
+        this.model = aModel;
+
         // Clear any existing main DOM children
         this.innerHTML = "";
         let inputEl = this._shadowRoot.getElementById('filter-input');

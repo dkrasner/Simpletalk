@@ -104,9 +104,17 @@ const System = {
                     System.navigator.setModel(
                         System.partsById['world']
                     );
+
+                    // By default, we render the World in the
+                    // Comprehensive Editor
+                    this.compEditor.render(this.world);
                 });
         } else {
             this.loadFromEmpty();
+            
+            // By default, we render the World in the
+            // Comprehensive Editor
+            this.compEditor.render(this.world);
         }
 
         // Attach a new clipboard instance

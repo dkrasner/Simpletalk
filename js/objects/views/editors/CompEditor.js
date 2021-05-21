@@ -1,4 +1,3 @@
-import PartView from '../PartView.js';
 import EditorTab from './EditorTab.js';
 import EditorPropList from './EditorPropList.js';
 
@@ -82,7 +81,7 @@ const templateString = `
 </div>
 `;
 
-class CompEditor extends PartView {
+class CompEditor extends HTMLElement {
     constructor(){
         super();
 
@@ -102,24 +101,21 @@ class CompEditor extends PartView {
         this.onNameInputChange = this.onNameInputChange.bind(this);
     }
 
-    afterConnected(){
-        this._shadowRoot.addEventListener('tab-activated', this.onTabActivated);
+    connectedCallback(){
+        if(this.isConnected){
+            this._shadowRoot.addEventListener('tab-activated', this.onTabActivated);
 
-        // Events
-        let nameInput = this._shadowRoot.getElementById('part-name-input');
-        nameInput.addEventListener('change', this.onNameInputChange);
-        
+            // Events
+            let nameInput = this._shadowRoot.getElementById('part-name-input');
+            nameInput.addEventListener('change', this.onNameInputChange);
+        }
     }
 
-    afterDisconnected(){
+    disconnectedCallback(){
         this._shadowRoot.removeEventListener('tab-activated', this.onTabActivated);
         // Events
         let nameInput = this._shadowRoot.getElementById('part-name-input');
         nameInput.removeEventListener('change', this.onNameInputChange);
-    }
-
-    afterModelSet(){
-        this.render();
     }
 
     toggle(){
@@ -130,7 +126,9 @@ class CompEditor extends PartView {
         }
     }
 
-    render(){
+    render(aModel){
+        this.model = aModel;
+        
         this.updateHeader();
 
         // Clear slotted inner DOM
@@ -139,7 +137,7 @@ class CompEditor extends PartView {
         // Add panes
         let propsPane = document.createElement('editor-props-list');
         this.appendChild(propsPane);
-        propsPane.setModel(this.model);
+        propsPane.render(this.model);
     }
 
     updateHeader(){
