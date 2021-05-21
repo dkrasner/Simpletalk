@@ -83,6 +83,42 @@ class BasicProperty {
     }
 };
 
+
+/** Custom Properties are similar to dynamic props, except that
+  * under the hood they store an object of properties
+  * storing props defined within the ST environment. The find()
+  * add() delete() methods find, add, or remove properties from the
+  * this.customProperties object.
+ **/
+class CustomProperty extends BasicProperty {
+    constructor(name="custom-properties", defaultValue={}, readOnly=false, aliases=[]){
+        super(name, defaultValue, readOnly=false, aliases);
+        this.customProperties = {};
+    }
+
+    find(name){
+        let prop = this.customProperties[name];
+        if(prop){
+            return prop;
+        }
+        return null;
+    }
+
+    add(aProperty){
+        // NOTE: aliases are completed ignored for now
+        if(!this.find(aProperty.name)){
+            this.customProperties[aProperty.name] = aProperty;
+        }
+    }
+
+    delete(aProperty){
+        delete this.customProperties[aProperty.name];
+    }
+
+
+
+};
+
 class DynamicProperty extends BasicProperty {
     constructor(name, setter, getter, readOnly=false, defaultValue=null, aliases=[]){
         super(name, defaultValue, readOnly, aliases);
@@ -186,13 +222,24 @@ class PartProperties {
     // if no match found. Perhaps we should
     // throw an error
     findPropertyNamed(aName){
+        let found = null;
+        let customPropertiesProp;
         for(let i = 0; i < this._properties.length; i++){
             let prop = this._properties[i];
             if(prop.matchesNameOrAlias(aName)){
-                return prop;
+                found = prop;
+            }
+            // grab the custom properties prop, as we might need it
+            // for later
+            if(prop.matchesNameOrAlias("custom-properties")){
+                customPropertiesProp = prop;
             }
         }
-        return null;
+        // see if the property is custom
+        if(!found && customPropertiesProp){
+            found = customPropertiesProp.find(aName);
+        }
+        return found;
     }
 
     // Attempts to get the *value* of the property
@@ -239,7 +286,6 @@ class PartProperties {
         let propIndex = this._indexOfProperty(aProperty);
         if(propIndex >= 0){
             this._properties.splice(propIndex, 1);
-
         }
     }
 
@@ -250,7 +296,14 @@ class PartProperties {
         this.addProperty(newProp);
     }
 
-    // Convenience method for creating a new style 
+    // Convenience method for creating a new custom
+    // property.
+    newCustomProp(...args){
+        let newProp = new CustomProperty(...args);
+        this.addProperty(newProp);
+    }
+
+    // Convenience method for creating a new style
     // property.
     newStyleProp(...args){
         let newProp = new StyleProperty(...args);
@@ -282,6 +335,7 @@ class PartProperties {
 export {
     PartProperties,
     BasicProperty,
+    CustomProperty,
     DynamicProperty,
     PartProperties as default
 };

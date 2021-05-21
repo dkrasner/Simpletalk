@@ -246,6 +246,11 @@ class Part {
             null,
         ),
 
+        // Custom Properties store props defined within the
+        // ST environment
+        this.partProperties.newCustomProp(
+        ),
+
         // Stepping related props
 
         this.partProperties.newDynamicProp(

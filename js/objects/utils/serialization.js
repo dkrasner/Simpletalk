@@ -166,7 +166,6 @@ class STDeserializer {
             // Insertion should be handled by composed
             // promises elsewhere (see imports and deserialize()
             // for examples)
-            
 
             return resolve(this);
         });
@@ -190,7 +189,7 @@ class STDeserializer {
                     this.addPartsToSystem(allTreeParts);
                 });
                 return rootParts;
-                
+
             })
             .then((rootParts) => {
                 rootParts.forEach(rootPart => {

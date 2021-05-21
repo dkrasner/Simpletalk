@@ -42,6 +42,8 @@ import {ExecutionStack, ActivationContext} from './ExecutionStack.js';
 import idMaker from './utils/id.js';
 import STClipboard from './utils/clipboard.js';
 
+import {BasicProperty} from './properties/partProperties.js';
+
 import handInterface from './utils/handInterface.js';
 import merriamSimScore from './utils/merriamInterface.js';
 
@@ -388,11 +390,14 @@ const System = {
             throw new Error(`Could not find newProperty target!`);
         }
 
+        if(target.partProperties.findPropertyNamed(propName)){
+            // TODO this should be a ST error
+            throw new Error(`Part ${target.id} already has property "${propName}"`);
+        }
         // we only add basic property and the default value is null
-        target.partProperties.newBasicProp(
-            propName,
-            null
-        );
+        let customProp = target.partProperties.findPropertyNamed("custom-properties");
+        let newProp = new BasicProperty(propName, null);
+        customProp.add(newProp);
     },
 
     deleteProperty(senders, propName, objectId){
@@ -414,12 +419,11 @@ const System = {
             throw new Error(`Could not find deleteProperty target!`);
         }
 
+        // Note: this will only delete custom properties which is what we want
         let prop = target.partProperties.findPropertyNamed(propName);
-        // if the target doesn't have this property don't do anything
-        // b/c why not?
-        if(prop){
-            target.partProperties.removeProperty(prop);
-        }
+
+        let customProp = target.partProperties.findPropertyNamed("custom-properties");
+        customProp.delete(prop);
     },
 
     setProperty(senders, propName, value, objectId){
