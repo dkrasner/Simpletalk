@@ -42,7 +42,7 @@ import {ExecutionStack, ActivationContext} from './ExecutionStack.js';
 import idMaker from './utils/id.js';
 import STClipboard from './utils/clipboard.js';
 
-import {BasicProperty} from './properties/partProperties.js';
+import {BasicProperty} from './properties/PartProperties.js';
 
 import handInterface from './utils/handInterface.js';
 import merriamSimScore from './utils/merriamInterface.js';

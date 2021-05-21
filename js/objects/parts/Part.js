@@ -621,6 +621,19 @@ class Part {
                 // present in the deserialization, simply provide
                 // a warning and then skip this one.
                 console.warn(`Deserialized property "${propName}" is not a valid property name for ${this.type} (id ${this.id}) and will be ignored`);
+            } else if(propName == "custom-properties"){
+                // custom properties are serialized as an object like other props
+                // and we need to create properties from these and set their respective
+                // values. Then we need to set the value of "custom-properties" prop
+                // itself to be the object containing all of these
+                let customPropsData = incomingProps[propName];
+                let newCustomPropsObject = {};
+                Object.values(customPropsData).forEach((propData) => {
+                    let newProp = new BasicProperty(propData.name, null);
+                    newProp.setValue(this, propData._value, false); // no need to notify
+                    newCustomPropsObject[propData.name] = newProp;
+                });
+                property.setValue(this, newCustomPropsObject, false); // no need to notify
             } else if(!property.readOnly){
                 // Last arg is false, which tells the property
                 // not to notify its owner's subscribers of

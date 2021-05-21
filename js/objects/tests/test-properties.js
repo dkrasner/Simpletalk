@@ -235,7 +235,7 @@ describe('CustomProperty tests', () => {
         it('#add property', () => {
             customProp.add(basic1);
             customProp.add(basic2);
-            assert.equal(2, Object.keys(customProp.customProperties).length);
+            assert.equal(2, Object.keys(customProp.getValue(Object())).length);
         });
 
         it('#find property', () => {
@@ -244,7 +244,7 @@ describe('CustomProperty tests', () => {
 
         it('#delete property', () => {
             customProp.delete(basic2);
-            assert.equal(1, Object.keys(customProp.customProperties).length);
+            assert.equal(1, Object.keys(customProp.getValue(Object())).length);
         });
     });
 });

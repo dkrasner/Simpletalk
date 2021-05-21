@@ -93,11 +93,10 @@ class BasicProperty {
 class CustomProperty extends BasicProperty {
     constructor(name="custom-properties", defaultValue={}, readOnly=false, aliases=[]){
         super(name, defaultValue, readOnly=false, aliases);
-        this.customProperties = {};
     }
 
     find(name){
-        let prop = this.customProperties[name];
+        let prop = this._value[name];
         if(prop){
             return prop;
         }
@@ -107,12 +106,12 @@ class CustomProperty extends BasicProperty {
     add(aProperty){
         // NOTE: aliases are completed ignored for now
         if(!this.find(aProperty.name)){
-            this.customProperties[aProperty.name] = aProperty;
+            this._value[aProperty.name] = aProperty;
         }
     }
 
     delete(aProperty){
-        delete this.customProperties[aProperty.name];
+        delete this._value[aProperty.name];
     }
 
 
