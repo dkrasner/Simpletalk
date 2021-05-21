@@ -30,6 +30,16 @@ const templateString = `
     label {
         font-family: monospace;
     }
+
+    input {
+        border: 1px solid transparent;
+        border-bottom: 1px solid rgba(100, 100, 100, 0.5);
+        outline: none;
+    }
+    
+    input:focus {
+        border: 1px solid rgba(100, 100, 100, 0.8);
+    }
 </style>
 <li>
     <label for="prop-value"></label>
@@ -89,6 +99,11 @@ class EditorPropItem extends HTMLElement {
         this.inputElement.removeEventListener('change', this.onInputChange);
         this.acceptButton.removeEventListener('click', this.onAcceptClick);
         this.cancelButton.removeEventListener('click', this.onCancelClick);
+
+        // Add new events
+        this.inputElement.addEventListener('change', this.onInputChange);
+        this.acceptButton.addEventListener('click', this.onAcceptClick);
+        this.cancelButton.addEventListener('click', this.onCancelClick);
         
         this.labelElement.textContent = `${this.property.name}:`;
         let currentVal = this.property.getValue(this.owner);
@@ -111,15 +126,28 @@ class EditorPropItem extends HTMLElement {
     }
 
     onInputChange(event){
-        
+        if(event.target.type == "checkbox"){
+            this.owner.partProperties.setPropertyNamed(
+                this.owner,
+                this.property.name,
+                event.target.checked
+            );
+        }
     }
 
     onAcceptClick(event){
-        
+        this.owner.partProperties.setPropertyNamed(
+            this.owner,
+            this.property.name,
+            this.inputElement.value
+        );
     }
 
     onCancelClick(event){
-        
+        this.inputElement.value = this.owner.partProperties.getPropertyNamed(
+            this.owner,
+            this.property.name
+        );
     }
 };
 

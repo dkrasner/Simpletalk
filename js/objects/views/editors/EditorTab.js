@@ -4,17 +4,20 @@ const templateString = `
 <style>
     :host {
         display: flex;
+        flex: 1;
         align-items: center;
         justify-content: center;
         padding: 6px;
+        opacity: 0.5;
         border-bottom: 2px solid rgba(200, 0, 0, 0.0);
-        transition: border 0.2s linear;
+        transition: border 0.2s linear, opacity 0.2s linear;
         user-select: none;
     }
 
     :host([active="true"]){
         border-bottom: 2px solid rgba(200, 0, 0, 0.9);
-        transition: border 0.2s linear;
+        opacity: 1.0;
+        transition: border 0.2s linear, opacity 0.2s linear;
     }
 
     :host(:hover){

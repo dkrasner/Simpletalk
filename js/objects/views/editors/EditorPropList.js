@@ -20,6 +20,7 @@ const templateString = `
         list-style: none;
         margin: 0;
         padding: 0;
+        overflow-y: auto;
     }
     #filter-area {
         display: flex;
@@ -30,10 +31,17 @@ const templateString = `
         min-width: 0;
         width: auto;
         flex: 1;
+        outline: none;
+        font-size: 1.0rem;
+        padding-left: 6px;
+        padding-right: 6px;
+        padding-top: 3px;
+        padding-bottom: 3px;
+        border: 1px solid rgba(100, 100, 100, 0.8);
+        border-radius: 2px;
     }
 </style>
 <div id="filter-area">
-    <label for="filter-input">Filter: </label>
     <input type="text" id="filter-input" name="filter-input" placeholder="Filter..."/>
     <button id="clear">Clear</button>
 </div>

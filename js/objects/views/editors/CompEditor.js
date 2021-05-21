@@ -8,6 +8,52 @@ import EditorPropList from './EditorPropList.js';
 window.customElements.define('editor-tab', EditorTab);
 window.customElements.define('editor-props-list', EditorPropList);
 
+let partIcons = {};
+
+partIcons.world = `
+<svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-world" width="44" height="44" viewBox="0 0 24 24" stroke-width="1.5" stroke="#2c3e50" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
+  <circle cx="12" cy="12" r="9" />
+  <line x1="3.6" y1="9" x2="20.4" y2="9" />
+  <line x1="3.6" y1="15" x2="20.4" y2="15" />
+  <path d="M11.5 3a17 17 0 0 0 0 18" />
+  <path d="M12.5 3a17 17 0 0 1 0 18" />
+</svg>
+`;
+
+partIcons.stack = `
+<svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-stack" width="44" height="44" viewBox="0 0 24 24" stroke-width="1.5" stroke="#2c3e50" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
+  <polyline points="12 4 4 8 12 12 20 8 12 4" />
+  <polyline points="4 12 12 16 20 12" />
+  <polyline points="4 16 12 20 20 16" />
+</svg>
+`;
+
+partIcons.card = `
+<svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-square" width="44" height="44" viewBox="0 0 24 24" stroke-width="1.5" stroke="#2c3e50" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
+  <rect x="4" y="4" width="16" height="16" rx="2" />
+</svg>
+`;
+
+partIcons.button = `
+<svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-hand-finger" width="44" height="44" viewBox="0 0 24 24" stroke-width="1.5" stroke="#2c3e50" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
+  <path d="M8 13v-8.5a1.5 1.5 0 0 1 3 0v7.5" />
+  <path d="M11 11.5v-2a1.5 1.5 0 1 1 3 0v2.5" />
+  <path d="M14 10.5a1.5 1.5 0 0 1 3 0v1.5" />
+  <path d="M17 11.5a1.5 1.5 0 0 1 3 0v4.5a6 6 0 0 1 -6 6h-2h.208a6 6 0 0 1 -5.012 -2.7a69.74 69.74 0 0 1 -.196 -.3c-.312 -.479 -1.407 -2.388 -3.286 -5.728a1.5 1.5 0 0 1 .536 -2.022a1.867 1.867 0 0 1 2.28 .28l1.47 1.47" />
+</svg>
+`;
+
+partIcons.generic = `
+<svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-puzzle" width="44" height="44" viewBox="0 0 24 24" stroke-width="1.5" stroke="#2c3e50" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
+  <path d="M4 7h3a1 1 0 0 0 1 -1v-1a2 2 0 0 1 4 0v1a1 1 0 0 0 1 1h3a1 1 0 0 1 1 1v3a1 1 0 0 0 1 1h1a2 2 0 0 1 0 4h-1a1 1 0 0 0 -1 1v3a1 1 0 0 1 -1 1h-3a1 1 0 0 1 -1 -1v-1a2 2 0 0 0 -4 0v1a1 1 0 0 1 -1 1h-3a1 1 0 0 1 -1 -1v-3a1 1 0 0 1 1 -1h1a2 2 0 0 0 0 -4h-1a1 1 0 0 1 -1 -1v-3a1 1 0 0 1 1 -1" />
+</svg>
+`;
+
 const templateString = `
 <style>
     :host {
@@ -38,17 +84,28 @@ const templateString = `
     #pane-area {
         display: block;
         flex: 1;
+        margin-top: 20px;
+        height: 80%;
     }
 
     #header-area {
         font-family: 'Helvetica', sans-serif;
+        margin-bottom: 20px;
+    }
+
+    #display-area {
+        display: flex;
+        align-items: center;
+        margin-bottom: 30px;
+        margin-top: 20px;
     }
 
     #header-area h3 {
         display: inline-block;
+        margin: 0;
         margin-right: 8px;
         margin-left: 5px;
-        font-size: 1.3rem;
+        font-size: 1.7rem;
     }
 
     #header-area > input {
@@ -57,19 +114,31 @@ const templateString = `
         outline: none;
         border: 1px solid transparent;
         border-bottom: 1px solid rgba(100, 100, 100, 0.8);
-        font-size: 1.5rem;
+        font-size: 1.1rem;
     }
     
     #header-area span {
         font-family: monospace;
         font-size: 1.1rem;
+        color: rgba(0, 0, 0, 0.5);
+    }
+
+    #icon-display-area {
+        width: 1.7rem;
+        height: 1.7rem;
+        margin-bottom: 5px;
+    }
+    #icon-display-area > svg {
+        width: 100%;
+        height: 100%;
     }
 </style>
 <div id="header-area">
-    <input type="text" id="part-name-input"/>
-    <div>
+    <div id="display-area">
+        <div id="icon-display-area"></div>
         <h3></h3><span></span>
     </div>
+    <input type="text" id="part-name-input"/>
 </div>
 <div id="tab-area">
     <editor-tab active="true">One</editor-tab>
@@ -142,8 +211,9 @@ class CompEditor extends HTMLElement {
 
     updateHeader(){
         let nameInput = this._shadowRoot.querySelector('#header-area > input');
-        let typeDisplay = this._shadowRoot.querySelector('#header-area > div > h3');
-        let idDisplay = this._shadowRoot.querySelector('#header-area > div> span');
+        let typeDisplay = this._shadowRoot.querySelector('#display-area > h3');
+        let idDisplay = this._shadowRoot.querySelector('#display-area > span');
+        let iconDisplay = this._shadowRoot.getElementById('icon-display-area');
 
         let partName = this.model.partProperties.getPropertyNamed(
             this.model,
@@ -158,6 +228,12 @@ class CompEditor extends HTMLElement {
 
         typeDisplay.textContent = this.model.type.charAt(0).toUpperCase() + this.model.type.slice(1);
         idDisplay.textContent = `(${this.model.id})`;
+
+        if(Object.keys(partIcons).includes(this.model.type)){
+            iconDisplay.innerHTML = partIcons[this.model.type];
+        } else {
+            iconDisplay.innerHTML = partIcons.generic;
+        }
     }
 
     onTabActivated(event){
