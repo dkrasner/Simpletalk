@@ -16,7 +16,7 @@ describe('Audio Part & View Tests', () => {
             assert.isTrue(System.isLoaded);
             let World = document.querySelector('st-world');
             assert.exists(World);
-            let currentStack = document.querySelector('.current-stack');
+            let currentStack = document.querySelector('st-stack.current-stack');
             assert.exists(currentStack);
             assert.exists(currentStack.model);
             let currentCard = document.querySelector('st-card.current-card');

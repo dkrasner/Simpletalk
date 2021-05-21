@@ -288,6 +288,10 @@ class STDeserializer {
         let newView = document.createElement(
             this.system.tagNameForViewNamed(aPart.type)
         );
+        // we need to set the part-id attribute since these
+        // are used for queries needed for things like
+        // current stack and card
+        newView.setAttribute("part-id", aPart.id);
         this._viewsCache[aPart.id] = newView;
     }
 
