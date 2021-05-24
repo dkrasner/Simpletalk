@@ -219,7 +219,9 @@ SimpleTalk {
       | "go to" systemObject objectId --goToByReference
       | "answer" Expression --answer
       | "delete" ObjectSpecifier --deleteModel
+      | "delete" "property" stringLiteral "from"? ObjectSpecifier? --deleteProperty
       | "set" propertyName "to" Expression InClause? --setProperty
+      | "add" "property" stringLiteral "to"? ObjectSpecifier? --addProperty
       | "add" systemObject stringLiteral? "to" ObjectSpecifier --addModelTo
       | "add" systemObject stringLiteral? --addModel
       | "put" Expression "into" "global"? variableName --putVariable
@@ -231,7 +233,7 @@ SimpleTalk {
       = (comment lineTerminator)+
 
     systemObject (system object such as card, stack etc)
-      = ("w" | "W") "orld" | ("a" | "A") "rea" | ("b"| "B") "ackground" | ("b" | "B") "utton" | ("c" | "C") "ard" | ("f" | "F") "ield" | ("s" | "S") "tack" | ("w" | "W") "indow" | ("d" | "D") "rawing" | ("i" | "I") "mage" | ("a" | "A") "udio"
+      = ("w" | "W") "orld" | ("a" | "A") "rea" | ("b"| "B") "ackground" | ("b" | "B") "utton" | ("c" | "C") "ard" | ("f" | "F") "ield" | ("s" | "S") "tack" | ("w" | "W") "indow" | ("d" | "D") "rawing" | ("i" | "I") "mage" | ("a" | "A") "udio" | ("r" | "R") "esource"
 
     // TODO do we want to restrict message names (start with lowercase etc)?
     // Note: we prevent keyword overloading

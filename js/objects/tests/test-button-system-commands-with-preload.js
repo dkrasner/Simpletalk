@@ -54,7 +54,7 @@ describe('Button System Command Tests', () => {
             buttonModel = btnEl.model;
             assert.exists(buttonModel);
         });
-        describe('#mouseEnter', () => {
+        describe.skip('#mouseEnter', () => {
             it('Triggering mouseEnter on the ButtonView element sends the mouseEnter msg to System', () => {
                 let buttonView = document.querySelector('st-button');
                 let event = new window.MouseEvent('mouseenter');
@@ -78,7 +78,7 @@ describe('Button System Command Tests', () => {
                 assert.equal(1, result);
             });
         });
-        describe('#mouseUp', () => {
+        describe.skip('#mouseUp', () => {
             it('Triggering mouseUp on the ButtonView element sends the mouseEnter msg to System', () => {
                 let buttonView = document.querySelector('st-button');
                 let event = new window.MouseEvent('mouseup');

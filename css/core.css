@@ -119,6 +119,10 @@ st-button:(.editing){
     background-color: white;
     color: black;
 }
+
+st-button:active{
+    outline: solid var(--palette-orange) 1px;
+}
 /* =Window Styles
  *----------------------------------------------------*/
 st-window {

@@ -13,6 +13,7 @@ const assert = chai.assert;
 import {
     PartProperties,
     BasicProperty,
+    CustomProperty,
     DynamicProperty
 } from '../properties/PartProperties';
 
@@ -219,10 +220,41 @@ describe('DynamicProperty tests', () => {
     });
 });
 
+describe('CustomProperty tests', () => {
+    let customProp;
+    let basic1;
+    let basic2;
+
+    describe('Accessing tests', () => {
+        before(() => {
+            customProp = new CustomProperty();
+            basic1 = new BasicProperty("basic1", "1");
+            basic2 = new BasicProperty("basic2", "2");
+        });
+
+        it('#add property', () => {
+            customProp.add(basic1);
+            customProp.add(basic2);
+            assert.equal(2, Object.keys(customProp.getValue(Object())).length);
+        });
+
+        it('#find property', () => {
+            assert.equal(basic1, customProp.find("basic1"));
+        });
+
+        it('#delete property', () => {
+            customProp.delete(basic2);
+            assert.equal(1, Object.keys(customProp.getValue(Object())).length);
+        });
+    });
+});
+
 describe('PartProperties tests', () => {
     let partProperties;
     let basicProp;
     let dynaProp;
+    let customProp;
+    let customBasic;
 
     describe('Adding, removing, presence checking', () => {
         before(() => {
@@ -258,7 +290,7 @@ describe('PartProperties tests', () => {
         it('#addProperty does not add the existing prop again (basic prop)', () => {
             partProperties.addProperty(basicProp);
             let foundInstances = partProperties._properties.filter(item => {
-                return item == basicProp
+                return item == basicProp;
             });
             assert.lengthOf(foundInstances, 1);
         });
@@ -317,9 +349,14 @@ describe('PartProperties tests', () => {
                 ['myDynamicProperty', 'myDynaProp', 'dynamic']
             );
 
-            // Add both
+            customProp = new CustomProperty();
+            customBasic = new BasicProperty("custom-basic", 1);
+            customProp.add(customBasic);
+
+            // Add them in
             partProperties.addProperty(basicProp);
             partProperties.addProperty(dynaProp);
+            partProperties.addProperty(customProp);
         });
 
         it('#findPropertyNamed can find prop by name (basic prop)', () => {
@@ -342,6 +379,10 @@ describe('PartProperties tests', () => {
             assert.equal(found, dynaProp);
         });
 
+        it('#findPropertyNamed can find prop (custom prop)', () => {
+            let found = partProperties.findPropertyNamed('custom-basic');
+            assert.equal(found, customBasic);
+        });
         it('#findPropertynamed returns null for a name that doesnt match', () => {
             let found = partProperties.findPropertyNamed('should-not-exist');
             assert.isNull(found);
@@ -374,9 +415,14 @@ describe('PartProperties tests', () => {
                 ['myDynamicProperty', 'myDynaProp', 'dynamic']
             );
 
-            // Add both
+            customProp = new CustomProperty();
+            customBasic = new BasicProperty("custom-basic", 1);
+            customProp.add(customBasic);
+
+            // Add them in
             partProperties.addProperty(basicProp);
             partProperties.addProperty(dynaProp);
+            partProperties.addProperty(customProp);
         });
 
         it('Can get the value by the prop name (basic prop)', () => {
@@ -400,6 +446,14 @@ describe('PartProperties tests', () => {
             basicProp._value = -1;
             let expected = -1;
             let actual = partProperties.getPropertyNamed(myOwner, 'myBasicProp');
+            assert.equal(expected, actual);
+        });
+
+        it('Can get the value by name (custom prop)', () => {
+            let myOwner = Object.create(MockOwner);
+            basicProp._value = 1;
+            let expected = 1;
+            let actual = partProperties.getPropertyNamed(myOwner, 'custom-basic');
             assert.equal(expected, actual);
         });
 
@@ -438,9 +492,14 @@ describe('PartProperties tests', () => {
                 ['myDynamicProperty', 'myDynaProp', 'dynamic']
             );
 
-            // Add both
+            customProp = new CustomProperty();
+            customBasic = new BasicProperty("custom-basic", 1);
+            customProp.add(customBasic);
+
+            // Add them in
             partProperties.addProperty(basicProp);
             partProperties.addProperty(dynaProp);
+            partProperties.addProperty(customProp);
         });
 
         it('Sets the property by name (basic prop)', () => {
@@ -449,6 +508,14 @@ describe('PartProperties tests', () => {
             partProperties.setPropertyNamed(myOwner, 'basicProp', 22);
             let actual = basicProp._value;
 
+            assert.equal(expected, actual);
+        });
+
+        it('Sets the property by name (custom prop)', () => {
+            let expected = "custom value";
+            let myOwner = Object.create(MockOwner);
+            partProperties.setPropertyNamed(myOwner, 'custom-basic', expected);
+            let actual = customBasic._value;
             assert.equal(expected, actual);
         });
 

@@ -96,7 +96,7 @@ class AudioView extends PartView {
         this.model.partProperties.setPropertyNamed(
             this.model,
             "readyState",
-           "HAVE_NOTHING" 
+           "HAVE_NOTHING"
         );
         let audio = this._shadowRoot.querySelector("audio");
         let src = this.model.partProperties.getPropertyNamed(this.model, "src");

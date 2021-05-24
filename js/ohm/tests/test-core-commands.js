@@ -65,8 +65,8 @@ describe("Core commands", () => {
             semanticMatchFailTest(s, "Command");
         });
     });
-    describe("Remove Model", () => {
-        it ("Basic Remove (no id)", () => {
+    describe("Delete", () => {
+        it ("Basic Remove Model (no id)", () => {
             const direction = ["stack", "background", "card", "button"];
             direction.forEach((d) => {
                 const s = `delete this ${d}`;
@@ -75,7 +75,7 @@ describe("Core commands", () => {
                 semanticMatchTest(s, "Statement");
             });
         });
-        it ("Basic Remove (with id)", () => {
+        it ("Basic Remove model (with id)", () => {
             const direction = ["stack", "background", "card", "button"];
             direction.forEach((d) => {
                 const s = `delete ${d} 20`;
@@ -83,6 +83,18 @@ describe("Core commands", () => {
                 semanticMatchTest(s, "Command_deleteModel");
                 semanticMatchTest(s, "Statement");
             });
+        });
+        it ("Remove property with object specifier", () => {
+            const s = `delete property "MyProp" from this button`;
+            semanticMatchTest(s, "Command");
+            semanticMatchTest(s, "Command_deleteProperty");
+            semanticMatchTest(s, "Statement");
+        });
+        it ("Remove property without object specifier", () => {
+            const s = `delete property "MyProp"`;
+            semanticMatchTest(s, "Command");
+            semanticMatchTest(s, "Command_deleteProperty");
+            semanticMatchTest(s, "Statement");
         });
         it.skip ("Bad delete (world)", () => {
             const s = "delete this world";

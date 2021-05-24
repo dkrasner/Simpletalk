@@ -71,6 +71,7 @@ class Part {
         this.startStepping = this.startStepping.bind(this);
         this.stopStepping = this.stopStepping.bind(this);
         this.setTargetProp = this.setTargetProp.bind(this);
+        this.move = this.move.bind(this);
 
 
         // Finally, we finish initialization
@@ -82,6 +83,7 @@ class Part {
         this.setPrivateCommandHandler("setTargetTo", this.setTargetProp);
         this.setPrivateCommandHandler("copy", this.copyCmdHandler);
         this.setPrivateCommandHandler("paste", this.pasteCmdHandler);
+        this.setPrivateCommandHandler("move", this.move);
     }
 
     // Convenience getter to get the id
@@ -165,6 +167,10 @@ class Part {
                 true
             ),
             new BasicProperty(
+                'wants-move',
+                false
+            ),
+            new BasicProperty(
                 'id',
                 idMaker.new()
             ),
@@ -185,13 +191,6 @@ class Part {
             new BasicProperty(
                 'editorOpen',
                 false
-            ),
-            // List of (web) events the part subscribes to
-            new BasicProperty(
-                'events',
-                new Set(),
-                false,
-                []
             ),
             // Styling
             // css (really JS style) key-values
@@ -245,6 +244,11 @@ class Part {
             },
             false,
             null,
+        ),
+
+        // Custom Properties store props defined within the
+        // ST environment
+        this.partProperties.newCustomProp(
         ),
 
         // Stepping related props
@@ -506,6 +510,18 @@ class Part {
         }
     }
 
+    move(senders, movementX, movementY){
+        if(!this.partProperties.getPropertyNamed(this, "wants-move")){
+            throw Error(`Part ${this.id} trying to move with 'wants-move' property false`);
+        }
+        let top = this.partProperties.getPropertyNamed(this, "top");
+        top += movementY;
+        this.partProperties.setPropertyNamed(this, "top", top);
+        let left = this.partProperties.getPropertyNamed(this, "left");
+        left += movementX;
+        this.partProperties.setPropertyNamed(this, "left", left);
+    }
+
     /** Property Subscribers
         ------------------------
         Objects added as property subscribers
@@ -587,11 +603,6 @@ class Part {
         this.partProperties._properties.forEach(prop => {
             let name = prop.name;
             let value = prop.getValue(this);
-            // If this is the events set, transform
-            // it to an Array first (for serialization)
-            if(name == 'events'){
-                value = Array.from(value);
-            } 
             result.properties[name] = value;
         });
         return result;
@@ -610,10 +621,19 @@ class Part {
                 // present in the deserialization, simply provide
                 // a warning and then skip this one.
                 console.warn(`Deserialized property "${propName}" is not a valid property name for ${this.type} (id ${this.id}) and will be ignored`);
-            } else if(property.name == 'events'){
-                // The events property uses a Set, but sets are serialized as Arrays.
-                // We need to return them to being sets.
-                property.setValue(this, new Set(incomingProps[propName]), false);
+            } else if(propName == "custom-properties"){
+                // custom properties are serialized as an object like other props
+                // and we need to create properties from these and set their respective
+                // values. Then we need to set the value of "custom-properties" prop
+                // itself to be the object containing all of these
+                let customPropsData = incomingProps[propName];
+                let newCustomPropsObject = {};
+                Object.values(customPropsData).forEach((propData) => {
+                    let newProp = new BasicProperty(propData.name, null);
+                    newProp.setValue(this, propData._value, false); // no need to notify
+                    newCustomPropsObject[propData.name] = newProp;
+                });
+                property.setValue(this, newCustomPropsObject, false); // no need to notify
             } else if(!property.readOnly){
                 // Last arg is false, which tells the property
                 // not to notify its owner's subscribers of

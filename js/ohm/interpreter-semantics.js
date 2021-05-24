@@ -166,6 +166,21 @@ const createInterpreterSemantics = (partContext, systemContext) => {
             return msg;
         },
 
+        Command_addProperty: function(addLiteral, propertyLiteral, propNameAsLiteral, toLiteral, systemObject){
+            let specifiedObjectId = systemObject.interpret()[0] || null;
+            let args = [
+                propNameAsLiteral.interpret(), // The property name
+                specifiedObjectId
+            ];
+
+            let msg = {
+                type: "command",
+                commandName: "newProperty",
+                args: args
+            };
+            return msg;
+        },
+
         Command_addModel: function(addLiteral, newPartType, optionalPartName){
             // here no owner has been provided so we assume it is the first possible one
             let parent = findFirstPossibleAncestor(partContext, newPartType.sourceString);
@@ -219,6 +234,21 @@ const createInterpreterSemantics = (partContext, systemContext) => {
                 type: "command",
                 commandName: 'putInto',
                 args
+            };
+            return msg;
+        },
+
+        Command_deleteProperty: function(deleteLiteral, propertyLiteral, propNameAsLiteral, fromLiteral, systemObject){
+            let specifiedObjectId = systemObject.interpret()[0] || null;
+            let args = [
+                propNameAsLiteral.interpret(), // The property name
+                specifiedObjectId
+            ];
+
+            let msg = {
+                type: "command",
+                commandName: "deleteProperty",
+                args: args
             };
             return msg;
         },

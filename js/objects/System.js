@@ -13,6 +13,7 @@ import WorldStack from './parts/WorldStack.js';
 import Window from './parts/Window.js';
 import Drawing from './parts/Drawing.js';
 import Audio from './parts/Audio.js';
+import Resource from './parts/Resource.js';
 import Image from './parts/Image.js';
 import Area from './parts/Area.js';
 
@@ -27,6 +28,7 @@ import DrawingView from './views/drawing/DrawingView.js';
 import ImageView from './views/ImageView.js';
 import AreaView from './views/AreaView.js';
 import AudioView from './views/AudioView.js';
+import ResourceView from './views/ResourceView.js';
 
 
 import Halo from './views/Halo.js';
@@ -40,10 +42,14 @@ import {ExecutionStack, ActivationContext} from './ExecutionStack.js';
 import idMaker from './utils/id.js';
 import STClipboard from './utils/clipboard.js';
 
+import {BasicProperty} from './properties/PartProperties.js';
+
 import handInterface from './utils/handInterface.js';
 import merriamSimScore from './utils/merriamInterface.js';
 
 import {STDeserializer, STSerializer} from './utils/serialization.js';
+
+import plugins from '../../plugins/plugins.js';
 
 const DOMparser = new DOMParser();
 
@@ -56,6 +62,9 @@ const System = {
     partsById: {},
     _commandHandlers: {},
     _functionHandlers: {},
+
+    // A dictionary mapping available ST resource (such as plugin) names
+    availableResources: {},
 
     // A dictionary mapping part types like
     // 'button' to their classes (Button)
@@ -79,6 +88,10 @@ const System = {
     // deserializes the model and attaches it
     // to the view.
     initialLoad: function(){
+        // load the available resources
+        // these might be needed down the line
+        this.loadResources();
+
         // If we have a serialization script tag
         // containing JSON of serialized information,
         // attempt to load from it
@@ -103,6 +116,11 @@ const System = {
         this.isLoaded = true;
     },
 
+    loadResources: function() {
+        Object.keys(plugins).forEach((k) => {
+            this.availableResources[k] = plugins[k];
+        });
+    },
 
     loadFromEmpty: function(){
         let worldModel = new this.availableParts['world']();
@@ -351,6 +369,61 @@ const System = {
         }
 
         return model;
+    },
+
+    newProperty(senders, propName, objectId){
+        let target;
+        let originalSender = senders[0].id;
+
+        if(objectId){
+            // Otherwise, if there is an objectId, we are
+            // setting the property of a specific part by
+            // id
+            target = this.partsById[objectId];
+        } else {
+            // Otherwise we are setting the property on the part
+            // that originally sent the message
+            target = this.partsById[originalSender];
+        }
+
+        if(!target){
+            throw new Error(`Could not find newProperty target!`);
+        }
+
+        if(target.partProperties.findPropertyNamed(propName)){
+            // TODO this should be a ST error
+            throw new Error(`Part ${target.id} already has property "${propName}"`);
+        }
+        // we only add basic property and the default value is null
+        let customProp = target.partProperties.findPropertyNamed("custom-properties");
+        let newProp = new BasicProperty(propName, null);
+        customProp.add(newProp);
+    },
+
+    deleteProperty(senders, propName, objectId){
+        let target;
+        let originalSender = senders[0].id;
+
+        if(objectId){
+            // Otherwise, if there is an objectId, we are
+            // setting the property of a specific part by
+            // id
+            target = this.partsById[objectId];
+        } else {
+            // Otherwise we are setting the property on the part
+            // that originally sent the message
+            target = this.partsById[originalSender];
+        }
+
+        if(!target){
+            throw new Error(`Could not find deleteProperty target!`);
+        }
+
+        // Note: this will only delete custom properties which is what we want
+        let prop = target.partProperties.findPropertyNamed(propName);
+
+        let customProp = target.partProperties.findPropertyNamed("custom-properties");
+        customProp.delete(prop);
     },
 
     setProperty(senders, propName, value, objectId){
@@ -652,7 +725,7 @@ const System = {
         if(nav){
             nav.remove();
         }
-        
+
         return clonedDocument.documentElement.outerHTML;
     },
 
@@ -726,7 +799,9 @@ System._commandHandlers['newModel'] = function(senders, ...rest){
 System._commandHandlers['newView'] = function(senders, ...rest){
     System.newView(...rest);
 };
+System._commandHandlers['newProperty'] = System.newProperty;
 System._commandHandlers['setProperty'] = System.setProperty;
+System._commandHandlers['deleteProperty'] = System.deleteProperty;
 
 System._commandHandlers['ask'] = function(senders, question){
     // Use the native JS prompt function to ask the question
@@ -996,6 +1071,7 @@ System.registerPart('drawing', Drawing);
 System.registerPart('image', Image);
 System.registerPart('area', Area);
 System.registerPart('audio', Audio);
+System.registerPart('resource', Resource);
 
 /** Register the initial set of views in the system **/
 System.registerView('button', ButtonView);
@@ -1008,6 +1084,7 @@ System.registerView('drawing', DrawingView);
 System.registerView('image', ImageView);
 System.registerView('area', AreaView);
 System.registerView('audio', AudioView);
+System.registerView('resource', ResourceView);
 
 
 // Convenience method for adding all of the

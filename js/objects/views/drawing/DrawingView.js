@@ -186,7 +186,6 @@ class DrawingView extends PartView {
                 args: [],
                 shouldIgnore: true // Should ignore if System DNU
             }, this.model);
-
         }
         this.activeTool = this.querySelector('[role="tool"][active="true"]');
         if(!this.activeTool){
@@ -208,6 +207,12 @@ class DrawingView extends PartView {
                 event.offsetX,
                 event.offsetY
             );
+        } else if(this.model.partProperties.getPropertyNamed(this.model, "wants-move")){
+            this.sendMessage({
+                type: 'command',
+                commandName: 'move',
+                args: [event.movementX, event.movementY]
+            }, this.model);
         }
     }
 

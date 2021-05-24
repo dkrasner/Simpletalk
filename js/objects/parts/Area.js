@@ -29,6 +29,7 @@ class Area extends Part {
             "field",
             "image",
             "audio",
+            "resource",
             "drawing",
             "window"
         ];

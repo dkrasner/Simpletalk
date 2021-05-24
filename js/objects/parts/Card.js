@@ -23,7 +23,9 @@ class Card extends Part {
         super(owner);
         this.stack = this._owner;
         this.acceptedSubpartTypes = [
-            "window", "button", "button-editor", "field", "field", "area", "drawing", "image", "audio"
+            "window", "button", "button-editor",
+            "field", "field", "area", "drawing",
+            "image", "audio", "resource"
         ];
         this.isCard = true;
 
@@ -55,13 +57,6 @@ class Card extends Part {
                 name
             );
         }
-
-        // set up DOM events to be handled
-        this.partProperties.setPropertyNamed(
-            this,
-            'events',
-            new Set(['click', 'dragenter', 'dragover', 'drop'])
-        );
 
         // Styling
         addBasicStyleProps(this);

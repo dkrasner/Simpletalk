@@ -211,11 +211,6 @@ class WorldStack extends Part {
         this.partProperties._properties.forEach(prop => {
             let name = prop.name;
             let value = prop.getValue(this);
-            // If this is the events set, transform
-            // it to an Array first (for serialization)
-            if(name == 'events'){
-                value = Array.from(value);
-            }
             result.properties[name] = value;
         });
         return result;
