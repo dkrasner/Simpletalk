@@ -531,7 +531,7 @@ class PartView extends HTMLElement {
 
     onHaloOpenCompEditor(){
         window.System.compEditor.render(this.model);
-        window.System.compEditor.classList.add('open');
+        window.System.compEditor.open();
     }
 
     onHaloResize(movementX, movementY){

@@ -201,12 +201,15 @@ class CompEditor extends HTMLElement {
 
         // Bound methods
         this.toggle = this.toggle.bind(this);
+        this.open = this.open.bind(this);
+        this.close = this.close.bind(this);
         this.render = this.render.bind(this);
+        this.centerOnElement = this.centerOnElement.bind(this);
+        this.undoCenterOnElement = this.undoCenterOnElement.bind(this);
         this.updateHeader = this.updateHeader.bind(this);
         this.receiveMessage = this.receiveMessage.bind(this);
         this.onTabActivated = this.onTabActivated.bind(this);
         this.onNameInputChange = this.onNameInputChange.bind(this);
-        this.onClose = this.onClose.bind(this);
     }
 
     connectedCallback(){
@@ -214,7 +217,7 @@ class CompEditor extends HTMLElement {
             this._shadowRoot.addEventListener('tab-activated', this.onTabActivated);
             this._shadowRoot.getElementById('close-button').addEventListener(
                 'click',
-                this.onClose
+                this.close
             );
 
             // Events
@@ -227,7 +230,7 @@ class CompEditor extends HTMLElement {
         this._shadowRoot.removeEventListener('tab-activated', this.onTabActivated);
         this._shadowRoot.getElementById('close-button').removeEventListener(
             'click',
-            this.onClose
+            this.close
         );
         
         // Events
@@ -236,11 +239,21 @@ class CompEditor extends HTMLElement {
     }
 
     toggle(){
-        if(this.classList.contains('open')){
-            this.classList.remove('open');
+        if(this.isOpen){
+            this.close();
         } else {
-            this.classList.add('open');
+            this.open();
         }
+    }
+
+    open(){
+        this.classList.add('open');
+        this.centerOnElement();
+    }
+
+    close(){
+        this.classList.remove('open');
+        this.undoCenterOnElement();
     }
 
     render(aModel){
@@ -279,6 +292,69 @@ class CompEditor extends HTMLElement {
                 }
             });
         }
+
+        // If this pane is already open, then center
+        // on the primary view element for the model
+        if(this.isOpen){
+            this.centerOnElement();
+        }
+    }
+
+    centerOnElement(){
+        // Use CSS transforms of the whole World to center on
+        // the primary view element of the Part being edited,
+        // if set. If not set, do nothing.
+        if(this.model){
+            console.log(`Centering on ${this.model.id}`);
+            let partView = window.System.findViewById(this.model.id);
+            let worldView = window.System.findViewById('world');
+            let current = worldView.getAttribute('centered-on');
+            if(current == this.model.id.toString()){
+                return;
+            }
+
+            let menuRect = this.getBoundingClientRect();
+            let partRect = partView.getBoundingClientRect();
+
+            // Get the actual viewable width, plus the editor menu
+            let viewWidth = window.innerWidth + menuRect.width;
+            let viewHeight = window.innerWidth - menuRect.height;
+
+            // Calculate X translation
+            let targetX = (viewWidth - partRect.width) / 2;
+            let newX;
+            if(targetX < partRect.left){
+                newX = (partRect.left - targetX) * -1;
+            } else {
+                newX = targetX - partRect.left;
+            }
+
+            // Calculate Y translation
+            let targetY = (viewHeight - partRect.height) / 2;
+            let newY;
+            if(targetY < partRect.top){
+                newY = (partRect.top - targetY) * -1;
+            } else {
+                newY = targetY - partRect.top;
+            }
+            console.log(partView);
+            console.log(`targetX: ${targetX}, targetY: ${targetY}`);
+            console.log(partRect);
+            console.log(`left: ${partRect.left}, top: ${partRect.top}`);
+            console.log(`${newX}, ${newY}`);
+
+            worldView.setAttribute('centered-on', this.model.id);
+            
+            // Set transform and transition
+            worldView.style.transition = "transform 0.3s ease-out";
+            worldView.style.transform = `translate(${newX}px, ${newY}px)`;
+        }
+    }
+
+    undoCenterOnElement(){
+        let worldView = window.System.findViewById('world');
+        worldView.removeAttribute('centered-on');
+        worldView.style.removeProperty('transform');
     }
 
     updateHeader(){
@@ -355,8 +431,8 @@ class CompEditor extends HTMLElement {
         }
     }
 
-    onClose(event){
-        this.classList.remove('open');
+    get isOpen(){
+        return this.classList.contains('open');
     }
 };
 
