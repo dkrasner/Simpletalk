@@ -253,14 +253,10 @@ const createInterpreterSemantics = (partContext, systemContext) => {
             return msg;
         },
 
-        Command_deleteModel: function(deleteLiteral, thisLiteral, systemObject, objectId){
-            let args = [];
-            if (!objectId.sourceString){
-                args.push(undefined);
-            } else {
-                args.push(objectId.sourceString);
-            }
-            args.push(systemObject.sourceString);
+        Command_deleteModel: function(deleteLiteral, objectSpecifier){
+            let args = [
+                objectSpecifier.interpret() // id of the object
+            ];
 
             let msg = {
                 type: "command",

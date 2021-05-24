@@ -73,7 +73,7 @@ describe('Core command tests', () => {
                 button = currentCard.subparts[0];
             });
             it('Can remove button (by id)', () => {
-                let script = `delete button ${button.id}`;
+                let script = `delete button id ${button.id}`;
                 let match = testLanguageGrammar.match(script, 'Command');
                 assert.isTrue(match.succeeded());
                 let msg = semantics(match).interpret();
@@ -88,13 +88,13 @@ describe('Core command tests', () => {
                 assert.equal(currentCard.subparts.length, 1);
                 button = currentCard.subparts[0];
             });
-            it('Can remove button (in context: "this")', () => {
-                let script = `delete this button`;
+            it('Can remove first button', () => {
+                let script = `delete first button`;
                 let match = testLanguageGrammar.match(script, 'Command');
                 assert.isTrue(match.succeeded());
                 let msg = semantics(match).interpret();
                 assert.exists(msg);
-                currentCard.sendMessage(msg, button);
+                currentCard.sendMessage(msg, currentCard);
                 assert.equal(currentCard.subparts.length, 0);
             });
         });
@@ -113,7 +113,11 @@ describe('Core command tests', () => {
                 currentCard.sendMessage(msg, currentCard);
                 assert.equal(currentCard.subparts.length, 1);
                 button = currentCard.subparts[0];
-                button.partProperties.newBasicProp("test-prop", "test");
+                script = `add property "test-prop" to button id ${button.id}`;
+                match = testLanguageGrammar.match(script, 'Command');
+                assert.isTrue(match.succeeded());
+                msg = semantics(match).interpret();
+                currentCard.sendMessage(msg, button);
                 assert.isNotNull(button.partProperties.findPropertyNamed("test-prop"));
             });
             it('Delete property from object (id) semantics', () => {
@@ -132,8 +136,11 @@ describe('Core command tests', () => {
                 expect(sendMsgFunc).to.not.throw();
                 assert.isNull(button.partProperties.findPropertyNamed("test-prop"));
                 // add the property back in button back in
-                button.partProperties.newBasicProp("test-prop", "test");
-                assert.isNotNull(button.partProperties.findPropertyNamed("test-prop"));
+                script = `add property "test-prop" to button id ${button.id}`;
+                match = testLanguageGrammar.match(script, 'Command');
+                assert.isTrue(match.succeeded());
+                msg = semantics(match).interpret();
+                currentCard.sendMessage(msg, button);
             });
             it('Delete property in context semantics', () => {
                 let script = `delete property "test-prop"`;
@@ -152,7 +159,7 @@ describe('Core command tests', () => {
                 assert.isNull(button.partProperties.findPropertyNamed("test-prop"));
             });
             after('', () => {
-                let script = `delete this button`;
+                let script = `delete first button`;
                 let match = testLanguageGrammar.match(script, 'Command');
                 assert.isTrue(match.succeeded());
                 let msg = semantics(match).interpret();
