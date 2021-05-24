@@ -78,6 +78,10 @@ class EditorPropItem extends HTMLElement {
         this.property = aProperty;
         this.owner = anOwner;
 
+        // Update the element attributes
+        this.setAttribute('name', this.property.name);
+        this.setAttribute('owner-id', this.owner.id);
+
         // Add new event handlers
 
         // Render

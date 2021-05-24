@@ -166,6 +166,7 @@ class CompEditor extends HTMLElement {
         this.toggle = this.toggle.bind(this);
         this.render = this.render.bind(this);
         this.updateHeader = this.updateHeader.bind(this);
+        this.receiveMessage = this.receiveMessage.bind(this);
         this.onTabActivated = this.onTabActivated.bind(this);
         this.onNameInputChange = this.onNameInputChange.bind(this);
     }
@@ -196,7 +197,11 @@ class CompEditor extends HTMLElement {
     }
 
     render(aModel){
+        if(this.model){
+            this.model.removePropertySubscriber(this);
+        }
         this.model = aModel;
+        this.model.addPropertySubscriber(this);
         
         this.updateHeader();
 
@@ -233,6 +238,22 @@ class CompEditor extends HTMLElement {
             iconDisplay.innerHTML = partIcons[this.model.type];
         } else {
             iconDisplay.innerHTML = partIcons.generic;
+        }
+    }
+
+    receiveMessage(aMessage){
+        switch(aMessage.type){
+        case 'propertyChanged':
+            // Find any nested editor-prop-item elements
+            // and re-render, so they display the correct
+            // values in the editor
+            let queryString = `editor-prop-item[name="${aMessage.propertyName}"][owner-id="${aMessage.partId}"]`;
+            Array.from(this.querySelectorAll(queryString)).forEach(el => {
+                if(el.property.value !== aMessage.value){
+                    el.render();
+                }
+            });
+            break;
         }
     }
 
