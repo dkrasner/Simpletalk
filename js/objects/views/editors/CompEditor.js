@@ -55,6 +55,14 @@ partIcons.generic = `
 </svg>
 `;
 
+const closeButton = `
+<svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-x" width="24" height="24" viewBox="0 0 24 24" stroke-width="1.5" stroke="#9e9e9e" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
+  <line x1="18" y1="6" x2="6" y2="18" />
+  <line x1="6" y1="6" x2="18" y2="18" />
+</svg>
+`;
+
 const templateString = `
 <style>
     :host {
@@ -150,7 +158,18 @@ const templateString = `
         width: 100%;
         height: 100%;
     }
+
+    #close-button {
+        display: block;
+        position: absolute;
+        top: 5;
+        right: 5;
+    }
+    #close-button:hover {
+        cursor: pointer;
+    }
 </style>
+<div id="close-button">${closeButton}</div>
 <div id="header-area">
     <div id="display-area">
         <div id="icon-display-area"></div>
@@ -187,11 +206,16 @@ class CompEditor extends HTMLElement {
         this.receiveMessage = this.receiveMessage.bind(this);
         this.onTabActivated = this.onTabActivated.bind(this);
         this.onNameInputChange = this.onNameInputChange.bind(this);
+        this.onClose = this.onClose.bind(this);
     }
 
     connectedCallback(){
         if(this.isConnected){
             this._shadowRoot.addEventListener('tab-activated', this.onTabActivated);
+            this._shadowRoot.getElementById('close-button').addEventListener(
+                'click',
+                this.onClose
+            );
 
             // Events
             let nameInput = this._shadowRoot.getElementById('part-name-input');
@@ -201,6 +225,11 @@ class CompEditor extends HTMLElement {
 
     disconnectedCallback(){
         this._shadowRoot.removeEventListener('tab-activated', this.onTabActivated);
+        this._shadowRoot.getElementById('close-button').removeEventListener(
+            'click',
+            this.onClose
+        );
+        
         // Events
         let nameInput = this._shadowRoot.getElementById('part-name-input');
         nameInput.removeEventListener('change', this.onNameInputChange);
@@ -324,6 +353,10 @@ class CompEditor extends HTMLElement {
                 newName
             );
         }
+    }
+
+    onClose(event){
+        this.classList.remove('open');
     }
 };
 
