@@ -44,7 +44,13 @@ body {
     position: relative;
     overflow: hidden;
     font-family: "Crimson Pro";
-    background-color: purple;
+    background-image: /* tint image */
+                      linear-gradient(to right, rgba(192, 192, 192, 0.85), rgba(192, 192, 192, 0.75)),
+                      /* checkered effect */
+                      linear-gradient(to right, black 50%, white 50%),
+                      linear-gradient(to bottom, black 50%, white 50%);
+    background-blend-mode: normal, difference, normal;
+    background-size: 2em 2em;
 }
 
 .active {
@@ -59,6 +65,7 @@ st-world {
     overflow: hidden;
     width: 100vw;
     height: 100vh;
+    box-shadow: 0px 0px 30px 10px rgba(100, 100, 100, 0.8);
 }
 
 
