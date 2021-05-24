@@ -110,6 +110,21 @@ class Resource extends Part {
         this.resource.get(prerequisite, ...args).then((response) => {
             this.partProperties.setPropertyNamed(this, "response", response);
             this.partProperties.setPropertyNamed(this, "readyState", "ready");
+            this.sendMessage({
+                type: "command",
+                commandName: "responded",
+                args: [this.id, this.resource.name],
+                shouldIgnore: true
+            }, this);
+        }, (error) => {
+            this.partProperties.setPropertyNamed(this, "readyState", "error");
+            this.partProperties.setPropertyNamed(this, "response", null);
+            this.sendMessage({
+                type: "command",
+                commandName: "errored",
+                args: [this.id, this.resource.name, error.message],
+                shouldIgnore: true
+            }, this);
         });
     }
 

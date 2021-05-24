@@ -6,11 +6,12 @@ const merriam = {
     },
     response: null,
     cache: null,
+    cacheNextItem: null,
     currentResponseItemIndex: -1,
     src: null,
     get: async function(prerequisite, arg){
         if(arg){
-            if(!this.response){
+            if(!this.cache){
                 throw Error("No result has been fetched");
             }
             if(arg == "next"){
@@ -20,9 +21,12 @@ const merriam = {
                     this.currentResponseItemIndex = 0;
                 }
                 this.response = this.cache.results[this.currentResponseItemIndex];
+                // put the result in the next item cache
+                this.cacheNextItem = this.cache.results[this.currentResponseItemIndex];
                 return JSON.stringify(this.response, null, '\t');
             }
-            this.response = this.response[arg];
+            // here we assume that the arg is a key in the next item cache
+            this.response = this.cacheNextItem[arg];
             return this.response;
         }
         const payload = parsePrerequisite(prerequisite);
