@@ -24,6 +24,7 @@ class PartView extends HTMLElement {
         // Halo settings. All are on by default
         this.wantsHaloResize = true;
         this.wantsHaloScriptEdit = true;
+        this.wantsHaloEdit = true;
         this.wantsHaloDelete = true;
         this.wantsHalo = true;
         // Note: see getter for wantsHaloMove
@@ -66,6 +67,7 @@ class PartView extends HTMLElement {
         this.onHaloTarget = this.onHaloTarget.bind(this);
         this.endHaloTarget = this.endHaloTarget.bind(this);
         this.onHaloActivationClick = this.onHaloActivationClick.bind(this);
+        this.onHaloOpenCompEditor = this.onHaloOpenCompEditor.bind(this);
         this.onAuxClick = this.onAuxClick.bind(this);
         this.onClick = this.onClick.bind(this);
         this.onMouseDown = this.onMouseDown.bind(this);
@@ -525,6 +527,11 @@ class PartView extends HTMLElement {
             commandName: 'openScriptEditor',
             args: [this.model.id]
         }, this.model);
+    }
+
+    onHaloOpenCompEditor(){
+        window.System.compEditor.render(this.model);
+        window.System.compEditor.classList.add('open');
     }
 
     onHaloResize(movementX, movementY){
