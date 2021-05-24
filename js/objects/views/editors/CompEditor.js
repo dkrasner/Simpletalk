@@ -1,12 +1,13 @@
 import EditorTab from './EditorTab.js';
 import EditorPropList from './EditorPropList.js';
-
+import EditorMessenger from './EditorMessenger.js';
 
 // PREAMBLE
 
 // Add editor tab element
 window.customElements.define('editor-tab', EditorTab);
 window.customElements.define('editor-props-list', EditorPropList);
+window.customElements.define('editor-messenger', EditorMessenger);
 
 let partIcons = {};
 
@@ -71,6 +72,23 @@ const templateString = `
     :host(.open){
         transform: translateX(0%);
         transition: transform 150ms linear;
+    }
+
+    :host(::after) {
+        content: " ";
+        height: 100%;
+        width: 5px;
+        background-color: black;
+        display: block;
+        position: absolute;
+        top: 0;
+        right: -10;
+        box-shadow: 0px 0px 2px 3px rgba(100, 100, 100, 0.6);
+    }
+
+    ::slotted(editor-props-list:not(.show-pane)),
+    ::slotted(editor-messenger:not(.show-pane)){
+        display: none;
     }
 
     #tab-area {
@@ -141,9 +159,9 @@ const templateString = `
     <input type="text" id="part-name-input"/>
 </div>
 <div id="tab-area">
-    <editor-tab active="true">One</editor-tab>
-    <editor-tab>Two</editor-tab>
-    <editor-tab>Three</editor-tab>
+    <editor-tab active="true" name="properties">Properties</editor-tab>
+    <editor-tab name=messenger>Messenger</editor-tab>
+    <editor-tab>Subparts</editor-tab>
 </div>
 <div id="pane-area">
     <slot></slot>
@@ -210,8 +228,28 @@ class CompEditor extends HTMLElement {
 
         // Add panes
         let propsPane = document.createElement('editor-props-list');
+        propsPane.setAttribute('tab-name', 'properties');
         this.appendChild(propsPane);
         propsPane.render(this.model);
+
+        let messengerPane = document.createElement('editor-messenger');
+        messengerPane.setAttribute('tab-name', 'messenger');
+        this.appendChild(messengerPane);
+        messengerPane.render(this.model);
+
+        // Find the active tab and show its corresponding pane
+        let activeTab = this._shadowRoot.querySelector(`editor-tab[active="true"]`);
+        if(activeTab){
+            let activeName = activeTab.getAttribute('name');
+            Array.from(this.querySelectorAll('[tab-name]')).forEach(pane => {
+                let name = pane.getAttribute('tab-name');
+                if(name == activeName){
+                    pane.classList.add('show-pane');
+                } else {
+                    pane.classList.remove('show-pane');
+                }
+            });
+        }
     }
 
     updateHeader(){
@@ -264,6 +302,17 @@ class CompEditor extends HTMLElement {
             }).forEach(tabEl => {
                 tabEl.removeAttribute('active');
             });
+
+        // Get the name of the activated tab
+        let targetName = event.target.getAttribute('name');
+        Array.from(this.querySelectorAll('[tab-name]')).forEach(pane => {
+            let name = pane.getAttribute('tab-name');
+            if(name == targetName){
+                pane.classList.add('show-pane');
+            } else {
+                pane.classList.remove('show-pane');
+            }
+        });
     }
 
     onNameInputChange(event){

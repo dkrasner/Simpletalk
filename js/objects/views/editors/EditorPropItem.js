@@ -1,5 +1,21 @@
 // PREAMBLE
 
+const checkIcon = `
+<svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-circle-check" width="24" height="24" viewBox="0 0 24 24" stroke-width="1.5" stroke="#00b341" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
+  <circle cx="12" cy="12" r="9" />
+  <path d="M9 12l2 2l4 -4" />
+</svg>
+`;
+
+const cancelIcon = `
+<svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-circle-x" width="24" height="24" viewBox="0 0 24 24" stroke-width="1.5" stroke="#ff2825" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
+  <circle cx="12" cy="12" r="9" />
+  <path d="M10 10l4 4m0 -4l-4 4" />
+</svg>
+`;
+
 const templateString = `
 <style>
     li {
@@ -21,12 +37,30 @@ const templateString = `
     }
 
     :host(.item-hidden) {
-        display: none;
+        display:none;
+    }
+
+    button {
+        outline: none;
+        border: 1px solid transparent;
+        background-color: transparent;
+        opacity: 1.0;
+        transition: opacity 0.1s linear;
+    }
+
+    button:disabled {
+        opacity: 0.05;
+        transition: opacity: 0.1s linear;
+    }
+
+    button:hover {
+        cursor: pointer;
     }
 
     button.button-hidden {
         display: none;
     }
+
     label {
         font-family: monospace;
     }
@@ -44,8 +78,8 @@ const templateString = `
 <li>
     <label for="prop-value"></label>
     <input id="prop-value" name="prop-value"/>
-    <button id="cancel">X</button>
-    <button id="accept">S</button>
+    <button id="accept" disabled>${checkIcon}</button>
+    <button id="cancel" disabled>${cancelIcon}</button>
 </li>
 `;
 
@@ -68,8 +102,11 @@ class EditorPropItem extends HTMLElement {
         // Bound methods
         this.render = this.render.bind(this);
         this.onInputChange = this.onInputChange.bind(this);
+        this.onInputInput = this.onInputInput.bind(this);
         this.onAcceptClick = this.onAcceptClick.bind(this);
         this.onCancelClick = this.onCancelClick.bind(this);
+        this.enableButtons = this.enableButtons.bind(this);
+        this.disableButtons = this.disableButtons.bind(this);
     }
 
     setProperty(aProperty, anOwner){
@@ -100,11 +137,13 @@ class EditorPropItem extends HTMLElement {
         this.cancelButton.classList.remove('button-hidden');
         
         // Remove any bound events
+        this.inputElement.removeEventListener('input', this.onInputInput);
         this.inputElement.removeEventListener('change', this.onInputChange);
         this.acceptButton.removeEventListener('click', this.onAcceptClick);
         this.cancelButton.removeEventListener('click', this.onCancelClick);
 
         // Add new events
+        this.inputElement.addEventListener('input', this.onInputInput);
         this.inputElement.addEventListener('change', this.onInputChange);
         this.acceptButton.addEventListener('click', this.onAcceptClick);
         this.cancelButton.addEventListener('click', this.onCancelClick);
@@ -139,12 +178,31 @@ class EditorPropItem extends HTMLElement {
         }
     }
 
+    onInputInput(event){
+        if(event.target.value !== this.property.getValue(this.owner)){
+            this.enableButtons();
+        } else {
+            this.disableButtons();
+        }
+    }
+
+    enableButtons(){
+        this.acceptButton.removeAttribute('disabled');
+        this.cancelButton.removeAttribute('disabled');
+    }
+
+    disableButtons(){
+        this.acceptButton.setAttribute('disabled', true);
+        this.cancelButton.setAttribute('disabled', true);
+    }
+
     onAcceptClick(event){
         this.owner.partProperties.setPropertyNamed(
             this.owner,
             this.property.name,
             this.inputElement.value
         );
+        this.disableButtons();
     }
 
     onCancelClick(event){
@@ -152,6 +210,7 @@ class EditorPropItem extends HTMLElement {
             this.owner,
             this.property.name
         );
+        this.disableButtons();
     }
 };
 

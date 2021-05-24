@@ -48,6 +48,15 @@ class EditorTab extends HTMLElement {
     connectedCallback(){
         if(this.isConnected){
             this.addEventListener('click', this.onClick);
+
+            // If the tab is currently activated, emit
+            // the tab-activaed message
+            if(this.getAttribute('active') == "true"){
+                let event = new CustomEvent("tab-activated", {
+                    bubbles: true
+                });
+                this.dispatchEvent(event);
+            }
         }
     }
 
