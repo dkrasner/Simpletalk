@@ -58,7 +58,8 @@ const specialProps = [
     'target',
     'events',
     'current',
-    'script'
+    'script',
+    'custom-properties'
 ];
 
 class EditorPropList extends HTMLElement {

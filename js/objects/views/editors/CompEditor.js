@@ -1,12 +1,14 @@
 import EditorTab from './EditorTab.js';
 import EditorPropList from './EditorPropList.js';
 import EditorMessenger from './EditorMessenger.js';
+import EditorCustomList from './EditorCustomList.js';
 
 // PREAMBLE
 
 // Add editor tab element
 window.customElements.define('editor-tab', EditorTab);
 window.customElements.define('editor-props-list', EditorPropList);
+window.customElements.define('editor-custom-list', EditorCustomList);
 window.customElements.define('editor-messenger', EditorMessenger);
 
 let partIcons = {};
@@ -179,6 +181,7 @@ const templateString = `
 </div>
 <div id="tab-area">
     <editor-tab active="true" name="properties">Properties</editor-tab>
+    <editor-tab name="custom">Custom</editor-tab>
     <editor-tab name=messenger>Messenger</editor-tab>
     <editor-tab>Subparts</editor-tab>
 </div>
@@ -278,6 +281,11 @@ class CompEditor extends HTMLElement {
         messengerPane.setAttribute('tab-name', 'messenger');
         this.appendChild(messengerPane);
         messengerPane.render(this.model);
+
+        let customPane = document.createElement('editor-custom-list');
+        customPane.setAttribute('tab-name', 'custom');
+        this.appendChild(customPane);
+        customPane.render(this.model);
 
         // Find the active tab and show its corresponding pane
         let activeTab = this._shadowRoot.querySelector(`editor-tab[active="true"]`);
