@@ -43,6 +43,7 @@ class PartView extends HTMLElement {
         this.primHandlePropChange = this.primHandlePropChange.bind(this);
         this.onPropChange = this.onPropChange.bind(this);
         this.scriptChanged = this.scriptChanged.bind(this);
+        this.numberChanged = this.numberChanged.bind(this);
         this.layoutChanged = this.layoutChanged.bind(this);
         this.listDirectionChanged = this.listDirectionChanged.bind(this);
         this.listWrappingChanged = this.listWrappingChanged.bind(this);
@@ -150,6 +151,7 @@ class PartView extends HTMLElement {
         // Do not override this method
         // TODO: Implement the universals
         this.onPropChange('script', this.scriptChanged);
+        this.onPropChange('number', this.numberChanged);
         this.onPropChange('cssStyle', this.styleCSS);
         this.onPropChange('cssTextStyle', this.styleTextCSS);
         this.onPropChange('editorOpen', (value) => {
@@ -294,6 +296,31 @@ class PartView extends HTMLElement {
             codeString: value,
             targetId: partId
         }, window.System);
+    }
+
+    numberChanged(val){
+        // Note the 'number' prop value is 1-indexed
+        // parentNode.insertBefore(newNode, referenceNode)
+        if(val == this.parentNode.childNodes.length){
+            this.parentNode.appendChild(this);
+        } else {
+            let index = val - 1;
+            let currentIndex;
+            for(let i=0; i < this.parentNode.childNodes.length; i++){
+                let node = this.parentNode.childNodes[i];
+                if(node == this){
+                    currentIndex = i;
+                    break;
+                }
+            }
+            if(currentIndex < index){
+                let referenceNode = this.parentNode.childNodes[index + 1];
+                this.parentNode.insertBefore(this, referenceNode);
+            } else {
+                let referenceNode = this.parentNode.childNodes[index];
+                this.parentNode.insertBefore(this, referenceNode);
+            }
+        }
     }
 
     layoutChanged(value, partId){

@@ -742,11 +742,9 @@ const createInterpreterSemantics = (partContext, systemContext) => {
                     if(index > partsOfType.length){
                         throw new Error(`${contextPart.type}[${contextPart.id}] does not have a ${objectType.sourceString} numbered ${index}`);
                     }
-                    return partsOfType[index-1];return contextPart.subparts.filter(subpart => {
-                        return subpart.type == objectType.sourceString;
-                    })[index-1];
+                    return partsOfType[index-1];
                 }
-            }; 
+            };
         },
 
         /**

@@ -210,19 +210,29 @@ class Part {
             this.partProperties.addProperty(prop);
         });
 
+        // the index number of the part in part._owner.subpart
+        // array. Note: this is 1-indexed
         this.partProperties.newDynamicProp(
             'number',
-            null, // No setter; readOnly
-            function(propOwner, propObject){
-                if(!propOwner._owner){
-                    return -1;
+            function(propOwner, propObject, val){
+                if(propOwner.type != "world"){
+                    let subparts = propOwner._owner.subparts;
+                    // if the val is out of bounds, or there is simpl one subpart
+                    // then we don't do anything
+                    if(subparts.length > 1 && val <= subparts.length && val > 0){
+                        let currentIndex = subparts.indexOf(propOwner);
+                        subparts.splice(currentIndex, 1); // remove the propOwner from subparts
+                        subparts.splice(val - 1, 0, propOwner); // insert at val-1 index
+                        propOwner._owner.subparts = subparts;
+                    }
                 }
-                return propOwner._owner.subparts.filter(subpart => {
-                    return subpart.type == propOwner.type;
-                }).indexOf(propOwner) + 1;
             },
-            true, // Is readOnly,
-            [] // No aliases
+            function(propOwner, propObject){
+                if(propOwner.type == "world"){
+                    return 1;
+                }
+                return propOwner._owner.subparts.indexOf(propOwner) + 1;
+            }
         );
 
         this.partProperties.newDynamicProp(

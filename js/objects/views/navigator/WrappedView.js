@@ -100,6 +100,7 @@ class WrappedView extends PartView {
         // Bind methods
         this.onChildSlotted = this.onChildSlotted.bind(this);
         this.updateScaling = this.updateScaling.bind(this);
+        this.handleNumberChange = this.handleNumberChange.bind(this);
         this.addWrappedView = this.addWrappedView.bind(this);
         this._recursivelyUpdateLensViews = this._recursivelyUpdateLensViews.bind(this);
     }
@@ -127,6 +128,7 @@ class WrappedView extends PartView {
     }
 
     afterModelSet(){
+        this.onPropChange('number', this.handleNumberChange);
         this.removeAttribute('part-id');
         this.addWrappedView(this.model);
         this.updateNumberDisplay();
@@ -152,9 +154,19 @@ class WrappedView extends PartView {
     updateNumberDisplay(){
         let firstChild = this.children[0];
         let model = firstChild.model;
-        let number = model.partProperties.getPropertyNamed(model, 'number');
+        // we only want to look at subparts of the same type (stack or card)
+        let subparts = model._owner.subparts.filter((part) => {
+            return model.type == part.type;
+        });
         let numDisplay = this._shadowRoot.querySelector('#number-display > span');
-        numDisplay.innerText = number.toString();
+        numDisplay.innerText = subparts.indexOf(model) + 1;
+    }
+
+    handleNumberChange(){
+        // Update number display of all wrapped views in the row
+        Array.from(this.parentNode.querySelectorAll(`wrapped-view`)).forEach(wrapper => {
+            wrapper.updateNumberDisplay();
+        });
     }
 
     addWrappedView(aPartModel){
