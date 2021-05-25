@@ -313,7 +313,6 @@ class CompEditor extends HTMLElement {
         // the primary view element of the Part being edited,
         // if set. If not set, do nothing.
         if(this.model){
-            console.log(`Centering on ${this.model.id}`);
             let partView = window.System.findViewById(this.model.id);
             let worldView = window.System.findViewById('world');
             let current = worldView.getAttribute('centered-on');
@@ -345,11 +344,6 @@ class CompEditor extends HTMLElement {
             } else {
                 newY = targetY - partRect.top;
             }
-            console.log(partView);
-            console.log(`targetX: ${targetX}, targetY: ${targetY}`);
-            console.log(partRect);
-            console.log(`left: ${partRect.left}, top: ${partRect.top}`);
-            console.log(`${newX}, ${newY}`);
 
             worldView.setAttribute('centered-on', this.model.id);
             

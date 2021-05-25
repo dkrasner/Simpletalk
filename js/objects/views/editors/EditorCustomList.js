@@ -186,8 +186,8 @@ class EditorCustomList extends HTMLElement {
         this.onDefaultNewTypeChange = this.onDefaultNewTypeChange.bind(this);
         this.onCaretClick = this.onCaretClick.bind(this);
         this.onCreateSubmit = this.onCreateSubmit.bind(this);
-        //this.onInput = this.onInput.bind(this);
-        //this.onFilterClearClick = this.onFilterClearClick.bind(this);
+        this.onFilterInput = this.onFilterInput.bind(this);
+        this.onFilterClearClick = this.onFilterClearClick.bind(this);
     }
 
     connectedCallback(){
@@ -198,10 +198,14 @@ class EditorCustomList extends HTMLElement {
             this.addPropControl = this._shadowRoot.getElementById('add-prop-dropdown-control');
             this.newPropForm = this._shadowRoot.getElementById('new-prop-form');
             this.createButton = this._shadowRoot.getElementById('submit-prop');
-
+            this.clearButton = this._shadowRoot.getElementById('clear');
+            this.filterInput = this._shadowRoot.getElementById('filter-input');
+            
             // Add listeners
             this.addPropControl.addEventListener('click', this.onCaretClick);
             this.createButton.addEventListener('click', this.onCreateSubmit);
+            this.filterInput.addEventListener('input', this.onFilterInput);
+            this.clearButton.addEventListener('click', this.onFilterClearClick);
         }
     }
 
@@ -274,6 +278,8 @@ class EditorCustomList extends HTMLElement {
             let defaultValue = this.newPropDefaultValue.value;
             if(this.newPropDefaultValue.type == 'checkbox'){
                 defaultValue = this.newPropDefaultValue.checked;
+            } else if(this.newPropDefaultValue.type == 'number'){
+                defaultValue = parseFloat(this.newPropDefaultValue.value);
             }
 
             // Send the property create message
@@ -298,6 +304,30 @@ class EditorCustomList extends HTMLElement {
             this.resetForm();
             this.render(this.model);
         }
+    }
+
+    filterBy(text){
+        // Find all of the prop item elements whose
+        // property name does *not* include the substring,
+        // and set those to not display
+        let allElements = Array.from(this.querySelectorAll('editor-prop-item'));
+        allElements.forEach(propEl => {
+            let name = propEl.getAttribute('name');
+            if(name.toLowerCase().includes(text)){
+                propEl.classList.remove('item-hidden');
+            } else {
+                propEl.classList.add('item-hidden');
+            }
+        });
+    }
+
+    onFilterInput(event){
+        this.filterBy(event.target.value.toLowerCase());
+    }
+
+    onFilterClearClick(event){
+        this.filterInput.value = "";
+        this.filterBy("");
     }
 
     resetForm(){
