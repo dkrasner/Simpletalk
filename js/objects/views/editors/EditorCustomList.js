@@ -26,6 +26,33 @@ const templateString = `
         font-family: 'Helvetica', sans-serif;
         font-size: 0.8rem;
     }
+
+    #props-list {
+        flex: 1;
+        overflow-y: auto;
+        list-style: none;
+        margin: 0;
+        padding: 0;
+        overflow-y: auto;
+    }
+    #filter-area {
+        display: flex;
+        width: 100%;
+        align-items: center;
+    }
+    #filter-area > input {
+        min-width: 0;
+        width: auto;
+        flex: 1;
+        outline: none;
+        font-size: 1.0rem;
+        padding-left: 6px;
+        padding-right: 6px;
+        padding-top: 3px;
+        padding-bottom: 3px;
+        border: 1px solid rgba(100, 100, 100, 0.8);
+        border-radius: 2px;
+    }
     
     #new-prop-area {
         display: flex;
@@ -68,6 +95,11 @@ const templateString = `
         font-family: monospace;
         padding: 6px;
     }
+
+    #new-prop-name:invalid {
+        border-bottom: 1px solid red;
+    }
+    
     select {
         font-size: 1em;
     }
@@ -76,7 +108,8 @@ const templateString = `
         user-select: none;
     }
 
-    #add-prop-dropdown-control:hover {
+    #add-prop-dropdown-control:hover,
+    #add-prop-dropdown-control label {
         cursor: pointer;
     }
 
@@ -106,7 +139,7 @@ const templateString = `
     <div id="new-prop-form">
         <div class="row">
             <label for="new-prop-name">Property Name </label>
-            <input type="text" id="new-prop-name" placeholder="property-name"/>
+            <input type="text" id="new-prop-name" placeholder="property-name" pattern="[a-z\\-]{3,64}"/>
         </div>
         <div class="row">
             <label for="default-val-select">Default value type</label>
@@ -178,6 +211,28 @@ class EditorCustomList extends HTMLElement {
         // Clear any main dom children
         this.innerHTML = "";
 
+        // Create a sorted copy of the property
+        // objects
+        let customProps = this.model.partProperties.getPropertyNamed(
+            this.model,
+            'custom-properties'
+        );
+
+        // Create a sorted list of the custom properties
+        // available
+        this.propList = Object.values(customProps)
+            .sort((first, second) => {
+                return first.name.localeCompare(second.name);
+            });
+
+        // Render the property items and insert them
+        this.propList.forEach(propObject => {
+            let el = document.createElement('editor-prop-item');
+            el.setProperty(propObject, this.model);
+            el.setAttribute('name', propObject.name);
+            this.appendChild(el);
+        });
+
         // Set up event listeners
         this.newPropTypeSelect.removeEventListener('change', this.onDefaultNewTypeChange);
         this.newPropTypeSelect.addEventListener('change', this.onDefaultNewTypeChange);
@@ -238,11 +293,22 @@ class EditorCustomList extends HTMLElement {
                 propName,
                 defaultValue
             );
+
+            // Re-render this pane
+            this.resetForm();
+            this.render(this.model);
         }
     }
 
     resetForm(){
-        // Nothing for now
+        this.newPropNameInput.value = null;
+        this.newPropDefaultValue.value = null;
+        if(this.newPropDefaultValue.type == 'checked'){
+            this.newPropDefaultValue.checked = false;
+        }
+        this.newPropDefaultValue.type = 'text';
+        this.newPropDefaultValue.setAttribute('disabled', true);
+        this.newPropTypeSelect.selectedIndex = 0;
     }
 };
 
