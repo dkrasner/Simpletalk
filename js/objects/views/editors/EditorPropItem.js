@@ -197,10 +197,16 @@ class EditorPropItem extends HTMLElement {
     }
 
     onAcceptClick(event){
+        let value = this.inputElement.value;
+        if(this.inputElement.type == 'number'){
+            value = parseFloat(value);
+        } else if(this.inputElement.type == 'checkbox'){
+            value = this.inputElement.checked;
+        }
         this.owner.partProperties.setPropertyNamed(
             this.owner,
             this.property.name,
-            this.inputElement.value
+            value
         );
         this.disableButtons();
     }
