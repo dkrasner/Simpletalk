@@ -73,7 +73,7 @@ const templateString = `
         position: absolute;
         transform: translateX(-105%);
         transition: transform 150ms linear;
-        min-width: 400px;
+        width: 400px;
         height: 100%;
         background-color: white;
         padding: 8px;
