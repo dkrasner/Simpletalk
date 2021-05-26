@@ -65,6 +65,15 @@ const closeButton = `
 </svg>
 `;
 
+const scriptIcon = `
+<svg id='script' xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-file-code" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+    <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
+    <path d="M14 3v4a1 1 0 0 0 1 1h4" />
+    <path d="M17 21h-10a2 2 0 0 1 -2 -2v-14a2 2 0 0 1 2 -2h7l5 5v11a2 2 0 0 1 -2 2z" />
+    <path d="M10 13l-1 2l1 2" />
+    <path d="M14 13l1 2l-1 2" />
+</svg>`;
+
 const templateString = `
 <style>
     :host {
@@ -117,15 +126,20 @@ const templateString = `
     }
 
     #header-area {
+        display: flex;
         font-family: 'Helvetica', sans-serif;
         margin-bottom: 20px;
+    }
+
+    .header-side {
+        flex: 1;
+        margin-top: 20px;
     }
 
     #display-area {
         display: flex;
         align-items: center;
         margin-bottom: 30px;
-        margin-top: 20px;
     }
 
     #header-area h3 {
@@ -136,7 +150,7 @@ const templateString = `
         font-size: 1.7rem;
     }
 
-    #header-area > input {
+    #header-left > input {
         display: inline-block;
         padding: 4px;
         outline: none;
@@ -144,8 +158,35 @@ const templateString = `
         border-bottom: 1px solid rgba(100, 100, 100, 0.8);
         font-size: 1.1rem;
     }
+
+    #header-right > button {
+        width: 100%;
+        background-color: transparent;
+        border: 1px solid transparent;
+        outline: none;
+        display: flex;
+        align-items: center;
+        justify-content: flex-start;
+        font-size: 0.85em;
+    }
+
+    #header-right > button:hover {
+        cursor: pointer;
+        border: 1px solid rgba(150, 150, 150, 0.3);
+    }
+
+    #header-right > button:active {
+        border: 1px solid rgba(150, 150, 150, 0.8);
+        background-color: rgba(220, 220, 220);
+    }
+
+    #header-right > button > svg {
+        height: 1.3em;
+        width: auto;
+        margin-right: 8px;
+    }
     
-    #header-area span {
+    #header-left span {
         font-family: monospace;
         font-size: 1.1rem;
         color: rgba(0, 0, 0, 0.5);
@@ -173,11 +214,19 @@ const templateString = `
 </style>
 <div id="close-button">${closeButton}</div>
 <div id="header-area">
-    <div id="display-area">
-        <div id="icon-display-area"></div>
-        <h3></h3><span></span>
+    <div id="header-left" class="header-side">
+        <div id="display-area">
+            <div id="icon-display-area"></div>
+            <h3></h3><span></span>
+        </div>
+        <input type="text" id="part-name-input"/>
     </div>
-    <input type="text" id="part-name-input"/>
+    <div id="header-right" class="header-side">
+        <button id="edit-script-button">
+            ${scriptIcon}
+            <span>Edit Script</span>
+        </button>
+    </div>
 </div>
 <div id="tab-area">
     <editor-tab active="true" name="properties">Properties</editor-tab>
@@ -213,6 +262,7 @@ class CompEditor extends HTMLElement {
         this.receiveMessage = this.receiveMessage.bind(this);
         this.onTabActivated = this.onTabActivated.bind(this);
         this.onNameInputChange = this.onNameInputChange.bind(this);
+        this.onEditScriptClick = this.onEditScriptClick.bind(this);
     }
 
     connectedCallback(){
@@ -226,6 +276,9 @@ class CompEditor extends HTMLElement {
             // Events
             let nameInput = this._shadowRoot.getElementById('part-name-input');
             nameInput.addEventListener('change', this.onNameInputChange);
+
+            let editScriptButton = this._shadowRoot.getElementById('edit-script-button');
+            editScriptButton.addEventListener('click', this.onEditScriptClick);
         }
     }
 
@@ -239,6 +292,9 @@ class CompEditor extends HTMLElement {
         // Events
         let nameInput = this._shadowRoot.getElementById('part-name-input');
         nameInput.removeEventListener('change', this.onNameInputChange);
+
+        let editScriptButton = this._shadowRoot.getElementById('edit-script-button');
+        editScriptButton.removeEventListener('click', this.onEditScriptClick);
     }
 
     toggle(){
@@ -360,7 +416,7 @@ class CompEditor extends HTMLElement {
     }
 
     updateHeader(){
-        let nameInput = this._shadowRoot.querySelector('#header-area > input');
+        let nameInput = this._shadowRoot.querySelector('#header-left > input');
         let typeDisplay = this._shadowRoot.querySelector('#display-area > h3');
         let idDisplay = this._shadowRoot.querySelector('#display-area > span');
         let iconDisplay = this._shadowRoot.getElementById('icon-display-area');
@@ -430,6 +486,18 @@ class CompEditor extends HTMLElement {
                 'name',
                 newName
             );
+        }
+    }
+
+    onEditScriptClick(event){
+        if(this.model){
+            this.model.sendMessage({
+                type: 'command',
+                commandName: 'openScriptEditor',
+                args: [
+                    this.model.id
+                ]
+            }, this.model);
         }
     }
 
