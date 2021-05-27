@@ -33,7 +33,6 @@ describe('Button System Command Tests', () => {
             let cardEl = document.querySelector('st-world st-card.current-card');
             let id = cardEl.getAttribute('part-id');
             let found = document.querySelector(`[part-id="${id}"]`);
-            assert.equal(id, "2");
             assert.exists(found);
         });
     });

@@ -941,7 +941,7 @@ const createInterpreterSemantics = (partContext, systemContext) => {
          */
         TerminalSpecifier_partById: function(objectType, idLiteral, objectId){
             let id = objectId.sourceString;
-            let found = systemContext.partsById[parseInt(id)];
+            let found = systemContext.partsById[id];
             if(!found){
                 throw new Error(`Cannot find ${objectType.sourceString} with id ${objectId}`);
             }
