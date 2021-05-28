@@ -82,6 +82,29 @@ class StackView extends PartView {
             currentCard.classList.remove('current-card');
         }
     }
+
+    // override subclass methods
+    newSubpartView(newView){
+        if(this.childNodes.length && newView.name == "CardView"){
+            let lastCardNode;
+            this.childNodes.forEach((child) => {
+                if(child.name == "CardView"){
+                    lastCardNode = child;
+                }
+            });
+            if(lastCardNode){
+                // insert after the last card
+                lastCardNode.after(newView);
+            } else {
+                // since there are no cards
+                // insert before all children
+                this.childNodes[0].insertBefore(newView);
+            }
+        } else {
+            this.appendChild(newView);
+        }
+    }
+
 };
 
 export {

@@ -202,27 +202,11 @@ describe("PropertyValue Interpreter Tests", () => {
         });
     });
     describe("Dynamic Property Tests", () => {
-        it("Button has the expected 'number' property", () => {
+        it("Parts have the expected 'number' property", () => {
             let result = buttonModel.partProperties.getPropertyNamed(buttonModel, 'number');
             assert.equal(1, result);
-        });
-        it("Drawing has the expected 'number' property", () => {
-            let result = drawingModel.partProperties.getPropertyNamed(drawingModel, 'number');
+            result = drawingModel.partProperties.getPropertyNamed(drawingModel, 'number');
             assert.equal(2, result);
-        });
-        it("Setting the Button 'number' property throws no error", () => {
-            let setProperty = function(){
-                buttonModel.partProperties.setPropertyNamed(buttonModel, 'number', 2);
-            };
-            expect(setProperty).to.not.throw(Error);
-        });
-        it("Button has the expected (new) 'number' property", () => {
-            let result = buttonModel.partProperties.getPropertyNamed(buttonModel, 'number');
-            assert.equal(2, result);
-        });
-        it("Drawing has the expected (new)'number' property", () => {
-            let result = drawingModel.partProperties.getPropertyNamed(drawingModel, 'number');
-            assert.equal(1, result);
         });
     });
 });

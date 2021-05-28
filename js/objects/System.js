@@ -318,13 +318,7 @@ const System = {
         }
         let model = new modelClass(ownerPart);
         if(name){
-            // TODO! this is a total hack, shold we update the grammar?
-            // find a better way to pass args?
-            if (kind === "image"){
-                model.partProperties.setPropertyNamed(model, "src", name);
-            } else {
-                model.partProperties.setPropertyNamed(model, 'name', name);
-            }
+            model.partProperties.setPropertyNamed(model, 'name', name);
         }
         this.partsById[model.id] = model;
 
@@ -562,27 +556,11 @@ const System = {
             this.tagNameForViewNamed(partName)
         );
         newView.setModel(model);
-        // if the new model is a Card we make sure add it after the last card
-        // on the stack
-        if((newView.name === 'CardView' || newView.name === 'StackView') && parentElement.childNodes.length){
-            let lastNode;
-            parentElement.childNodes.forEach((child) => {
-                if(child.name === newView.name){
-                    lastNode = child;
-                }
-            });
-            lastNode.after(newView);
-        } else {
-            if(parentElement.type == "window"){
-                // slot the new view into the window
-                let parentViews = this.findViewsById(parentElement.id);
-                parentViews.forEach((window) => {
-                    let pane = window._shadowRoot.querySelector('.st-window-pane');
-                    pane.append(newView);
-                });
-            }
-            parentElement.appendChild(newView);
-        }
+        this.sendMessage({
+            type: "viewChanged",
+            changeName: "subpart-new",
+            args: [newView]
+        }, model._owner, parentElement);
 
         // Dispatch a CustomEvent on the parentElement
         // indicating that this part has been created, and

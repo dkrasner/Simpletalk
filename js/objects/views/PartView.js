@@ -62,6 +62,7 @@ class PartView extends HTMLElement {
 
         // Bind view change reaction methods
         this.subpartOrderChanged = this.subpartOrderChanged.bind(this);
+        this.newSubpartView = this.newSubpartView.bind(this);
 
         // Bind Halo related methods
         this.openHalo = this.openHalo.bind(this);
@@ -197,6 +198,7 @@ class PartView extends HTMLElement {
         // a handler function.
         // Do not override this method
         this.onViewChange('subpart-order', this.subpartOrderChanged);
+        this.onViewChange('subpart-new', this.newSubpartView);
     }
 
     initLayout(){
@@ -355,6 +357,10 @@ class PartView extends HTMLElement {
             let referenceNode = this.childNodes[newIndex];
             this.insertBefore(subpartNode, referenceNode);
         }
+    }
+
+    newSubpartView(newView){
+        this.appendChild(newView);
     }
 
     layoutChanged(value, partId){

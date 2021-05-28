@@ -50,6 +50,7 @@ class Part {
         this.removePart = this.removePart.bind(this);
         this.acceptsSubpart = this.acceptsSubpart.bind(this);
         this.setPrivateCommandHandler = this.setPrivateCommandHandler.bind(this);
+        this.removePrivateCommandHandler = this.removePrivateCommandHandler.bind(this);
         this.setFuncHandler = this.setFuncHandler.bind(this);
         this.receiveCmd = this.receiveCmd.bind(this);
         this.receiveFunc = this.receiveFunc.bind(this);
@@ -480,6 +481,10 @@ class Part {
         this._privateCommandHandlers[commandName] = handler;
     }
 
+    removePrivateCommandHandler(commandName){
+        delete this._privateCommandHandlers[commandName];
+    }
+
     setFuncHandler(funcName, handler){
         this._functionHandlers[funcName] = handler;
     }
@@ -528,14 +533,14 @@ class Part {
         this.partProperties.setPropertyNamed(this, "left", left);
     }
 
-    moveUp(senders){
+    moveDown(senders){
         let currentIndex = this._owner.subparts.indexOf(this);
         if(currentIndex < this._owner.subparts.length - 1){
             this._owner.subpartOrderChanged(this.id, currentIndex, currentIndex + 1);
         }
     }
 
-    moveDown(senders){
+    moveUp(senders){
         let currentIndex = this._owner.subparts.indexOf(this);
         if(currentIndex > 0){
             this._owner.subpartOrderChanged(this.id, currentIndex, currentIndex - 1);
@@ -546,12 +551,12 @@ class Part {
     // i.e. last as a subaprt
     moveToFirst(senders){
         let currentIndex = this._owner.subparts.indexOf(this);
-        this._owner.subpartOrderChanged(this.id, currentIndex, this._owner.subparts.length - 1);
+        this._owner.subpartOrderChanged(this.id, currentIndex, 0);
     }
 
     moveToLast(senders){
         let currentIndex = this._owner.subparts.indexOf(this);
-        this._owner.subpartOrderChanged(this.id, currentIndex, 0);
+        this._owner.subpartOrderChanged(this.id, currentIndex, this._owner.subparts.length - 1);
     }
 
     /** Property Subscribers

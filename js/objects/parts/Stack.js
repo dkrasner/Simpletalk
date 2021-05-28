@@ -197,6 +197,57 @@ class Stack extends Part {
     get currentCard(){
         return window.System.partsById[this.currentCardId];
     }
+
+    // override the base class methods
+    moveDown(senders){
+        let currentIndex = this._owner.subparts.indexOf(this);
+        let allStacks = this._owner.subparts.filter((part) => {
+            return part.type == "stack";
+        });
+        if(currentIndex < allStacks.length - 1 && currentIndex < this._owner.subparts.length - 1){
+            this._owner.subpartOrderChanged(this.id, currentIndex, currentIndex + 1);
+        }
+    }
+
+    moveUp(senders){
+        let currentIndex = this._owner.subparts.indexOf(this);
+        let allStacks = this._owner.subparts.filter((part) => {
+            return part.type == "stack";
+        });
+        if(currentIndex > 0){
+            this._owner.subpartOrderChanged(this.id, currentIndex, currentIndex - 1);
+        }
+    }
+
+    moveToLast(senders){
+        let currentIndex = this._owner.subparts.indexOf(this);
+        let allStacks = this._owner.subparts.filter((part) => {
+            return part.type == "stack";
+        });
+        if(currentIndex != allStacks.length - 1){
+            this._owner.subpartOrderChanged(this.id, currentIndex, allStacks.length - 1);
+        }
+    }
+
+    addPart(aPart){
+        if(!this.acceptsSubpart(aPart.type)){
+            throw new Error(`${this.type} does not accept subparts of type ${aPart.type}`);
+        }
+
+        let found = this.subparts.indexOf(aPart);
+        if(found < 0){
+            // if the part is a card then append after the last card
+            if(aPart.type == "card"){
+                let allCards = this.subparts.filter((part) => {
+                    return part.type == "card";
+                });
+                this.subparts.splice(allCards.length, 0, aPart);
+            } else {
+                this.subparts.push(aPart);
+            }
+            aPart._owner = this;
+        }
+    }
 };
 
 export {

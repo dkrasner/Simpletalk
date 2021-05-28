@@ -73,6 +73,37 @@ class Card extends Part {
     get type(){
         return 'card';
     }
+
+    // override the base class methods
+    moveDown(senders){
+        let currentIndex = this._owner.subparts.indexOf(this);
+        let allCards = this._owner.subparts.filter((part) => {
+            return part.type == "card";
+        });
+        if(currentIndex < allCards.length - 1 && currentIndex < this._owner.subparts.length - 1){
+            this._owner.subpartOrderChanged(this.id, currentIndex, currentIndex + 1);
+        }
+    }
+
+    moveUp(senders){
+        let currentIndex = this._owner.subparts.indexOf(this);
+        let allCards = this._owner.subparts.filter((part) => {
+            return part.type == "card";
+        });
+        if(currentIndex > 0){
+            this._owner.subpartOrderChanged(this.id, currentIndex, currentIndex - 1);
+        }
+    }
+
+    moveToLast(senders){
+        let currentIndex = this._owner.subparts.indexOf(this);
+        let allCards = this._owner.subparts.filter((part) => {
+            return part.type == "card";
+        });
+        if(currentIndex != allCards.length - 1){
+            this._owner.subpartOrderChanged(this.id, currentIndex, allCards.length - 1);
+        }
+    }
 };
 
 export {
