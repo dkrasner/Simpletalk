@@ -59,7 +59,6 @@ const templateString = `
 </style>
 <p class="part-info">
     My <button class="owner-link" title=""><span></span>${arrowLeftIcon}</button> is named <span class="part-name"></span> and is located at <button class="location-link" title="Copy location"><span></span>${clipboardIcon}</button>
-    <input type="hidden" id="clip"/>
 </p>
 `;
 
@@ -231,11 +230,19 @@ class EditorLocationInfo extends HTMLElement {
     }
 
     onLocationClick(event){
-        let input = this._shadowRoot.getElementById('clip');
+        let input = document.createElement('input');
+        input.style.position = 'absolute';
+        input.style.opacity = 0;
+        document.body.append(input);
+        let currentFocus = document.activeElement;
+        input.focus();
         input.value = this.locationLinkSpan.textContent;
+        console.log(input.value);
         input.select();
+        //debugger;
         document.execCommand('copy');
-        input.value = "";
+        input.remove();
+        currentFocus.focus();
     }
 };
 
