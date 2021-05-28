@@ -21,19 +21,27 @@ const templateString = `
 
     header,
     #subparts-list-wrapper {
+        display: flex;
+        flex-direction: column;
         margin: 6px;
     }
+
+    #subparts-list-wrapper {
+        flex: 1;
+        overflow-y: hidden;
+    }
+
     .hidden {
         display: none;
     }
 
     #subparts-area {
+        flex: 1;
         list-style: none;
         font-family: 'Helvetica', sans-serif;
         padding: 0;
         margin: 0;
         margin-left: 32px;
-        position: relative;
         overflow-y: auto;
     }
 </style>

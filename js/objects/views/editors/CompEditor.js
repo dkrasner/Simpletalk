@@ -83,7 +83,7 @@ const templateString = `
         display: block;
         flex: 1;
         margin-top: 20px;
-        height: 80%;
+        overflow: hidden;
     }
 
     #header-area {
@@ -220,6 +220,7 @@ class CompEditor extends HTMLElement {
         this.centerOnElement = this.centerOnElement.bind(this);
         this.undoCenterOnElement = this.undoCenterOnElement.bind(this);
         this.updateHeader = this.updateHeader.bind(this);
+        this.checkForNavigation = this.checkForNavigation.bind(this);
         this.receiveMessage = this.receiveMessage.bind(this);
         this.onTabActivated = this.onTabActivated.bind(this);
         this.onNameInputChange = this.onNameInputChange.bind(this);
@@ -282,6 +283,13 @@ class CompEditor extends HTMLElement {
         }
         this.model = aModel;
         this.model.addPropertySubscriber(this);
+
+        // If the incoming model is a Card or
+        // Stack that is not the current one,
+        // we navigate to it
+        if(this.model.type == 'card' || this.model.type == 'stack'){
+            this.checkForNavigation();
+        }
 
         // Close any open Halos.
         // If the new model wants a Halo,
@@ -424,6 +432,21 @@ class CompEditor extends HTMLElement {
         } else {
             iconDisplay.innerHTML = partIcons.generic;
         }
+    }
+
+    checkForNavigation(){
+        // If the model is a Card or Stack that
+        // is not the current (ie, not being displayed
+        // in the main window), then we should navigate
+        // to it
+        let currentStack = window.System.world.currentStack;
+        let currentCard = currentStack.currentCard;
+        if(this.model.type == 'card' && this.model.id != currentCard.id){
+            currentStack.goToCardById(this.model.id);
+        } else if(this.model.type == 'stack' && this.model.id != currentStack.id){
+            window.System.world.goToStackById(this.model.id);
+        }
+        
     }
 
     receiveMessage(aMessage){
