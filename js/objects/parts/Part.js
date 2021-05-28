@@ -37,6 +37,7 @@ class Part {
         this._functionHandlers = {};
         this._scriptSemantics = {};
         this._propertySubscribers = new Set();
+        this._viewSubscribers = new Set();
         this._stepIntervalId = null;
 
         this.isPart = true;
@@ -58,6 +59,8 @@ class Part {
         this.sendMessage = this.sendMessage.bind(this);
         this.addPropertySubscriber = this.addPropertySubscriber.bind(this);
         this.removePropertySubscriber = this.removePropertySubscriber.bind(this);
+        this.addViewSubscriber = this.addViewSubscriber.bind(this);
+        this.removeViewSubscriber = this.removeViewSubscriber.bind(this);
         this.serialize = this.serialize.bind(this);
         this.toJSON = this.toJSON.bind(this);
         this.setPropsFromDeserializer = this.setPropsFromDeserializer.bind(this);
@@ -84,6 +87,10 @@ class Part {
         this.setPrivateCommandHandler("copy", this.copyCmdHandler);
         this.setPrivateCommandHandler("paste", this.pasteCmdHandler);
         this.setPrivateCommandHandler("move", this.move);
+        this.setPrivateCommandHandler("moveUp", this.moveUp);
+        this.setPrivateCommandHandler("moveDown", this.moveDown);
+        this.setPrivateCommandHandler("moveToFirst", this.moveToFirst);
+        this.setPrivateCommandHandler("moveToLast", this.moveToLast);
     }
 
     // Convenience getter to get the id
@@ -214,25 +221,14 @@ class Part {
         // array. Note: this is 1-indexed
         this.partProperties.newDynamicProp(
             'number',
-            function(propOwner, propObject, val){
-                if(propOwner.type != "world"){
-                    let subparts = propOwner._owner.subparts;
-                    // if the val is out of bounds, or there is simpl one subpart
-                    // then we don't do anything
-                    if(subparts.length > 1 && val <= subparts.length && val > 0){
-                        let currentIndex = subparts.indexOf(propOwner);
-                        subparts.splice(currentIndex, 1); // remove the propOwner from subparts
-                        subparts.splice(val - 1, 0, propOwner); // insert at val-1 index
-                        propOwner._owner.subparts = subparts;
-                    }
-                }
-            },
+            null, // no setter
             function(propOwner, propObject){
                 if(propOwner.type == "world"){
                     return 1;
                 }
                 return propOwner._owner.subparts.indexOf(propOwner) + 1;
-            }
+            },
+            true // readonly
         );
 
         this.partProperties.newDynamicProp(
@@ -532,6 +528,32 @@ class Part {
         this.partProperties.setPropertyNamed(this, "left", left);
     }
 
+    moveUp(senders){
+        let currentIndex = this._owner.subparts.indexOf(this);
+        if(currentIndex < this._owner.subparts.length - 1){
+            this._owner.subpartOrderChanged(this.id, currentIndex, currentIndex + 1);
+        }
+    }
+
+    moveDown(senders){
+        let currentIndex = this._owner.subparts.indexOf(this);
+        if(currentIndex > 0){
+            this._owner.subpartOrderChanged(this.id, currentIndex, currentIndex - 1);
+        }
+    }
+
+    // Note: moveToFirst means move to first in the view
+    // i.e. last as a subaprt
+    moveToFirst(senders){
+        let currentIndex = this._owner.subparts.indexOf(this);
+        this._owner.subpartOrderChanged(this.id, currentIndex, this._owner.subparts.length - 1);
+    }
+
+    moveToLast(senders){
+        let currentIndex = this._owner.subparts.indexOf(this);
+        this._owner.subpartOrderChanged(this.id, currentIndex, 0);
+    }
+
     /** Property Subscribers
         ------------------------
         Objects added as property subscribers
@@ -556,6 +578,38 @@ class Part {
         this._propertySubscribers.forEach(subscriber => {
             this.sendMessage(message, subscriber);
         });
+    }
+
+    /** View Subscribers
+        ------------------------
+        Objects added as view subscribers
+        will be 'notified' whenever this Part
+        incurrs a view change (add, delete subparts, reorder etc)
+    **/
+    addViewSubscriber(anObject){
+        this._viewSubscribers.add(anObject);
+    }
+
+    removeViewSubscriber(anObject){
+        this._viewSubscribers.delete(anObject);
+    }
+
+    viewChanged(changeName, ...args){
+        let message = {
+            type: 'viewChanged',
+            changeName: changeName,
+            partId: this.id,
+            args: args
+        };
+        this._viewSubscribers.forEach(subscriber => {
+            this.sendMessage(message, subscriber);
+        });
+    }
+
+    subpartOrderChanged(id, currentIndex, newIndex){
+        let subpart = this.subparts.splice(currentIndex, 1)[0];
+        this.subparts.splice(newIndex, 0, subpart);
+        this.viewChanged("subpart-order", id, currentIndex, newIndex);
     }
 
     startStepping(){
