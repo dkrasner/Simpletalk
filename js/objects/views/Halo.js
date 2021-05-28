@@ -250,10 +250,10 @@ class Halo extends HTMLElement {
             }
 
             // Comprehensive editor button
-            this.compEditor = this.shadowRoot.getElementById('halo-edit');
-            this.compEditor.addEventListener('click', this.targetElement.onHaloOpenCompEditor);
+            this.editor = this.shadowRoot.getElementById('halo-edit');
+            this.editor.addEventListener('click', this.targetElement.onHaloOpenEditor);
             if(!this.targetElement.wantsHaloEdit){
-                this.compEditor.style.visibility = 'hidden';
+                this.editor.style.visibility = 'hidden';
             }
 
             // Copy button

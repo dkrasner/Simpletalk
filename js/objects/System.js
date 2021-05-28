@@ -32,9 +32,8 @@ import ResourceView from './views/ResourceView.js';
 
 
 import Halo from './views/Halo.js';
-import EditorView from './views/editors/EditorView.js';
 import STNavigator from './views/navigator/Navigator.js';
-import CompEditor from './views/editors/CompEditor.js';
+import Editor from './views/editors/Editor.js';
 
 import ohm from 'ohm-js';
 import interpreterSemantics from '../ohm/interpreter-semantics.js';
@@ -107,14 +106,14 @@ const System = {
 
                     // By default, we render the World in the
                     // Comprehensive Editor
-                    this.compEditor.render(this.world);
+                    this.editor.render(this.world);
                 });
         } else {
             this.loadFromEmpty();
             
             // By default, we render the World in the
             // Comprehensive Editor
-            this.compEditor.render(this.world);
+            this.editor.render(this.world);
         }
 
         // Attach a new clipboard instance
@@ -772,25 +771,14 @@ const System = {
     },
 
     openEditorForPart: function(partId){
-        // if there is already and editor open for this part do nothing
-        let editor = document.querySelector(`st-editor[target-id="${partId}"]`);
-        if(editor){
-            return;
-        }
-        let currentCard = this.getCurrentCardModel();
-        let currentCardView = this.findViewById(currentCard.id);
-        editor = document.createElement(
-            "st-editor"
+        this.editor.render(
+            this.partsById[partId]
         );
-        currentCardView.appendChild(editor);
-        editor.setTarget(partId);
+        this.editor.open();
     },
 
     closeEditorForPart: function(partId){
-        let editor = document.querySelector(`st-editor[target-id="${partId}"]`);
-        if(editor){
-            editor.parentNode.removeChild(editor);
-        }
+        this.editor.close();
     }
 };
 
@@ -1143,17 +1131,16 @@ document.addEventListener('DOMContentLoaded', () => {
     // Add any other non-part view CustomElements,
     // like the halo
     window.customElements.define('st-halo', Halo);
-    window.customElements.define('st-editor', EditorView);
     window.customElements.define('st-navigator', STNavigator);
-    window.customElements.define('st-comp-editor', CompEditor);
+    window.customElements.define('st-editor', Editor);
 
     // Add nav
     System.navigator = document.createElement('st-navigator');
     document.body.appendChild(System.navigator);
 
     // Add comprehensive editor pane
-    System.compEditor = document.createElement('st-comp-editor');
-    document.body.appendChild(System.compEditor);
+    System.editor = document.createElement('st-editor');
+    document.body.appendChild(System.editor);
 
     // Perform the initial setup of
     // the system

@@ -200,7 +200,7 @@ const templateString = `
 </div>
 `;
 
-class CompEditor extends HTMLElement {
+class Editor extends HTMLElement {
     constructor(){
         super();
 
@@ -514,6 +514,6 @@ class CompEditor extends HTMLElement {
 };
 
 export {
-    CompEditor,
-    CompEditor as default
+    Editor,
+    Editor as default
 };

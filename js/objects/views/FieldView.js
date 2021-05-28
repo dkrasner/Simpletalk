@@ -496,19 +496,6 @@ class FieldView extends PartView {
         window.System.closeEditorForPart(this.model.id);
     }
 
-    // We overwrite the PartView.onHaloOpenEditor for the moment
-    // TODO when all editors are properly established this can
-    // be moved back to the base class, and remove from here
-    onHaloOpenEditor(){
-        // Send the message to open a script editor
-        // with this view's model as the target
-        this.model.sendMessage({
-            type: 'command',
-            commandName: 'openEditor',
-            args: [this.model.id],
-            shouldIgnore: true // Should ignore if System DNU
-        }, this.model);
-    }
 
     /*
      * I convert raw text to html respecting the Firefox

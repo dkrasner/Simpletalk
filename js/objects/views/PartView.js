@@ -67,7 +67,7 @@ class PartView extends HTMLElement {
         this.onHaloTarget = this.onHaloTarget.bind(this);
         this.endHaloTarget = this.endHaloTarget.bind(this);
         this.onHaloActivationClick = this.onHaloActivationClick.bind(this);
-        this.onHaloOpenCompEditor = this.onHaloOpenCompEditor.bind(this);
+        this.onHaloOpenEditor = this.onHaloOpenEditor.bind(this);
         this.onAuxClick = this.onAuxClick.bind(this);
         this.onClick = this.onClick.bind(this);
         this.onMouseDown = this.onMouseDown.bind(this);
@@ -529,9 +529,9 @@ class PartView extends HTMLElement {
         }, this.model);
     }
 
-    onHaloOpenCompEditor(){
-        window.System.compEditor.render(this.model);
-        window.System.compEditor.open();
+    onHaloOpenEditor(){
+        window.System.editor.render(this.model);
+        window.System.editor.open();
     }
 
     onHaloResize(movementX, movementY){

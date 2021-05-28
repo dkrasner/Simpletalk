@@ -226,7 +226,7 @@ class EditorLocationInfo extends HTMLElement {
             // Re-render the editor on the Part
             // referenced by the found id
             let target = window.System.partsById[id];
-            window.System.compEditor.render(target);
+            window.System.editor.render(target);
         }
     }
 

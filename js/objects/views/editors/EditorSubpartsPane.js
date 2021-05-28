@@ -154,7 +154,7 @@ class EditorSubpartsPane extends HTMLElement {
         let id = event.currentTarget.getAttribute('ref-id');
         let targetPart = window.System.partsById[id];
         if(targetPart){
-            window.System.compEditor.render(targetPart);
+            window.System.editor.render(targetPart);
         }
     }
 };
