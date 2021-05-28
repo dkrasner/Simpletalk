@@ -324,6 +324,45 @@ wrapped-view > st-stack {
     display: block;
 }
 
+/* =Editor
+ * --------------------------------------------------------*/
+editor-subparts > li {
+    display: flex;
+    flex-direction: row;
+    align-items: baseline;
+    width: 100%;
+    border-bottom: 1px solid rgba(100, 100, 100, 0.0);
+    transition: border 0.1s linear;
+}
+
+editor-subparts > li:hover {
+    cursor: pointer;
+    border-bottom: 1px solid rgba(100, 100, 100, 0.5);
+    transition: border 0.1s linear;
+}
+
+editor-subparts > li > .icon-display-area {
+    width: 1.5rem;
+    height: 1.5rem;
+    margin-bottom: 5px;
+    align-self: center;
+}
+
+editor-subparts > li > .icon-display-area > svg {
+    width: 100%;
+    height: 100%;
+}
+
+editor-subparts > li > * {
+    margin-right: 16px;
+}
+
+editor-subparts .id-span {
+    font-family: monospace;
+    color: rgba(0, 0, 0, 0.4);
+}
+
+
 /* =Utility Classes
  * --------------------------------------------------------*/
 .editing {
