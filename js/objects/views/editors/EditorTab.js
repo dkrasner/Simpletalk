@@ -9,7 +9,7 @@ const templateString = `
         justify-content: center;
         padding: 6px;
         opacity: 0.5;
-        border-bottom: 2px solid rgba(200, 0, 0, 0.0);
+        border-bottom: 2px solid rgba(100, 100, 100, 0.7);
         transition: border 0.2s linear, opacity 0.2s linear;
         user-select: none;
     }

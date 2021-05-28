@@ -19,11 +19,18 @@ const templateString = `
         background-color: red;
     }
 
-    header,
-    #subparts-list-wrapper {
+    section {
         display: flex;
         flex-direction: column;
         margin: 6px;
+    }
+
+    #button-area {
+        display: flex;
+        flex-direction: row;
+        flex-wrap: wrap;
+        align-items: center;
+        justify-content: space-between;'
     }
 
     #subparts-list-wrapper {
@@ -45,10 +52,13 @@ const templateString = `
         overflow-y: auto;
     }
 </style>
-<header>
+<section id="button-area">
+    <slot name="button"></slot>
+</section>
+<section id="location-area">
     <h3>Part Location and Owners</h3>
     <slot name="ancestor-info"></slot>
-</header>
+</section>
 <section id="subparts-list-wrapper">
     <h3>Subparts</h3>
     <ol id="subparts-area">
@@ -70,13 +80,15 @@ class EditorSubpartsPane extends HTMLElement {
         );
 
         // Bound methods
+        this.onAddSubpart = this.onAddSubpart.bind(this);
         this.onSubpartItemClick = this.onSubpartItemClick.bind(this);
+        this.createAddPartButton = this.createAddPartButton.bind(this);
         this.createSubpartComponent = this.createSubpartComponent.bind(this);
     }
 
     render(aModel){
         this.model = aModel;
-        this.headerEl = this._shadowRoot.querySelector('header');
+        this.headerEl = this._shadowRoot.getElementById('location-area');
         
         // Clear any DOM children
         this.innerHTML = "";
@@ -95,6 +107,13 @@ class EditorSubpartsPane extends HTMLElement {
                 this.appendChild(infoEl);
             });
         }
+
+        // Create the "add subpart" buttons for parts that are accepted by the
+        // current Model part.
+        this.model.acceptedSubpartTypes.forEach(partType => {
+            let element = this.createAddPartButton(partType);
+            this.appendChild(element);
+        });
 
         let labelHeader = this._shadowRoot.querySelector('#subparts-list-wrapper > h3');
         if(this.model.subparts.length){
@@ -150,12 +169,42 @@ class EditorSubpartsPane extends HTMLElement {
         return wrapper;
     }
 
+    createAddPartButton(aPartName){
+        let button = document.createElement('button');
+        let icon = partIcons[aPartName];
+        if(!icon){
+            icon = partIcons.generic;
+        }
+        button.setAttribute('slot', 'button');
+        button.setAttribute('data-type', aPartName);
+        button.setAttribute('title', `Add a ${aPartName} to this ${this.model.type}`);
+        button.classList.add('add-part-button');
+        button.addEventListener('click', this.onAddSubpart);
+        button.innerHTML = icon;
+        return button;
+    }
+
     onSubpartItemClick(event){
         let id = event.currentTarget.getAttribute('ref-id');
         let targetPart = window.System.partsById[id];
         if(targetPart){
             window.System.editor.render(targetPart);
         }
+    }
+
+    onAddSubpart(event){
+        let type = event.currentTarget.getAttribute('data-type');
+        if(type){
+            this.model.sendMessage({
+                type: 'command',
+                commandName: 'newModel',
+                args: [
+                    type,
+                    this.model.id
+                ]
+            }, this.model);
+        }
+        this.render(this.model);
     }
 };
 

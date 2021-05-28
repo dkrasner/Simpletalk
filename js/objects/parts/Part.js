@@ -188,10 +188,7 @@ class Part {
                 'script',
                 null // For now
             ),
-            new BasicProperty(
-                'editorOpen',
-                false
-            ),
+            
             // Styling
             // css (really JS style) key-values
             new BasicProperty(
@@ -485,11 +482,16 @@ class Part {
     **/
 
     openEditorCmdHandler(){
-        this.partProperties.setPropertyNamed(this, 'editorOpen', true);
+        let editor = document.querySelector('st-editor');
+        editor.render(this);
+        if(!editor.isOpen){
+            editor.open();
+        }
     }
 
     closeEditorCmdHandler(){
-        this.partProperties.setPropertyNamed(this, 'editorOpen', false);
+        let editor = document.querySelector('st-editor');
+        editor.close();
     }
 
     setTargetProp(senders, ...args){

@@ -243,10 +243,10 @@ class Halo extends HTMLElement {
             }
 
             // Edit button
-            this.editor = this.shadowRoot.getElementById('halo-script-edit');
-            this.editor.addEventListener('click', this.targetElement.onHaloOpenEditor);
+            this.scriptEditor = this.shadowRoot.getElementById('halo-script-edit');
+            this.scriptEditor.addEventListener('click', this.targetElement.onHaloOpenScriptEditor);
             if(!this.targetElement.wantsHaloScriptEdit){
-                this.editor.style.visibility = 'hidden';
+                this.scriptEditor.style.visibility = 'hidden';
             }
 
             // Comprehensive editor button

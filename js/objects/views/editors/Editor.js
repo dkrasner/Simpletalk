@@ -43,7 +43,7 @@ const templateString = `
         background-color: white;
         padding: 8px;
         border-right: 1px solid rgba(0, 0, 0, 0.5);
-        box-shadow: 0px 1px 5px 10px rgba(200, 200, 200, 0.7);
+        box-shadow: 0px 1px 10px 2px rgba(0, 0, 0, 0.3);
     }
     
     :host(.open){

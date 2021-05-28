@@ -507,10 +507,6 @@ const System = {
             ownerModel.removePart(foundModel);
         }
 
-        // close all open editors, otherwise they will
-        // be orphaned in the view
-        foundModel.partProperties.setPropertyNamed(foundModel, "editorOpen", false);
-
         delete this.partsById[modelId];
         this.removeViews(modelId);
 
@@ -1055,6 +1051,7 @@ System._commandHandlers['globalInterrupt'] = () => {
         }
     });
 };
+
 
 /** Register the initial set of parts in the system **/
 System.registerPart('card', Card);
