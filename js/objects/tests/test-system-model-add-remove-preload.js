@@ -53,7 +53,7 @@ describe('newModel tests', () => {
         expect(sendFunc).to.not.throw(Error);
     });
 
-    it('Can send newModel message without error (add image to current card)', () => {
+    it.skip('Can send newModel message without error (add image to current card)', () => {
         let msg = {
             type: 'command',
             commandName: 'newModel',
