@@ -76,6 +76,11 @@ class Part {
         this.stopStepping = this.stopStepping.bind(this);
         this.setTargetProp = this.setTargetProp.bind(this);
         this.move = this.move.bind(this);
+        this.moveSubpartUp = this.moveSubpartUp.bind(this);
+        this.moveSubpartDown = this.moveSubpartDown.bind(this);
+        this.moveSubpartToFirst = this.moveSubpartToFirst.bind(this);
+        this.moveSubpartToLast = this.moveSubpartToLast.bind(this);
+
 
 
         // Finally, we finish initialization
@@ -88,10 +93,10 @@ class Part {
         this.setPrivateCommandHandler("copy", this.copyCmdHandler);
         this.setPrivateCommandHandler("paste", this.pasteCmdHandler);
         this.setPrivateCommandHandler("move", this.move);
-        this.setPrivateCommandHandler("moveUp", this.moveUp);
-        this.setPrivateCommandHandler("moveDown", this.moveDown);
-        this.setPrivateCommandHandler("moveToFirst", this.moveToFirst);
-        this.setPrivateCommandHandler("moveToLast", this.moveToLast);
+        this.setPrivateCommandHandler("moveUp", () => {this._owner.moveSubpartUp(this);});
+        this.setPrivateCommandHandler("moveDown", () => {this._owner.moveSubpartDown(this);});
+        this.setPrivateCommandHandler("moveToFirst", () => {this._owner.moveSubpartToFirst(this);});
+        this.setPrivateCommandHandler("moveToLast", () => {this._owner.moveSubpartToLast(this);});
     }
 
     // Convenience getter to get the id
@@ -533,30 +538,30 @@ class Part {
         this.partProperties.setPropertyNamed(this, "left", left);
     }
 
-    moveDown(senders){
-        let currentIndex = this._owner.subparts.indexOf(this);
-        if(currentIndex < this._owner.subparts.length - 1){
-            this._owner.subpartOrderChanged(this.id, currentIndex, currentIndex + 1);
+    moveSubpartDown(part){
+        let currentIndex = this.subparts.indexOf(part);
+        if(currentIndex < this.subparts.length - 1){
+            this.subpartOrderChanged(part.id, currentIndex, currentIndex + 1);
         }
     }
 
-    moveUp(senders){
-        let currentIndex = this._owner.subparts.indexOf(this);
+    moveSubpartUp(part){
+        let currentIndex = this.subparts.indexOf(part);
         if(currentIndex > 0){
-            this._owner.subpartOrderChanged(this.id, currentIndex, currentIndex - 1);
+            this.subpartOrderChanged(part.id, currentIndex, currentIndex - 1);
         }
     }
 
-    // Note: moveToFirst means move to first in the view
+    // Note: moveSubpartToFirst means move to first in the view
     // i.e. last as a subaprt
-    moveToFirst(senders){
-        let currentIndex = this._owner.subparts.indexOf(this);
-        this._owner.subpartOrderChanged(this.id, currentIndex, 0);
+    moveSubpartToFirst(part){
+        let currentIndex = this.subparts.indexOf(part);
+        this.subpartOrderChanged(part.id, currentIndex, 0);
     }
 
-    moveToLast(senders){
-        let currentIndex = this._owner.subparts.indexOf(this);
-        this._owner.subpartOrderChanged(this.id, currentIndex, this._owner.subparts.length - 1);
+    moveSubpartToLast(part){
+        let currentIndex = this.subparts.indexOf(part);
+        this.subpartOrderChanged(part.id, currentIndex, this.subparts.length - 1);
     }
 
     /** Property Subscribers

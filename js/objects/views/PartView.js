@@ -342,7 +342,7 @@ class PartView extends HTMLElement {
 
     subpartOrderChanged(id, currentIndex, newIndex){
         // TODO sort this out
-        if(this.name == "WrappedView"){
+        if(this.name == "WrappedView" || this.name == "StackRow" || this.name == "CardRow"){
             return;
         }
         let subpartNode = this.childNodes[currentIndex];

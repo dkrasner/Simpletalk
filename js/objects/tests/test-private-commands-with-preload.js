@@ -256,17 +256,10 @@ describe('Private command tests', () => {
             assert.equal(button3.id, currentCardView.childNodes[2].getAttribute("part-id"));
         });
     });
-    describe('Subpart re-order with cards and stacks', () => {
+    describe('Subpart re-order with cards', () => {
         let currentStack;
         let currentStackView;
         let currentCardView;
-        let card2;
-        let card2View;
-        let card3;
-        let card3View;
-        let button1View;
-        let button2;
-        let button2View;
         let  orderCheck = function(parentPart, newIndex, name){
             let parentView = System.findViewById(parentPart.id);
             let part = parentPart.subparts[newIndex];
@@ -326,158 +319,255 @@ describe('Private command tests', () => {
             orderCheck(currentStack, 3, "Button 1");
             orderCheck(currentStack, 4, "Button 2");
         });
-        it.skip('MoveToLast is idempotent', () => {
-            let script = `tell button "Button 1" to moveToLast`;
+        it('MoveToLast is idempotent', () => {
+            let script = `tell current card to moveToLast`;
             let match = testLanguageGrammar.match(script, 'Command');
             assert.isTrue(match.succeeded());
             let msg = semantics(match).interpret();
             assert.exists(msg);
-            currentCard.sendMessage(msg, button1);
-            // button 1 is now last
-            assert.equal(currentCard.subparts[2], button1);
-            assert.equal(button1.id, currentCardView.childNodes[2].getAttribute("part-id"));
-            // button 2 is now first
-            assert.equal(currentCard.subparts[0], button2);
-            assert.equal(button2.id, currentCardView.childNodes[0].getAttribute("part-id"));
-            // button 3 is now second
-            assert.equal(currentCard.subparts[1], button3);
-            assert.equal(button3.id, currentCardView.childNodes[1].getAttribute("part-id"));
+            currentCard.sendMessage(msg, currentCard);
+            // check order
+            orderCheck(currentStack, 0, "Card 2");
+            orderCheck(currentStack, 1, "Card 3");
+            orderCheck(currentStack, 2, "Current Card");
+            orderCheck(currentStack, 3, "Button 1");
+            orderCheck(currentStack, 4, "Button 2");
+            script = `tell third card to moveToLast`;
+            match = testLanguageGrammar.match(script, 'Command');
+            assert.isTrue(match.succeeded());
+            msg = semantics(match).interpret();
+            assert.exists(msg);
+            currentCard.sendMessage(msg, currentCard);
+            // check order
+            orderCheck(currentStack, 0, "Card 2");
+            orderCheck(currentStack, 1, "Card 3");
+            orderCheck(currentStack, 2, "Current Card");
+            orderCheck(currentStack, 3, "Button 1");
+            orderCheck(currentStack, 4, "Button 2");
         });
-        it.skip('MoveToFirst', () => {
-            let script = `tell button "Button 1" to moveToFirst`;
+        it('MoveToFirst', () => {
+            let script = `tell current card to moveToFirst`;
             let match = testLanguageGrammar.match(script, 'Command');
             assert.isTrue(match.succeeded());
             let msg = semantics(match).interpret();
             assert.exists(msg);
-            currentCard.sendMessage(msg, button1);
-            // button 1 is now first 
-            assert.equal(currentCard.subparts[0], button1);
-            assert.equal(button1.id, currentCardView.childNodes[0].getAttribute("part-id"));
-            // button 2 is now second
-            assert.equal(currentCard.subparts[1], button2);
-            assert.equal(button2.id, currentCardView.childNodes[1].getAttribute("part-id"));
-            // button 3 is now third
-            assert.equal(currentCard.subparts[2], button3);
-            assert.equal(button3.id, currentCardView.childNodes[2].getAttribute("part-id"));
+            currentCard.sendMessage(msg, currentCard);
+            // check order
+            orderCheck(currentStack, 0, "Current Card");
+            orderCheck(currentStack, 1, "Card 2");
+            orderCheck(currentStack, 2, "Card 3");
+            orderCheck(currentStack, 3, "Button 1");
+            orderCheck(currentStack, 4, "Button 2");
         });
-        it.skip('MoveToFirst idempotent', () => {
-            let script = `tell button "Button 1" to moveToFirst`;
+        it('MoveToFirst is idempotent', () => {
+            let script = `tell current card to moveToFirst`;
             let match = testLanguageGrammar.match(script, 'Command');
             assert.isTrue(match.succeeded());
             let msg = semantics(match).interpret();
             assert.exists(msg);
-            currentCard.sendMessage(msg, button1);
-            // button 1 is now first
-            assert.equal(currentCard.subparts[0], button1);
-            assert.equal(button1.id, currentCardView.childNodes[0].getAttribute("part-id"));
-            // button 2 is now second
-            assert.equal(currentCard.subparts[1], button2);
-            assert.equal(button2.id, currentCardView.childNodes[1].getAttribute("part-id"));
-            // button 3 is now third
-            assert.equal(currentCard.subparts[2], button3);
-            assert.equal(button3.id, currentCardView.childNodes[2].getAttribute("part-id"));
+            currentCard.sendMessage(msg, currentCard);
+            // check order
+            orderCheck(currentStack, 0, "Current Card");
+            orderCheck(currentStack, 1, "Card 2");
+            orderCheck(currentStack, 2, "Card 3");
+            orderCheck(currentStack, 3, "Button 1");
+            orderCheck(currentStack, 4, "Button 2");
         });
-        it.skip('MoveDown', () => {
-            let script = `tell button "Button 1" to moveDown`;
+        it('MoveUp', () => {
+            let script = `tell card "Card 2" to moveUp`;
             let match = testLanguageGrammar.match(script, 'Command');
             assert.isTrue(match.succeeded());
             let msg = semantics(match).interpret();
             assert.exists(msg);
-            currentCard.sendMessage(msg, button1);
-            // button 1 is now second
-            assert.equal(currentCard.subparts[1], button1);
-            assert.equal(button1.id, currentCardView.childNodes[1].getAttribute("part-id"));
-            // button 2 is now first
-            assert.equal(currentCard.subparts[0], button2);
-            assert.equal(button2.id, currentCardView.childNodes[0].getAttribute("part-id"));
-            // button 3 is now third
-            assert.equal(currentCard.subparts[2], button3);
-            assert.equal(button3.id, currentCardView.childNodes[2].getAttribute("part-id"));
+            currentCard.sendMessage(msg, currentCard);
+            // check order
+            orderCheck(currentStack, 1, "Current Card");
+            orderCheck(currentStack, 0, "Card 2");
+            orderCheck(currentStack, 2, "Card 3");
+            orderCheck(currentStack, 3, "Button 1");
+            orderCheck(currentStack, 4, "Button 2");
         });
-        it.skip('MoveDown (again)', () => {
-            let script = `tell button "Button 1" to moveDown`;
+        it('MoveDown', () => {
+            let script = `tell card "Card 2" to moveDown`;
             let match = testLanguageGrammar.match(script, 'Command');
             assert.isTrue(match.succeeded());
             let msg = semantics(match).interpret();
             assert.exists(msg);
-            currentCard.sendMessage(msg, button1);
-            // button 1 is now third
-            assert.equal(currentCard.subparts[2], button1);
-            assert.equal(button1.id, currentCardView.childNodes[2].getAttribute("part-id"));
-            // button 2 is now first
-            assert.equal(currentCard.subparts[0], button2);
-            assert.equal(button2.id, currentCardView.childNodes[0].getAttribute("part-id"));
-            // button 3 is now second
-            assert.equal(currentCard.subparts[1], button3);
-            assert.equal(button3.id, currentCardView.childNodes[1].getAttribute("part-id"));
+            currentCard.sendMessage(msg, currentCard);
+            // check order
+            orderCheck(currentStack, 0, "Current Card");
+            orderCheck(currentStack, 1, "Card 2");
+            orderCheck(currentStack, 2, "Card 3");
+            orderCheck(currentStack, 3, "Button 1");
+            orderCheck(currentStack, 4, "Button 2");
         });
-        it.skip('MoveDown (moving last part is idempotent)', () => {
-            let script = `tell button "Button 1" to moveDown`;
+        it('MoveDown again', () => {
+            let script = `tell card "Card 2" to moveDown`;
             let match = testLanguageGrammar.match(script, 'Command');
             assert.isTrue(match.succeeded());
             let msg = semantics(match).interpret();
             assert.exists(msg);
-            currentCard.sendMessage(msg, button1);
-            // button 1 is now third
-            assert.equal(currentCard.subparts[2], button1);
-            assert.equal(button1.id, currentCardView.childNodes[2].getAttribute("part-id"));
-            // button 2 is now first
-            assert.equal(currentCard.subparts[0], button2);
-            assert.equal(button2.id, currentCardView.childNodes[0].getAttribute("part-id"));
-            // button 3 is now second
-            assert.equal(currentCard.subparts[1], button3);
-            assert.equal(button3.id, currentCardView.childNodes[1].getAttribute("part-id"));
+            currentCard.sendMessage(msg, currentCard);
+            // check order
+            orderCheck(currentStack, 0, "Current Card");
+            orderCheck(currentStack, 2, "Card 2");
+            orderCheck(currentStack, 1, "Card 3");
+            orderCheck(currentStack, 3, "Button 1");
+            orderCheck(currentStack, 4, "Button 2");
         });
-        it.skip('MoveUp', () => {
-            let script = `tell button "Button 1" to moveUp`;
+        it('MoveDown again (cannot move card after non-card part)', () => {
+            let script = `tell card "Card 2" to moveDown`;
             let match = testLanguageGrammar.match(script, 'Command');
             assert.isTrue(match.succeeded());
             let msg = semantics(match).interpret();
             assert.exists(msg);
-            currentCard.sendMessage(msg, button1);
-            // button 1 is now second
-            assert.equal(currentCard.subparts[1], button1);
-            assert.equal(button1.id, currentCardView.childNodes[1].getAttribute("part-id"));
-            // button 2 is now first
-            assert.equal(currentCard.subparts[0], button2);
-            assert.equal(button2.id, currentCardView.childNodes[0].getAttribute("part-id"));
-            // button 3 is now third
-            assert.equal(currentCard.subparts[2], button3);
-            assert.equal(button3.id, currentCardView.childNodes[2].getAttribute("part-id"));
+            currentCard.sendMessage(msg, currentCard);
+            // check order
+            orderCheck(currentStack, 0, "Current Card");
+            orderCheck(currentStack, 2, "Card 2");
+            orderCheck(currentStack, 1, "Card 3");
+            orderCheck(currentStack, 3, "Button 1");
+            orderCheck(currentStack, 4, "Button 2");
         });
-        it.skip('MoveUp (again)', () => {
-            let script = `tell button "Button 1" to moveUp`;
+        it('MoveToFirst (cannot move non-card part before cards)', () => {
+            let script = `tell button "Button 2" of current stack to moveToFirst`;
             let match = testLanguageGrammar.match(script, 'Command');
             assert.isTrue(match.succeeded());
             let msg = semantics(match).interpret();
             assert.exists(msg);
-            currentCard.sendMessage(msg, button1);
-            // button 1 is now first
-            assert.equal(currentCard.subparts[0], button1);
-            assert.equal(button1.id, currentCardView.childNodes[0].getAttribute("part-id"));
-            // button 2 is now second
-            assert.equal(currentCard.subparts[1], button2);
-            assert.equal(button2.id, currentCardView.childNodes[1].getAttribute("part-id"));
-            // button 3 is now third
-            assert.equal(currentCard.subparts[2], button3);
-            assert.equal(button3.id, currentCardView.childNodes[2].getAttribute("part-id"));
+            currentCard.sendMessage(msg, currentCard);
+            orderCheck(currentStack, 0, "Current Card");
+            orderCheck(currentStack, 2, "Card 2");
+            orderCheck(currentStack, 1, "Card 3");
+            orderCheck(currentStack, 4, "Button 1");
+            orderCheck(currentStack, 3, "Button 2");
         });
-        it.skip('MoveUp (moving first part is idempotent)', () => {
-            let script = `tell button "Button 1" to moveUp`;
+        it('MoveUp (can move non-card parts up before non-card parts)', () => {
+            let script = `tell button "Button 1" of current stack to moveUp`;
             let match = testLanguageGrammar.match(script, 'Command');
             assert.isTrue(match.succeeded());
             let msg = semantics(match).interpret();
             assert.exists(msg);
-            currentCard.sendMessage(msg, button1);
-            // button 1 is now first
-            assert.equal(currentCard.subparts[0], button1);
-            assert.equal(button1.id, currentCardView.childNodes[0].getAttribute("part-id"));
-            // button 2 is now second
-            assert.equal(currentCard.subparts[1], button2);
-            assert.equal(button2.id, currentCardView.childNodes[1].getAttribute("part-id"));
-            // button 3 is now third
-            assert.equal(currentCard.subparts[2], button3);
-            assert.equal(button3.id, currentCardView.childNodes[2].getAttribute("part-id"));
+            currentCard.sendMessage(msg, currentCard);
+            orderCheck(currentStack, 0, "Current Card");
+            orderCheck(currentStack, 2, "Card 2");
+            orderCheck(currentStack, 1, "Card 3");
+            orderCheck(currentStack, 3, "Button 1");
+            orderCheck(currentStack, 4, "Button 2");
+        });
+        it('MoveUp (cannot move non-card part before cards)', () => {
+            let script = `tell button "Button 1" of current stack to moveUp`;
+            let match = testLanguageGrammar.match(script, 'Command');
+            assert.isTrue(match.succeeded());
+            let msg = semantics(match).interpret();
+            assert.exists(msg);
+            currentCard.sendMessage(msg, currentCard);
+            orderCheck(currentStack, 0, "Current Card");
+            orderCheck(currentStack, 2, "Card 2");
+            orderCheck(currentStack, 1, "Card 3");
+            orderCheck(currentStack, 3, "Button 1");
+            orderCheck(currentStack, 4, "Button 2");
+        });
+        it('MoveDown (can move non-card parts down after non-card parts)', () => {
+            let script = `tell button "Button 1" of current stack to moveDown`;
+            let match = testLanguageGrammar.match(script, 'Command');
+            assert.isTrue(match.succeeded());
+            let msg = semantics(match).interpret();
+            assert.exists(msg);
+            currentCard.sendMessage(msg, currentCard);
+            orderCheck(currentStack, 0, "Current Card");
+            orderCheck(currentStack, 2, "Card 2");
+            orderCheck(currentStack, 1, "Card 3");
+            orderCheck(currentStack, 4, "Button 1");
+            orderCheck(currentStack, 3, "Button 2");
+        });
+    });
+    describe('Subpart re-order with stacks', () => {
+        let world;
+        let currentStack;
+        let currentStackView;
+        let currentCardView;
+        let  orderCheck = function(parentPart, newIndex, name){
+            let parentView = System.findViewById(parentPart.id);
+            let part = parentPart.subparts[newIndex];
+            let nameProp = part.partProperties.getPropertyNamed(part, "name");
+            assert.equal(nameProp, name);
+            let view = System.findViewById(part.id);
+            assert.equal(view, parentView.childNodes[newIndex]);
+            assert.equal(part.id, view.getAttribute("part-id"));
+        };
+        before('', () => {
+            world = System.partsById['world'];
+            currentCard = System.getCurrentCardModel();
+            currentCardView = System.findViewById(currentCard.id);
+            currentStack = System.getCurrentStackModel();
+            currentStack.partProperties.setPropertyNamed(currentStack, "name", "Current Stack");
+            currentStackView = System.findViewById(currentStack.id);
+            let initSemantics = function(){
+                semantics = getSemanticsFor(currentCard);
+            };
+            expect(initSemantics).to.not.throw();
+            let script = `add stack "Stack 2" to this world`;
+            let match = testLanguageGrammar.match(script, 'Command');
+            let msg = semantics(match).interpret();
+            currentCard.sendMessage(msg, currentCard);
+            script = `add stack "Stack 3" to this world`;
+            match = testLanguageGrammar.match(script, 'Command');
+            msg = semantics(match).interpret();
+            currentCard.sendMessage(msg, currentCard);
+        });
+        it('Check that subpart and DOM child order is in sync', () => {
+            orderCheck(world, 0, "Current Stack");
+            orderCheck(world, 1, "Stack 2");
+            orderCheck(world, 2, "Stack 3");
+        });
+        it('MoveToLast', () => {
+            let script = `tell current stack to moveToLast`;
+            let match = testLanguageGrammar.match(script, 'Command');
+            assert.isTrue(match.succeeded());
+            let msg = semantics(match).interpret();
+            assert.exists(msg);
+            currentStack.sendMessage(msg, currentStack);
+            // check order
+            orderCheck(world, 2, "Current Stack");
+            orderCheck(world, 0, "Stack 2");
+            orderCheck(world, 1, "Stack 3");
+        });
+        it('MoveToFirst', () => {
+            let script = `tell current stack to moveToFirst`;
+            let match = testLanguageGrammar.match(script, 'Command');
+            assert.isTrue(match.succeeded());
+            let msg = semantics(match).interpret();
+            assert.exists(msg);
+            currentStack.sendMessage(msg, currentStack);
+            // check order
+            orderCheck(world, 0, "Current Stack");
+            orderCheck(world, 1, "Stack 2");
+            orderCheck(world, 2, "Stack 3");
+        });
+        it('MoveDown', () => {
+            let script = `tell current stack to moveDown`;
+            let match = testLanguageGrammar.match(script, 'Command');
+            assert.isTrue(match.succeeded());
+            let msg = semantics(match).interpret();
+            assert.exists(msg);
+            currentStack.sendMessage(msg, currentStack);
+            // check order
+            orderCheck(world, 1, "Current Stack");
+            orderCheck(world, 0, "Stack 2");
+            orderCheck(world, 2, "Stack 3");
+        });
+        it('MoveUp', () => {
+            let script = `tell current stack to moveUp`;
+            let match = testLanguageGrammar.match(script, 'Command');
+            assert.isTrue(match.succeeded());
+            let msg = semantics(match).interpret();
+            assert.exists(msg);
+            currentStack.sendMessage(msg, currentStack);
+            // check order
+            orderCheck(world, 0, "Current Stack");
+            orderCheck(world, 1, "Stack 2");
+            orderCheck(world, 2, "Stack 3");
         });
     });
 });

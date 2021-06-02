@@ -261,6 +261,63 @@ class WorldStack extends Part {
             aPart._owner = this;
         }
     }
+
+    moveSubpartDown(part){
+        let currentIndex = this.subparts.indexOf(part);
+        let lastValidPartIndex = this.subparts.length - 1;
+        if(part.type == "stack"){
+            let allStacks = this.subparts.filter((part) => {
+                return part.type == "stack";
+            });
+            lastValidPartIndex = allStacks.length - 1;
+        }
+        if(currentIndex < lastValidPartIndex){
+            this.subpartOrderChanged(part.id, currentIndex, currentIndex + 1);
+        }
+    }
+
+    moveSubpartToLast(part){
+        let currentIndex = this.subparts.indexOf(part);
+        let lastValidPartIndex = this.subparts.length - 1;
+        if(part.type == "stack"){
+            let allStacks = this.subparts.filter((part) => {
+                return part.type == "stack";
+            });
+            lastValidPartIndex = allStacks.length - 1;
+        }
+        if(currentIndex < lastValidPartIndex){
+            this.subpartOrderChanged(part.id, currentIndex, lastValidPartIndex);
+        }
+    }
+
+    moveSubpartUp(part){
+        let currentIndex = this.subparts.indexOf(part);
+        let firstValidPartIndex = 0;
+        if(part.type != "stack"){
+            let allStacks = this.subparts.filter((part) => {
+                return part.type == "stack";
+            });
+            firstValidPartIndex = allStacks.length;
+        }
+        if(currentIndex > firstValidPartIndex){
+            this.subpartOrderChanged(part.id, currentIndex, currentIndex - 1);
+        }
+    }
+
+    moveSubpartToFirst(part){
+        let currentIndex = this.subparts.indexOf(part);
+        let firstValidPartIndex = 0;
+        if(part.type != "stack"){
+            let allStacks = this.subparts.filter((part) => {
+                return part.type == "stack";
+            });
+            firstValidPartIndex = allStacks.length;
+        }
+        if(currentIndex > firstValidPartIndex){
+            this.subpartOrderChanged(part.id, currentIndex, firstValidPartIndex);
+        }
+    }
+
 };
 
 export {

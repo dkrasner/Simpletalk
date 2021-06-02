@@ -199,33 +199,59 @@ class Stack extends Part {
     }
 
     // override the base class methods
-    moveDown(senders){
-        let currentIndex = this._owner.subparts.indexOf(this);
-        let allStacks = this._owner.subparts.filter((part) => {
-            return part.type == "stack";
-        });
-        if(currentIndex < allStacks.length - 1 && currentIndex < this._owner.subparts.length - 1){
-            this._owner.subpartOrderChanged(this.id, currentIndex, currentIndex + 1);
+    moveSubpartDown(part){
+        let currentIndex = this.subparts.indexOf(part);
+        let lastValidPartIndex = this.subparts.length - 1;
+        if(part.type == "card"){
+            let allCards = this.subparts.filter((part) => {
+                return part.type == "card";
+            });
+            lastValidPartIndex = allCards.length - 1;
+        }
+        if(currentIndex < lastValidPartIndex){
+            this.subpartOrderChanged(part.id, currentIndex, currentIndex + 1);
         }
     }
 
-    moveUp(senders){
-        let currentIndex = this._owner.subparts.indexOf(this);
-        let allStacks = this._owner.subparts.filter((part) => {
-            return part.type == "stack";
-        });
-        if(currentIndex > 0){
-            this._owner.subpartOrderChanged(this.id, currentIndex, currentIndex - 1);
+    moveSubpartToLast(part){
+        let currentIndex = this.subparts.indexOf(part);
+        let lastValidPartIndex = this.subparts.length - 1;
+        if(part.type == "card"){
+            let allCards = this.subparts.filter((part) => {
+                return part.type == "card";
+            });
+            lastValidPartIndex = allCards.length - 1;
+        }
+        if(currentIndex < lastValidPartIndex){
+            this.subpartOrderChanged(part.id, currentIndex, lastValidPartIndex);
         }
     }
 
-    moveToLast(senders){
-        let currentIndex = this._owner.subparts.indexOf(this);
-        let allStacks = this._owner.subparts.filter((part) => {
-            return part.type == "stack";
-        });
-        if(currentIndex != allStacks.length - 1){
-            this._owner.subpartOrderChanged(this.id, currentIndex, allStacks.length - 1);
+    moveSubpartUp(part){
+        let currentIndex = this.subparts.indexOf(part);
+        let firstValidPartIndex = 0;
+        if(part.type != "card"){
+            let allCards = this.subparts.filter((part) => {
+                return part.type == "card";
+            });
+            firstValidPartIndex = allCards.length;
+        }
+        if(currentIndex > firstValidPartIndex){
+            this.subpartOrderChanged(part.id, currentIndex, currentIndex - 1);
+        }
+    }
+
+    moveSubpartToFirst(part){
+        let currentIndex = this.subparts.indexOf(part);
+        let firstValidPartIndex = 0;
+        if(part.type != "card"){
+            let allCards = this.subparts.filter((part) => {
+                return part.type == "card";
+            });
+            firstValidPartIndex = allCards.length;
+        }
+        if(currentIndex > firstValidPartIndex){
+            this.subpartOrderChanged(part.id, currentIndex, firstValidPartIndex);
         }
     }
 
