@@ -21,8 +21,7 @@ const templateString = `
     :host(.hidden){
         display: none;
     }
-    .owner-link,
-    .location-link {
+    .button-link {
         display: inline-flex;
         align-items: center;
         outline: none;
@@ -35,30 +34,27 @@ const templateString = `
         font-size: 1em;
     }
 
-    .owner-link:hover,
-    .location-link:hover {
+    .button-link:hover {
         cursor: pointer;
         border-bottom: 1px solid rgba(150, 150, 150, 0.7);
         transition: border 0.2s ease-out;
     }
 
-    .owner-link > svg,
-    .location-link > svg {
+    .button-link > svg {
         margin-left: 8px;
         opacity: 0.7;
         transform: translateX(0px);
         transition: transform 0.2s ease-out, opacity 0.2s ease-out;
     }
 
-    .owner-link:hover > svg,
-    .location-link:hover > svg {
+    .button-link:hover > svg {
         opacity: 1.0;
         transform: translateX(-5px);
         transition: transform 0.2s ease-out, opacity 0.2s ease-out;
     }
 </style>
 <p class="part-info">
-    My <button class="owner-link" title=""><span></span>${arrowLeftIcon}</button> is named <span class="part-name"></span> and is located at <button class="location-link" title="Copy location"><span></span>${clipboardIcon}</button>
+    My <button id="owner-link" class="button-link" title=""><span></span>${arrowLeftIcon}</button> is named <span class="part-name"></span> and is located at <button id="location-link" class="button-link" title="Copy location"><span></span>${clipboardIcon}</button> and has the id <button id="id-link" class="button-link" title="Copy id"><span></span>${clipboardIcon}</button>
 </p>
 `;
 
@@ -89,17 +85,21 @@ class EditorLocationInfo extends HTMLElement {
 
     connectedCallback(){
         // Events
-        let ownerLinkButton = this._shadowRoot.querySelector('p .owner-link');
-        let locationLinkButton = this._shadowRoot.querySelector('p .location-link');
+        let ownerLinkButton = this._shadowRoot.getElementById('owner-link');
+        let locationLinkButton = this._shadowRoot.getElementById('location-link');
+        let idLinkButton = this._shadowRoot.getElementById('id-link');
         ownerLinkButton.addEventListener('click', this.onLinkClick);
         locationLinkButton.addEventListener('click', this.onLocationClick);
+        idLinkButton.addEventListener('click', this.onLocationClick);
     }
 
     disconnectedCallback(){
         let ownerLinkButton = this._shadowRoot.querySelector('p .owner-link');
+        let idLinkButton = this._shadowRoot.getElementById('id-link');
         let locationLinkButton = this._shadowRoot.querySelector('p .location-link');
         ownerLinkButton.removeEventListener('click', this.onLinkClick);
         locationLinkButton.removeEventListener('click', this.onLocationClick);
+        idLinkButton.removeEventListener('click', this.onLocationClick);
     }
 
     render(aModel){
@@ -117,10 +117,12 @@ class EditorLocationInfo extends HTMLElement {
         this.classList.remove('hidden');
 
         // Update element references
-        this.ownerLinkButton = this._shadowRoot.querySelector('.owner-link');
+        this.ownerLinkButton = this._shadowRoot.getElementById('owner-link');
         this.ownerLinkTypeSpan = this.ownerLinkButton.querySelector('span');
-        this.locationLinkButton = this._shadowRoot.querySelector('.location-link');
+        this.locationLinkButton = this._shadowRoot.getElementById('location-link');
         this.locationLinkSpan = this.locationLinkButton.querySelector('span');
+        this.idLinkButton = this._shadowRoot.getElementById('id-link');
+        this.idLinkSpan = this.idLinkButton.querySelector('span');
         this.nameSpan = this._shadowRoot.querySelector('p .part-name');
 
         if(kind == 'stack'){
@@ -171,6 +173,9 @@ class EditorLocationInfo extends HTMLElement {
             'title',
             editTitle
         );
+
+        // Add the id link
+        this.idLinkSpan.textContent = ancestor.id;
 
         // Add the ref-id attribute
         this.setAttribute('ref-id', ancestor.id);
@@ -231,12 +236,13 @@ class EditorLocationInfo extends HTMLElement {
 
     onLocationClick(event){
         let input = document.createElement('input');
+        let span = event.currentTarget.querySelector('span');
         input.style.position = 'absolute';
         input.style.opacity = 0;
         document.body.append(input);
         let currentFocus = document.activeElement;
         input.focus();
-        input.value = this.locationLinkSpan.textContent;
+        input.value = span.textContent;
         console.log(input.value);
         input.select();
         //debugger;

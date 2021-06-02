@@ -4,6 +4,14 @@ import partIcons from '../../utils/icons.js';
 
 window.customElements.define('editor-location-info', EditorLocationInfo);
 
+const clipboardIcon = `
+<svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-clipboard" width="24" height="24" viewBox="0 0 24 24" stroke-width="1.5" stroke="#000000" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
+  <path d="M9 5h-2a2 2 0 0 0 -2 2v12a2 2 0 0 0 2 2h10a2 2 0 0 0 2 -2v-12a2 2 0 0 0 -2 -2h-2" />
+  <rect x="9" y="3" width="6" height="4" rx="2" />
+</svg>
+`;
+
 const templateString = `
 <style>
     :host {
@@ -17,6 +25,42 @@ const templateString = `
 
     :host() > li {
         background-color: red;
+    }
+
+    .id-link,
+    .location-link {
+        display: inline-flex;
+        align-items: center;
+        outline: none;
+        border: none;
+        border-bottom: 1px solid rgba(150, 150, 150, 0.3);
+        transition: border 0.2s ease-out;
+        vertical-alignment: center;
+        background-color: transparent;
+        padding: 0px;
+        font-size: 1em;
+    }
+
+    .id-link:hover,
+    .location-link:hover {
+        cursor: pointer;
+        border-bottom: 1px solid rgba(150, 150, 150, 0.7);
+        transition: border 0.2s ease-out;
+    }
+
+    .id-link > svg,
+    .location-link > svg {
+        margin-left: 8px;
+        opacity: 0.7;
+        transform: translateX(0px);
+        transition: transform 0.2s ease-out, opacity 0.2s ease-out;
+    }
+
+    .id-link:hover > svg,
+    .location-link:hover > svg {
+        opacity: 1.0;
+        transform: translateX(-5px);
+        transition: transform 0.2s ease-out, opacity 0.2s ease-out;
     }
 
     section {
@@ -57,6 +101,10 @@ const templateString = `
 </section>
 <section id="location-area">
     <h3>Part Location and Owners</h3>
+    <p class="part-info">
+        I am located at <button class="location-link"><span></span>${clipboardIcon}</button>
+        and my id is <button class="id-link"><span></span>${clipboardIcon}</button>
+    </p>
     <slot name="ancestor-info"></slot>
 </section>
 <section id="subparts-list-wrapper">
@@ -82,8 +130,28 @@ class EditorSubpartsPane extends HTMLElement {
         // Bound methods
         this.onAddSubpart = this.onAddSubpart.bind(this);
         this.onSubpartItemClick = this.onSubpartItemClick.bind(this);
+        this.onLocationLinkClick = this.onLocationLinkClick.bind(this);
         this.createAddPartButton = this.createAddPartButton.bind(this);
         this.createSubpartComponent = this.createSubpartComponent.bind(this);
+        this.getLocationStringFor = this.getLocationStringFor.bind(this);
+    }
+
+    connectedCallback(){
+        if(this.isConnected){
+            this.headerEl = this._shadowRoot.getElementById('location-area');
+            this.myLocationArea = this.headerEl.querySelector('p');
+            this.myLocationButton = this.myLocationArea.querySelector('.location-link');
+            this.myIdButton = this.myLocationArea.querySelector('.id-link');
+
+            // Add event listener to buttons
+            this.myLocationButton.addEventListener('click', this.onLocationLinkClick);
+            this.myIdButton.addEventListener('click', this.onLocationLinkClick);
+        }
+    }
+
+    disconnectedCallback(){
+        this.myLocationButton.removeEventListener('click', this.onLocationLinkClick);
+        this.myIdButton.removeEventListener('click', this.onLocationLinkClick);
     }
 
     render(aModel){
@@ -93,6 +161,12 @@ class EditorSubpartsPane extends HTMLElement {
         // Clear any DOM children
         this.innerHTML = "";
 
+
+        // Create location link elements
+        // and also the self-location element
+        let myLocationText = this.getLocationStringFor(this.model);
+        this.myLocationButton.querySelector('span').textContent = myLocationText;
+        this.myIdButton.querySelector('span').textContent = this.model.id.toString();
         if(this.model.type == 'world'){
             this.headerEl.classList.add('hidden');
         } else {
@@ -184,6 +258,20 @@ class EditorSubpartsPane extends HTMLElement {
         return button;
     }
 
+    getLocationStringFor(aPart){
+        let result = "";
+        let currentPart = aPart;
+        let currentOwner = aPart._owner;
+        while(currentOwner){
+            let indexInParent = currentOwner.subparts.indexOf(currentPart) + 1;
+            result += `${currentPart.type} ${indexInParent} of `;
+            currentPart = currentPart._owner;
+            currentOwner = currentOwner._owner;
+        }
+        result += 'this world';
+        return result;
+    }
+
     onSubpartItemClick(event){
         let id = event.currentTarget.getAttribute('ref-id');
         let targetPart = window.System.partsById[id];
@@ -205,6 +293,22 @@ class EditorSubpartsPane extends HTMLElement {
             }, this.model);
         }
         this.render(this.model);
+    }
+
+    onLocationLinkClick(event){
+        let text = event.currentTarget.querySelector('span').textContent;
+        let input = document.createElement('input');
+        input.style.position = 'absolute';
+        input.style.opacity = 0;
+        document.body.append(input);
+        let currentFocus = document.activeElement;
+        input.focus();
+        input.value = text;
+        console.log(input.value);
+        input.select();
+        document.execCommand('copy');
+        input.remove();
+        currentFocus.focus();
     }
 };
 
