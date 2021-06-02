@@ -112,7 +112,7 @@ class CardRow extends PartView {
     initView(){
         // First, we clear out any existing children
         this.innerHTML = "";
-        
+
         // We iterate over each card of the stack and:
         // * Create a clone of the card view element;
         // * Attach the correct model;
@@ -140,6 +140,26 @@ class CardRow extends PartView {
         this.appendChild(wrapper);
         wrapper.setModel(aCard);
     }
+
+    subpartOrderChanged(id, currentIndex, newIndex){
+        let subpartNode = this.childNodes[currentIndex];
+        if(newIndex == this.childNodes.length - 1){
+            this.appendChild(subpartNode);
+        } else {
+            // we need to account for whether the index of this
+            // is before or after the newIndex
+            if(currentIndex < newIndex){
+                newIndex = newIndex + 1;
+            }
+            let referenceNode = this.childNodes[newIndex];
+            this.insertBefore(subpartNode, referenceNode);
+        }
+        // Update number display of all wrapped views in the row
+        Array.from(this.querySelectorAll(`wrapped-view`)).forEach(wrapper => {
+            wrapper.updateNumberDisplay();
+        });
+    }
+
 };
 
 export {
