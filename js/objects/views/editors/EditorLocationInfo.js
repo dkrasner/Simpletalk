@@ -54,7 +54,7 @@ const templateString = `
     }
 </style>
 <p class="part-info">
-    My <button id="owner-link" class="button-link" title=""><span></span>${arrowLeftIcon}</button> is named <span class="part-name"></span> and is located at <button id="location-link" class="button-link" title="Copy location"><span></span>${clipboardIcon}</button> and has the id <button id="id-link" class="button-link" title="Copy id"><span></span>${clipboardIcon}</button>
+    My <button id="owner-link" class="button-link" title=""><span></span>${arrowLeftIcon}</button> is named <span class="part-name"></span> and is located at <button id="location-link" class="button-link" title="Copy location"><span></span>${clipboardIcon}</button> <button id="id-link" class="button-link" title="Copy id"><span>Copy my id</span>${clipboardIcon}</button>
 </p>
 `;
 
@@ -174,9 +174,6 @@ class EditorLocationInfo extends HTMLElement {
             editTitle
         );
 
-        // Add the id link
-        this.idLinkSpan.textContent = ancestor.id;
-
         // Add the ref-id attribute
         this.setAttribute('ref-id', ancestor.id);
     }
@@ -242,10 +239,12 @@ class EditorLocationInfo extends HTMLElement {
         document.body.append(input);
         let currentFocus = document.activeElement;
         input.focus();
-        input.value = span.textContent;
-        console.log(input.value);
+        if(span.parentElement.id == 'id-link'){
+            input.value = this.getAttribute('ref-id');
+        } else {
+            input.value = span.textContent;
+        }
         input.select();
-        //debugger;
         document.execCommand('copy');
         input.remove();
         currentFocus.focus();
