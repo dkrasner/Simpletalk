@@ -943,6 +943,8 @@ System._commandHandlers['openScriptEditor'] = function(senders, targetId){
     window.partProperties.setPropertyNamed(window, "title", name);
     window.partProperties.setPropertyNamed(window, "height", 200);
     window.partProperties.setPropertyNamed(window, "width", 500);
+    window.partProperties.setPropertyNamed(window, 'top', 100);
+    window.partProperties.setPropertyNamed(window, 'left', 100);
 
     area.partProperties.setPropertyNamed(area, "layout", "list");
     area.partProperties.setPropertyNamed(area, "list-direction", "column");

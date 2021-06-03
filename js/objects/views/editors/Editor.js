@@ -505,6 +505,7 @@ class Editor extends HTMLElement {
                     this.model.id
                 ]
             }, this.model);
+            this.close();
         }
     }
 
