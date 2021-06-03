@@ -197,6 +197,83 @@ class Stack extends Part {
     get currentCard(){
         return window.System.partsById[this.currentCardId];
     }
+
+    // override the base class methods
+    moveSubpartDown(part){
+        let currentIndex = this.subparts.indexOf(part);
+        let lastValidPartIndex = this.subparts.length - 1;
+        if(part.type == "card"){
+            let allCards = this.subparts.filter((part) => {
+                return part.type == "card";
+            });
+            lastValidPartIndex = allCards.length - 1;
+        }
+        if(currentIndex < lastValidPartIndex){
+            this.subpartOrderChanged(part.id, currentIndex, currentIndex + 1);
+        }
+    }
+
+    moveSubpartToLast(part){
+        let currentIndex = this.subparts.indexOf(part);
+        let lastValidPartIndex = this.subparts.length - 1;
+        if(part.type == "card"){
+            let allCards = this.subparts.filter((part) => {
+                return part.type == "card";
+            });
+            lastValidPartIndex = allCards.length - 1;
+        }
+        if(currentIndex < lastValidPartIndex){
+            this.subpartOrderChanged(part.id, currentIndex, lastValidPartIndex);
+        }
+    }
+
+    moveSubpartUp(part){
+        let currentIndex = this.subparts.indexOf(part);
+        let firstValidPartIndex = 0;
+        if(part.type != "card"){
+            let allCards = this.subparts.filter((part) => {
+                return part.type == "card";
+            });
+            firstValidPartIndex = allCards.length;
+        }
+        if(currentIndex > firstValidPartIndex){
+            this.subpartOrderChanged(part.id, currentIndex, currentIndex - 1);
+        }
+    }
+
+    moveSubpartToFirst(part){
+        let currentIndex = this.subparts.indexOf(part);
+        let firstValidPartIndex = 0;
+        if(part.type != "card"){
+            let allCards = this.subparts.filter((part) => {
+                return part.type == "card";
+            });
+            firstValidPartIndex = allCards.length;
+        }
+        if(currentIndex > firstValidPartIndex){
+            this.subpartOrderChanged(part.id, currentIndex, firstValidPartIndex);
+        }
+    }
+
+    addPart(aPart){
+        if(!this.acceptsSubpart(aPart.type)){
+            throw new Error(`${this.type} does not accept subparts of type ${aPart.type}`);
+        }
+
+        let found = this.subparts.indexOf(aPart);
+        if(found < 0){
+            // if the part is a card then append after the last card
+            if(aPart.type == "card"){
+                let allCards = this.subparts.filter((part) => {
+                    return part.type == "card";
+                });
+                this.subparts.splice(allCards.length, 0, aPart);
+            } else {
+                this.subparts.push(aPart);
+            }
+            aPart._owner = this;
+        }
+    }
 };
 
 export {

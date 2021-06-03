@@ -86,6 +86,29 @@ class WorldView extends PartView {
             navigator.toggle();
         }
     }
+
+    // override subclass methods
+    newSubpartView(newView){
+        if(this.childNodes.length && newView.name == "StackView"){
+            let lastStackNode;
+            this.childNodes.forEach((child) => {
+                if(child.name == "StackView"){
+                    lastStackNode = child;
+                }
+            });
+            if(lastStackNode){
+                // insert after the last stack
+                lastStackNode.after(newView);
+            } else {
+                // since there are no stacks
+                // insert before all children
+                this.childNodes[0].insertBefore(newView);
+            }
+        } else {
+            this.appendChild(newView);
+        }
+    }
+
 };
 
 export {

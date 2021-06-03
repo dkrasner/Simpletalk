@@ -20,6 +20,8 @@ class PartView extends HTMLElement {
         this.name = this.constructor.name;
         this.propChangeHandlers = {};
         this.setupBasePropHandlers();
+        this.viewChangeHandlers = {};
+        this.setupBaseViewChangeHandlers();
 
         // Halo settings. All are on by default
         this.wantsHaloResize = true;
@@ -33,6 +35,7 @@ class PartView extends HTMLElement {
         this.unsetModel = this.unsetModel.bind(this);
         this.sendMessage = this.sendMessage.bind(this);
         this.setupBasePropHandlers = this.setupBasePropHandlers.bind(this);
+        this.setupBaseViewChangeHandlers = this.setupBaseViewChangeHandlers.bind(this);
         this.initLayout = this.initLayout.bind(this);
 
         // Bind initial property method
@@ -42,6 +45,8 @@ class PartView extends HTMLElement {
         // Bind property change reaction methods
         this.primHandlePropChange = this.primHandlePropChange.bind(this);
         this.onPropChange = this.onPropChange.bind(this);
+        this.primHandleViewChange = this.primHandleViewChange.bind(this);
+        this.onViewChange = this.onViewChange.bind(this);
         this.scriptChanged = this.scriptChanged.bind(this);
         this.layoutChanged = this.layoutChanged.bind(this);
         this.listDirectionChanged = this.listDirectionChanged.bind(this);
@@ -54,6 +59,10 @@ class PartView extends HTMLElement {
         this.pinningRightChanged = this.pinningRightChanged.bind(this);
         this.listAlignmentChanged = this.listAlignmentChanged.bind(this);
         this.listDistributionChanged = this.listDistributionChanged.bind(this);
+
+        // Bind view change reaction methods
+        this.subpartOrderChanged = this.subpartOrderChanged.bind(this);
+        this.newSubpartView = this.newSubpartView.bind(this);
 
         // Bind Halo related methods
         this.openHalo = this.openHalo.bind(this);
@@ -116,6 +125,7 @@ class PartView extends HTMLElement {
         this.unsetModel();
         this.model = aModel;
         aModel.addPropertySubscriber(this);
+        aModel.addViewSubscriber(this);
         if(this.isLensed){
             this.removeAttribute('part-id');
             this.setAttribute('lens-part-id', aModel.id);
@@ -150,6 +160,7 @@ class PartView extends HTMLElement {
         // Do not override this method
         // TODO: Implement the universals
         this.onPropChange('script', this.scriptChanged);
+        this.onPropChange('number', this.numberChanged);
         this.onPropChange('cssStyle', this.styleCSS);
         this.onPropChange('cssTextStyle', this.styleTextCSS);
         this.onPropChange('editorOpen', (value) => {
@@ -177,6 +188,17 @@ class PartView extends HTMLElement {
                 this.removeEventListener('mousedown', this.onMouseDown);
             }
         });
+    }
+
+    setupBaseViewChangeHandlers(){
+        // This is where we should setup any
+        // view change handlers that are universal
+        // to all PartViews. We would do this via
+        // the #onViewChange method, which registers
+        // a handler function.
+        // Do not override this method
+        this.onViewChange('subpart-order', this.subpartOrderChanged);
+        this.onViewChange('subpart-new', this.newSubpartView);
     }
 
     initLayout(){
@@ -258,6 +280,12 @@ class PartView extends HTMLElement {
                 aMessage.partId
             );
             break;
+        case 'viewChanged':
+            this.primHandleViewChange(
+                aMessage.changeName,
+                ...aMessage.args
+            );
+            break;
         }
     }
 
@@ -284,8 +312,24 @@ class PartView extends HTMLElement {
         return handler(value, partId);
     }
 
+
     onPropChange(name, func){
         this.propChangeHandlers[name] = func;
+    }
+
+    primHandleViewChange(name, ...args){
+        // Find the handler for the given named
+        // property. If it does not exist, do nothing
+        let handler = this.viewChangeHandlers[name];
+        if(!handler){
+            return null;
+        }
+        handler = handler.bind(this);
+        return handler(...args);
+    }
+
+    onViewChange(name, func){
+        this.viewChangeHandlers[name] = func;
     }
 
     scriptChanged(value, partId){
@@ -294,6 +338,30 @@ class PartView extends HTMLElement {
             codeString: value,
             targetId: partId
         }, window.System);
+    }
+
+    subpartOrderChanged(id, currentIndex, newIndex){
+        // there is no need to do anything for the wrapped views
+        // CardRow and StackRow will handle the updates
+        if(this.name == "WrappedView"){
+            return;
+        }
+        let subpartNode = this.childNodes[currentIndex];
+        if(newIndex == this.childNodes.length - 1){
+            this.appendChild(subpartNode);
+        } else {
+            // we need to account for whether the index of this
+            // is before or after the newIndex
+            if(currentIndex < newIndex){
+                newIndex = newIndex + 1;
+            }
+            let referenceNode = this.childNodes[newIndex];
+            this.insertBefore(subpartNode, referenceNode);
+        }
+    }
+
+    newSubpartView(newView){
+        this.appendChild(newView);
     }
 
     layoutChanged(value, partId){

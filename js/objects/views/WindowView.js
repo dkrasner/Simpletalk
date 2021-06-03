@@ -267,6 +267,13 @@ class WindowView extends PartView {
         titleArea.innerText = aString;
     }
 
+    // override subclass methods
+    newSubpartView(newView){
+        // slot the new view into the window pane
+        let pane = this._shadowRoot.querySelector('.st-window-pane');
+        pane.append(newView);
+        this.appendChild(newView);
+    }
 
 
 };

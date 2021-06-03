@@ -37,6 +37,7 @@ class Part {
         this._functionHandlers = {};
         this._scriptSemantics = {};
         this._propertySubscribers = new Set();
+        this._viewSubscribers = new Set();
         this._stepIntervalId = null;
 
         this.isPart = true;
@@ -49,6 +50,7 @@ class Part {
         this.removePart = this.removePart.bind(this);
         this.acceptsSubpart = this.acceptsSubpart.bind(this);
         this.setPrivateCommandHandler = this.setPrivateCommandHandler.bind(this);
+        this.removePrivateCommandHandler = this.removePrivateCommandHandler.bind(this);
         this.setFuncHandler = this.setFuncHandler.bind(this);
         this.receiveCmd = this.receiveCmd.bind(this);
         this.receiveFunc = this.receiveFunc.bind(this);
@@ -58,6 +60,8 @@ class Part {
         this.sendMessage = this.sendMessage.bind(this);
         this.addPropertySubscriber = this.addPropertySubscriber.bind(this);
         this.removePropertySubscriber = this.removePropertySubscriber.bind(this);
+        this.addViewSubscriber = this.addViewSubscriber.bind(this);
+        this.removeViewSubscriber = this.removeViewSubscriber.bind(this);
         this.serialize = this.serialize.bind(this);
         this.toJSON = this.toJSON.bind(this);
         this.setPropsFromDeserializer = this.setPropsFromDeserializer.bind(this);
@@ -72,6 +76,11 @@ class Part {
         this.stopStepping = this.stopStepping.bind(this);
         this.setTargetProp = this.setTargetProp.bind(this);
         this.move = this.move.bind(this);
+        this.moveSubpartUp = this.moveSubpartUp.bind(this);
+        this.moveSubpartDown = this.moveSubpartDown.bind(this);
+        this.moveSubpartToFirst = this.moveSubpartToFirst.bind(this);
+        this.moveSubpartToLast = this.moveSubpartToLast.bind(this);
+
 
 
         // Finally, we finish initialization
@@ -84,6 +93,10 @@ class Part {
         this.setPrivateCommandHandler("copy", this.copyCmdHandler);
         this.setPrivateCommandHandler("paste", this.pasteCmdHandler);
         this.setPrivateCommandHandler("move", this.move);
+        this.setPrivateCommandHandler("moveUp", () => {this._owner.moveSubpartUp(this);});
+        this.setPrivateCommandHandler("moveDown", () => {this._owner.moveSubpartDown(this);});
+        this.setPrivateCommandHandler("moveToFirst", () => {this._owner.moveSubpartToFirst(this);});
+        this.setPrivateCommandHandler("moveToLast", () => {this._owner.moveSubpartToLast(this);});
     }
 
     // Convenience getter to get the id
@@ -210,19 +223,18 @@ class Part {
             this.partProperties.addProperty(prop);
         });
 
+        // the index number of the part in part._owner.subpart
+        // array. Note: this is 1-indexed
         this.partProperties.newDynamicProp(
             'number',
-            null, // No setter; readOnly
+            null, // no setter
             function(propOwner, propObject){
-                if(!propOwner._owner){
-                    return -1;
+                if(propOwner.type == "world"){
+                    return 1;
                 }
-                return propOwner._owner.subparts.filter(subpart => {
-                    return subpart.type == propOwner.type;
-                }).indexOf(propOwner) + 1;
+                return propOwner._owner.subparts.indexOf(propOwner) + 1;
             },
-            true, // Is readOnly,
-            [] // No aliases
+            true // readonly
         );
 
         this.partProperties.newDynamicProp(
@@ -474,6 +486,10 @@ class Part {
         this._privateCommandHandlers[commandName] = handler;
     }
 
+    removePrivateCommandHandler(commandName){
+        delete this._privateCommandHandlers[commandName];
+    }
+
     setFuncHandler(funcName, handler){
         this._functionHandlers[funcName] = handler;
     }
@@ -522,6 +538,32 @@ class Part {
         this.partProperties.setPropertyNamed(this, "left", left);
     }
 
+    moveSubpartDown(part){
+        let currentIndex = this.subparts.indexOf(part);
+        if(currentIndex < this.subparts.length - 1){
+            this.subpartOrderChanged(part.id, currentIndex, currentIndex + 1);
+        }
+    }
+
+    moveSubpartUp(part){
+        let currentIndex = this.subparts.indexOf(part);
+        if(currentIndex > 0){
+            this.subpartOrderChanged(part.id, currentIndex, currentIndex - 1);
+        }
+    }
+
+    // Note: moveSubpartToFirst means move to first in the view
+    // i.e. last as a subaprt
+    moveSubpartToFirst(part){
+        let currentIndex = this.subparts.indexOf(part);
+        this.subpartOrderChanged(part.id, currentIndex, 0);
+    }
+
+    moveSubpartToLast(part){
+        let currentIndex = this.subparts.indexOf(part);
+        this.subpartOrderChanged(part.id, currentIndex, this.subparts.length - 1);
+    }
+
     /** Property Subscribers
         ------------------------
         Objects added as property subscribers
@@ -546,6 +588,38 @@ class Part {
         this._propertySubscribers.forEach(subscriber => {
             this.sendMessage(message, subscriber);
         });
+    }
+
+    /** View Subscribers
+        ------------------------
+        Objects added as view subscribers
+        will be 'notified' whenever this Part
+        incurrs a view change (add, delete subparts, reorder etc)
+    **/
+    addViewSubscriber(anObject){
+        this._viewSubscribers.add(anObject);
+    }
+
+    removeViewSubscriber(anObject){
+        this._viewSubscribers.delete(anObject);
+    }
+
+    viewChanged(changeName, ...args){
+        let message = {
+            type: 'viewChanged',
+            changeName: changeName,
+            partId: this.id,
+            args: args
+        };
+        this._viewSubscribers.forEach(subscriber => {
+            this.sendMessage(message, subscriber);
+        });
+    }
+
+    subpartOrderChanged(id, currentIndex, newIndex){
+        let subpart = this.subparts.splice(currentIndex, 1)[0];
+        this.subparts.splice(newIndex, 0, subpart);
+        this.viewChanged("subpart-order", id, currentIndex, newIndex);
     }
 
     startStepping(){

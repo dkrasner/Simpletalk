@@ -11,41 +11,6 @@ import PartView from '../PartView.js';
 
 const templateString = `
 <style>
-    :host {
-        display: block;
-        box-sizing: border-box;
-        width: 150px;
-        height: 100px;
-        border: 1px solid rgba(100, 100, 100, 0.4);
-        overflow: hidden;
-        margin-left: 15px;
-        flex-shrink: 0;
-        transition: transform 0.2s ease-in, opacity 0.2s ease-in, box-shadow 0.2s linear;
-        transform: translateY(0);
-        opacity: 1.0;
-    }
-
-    :host(:hover){
-        cursor: pointer;
-    }
-
-    :host(:hover:not(.current)){
-        border: 1px solid rgba(100, 100, 100, 0.8);
-        box-shadow: 1px 1px 20px 1px rgba(150, 150, 150, 0.5);
-        transition: box-shadow 0.1s linear, border 0.1s linear;
-    }
-
-    :host(:not(.current)) > st-card {
-        display: none;
-    }
-
-    :host(.current){
-        box-shadow: 1px 1px 20px 2px rgba(100, 100, 100, 0.8);
-    }
-    :host(:not(.current)){
-        opacity: 0.5;
-        transition: transform 0.2s ease-out, opacity 0.2s ease-out, box-shadow 0.2s linear;
-    }
     #number-display {
         opacity: 0;
         display: flex;
@@ -100,6 +65,7 @@ class WrappedView extends PartView {
         // Bind methods
         this.onChildSlotted = this.onChildSlotted.bind(this);
         this.updateScaling = this.updateScaling.bind(this);
+        this.handleNumberChange = this.handleNumberChange.bind(this);
         this.addWrappedView = this.addWrappedView.bind(this);
         this._recursivelyUpdateLensViews = this._recursivelyUpdateLensViews.bind(this);
     }
@@ -127,6 +93,7 @@ class WrappedView extends PartView {
     }
 
     afterModelSet(){
+        this.onPropChange('number', this.handleNumberChange);
         this.removeAttribute('part-id');
         this.addWrappedView(this.model);
         this.updateNumberDisplay();
@@ -152,9 +119,19 @@ class WrappedView extends PartView {
     updateNumberDisplay(){
         let firstChild = this.children[0];
         let model = firstChild.model;
-        let number = model.partProperties.getPropertyNamed(model, 'number');
+        // we only want to look at subparts of the same type (stack or card)
+        let subparts = model._owner.subparts.filter((part) => {
+            return model.type == part.type;
+        });
         let numDisplay = this._shadowRoot.querySelector('#number-display > span');
-        numDisplay.innerText = number.toString();
+        numDisplay.innerText = subparts.indexOf(model) + 1;
+    }
+
+    handleNumberChange(){
+        // Update number display of all wrapped views in the row
+        Array.from(this.parentNode.querySelectorAll(`wrapped-view`)).forEach(wrapper => {
+            wrapper.updateNumberDisplay();
+        });
     }
 
     addWrappedView(aPartModel){

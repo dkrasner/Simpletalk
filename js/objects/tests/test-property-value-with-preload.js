@@ -7,6 +7,7 @@ const expect = chai.expect;
 
 let currentCardModel;
 let buttonModel;
+let drawingModel;
 
 function compileButtonScript(aScript){
     let msg = {
@@ -45,6 +46,28 @@ describe("PropertyValue Interpreter Tests", () => {
             })[0];
             buttonModel = button;
             assert.exists(buttonModel);
+        });
+        it('Can add a drawing to current card model without error', () => {
+            let addDrawing = function(){
+                let msg = {
+                    type: 'command',
+                    commandName: 'newModel',
+                    args: [
+                        'drawing',
+                        currentCardModel.id,
+                        'card'
+                    ]
+                };
+                currentCardModel.sendMessage(msg, currentCardModel);
+            };
+            expect(addDrawing).to.not.throw(Error);
+        });
+        it('Can find newly created drawing model', () => {
+            let drawing = currentCardModel.subparts.filter(subpart => {
+                return subpart.type == 'drawing';
+            })[0];
+            drawingModel = drawing;
+            assert.exists(drawingModel);
         });
     });
     describe('Adding and deleting properties', () => {
@@ -176,6 +199,14 @@ describe("PropertyValue Interpreter Tests", () => {
             buttonModel.sendMessage({type:'command', commandName:'click', args:[]}, buttonModel);
             let result = window.System.executionStack.getGlobal('result');
             assert.equal(result, 'TEST_BUTTON');
+        });
+    });
+    describe("Dynamic Property Tests", () => {
+        it("Parts have the expected 'number' property", () => {
+            let result = buttonModel.partProperties.getPropertyNamed(buttonModel, 'number');
+            assert.equal(1, result);
+            result = drawingModel.partProperties.getPropertyNamed(drawingModel, 'number');
+            assert.equal(2, result);
         });
     });
 });

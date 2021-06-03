@@ -304,7 +304,11 @@ class STDeserializer {
         if(owner){
             let ownerView = this._viewsCache[owner.id];
             let partView = this._viewsCache[aPart.id];
-            ownerView.appendChild(partView);
+            owner.sendMessage({
+                type: "viewChanged",
+                changeName: "subpart-new",
+                args: [partView]
+            }, ownerView);
         }
     }
 

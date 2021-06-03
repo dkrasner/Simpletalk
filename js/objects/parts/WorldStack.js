@@ -42,6 +42,12 @@ class WorldStack extends Part {
         this.goToPrevStack = this.goToPrevStack.bind(this);
         this.goToNthStack = this.goToNthStack.bind(this);
         this.goToStackById = this.goToStackById.bind(this);
+
+        // remove command handlers which are not needed for world
+        this.removePrivateCommandHandler("moveUp");
+        this.removePrivateCommandHandler("moveDown");
+        this.removePrivateCommandHandler("moveToFirst");
+        this.removePrivateCommandHandler("moveToLast");
     }
 
     goToNextStack(){
@@ -234,6 +240,84 @@ class WorldStack extends Part {
     get currentStack(){
         return window.System.partsById[this.currentStackId];
     }
+
+    // override the base class methods
+    addPart(aPart){
+        if(!this.acceptsSubpart(aPart.type)){
+            throw new Error(`${this.type} does not accept subparts of type ${aPart.type}`);
+        }
+
+        let found = this.subparts.indexOf(aPart);
+        if(found < 0){
+            // if the part is a stack then append after the last stack
+            if(aPart.type == "stack"){
+                let allStacks = this.subparts.filter((part) => {
+                    return part.type == "stack";
+                });
+                this.subparts.splice(allStacks.length, 0, aPart);
+            } else {
+                this.subparts.push(aPart);
+            }
+            aPart._owner = this;
+        }
+    }
+
+    moveSubpartDown(part){
+        let currentIndex = this.subparts.indexOf(part);
+        let lastValidPartIndex = this.subparts.length - 1;
+        if(part.type == "stack"){
+            let allStacks = this.subparts.filter((part) => {
+                return part.type == "stack";
+            });
+            lastValidPartIndex = allStacks.length - 1;
+        }
+        if(currentIndex < lastValidPartIndex){
+            this.subpartOrderChanged(part.id, currentIndex, currentIndex + 1);
+        }
+    }
+
+    moveSubpartToLast(part){
+        let currentIndex = this.subparts.indexOf(part);
+        let lastValidPartIndex = this.subparts.length - 1;
+        if(part.type == "stack"){
+            let allStacks = this.subparts.filter((part) => {
+                return part.type == "stack";
+            });
+            lastValidPartIndex = allStacks.length - 1;
+        }
+        if(currentIndex < lastValidPartIndex){
+            this.subpartOrderChanged(part.id, currentIndex, lastValidPartIndex);
+        }
+    }
+
+    moveSubpartUp(part){
+        let currentIndex = this.subparts.indexOf(part);
+        let firstValidPartIndex = 0;
+        if(part.type != "stack"){
+            let allStacks = this.subparts.filter((part) => {
+                return part.type == "stack";
+            });
+            firstValidPartIndex = allStacks.length;
+        }
+        if(currentIndex > firstValidPartIndex){
+            this.subpartOrderChanged(part.id, currentIndex, currentIndex - 1);
+        }
+    }
+
+    moveSubpartToFirst(part){
+        let currentIndex = this.subparts.indexOf(part);
+        let firstValidPartIndex = 0;
+        if(part.type != "stack"){
+            let allStacks = this.subparts.filter((part) => {
+                return part.type == "stack";
+            });
+            firstValidPartIndex = allStacks.length;
+        }
+        if(currentIndex > firstValidPartIndex){
+            this.subpartOrderChanged(part.id, currentIndex, firstValidPartIndex);
+        }
+    }
+
 };
 
 export {
