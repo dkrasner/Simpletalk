@@ -15,7 +15,6 @@ const templateString = `
         font-family: 'Helvetica', sans-serif;
     }
     header {
-        width: 100%;
         position: relative;
         display: flex;
         border-bottom: 1px solid rgba(150, 150, 150, 0.5);
