@@ -58,6 +58,7 @@ class ContextMenu extends HTMLElement {
 
         // Bound methods
         this.addCopyAndPasteItems = this.addCopyAndPasteItems.bind(this);
+        this.addScriptEditItem = this.addScriptEditItem.bind(this);
         this.addListItem = this.addListItem.bind(this);
     }
 
@@ -71,6 +72,7 @@ class ContextMenu extends HTMLElement {
 
         // Render the default menu items
         this.addCopyAndPasteItems();
+        this.addScriptEditItem();
     }
 
     addListItem(label, callback, submenu=null){
@@ -107,6 +109,19 @@ class ContextMenu extends HTMLElement {
                 });
             }
         }
+    }
+
+    addScriptEditItem(){
+        this.addListItem(
+            'Edit Script',
+            (event) => {
+                this.model.sendMessage({
+                    type: 'command',
+                    commandName: 'openScriptEditor',
+                    args: [this.model.id]
+                }, this.model);
+            }
+        );
     }
 };
 
