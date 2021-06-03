@@ -143,6 +143,11 @@ class CardRow extends PartView {
 
     subpartOrderChanged(id, currentIndex, newIndex){
         let subpartNode = this.childNodes[currentIndex];
+        if(!subpartNode){
+            // this could be a model subpart which is not a card and hence not
+            // displayed in the CardRow
+            return;
+        }
         if(newIndex == this.childNodes.length - 1){
             this.appendChild(subpartNode);
         } else {

@@ -145,6 +145,11 @@ class StackRow extends PartView {
 
     subpartOrderChanged(id, currentIndex, newIndex){
         let subpartNode = this.childNodes[currentIndex];
+        if(!subpartNode){
+            // this could be a model subpart which is not a stack and hence not
+            // displayed in the StackRow
+            return;
+        }
         if(newIndex == this.childNodes.length - 1){
             this.appendChild(subpartNode);
         } else {
