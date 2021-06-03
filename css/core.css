@@ -44,7 +44,13 @@ body {
     position: relative;
     overflow: hidden;
     font-family: "Crimson Pro";
-    background-color: purple;
+    background-image: /* tint image */
+                      linear-gradient(to right, rgba(192, 192, 192, 0.85), rgba(192, 192, 192, 0.75)),
+                      /* checkered effect */
+                      linear-gradient(to right, black 50%, white 50%),
+                      linear-gradient(to bottom, black 50%, white 50%);
+    background-blend-mode: normal, difference, normal;
+    background-size: 2em 2em;
 }
 
 .active {
@@ -59,6 +65,7 @@ st-world {
     overflow: hidden;
     width: 100vw;
     height: 100vh;
+    box-shadow: 0px 0px 30px 10px rgba(100, 100, 100, 0.8);
 }
 
 
@@ -316,6 +323,72 @@ wrapped-view > st-card,
 wrapped-view > st-stack {
     display: block;
 }
+
+/* =Editor
+ * --------------------------------------------------------*/
+editor-subparts > li {
+    display: flex;
+    flex-direction: row;
+    align-items: baseline;
+    width: 100%;
+    border-bottom: 1px solid rgba(100, 100, 100, 0.0);
+    transition: border 0.1s linear;
+}
+
+editor-subparts > li:hover {
+    cursor: pointer;
+    border-bottom: 1px solid rgba(100, 100, 100, 0.5);
+    transition: border 0.1s linear;
+}
+
+editor-subparts > li > .icon-display-area {
+    width: 1.5rem;
+    height: 1.5rem;
+    margin-bottom: 5px;
+    align-self: center;
+}
+
+editor-subparts > li > .icon-display-area > svg {
+    width: 100%;
+    height: 100%;
+}
+
+editor-subparts > li > * {
+    margin-right: 16px;
+}
+
+editor-subparts .id-span {
+    font-family: monospace;
+    color: rgba(0, 0, 0, 0.4);
+}
+
+editor-subparts button.add-part-button {
+    outline: none;
+    border: 1px solid rgba(0, 0, 0, 0.4);
+    border-radius: 100%;
+    background-color: white;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 1.7rem;
+    height: 1.7rem;
+    padding: 4px;
+}
+
+editor-subparts button.add-part-button:hover {
+    background-color: rgba(240, 240, 240);
+    cursor: pointer;
+}
+
+editor-subparts button.add-part-button:active {
+    background-color: rgba(220, 220, 220);
+}
+
+editor-subparts button.add-part-button > svg {
+    width: 100%;
+    height: 100%;
+}
+
 
 /* =Utility Classes
  * --------------------------------------------------------*/

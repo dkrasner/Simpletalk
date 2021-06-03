@@ -26,6 +26,7 @@ class PartView extends HTMLElement {
         // Halo settings. All are on by default
         this.wantsHaloResize = true;
         this.wantsHaloScriptEdit = true;
+        this.wantsHaloEdit = true;
         this.wantsHaloDelete = true;
         this.wantsHalo = true;
         // Note: see getter for wantsHaloMove
@@ -69,12 +70,14 @@ class PartView extends HTMLElement {
         this.closeHalo = this.closeHalo.bind(this);
         this.onHaloDelete = this.onHaloDelete.bind(this);
         this.onHaloOpenEditor = this.onHaloOpenEditor.bind(this);
+        this.onHaloOpenScriptEditor = this.onHaloOpenScriptEditor.bind(this);
         this.onHaloResize = this.onHaloResize.bind(this);
         this.onHaloPaste = this.onHaloPaste.bind(this);
         this.onHaloCopy = this.onHaloCopy.bind(this);
         this.onHaloTarget = this.onHaloTarget.bind(this);
         this.endHaloTarget = this.endHaloTarget.bind(this);
         this.onHaloActivationClick = this.onHaloActivationClick.bind(this);
+        this.onHaloOpenEditor = this.onHaloOpenEditor.bind(this);
         this.onAuxClick = this.onAuxClick.bind(this);
         this.onClick = this.onClick.bind(this);
         this.onMouseDown = this.onMouseDown.bind(this);
@@ -84,10 +87,6 @@ class PartView extends HTMLElement {
         this.handleTargetMouseClick = this.handleTargetMouseClick.bind(this);
         this.handleTargetMouseOver = this.handleTargetMouseOver.bind(this);
         this.handleTargetMouseLeave = this.handleTargetMouseLeave.bind(this);
-
-        // Bind editor related methods
-        this.openEditor = this.openEditor.bind(this);
-        this.closeEditor = this.closeEditor.bind(this);
 
         // Bind lifecycle methods
         this.afterModelSet = this.afterModelSet.bind(this);
@@ -163,13 +162,6 @@ class PartView extends HTMLElement {
         this.onPropChange('number', this.numberChanged);
         this.onPropChange('cssStyle', this.styleCSS);
         this.onPropChange('cssTextStyle', this.styleTextCSS);
-        this.onPropChange('editorOpen', (value) => {
-            if(value === true){
-                this.openEditor();
-            } else if(value === false){
-                this.closeEditor();
-            }
-        });
         this.onPropChange('layout', this.layoutChanged);
         this.onPropChange('list-direction', this.listDirectionChanged);
         this.onPropChange('list-wrapping', this.listWrappingChanged);
@@ -585,7 +577,7 @@ class PartView extends HTMLElement {
         }, window.System);
     }
 
-    onHaloOpenEditor(){
+    onHaloOpenScriptEditor(){
         // Send the message to open a script editor
         // with this view's model as the target
         this.model.sendMessage({
@@ -593,6 +585,11 @@ class PartView extends HTMLElement {
             commandName: 'openScriptEditor',
             args: [this.model.id]
         }, this.model);
+    }
+
+    onHaloOpenEditor(){
+        window.System.editor.render(this.model);
+        window.System.editor.open();
     }
 
     onHaloResize(movementX, movementY){
@@ -780,17 +777,6 @@ class PartView extends HTMLElement {
         }
 
         return false;
-    }
-
-    /* Editor related methods */
-    openEditor(){
-        // Does nothing by default.
-        // Should be implemented in subclass
-    }
-
-    closeEditor(){
-        // Does nothing by default.
-        // Should be implemented in subclass
     }
 };
 

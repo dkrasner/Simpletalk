@@ -32,8 +32,8 @@ import ResourceView from './views/ResourceView.js';
 
 
 import Halo from './views/Halo.js';
-import EditorView from './views/editors/EditorView.js';
 import STNavigator from './views/navigator/Navigator.js';
+import Editor from './views/editors/Editor.js';
 
 import ohm from 'ohm-js';
 import interpreterSemantics from '../ohm/interpreter-semantics.js';
@@ -103,9 +103,17 @@ const System = {
                     System.navigator.setModel(
                         System.partsById['world']
                     );
+
+                    // By default, we render the World in the
+                    // Comprehensive Editor
+                    this.editor.render(this.world);
                 });
         } else {
             this.loadFromEmpty();
+            
+            // By default, we render the World in the
+            // Comprehensive Editor
+            this.editor.render(this.world);
         }
 
         // Attach a new clipboard instance
@@ -493,10 +501,6 @@ const System = {
             ownerModel.removePart(foundModel);
         }
 
-        // close all open editors, otherwise they will
-        // be orphaned in the view
-        foundModel.partProperties.setPropertyNamed(foundModel, "editorOpen", false);
-
         delete this.partsById[modelId];
         this.removeViews(modelId);
 
@@ -741,25 +745,14 @@ const System = {
     },
 
     openEditorForPart: function(partId){
-        // if there is already and editor open for this part do nothing
-        let editor = document.querySelector(`st-editor[target-id="${partId}"]`);
-        if(editor){
-            return;
-        }
-        let currentCard = this.getCurrentCardModel();
-        let currentCardView = this.findViewById(currentCard.id);
-        editor = document.createElement(
-            "st-editor"
+        this.editor.render(
+            this.partsById[partId]
         );
-        currentCardView.appendChild(editor);
-        editor.setTarget(partId);
+        this.editor.open();
     },
 
     closeEditorForPart: function(partId){
-        let editor = document.querySelector(`st-editor[target-id="${partId}"]`);
-        if(editor){
-            editor.parentNode.removeChild(editor);
-        }
+        this.editor.close();
     }
 };
 
@@ -911,23 +904,43 @@ System._commandHandlers['importWorld'] = function(sender, sourceUrl){
 
 System._commandHandlers['openScriptEditor'] = function(senders, targetId){
     let target = this.partsById[targetId];
-    let currentCard = this.getCurrentCardModel();
-    let window = this.newModel('window', currentCard.id);
-    let area = this.newModel('area', window.id);
-    let scriptField = this.newModel('field', area.id);
-    let saveButton = this.newModel('button', area.id);
-
     let targetName = target.partProperties.getPropertyNamed(target, "name");
     if(targetName){
         targetName = `"${targetName}"`;
     }
     let name = `Script For ${target.name} ${targetName} id ${target.id}`;
 
+    // If there is already a dinwo opened with this name, then
+    // we return without creating anything new.
+    let found = Object.values(System.partsById).filter(part => {
+        let partName;
+        if(part.type == 'window'){
+            partName = part.partProperties.getPropertyNamed(
+                part,
+                'title'
+            );
+        }
+        return (part.type == 'window' && name == partName);
+    });
+    if(found.length){
+        return;
+    }
+
+    
+    let currentCard = this.getCurrentCardModel();
+    let window = this.newModel('window', currentCard.id);
+    let area = this.newModel('area', window.id);
+    let scriptField = this.newModel('field', area.id);
+    let saveButton = this.newModel('button', area.id);
+
+
     // setup the window and stack properties
     window.setTarget(target);
     window.partProperties.setPropertyNamed(window, "title", name);
     window.partProperties.setPropertyNamed(window, "height", 200);
     window.partProperties.setPropertyNamed(window, "width", 500);
+    window.partProperties.setPropertyNamed(window, 'top', 100);
+    window.partProperties.setPropertyNamed(window, 'left', 100);
 
     area.partProperties.setPropertyNamed(area, "layout", "list");
     area.partProperties.setPropertyNamed(area, "list-direction", "column");
@@ -1037,6 +1050,7 @@ System._commandHandlers['globalInterrupt'] = () => {
     });
 };
 
+
 /** Register the initial set of parts in the system **/
 System.registerPart('card', Card);
 System.registerPart('stack', Stack);
@@ -1112,11 +1126,16 @@ document.addEventListener('DOMContentLoaded', () => {
     // Add any other non-part view CustomElements,
     // like the halo
     window.customElements.define('st-halo', Halo);
-    window.customElements.define('st-editor', EditorView);
     window.customElements.define('st-navigator', STNavigator);
+    window.customElements.define('st-editor', Editor);
 
+    // Add nav
     System.navigator = document.createElement('st-navigator');
     document.body.appendChild(System.navigator);
+
+    // Add comprehensive editor pane
+    System.editor = document.createElement('st-editor');
+    document.body.appendChild(System.editor);
 
     // Perform the initial setup of
     // the system
