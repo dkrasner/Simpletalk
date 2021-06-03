@@ -926,17 +926,35 @@ System._commandHandlers['importWorld'] = function(sender, sourceUrl){
 
 System._commandHandlers['openScriptEditor'] = function(senders, targetId){
     let target = this.partsById[targetId];
+    let targetName = target.partProperties.getPropertyNamed(target, "name");
+    if(targetName){
+        targetName = `"${targetName}"`;
+    }
+    let name = `Script For ${target.name} ${targetName} id ${target.id}`;
+
+    // If there is already a dinwo opened with this name, then
+    // we return without creating anything new.
+    let found = Object.values(System.partsById).filter(part => {
+        let partName;
+        if(part.type == 'window'){
+            partName = part.partProperties.getPropertyNamed(
+                part,
+                'title'
+            );
+        }
+        return (part.type == 'window' && name == partName);
+    });
+    if(found.length){
+        return;
+    }
+
+    
     let currentCard = this.getCurrentCardModel();
     let window = this.newModel('window', currentCard.id);
     let area = this.newModel('area', window.id);
     let scriptField = this.newModel('field', area.id);
     let saveButton = this.newModel('button', area.id);
 
-    let targetName = target.partProperties.getPropertyNamed(target, "name");
-    if(targetName){
-        targetName = `"${targetName}"`;
-    }
-    let name = `Script For ${target.name} ${targetName} id ${target.id}`;
 
     // setup the window and stack properties
     window.setTarget(target);
