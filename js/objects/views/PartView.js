@@ -714,14 +714,14 @@ class PartView extends HTMLElement {
     }
 
     onContextMenuClick(event){
+        console.log(event);
         if(this.wantsContextMenu){
             event.preventDefault();
             event.stopPropagation();
-            let worldView = document.querySelector('[part-id="world"]');
-            if(worldView.contextMenuIsOpen){
-                worldView.closeContextMenu();
+            if(this.contextMenuIsOpen){
+                this.closeContextMenu();
             } else {
-                worldView.openContextMenuAt(
+                this.openContextMenuAt(
                     event.clientX,
                     event.clientY
                 );
@@ -789,10 +789,11 @@ class PartView extends HTMLElement {
 
     openContextMenuAt(x, y){
         let menuEl = document.createElement('st-context-menu');
+        let worldView = document.querySelector('[part-id="world"]');
         menuEl.render(this.model);
         menuEl.style.left = `${x}px`;
         menuEl.style.top = `${y}px`;
-        this.append(menuEl);
+        worldView.append(menuEl);
     }
 
     closeContextMenu(){

@@ -423,6 +423,22 @@ body.targeting-mode [part-id] {
     cursor: crosshair !important;
 }
 
+/* =Contextual Menu
+ *---------------------------------------------------*/
+.context-menu-item {
+    display: block;
+    padding-left: 16px;
+    padding-right: 16px;
+    padding-top: 4px;
+    padding-bottom: 4px;
+}
+
+.context-menu-item:hover {
+    cursor: pointer;
+    background-color: rgba(50, 50, 50, 0.9);
+    color: white;
+}
+
 
 /* Navigator 
  * --------------------------------------------------*/
