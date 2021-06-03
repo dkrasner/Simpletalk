@@ -105,6 +105,7 @@ class EditorPropItem extends HTMLElement {
         this.onInputInput = this.onInputInput.bind(this);
         this.onAcceptClick = this.onAcceptClick.bind(this);
         this.onCancelClick = this.onCancelClick.bind(this);
+        this.setupNumericInput = this.setupNumericInput.bind(this);
         this.enableButtons = this.enableButtons.bind(this);
         this.disableButtons = this.disableButtons.bind(this);
     }
@@ -153,8 +154,7 @@ class EditorPropItem extends HTMLElement {
         if(currentVal == null || currentVal == undefined){
             // Do something different here
         } else if(typeof(currentVal) == 'number'){
-            this.inputElement.setAttribute('type', 'number');
-            
+            this.setupNumericInput();
         } else if(typeof(currentVal) == 'boolean'){
             this.inputElement.setAttribute('type', 'checkbox');
             this.inputElement.checked = currentVal;
@@ -168,6 +168,17 @@ class EditorPropItem extends HTMLElement {
         this.inputElement.value = currentVal;
     }
 
+    setupNumericInput(){
+        if(this.property.name.endsWith('-transparency')){
+            this.inputElement.setAttribute('type', 'range');
+            this.inputElement.setAttribute('step', '0.05');
+            this.inputElement.setAttribute('min', '0.0');
+            this.inputElement.setAttribute('max', '1.0');
+        } else {
+            this.inputElement.setAttribute('type', 'number');
+        }
+    }
+
     onInputChange(event){
         if(event.target.type == "checkbox"){
             this.owner.partProperties.setPropertyNamed(
@@ -179,6 +190,10 @@ class EditorPropItem extends HTMLElement {
     }
 
     onInputInput(event){
+        let inputType = event.target.getAttribute('type');
+        if(inputType == 'range'){
+            return this.onAcceptClick();
+        }
         if(event.target.value !== this.property.getValue(this.owner)){
             this.enableButtons();
         } else {
@@ -198,7 +213,7 @@ class EditorPropItem extends HTMLElement {
 
     onAcceptClick(event){
         let value = this.inputElement.value;
-        if(this.inputElement.type == 'number'){
+        if(this.inputElement.type == 'number' || this.inputElement.type == 'range'){
             value = parseFloat(value);
         } else if(this.inputElement.type == 'checkbox'){
             value = this.inputElement.checked;
