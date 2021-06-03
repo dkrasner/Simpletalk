@@ -54,7 +54,7 @@ const templateString = `
     }
 </style>
 <p class="part-info">
-    My <button id="owner-link" class="button-link" title=""><span></span>${arrowLeftIcon}</button> is named <span class="part-name"></span> and is located at <button id="location-link" class="button-link" title="Copy location"><span></span>${clipboardIcon}</button> <button id="id-link" class="button-link" title="Copy id"><span>Copy my id</span>${clipboardIcon}</button>
+    My <button id="owner-link" class="button-link" title=""><span></span>${arrowLeftIcon}</button> is named <span class="part-name"></span> and is located at <button id="location-link" class="button-link" title="Copy location"><span></span>${clipboardIcon}</button> <button id="id-link" class="button-link" title="Copy id"><span>Copy id</span>${clipboardIcon}</button>
 </p>
 `;
 
@@ -94,9 +94,9 @@ class EditorLocationInfo extends HTMLElement {
     }
 
     disconnectedCallback(){
-        let ownerLinkButton = this._shadowRoot.querySelector('p .owner-link');
+        let ownerLinkButton = this._shadowRoot.getElementById('owner-link');
+        let locationLinkButton = this._shadowRoot.getElementById('location-link');
         let idLinkButton = this._shadowRoot.getElementById('id-link');
-        let locationLinkButton = this._shadowRoot.querySelector('p .location-link');
         ownerLinkButton.removeEventListener('click', this.onLinkClick);
         locationLinkButton.removeEventListener('click', this.onLocationClick);
         idLinkButton.removeEventListener('click', this.onLocationClick);
@@ -141,8 +141,11 @@ class EditorLocationInfo extends HTMLElement {
             ancestor = this.getAncestorOfTypeFor(this.model, kind);
         }
 
+        // If we cannot find an ancestor of the given
+        // kind, then we hide this field
         if(!ancestor){
-            debugger;
+            this.classList.add('hidden');
+            return;
         }
 
         // Update name span
