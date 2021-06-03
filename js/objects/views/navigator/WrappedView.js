@@ -11,41 +11,6 @@ import PartView from '../PartView.js';
 
 const templateString = `
 <style>
-    :host {
-        display: block;
-        box-sizing: border-box;
-        width: 150px;
-        height: 100px;
-        border: 1px solid rgba(100, 100, 100, 0.4);
-        overflow: hidden;
-        margin-left: 15px;
-        flex-shrink: 0;
-        transition: transform 0.2s ease-in, opacity 0.2s ease-in, box-shadow 0.2s linear;
-        transform: translateY(0);
-        opacity: 1.0;
-    }
-
-    :host(:hover){
-        cursor: pointer;
-    }
-
-    :host(:hover:not(.current)){
-        border: 1px solid rgba(100, 100, 100, 0.8);
-        box-shadow: 1px 1px 20px 1px rgba(150, 150, 150, 0.5);
-        transition: box-shadow 0.1s linear, border 0.1s linear;
-    }
-
-    :host(:not(.current)) > st-card {
-        display: none;
-    }
-
-    :host(.current){
-        box-shadow: 1px 1px 20px 2px rgba(100, 100, 100, 0.8);
-    }
-    :host(:not(.current)){
-        opacity: 0.5;
-        transition: transform 0.2s ease-out, opacity 0.2s ease-out, box-shadow 0.2s linear;
-    }
     #number-display {
         opacity: 0;
         display: flex;

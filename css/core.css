@@ -351,5 +351,65 @@ body.targeting-mode [part-id] {
 }
 
 
-/* = TESTING: TODO: Remove
+/* Navigator 
  * --------------------------------------------------*/
+
+wrapped-view {
+    display: block;
+    box-sizing: border-box;
+    width: 150px;
+    height: 100px;
+    border: 1px solid rgba(100, 100, 100, 0.4);
+    overflow: hidden;
+    margin-left: 15px;
+    flex-shrink: 0;
+    transition: transform 0.2s ease-in, opacity 0.2s ease-in, box-shadow 0.2s linear;
+    transform: translateY(0);
+    opacity: 1.0;
+}
+
+wrapped-view(:hover){
+    cursor: pointer;
+}
+
+wrapped-view(:hover:not(.current)){
+    border: 1px solid rgba(100, 100, 100, 0.8);
+    box-shadow: 1px 1px 20px 1px rgba(150, 150, 150, 0.5);
+    transition: box-shadow 0.1s linear, border 0.1s linear;
+}
+
+wrapped-view(:not(.current)) > st-card {
+    display: none;
+}
+
+wrapped-view(.current){
+    box-shadow: 1px 1px 20px 2px rgba(100, 100, 100, 0.8);
+}
+wrapped-view(:not(.current)){
+    opacity: 0.5;
+    transition: transform 0.2s ease-out, opacity 0.2s ease-out, box-shadow 0.2s linear;
+}
+
+wrapped-view(:not(.current)) > #number-display {
+    opacity: 0.8;
+    background-color: rgba(200, 200, 200, 0.5);
+    transition: opacity 0.2s ease-out;
+    z-index: 1000;
+}
+
+wrapped-view(:not(.current)) > #number-display > span {
+    transform: translateY(0px);
+    transition: transform 0.2s linear;
+}
+
+wrapped-view(:not(.current)) > #number-display {
+    opacity: 0.8;
+    background-color: rgba(200, 200, 200, 0.5);
+    transition: opacity 0.2s ease-out;
+    z-index: 1000;
+}
+
+wrapped-view(:not(.current)) > #number-display > span {
+    transform: translateY(0px);
+    transition: transform 0.2s linear;
+}
