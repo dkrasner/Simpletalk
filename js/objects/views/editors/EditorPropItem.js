@@ -105,6 +105,7 @@ class EditorPropItem extends HTMLElement {
         this.onInputInput = this.onInputInput.bind(this);
         this.onAcceptClick = this.onAcceptClick.bind(this);
         this.onCancelClick = this.onCancelClick.bind(this);
+        this.onEnterKey = this.onEnterKey.bind(this);
         this.setupNumericInput = this.setupNumericInput.bind(this);
         this.enableButtons = this.enableButtons.bind(this);
         this.disableButtons = this.disableButtons.bind(this);
@@ -125,6 +126,16 @@ class EditorPropItem extends HTMLElement {
         // Render
         this.render();
         
+    }
+
+    connectedCallback(){
+        if(this.isConnected){
+            this.addEventListener('keypress', this.onEnterKey);
+        }
+    }
+
+    disconnectedCallback(){
+        this.removeEventListener('keypress', this.onEnterKey);
     }
 
     render(){
@@ -198,6 +209,12 @@ class EditorPropItem extends HTMLElement {
             this.enableButtons();
         } else {
             this.disableButtons();
+        }
+    }
+
+    onEnterKey(event){
+        if(event.key == 'Enter'){
+            this.onAcceptClick();
         }
     }
 
