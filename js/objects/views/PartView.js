@@ -95,6 +95,7 @@ class PartView extends HTMLElement {
         this.handleTargetMouseClick = this.handleTargetMouseClick.bind(this);
         this.handleTargetMouseOver = this.handleTargetMouseOver.bind(this);
         this.handleTargetMouseLeave = this.handleTargetMouseLeave.bind(this);
+        this.addContextMenuItems = this.addContextMenuItems.bind(this);
 
         // Bind editor related methods
         this.openEditor = this.openEditor.bind(this);
@@ -800,6 +801,15 @@ class PartView extends HTMLElement {
         if(found){
             found.remove();
         }
+    }
+
+    addContextMenuItems(contextMenu){
+        // The default implementation is to
+        // do nothins.
+        // Subclasses should override and use the
+        // passed-in contextMenu object to construct
+        // list items that are specific to their needs
+        return;
     }
 
     get wantsHaloMove(){

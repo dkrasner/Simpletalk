@@ -63,6 +63,7 @@ class ContextMenu extends HTMLElement {
         this.addScriptEditItem = this.addScriptEditItem.bind(this);
         this.addMovementItems = this.addMovementItems.bind(this);
         this.addListItem = this.addListItem.bind(this);
+        this.addSpacer = this.addSpacer.bind(this);
     }
 
     render(aModel){
@@ -78,6 +79,10 @@ class ContextMenu extends HTMLElement {
         this.addOpenEditorItem();
         this.addScriptEditItem();
         this.addMovementItems();
+
+        // Add View-specific items
+        let view = document.querySelector(`[part-id="${this.model.id}"]`);
+        view.addContextMenuItems(this);
     }
 
     addListItem(label, callback, submenu=null){
@@ -240,6 +245,12 @@ class ContextMenu extends HTMLElement {
                 }
             );
         }
+    }
+
+    addSpacer(){
+        let item = document.createElement('li');
+        item.classList.add('context-menu-spacer');
+        this.append(item);
     }
 };
 

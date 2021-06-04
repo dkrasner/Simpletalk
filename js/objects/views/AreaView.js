@@ -82,6 +82,20 @@ class AreaView extends PartView {
             wrapper.classList.remove('allow-scroll');
         }
     }
+
+    addContextMenuItems(contextMenu){
+        contextMenu.addSpacer();
+        contextMenu.addListItem(
+            "Set Layout to List",
+            (event) => {
+                this.model.partProperties.setPropertyNamed(
+                    this.model,
+                    'layout',
+                    'list'
+                );
+            }
+        );
+    }
 };
 
 export {
