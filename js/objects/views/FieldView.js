@@ -8,6 +8,7 @@
  * implementation of Field/FieldView in the future.
  */
 import PartView from './PartView.js';
+import cssStyler from '../utils//styler.js';
 import ColorWheelWidget from './drawing/ColorWheelWidget.js';
 import interpreterSemantics from '../../ohm/interpreter-semantics.js';
 
@@ -79,6 +80,7 @@ class FieldView extends PartView {
         super();
 
         // this.editorCompleter = this.simpleTalkCompleter;
+        this.textStyler = cssStyler;  // we might want to consider a more programmatic way to set this
         this.editorCompleter = null;
         this.contextMenuOpen = false;
         this.haloLockUnlockButton = null;
@@ -106,6 +108,7 @@ class FieldView extends PartView {
         this.initCustomHaloButtons = this.initCustomHaloButtons.bind(this);
         this.insertRange = this.insertRange.bind(this);
         this.setRangeInTarget = this.setRangeInTarget.bind(this);
+        this.setSelection = this.setSelection.bind(this);
 
         this.setupPropHandlers();
     }
@@ -222,6 +225,19 @@ class FieldView extends PartView {
         }
     }
 
+    setSelection(propName, value){
+        Object.values(this.selectionRanges).forEach((range) => {
+            let currentStyle = range.startContainer.style;
+            if(!currentStyle){
+                currentStyle = {};
+            }
+            let newStyle = this.textStyler(currentStyle, propName, value);
+            let span = document.createElement('span');
+            span.style = newStyle;
+            range.surroundContents(span);
+        });
+    }
+
     onInput(event){
         event.stopPropagation();
         event.preventDefault();
@@ -275,8 +291,8 @@ class FieldView extends PartView {
                         if(!this.contextMenuOpen){
                             this.openContextMenu();
                         }
-                    } else if(event.metaKey){
-                        this.handleSelection();
+                    } else {
+                        this.handleSelection(event.metaKey);
                     }
                 } else {
                     // make sure no context menu is open
@@ -295,7 +311,7 @@ class FieldView extends PartView {
      * in this.selection Object/dict so that modification can be inserted
      * back into the corresponding ranges.
      */
-    handleSelection(){
+    handleSelection(openNewField){
         let selection = window.getSelection();
         for(let i=0; i < selection.rangeCount; i++){
             // make sure this is not a continuing selection
@@ -310,8 +326,10 @@ class FieldView extends PartView {
             // to ensure we don't hit on other views' ranges by accident we need unique id's
             let rangeId = Date.now(); //TODO we need a better random id
             this.selectionRanges[rangeId] = range;
-            // open a field for each new selection and populate it with the range html
-            this.openField(range, rangeId);
+            if(openNewField){
+                // open a field for each new selection and populate it with the range html
+                this.openField(range, rangeId);
+            }
         }
     }
 

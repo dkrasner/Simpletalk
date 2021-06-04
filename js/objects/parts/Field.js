@@ -75,11 +75,14 @@ class Field extends Part {
             'editable',
             true
         );
+
+
         // A number of the props deal with direct text editing,
         // and so they are like commands. Examples include "undo"
         // "redo" "clear" etc. Here we use dynami props which the
         // view can respond to accordingly, but having these props have
         // no actual 'state'
+        /** TODO: these should be private commands
         this.partProperties.newDynamicProp(
             "undo",
             () => {}, // all we is a notification
@@ -95,6 +98,7 @@ class Field extends Part {
             () => {}, // all we is a notification
             () => {} // no getter
         );
+        **/
 
         // Styling
         // setting width and height to null
@@ -142,13 +146,27 @@ class Field extends Part {
         // Private command handlers
 
         this.insertRange = this.insertRange.bind(this);
+        this.setSelection = this.setSelection.bind(this);
         this.setPrivateCommandHandler("insertRange", this.insertRange);
+        this.setPrivateCommandHandler("setSelection", this.setSelection);
     }
 
     insertRange(senders, rangeId, html, css){
         window.System.findViewsById(this.id).forEach((view) => {
             view.insertRange(rangeId, html, css);
         });
+    }
+
+    setSelection(senders, propertyName, propertyValue){
+        console.log(this.id);
+        console.log(propertyName);
+        console.log(propertyValue);
+        // for now just allow properties of type "text-*" to be set
+        if(propertyName.startsWith("text-")){
+            window.System.findViewsById(this.id).forEach((view) => {
+                view.setSelection(propertyName, propertyValue);
+            });
+        }
     }
 
     get type(){

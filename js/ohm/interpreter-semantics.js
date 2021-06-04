@@ -282,6 +282,22 @@ const createInterpreterSemantics = (partContext, systemContext) => {
             return msg;
         },
 
+        Command_setSelection: function(setLiteral, selectionLiteral, propNameAsLiteral, toLiteral, literalOrVarName, optionalInClause){
+            let specifiedObjectId = optionalInClause.interpret()[0] || null;
+            let args = [
+                propNameAsLiteral.interpret(), // The property name
+                literalOrVarName.interpret(), // The value or a var representing the value
+                specifiedObjectId
+            ];
+
+            let msg = {
+                type: "command",
+                commandName: "setSelection",
+                args: args
+            };
+            return msg;
+        },
+
         Command_ask: function(askLiteral, question){
             return {
                 type: "command",
