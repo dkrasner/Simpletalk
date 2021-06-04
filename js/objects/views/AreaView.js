@@ -85,16 +85,60 @@ class AreaView extends PartView {
 
     addContextMenuItems(contextMenu){
         contextMenu.addSpacer();
-        contextMenu.addListItem(
-            "Set Layout to List",
-            (event) => {
-                this.model.partProperties.setPropertyNamed(
-                    this.model,
-                    'layout',
-                    'list'
+        let layout = this.model.partProperties.getPropertyNamed(
+            this.model,
+            'layout'
+        );
+        let direction = this.model.partProperties.getPropertyNamed(
+            this.model,
+            'list-direction'
+        );
+        if(layout != 'list'){
+            contextMenu.addListItem(
+                "Set Layout to List",
+                (event) => {
+                    this.model.partProperties.setPropertyNamed(
+                        this.model,
+                        'layout',
+                        'list'
+                    );
+                }
+            );
+        } else {
+            contextMenu.addListItem(
+                "Set Layout to Strict",
+                (event) => {
+                    this.model.partProperties.setPropertyNamed(
+                        this.model,
+                        'layout',
+                        'strict'
+                    );
+                }
+            );
+            if(direction == 'row'){
+                contextMenu.addListItem(
+                    "Set List Direction to Column",
+                    (event) => {
+                        this.model.partProperties.setPropertyNamed(
+                            this.model,
+                            'list-direction',
+                            'column'
+                        );
+                    }
+                );
+            } else {
+                contextMenu.addListItem(
+                    "Set List Direction to Column",
+                    (event) => {
+                        this.model.partProperties.setPropertyNamed(
+                            this.model,
+                            'list-direction',
+                            'row'
+                        );
+                    }
                 );
             }
-        );
+        }
     }
 };
 
