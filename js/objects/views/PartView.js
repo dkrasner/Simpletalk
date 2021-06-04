@@ -714,7 +714,6 @@ class PartView extends HTMLElement {
     }
 
     onContextMenuClick(event){
-        console.log(event);
         if(this.wantsContextMenu){
             event.preventDefault();
             event.stopPropagation();

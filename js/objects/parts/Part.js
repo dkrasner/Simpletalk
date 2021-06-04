@@ -65,6 +65,7 @@ class Part {
         this.serialize = this.serialize.bind(this);
         this.toJSON = this.toJSON.bind(this);
         this.setPropsFromDeserializer = this.setPropsFromDeserializer.bind(this);
+        this.findAncestorOfType = this.findAncestorOfType.bind(this);
         this.openEditorCmdHandler = this.openEditorCmdHandler.bind(this);
         this.closeEditorCmdHandler = this.closeEditorCmdHandler.bind(this);
         this.copyCmdHandler = this.copyCmdHandler.bind(this);
@@ -722,6 +723,17 @@ class Part {
 
     toJSON(){
         return this.serialize();
+    }
+
+    findAncestorOfType(aPartType){
+        let owner = this._owner;
+        while(owner){
+            if(owner.type == aPartType){
+                return owner;
+            }
+            owner = owner._owner;
+        }
+        return null;
     }
 };
 

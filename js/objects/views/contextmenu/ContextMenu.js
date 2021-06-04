@@ -8,7 +8,7 @@ const templateString = `
         position: absolute;
         border: 1px solid black;
         background-color: white;
-        box-shadow: 1px 5px rgba(50, 50, 50, 0.7);
+        box-shadow: 1px 2px 10px rgba(50, 50, 50, 0.7);
         z-index: 10000;
         padding-bottom: 8px;
         min-width: 200px;
@@ -33,6 +33,7 @@ const templateString = `
         list-style: none;
         margin: 0;
         padding: 0;
+        font-size: 0.8rem;
     }
 
 </style>
@@ -58,7 +59,9 @@ class ContextMenu extends HTMLElement {
 
         // Bound methods
         this.addCopyAndPasteItems = this.addCopyAndPasteItems.bind(this);
+        this.addOpenEditorItem = this.addOpenEditorItem.bind(this);
         this.addScriptEditItem = this.addScriptEditItem.bind(this);
+        this.addMovementItems = this.addMovementItems.bind(this);
         this.addListItem = this.addListItem.bind(this);
     }
 
@@ -72,7 +75,9 @@ class ContextMenu extends HTMLElement {
 
         // Render the default menu items
         this.addCopyAndPasteItems();
+        this.addOpenEditorItem();
         this.addScriptEditItem();
+        this.addMovementItems();
     }
 
     addListItem(label, callback, submenu=null){
@@ -111,6 +116,15 @@ class ContextMenu extends HTMLElement {
         }
     }
 
+    addOpenEditorItem(){
+        this.addListItem(
+            'Open Editor',
+            (event) => {
+                window.System.openEditorForPart(this.model.id);
+            }
+        );
+    }
+
     addScriptEditItem(){
         this.addListItem(
             'Edit Script',
@@ -122,6 +136,110 @@ class ContextMenu extends HTMLElement {
                 }, this.model);
             }
         );
+
+        this.addListItem(
+            'Edit World Script',
+            (event) => {
+                this.model.sendMessage({
+                    type: 'command',
+                    commandName: 'openScriptEditor',
+                    args: ['world']
+                }, this.model);
+            }
+        );
+
+        let windowAncestor = this.model.findAncestorOfType('window');
+        if(this.model.type != 'window' && windowAncestor !== null){
+            this.addListItem(
+                'Edit Owning Window Script',
+                (event) => {
+                    this.model.sendMessage({
+                        type: 'command',
+                        commandName: 'openScriptEditor',
+                        args: [windowAncestor.id]
+                    }, this.model);
+                }
+            );
+        }
+        
+        let cardAncestor = this.model.findAncestorOfType('card');
+        if(this.model.type != 'card' && cardAncestor){
+            this.addListItem(
+                'Edit Owning Card',
+                (event) => {
+                    this.model.sendMessage({
+                        type: 'command',
+                        commandName: 'openScriptEditor',
+                        args: [cardAncestor.id]
+                    }, this.model);
+                }
+            );
+        }
+
+        let stackAncestor = this.model.findAncestorOfType('stack');
+        if(this.model.type != 'stack' && stackAncestor){
+            this.addListItem(
+                'Edit Owning Stack Script',
+                (event) => {
+                    this.model.sendMessage({
+                        type: 'command',
+                        commandName: 'openScriptEditor',
+                        args: [stackAncestor.id]
+                    }, this.model);
+                }
+            );
+        }
+    }
+
+    addMovementItems(){
+        let index = this.model._owner.subparts.indexOf(this.model);
+        let ownerLength = this.model._owner.subparts.length;
+        if(ownerLength && index < ownerLength - 1){
+            // Create the moveDown option
+            this.addListItem(
+                'Move Down',
+                (event) => {
+                    this.model.sendMessage({
+                        type: 'command',
+                        commandName: 'moveDown',
+                        args: []
+                    }, this.model);
+                }
+            );
+            this.addListItem(
+                'Move to Last',
+                (event) => {
+                    this.model.sendMessage({
+                        type: 'command',
+                        commandName: 'moveToLast',
+                        args: []
+                    }, this.model);
+                }
+            );
+        }
+        if(index > 0){
+            // Create the moveUp option
+            this.addListItem(
+                'Move Up',
+                (event) => {
+                    this.model.sendMessage({
+                        type: 'command',
+                        commandName: 'moveUp',
+                        args: []
+                    }, this.model);
+                }
+            );
+            this.addListItem(
+                'Move to First',
+                (event) => {
+                    this.model.sendMessage({
+                        type: 'command',
+                        commandName: 'moveToFirst',
+                        args: []
+                    }, this.model);
+                }
+            );
+        }
     }
 };
 
