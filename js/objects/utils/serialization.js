@@ -114,6 +114,35 @@ class STDeserializer {
                 this.deserializePart(Object.assign({}, partData));
             });
 
+            // Translate targets
+            for (var modelId in this._propsCache) {
+                let props = this._propsCache[modelId];
+                if (props.target !== null) {
+                    for (var oldId in this._idCache) {
+                        let newId = this._idCache[oldId];
+                        if (props.target === 'part id ' + oldId) {
+                            props.target = 'part id ' + newId;
+                            break;
+                        }
+                    }
+                }
+            }
+            // Translate scripts
+            for (var modelId in this._scriptCache) {
+                let script = this._scriptCache[modelId];
+                if (script !== null && script.match('part id') !== null) {
+                    for (var oldId in this._idCache) {
+                        let newId = this._idCache[oldId];
+                        let oldRe = 'part id ' + oldId;
+                        let newRe = 'part id ' + newId;
+                        if (this._scriptCache[modelId].match(oldRe) !== null) {
+                            console.log(modelId);
+                            this._scriptCache[modelId] = script.replaceAll(oldRe, newRe);
+                        }
+                    }
+                }
+            }
+
             // Third, we go through each created Part instance
             // and add any subparts to it. Note that this is not
             // recursive
@@ -136,6 +165,23 @@ class STDeserializer {
             // react to any initial changes to their models.
             this._instanceCache.forEach(partInstance => {
                 this.setProperties(partInstance);
+                // We need to translate new ids to old ones
+                if (partInstance.name == "WorldStack") {
+                    let world = partInstance;
+                    world.partProperties.setPropertyNamed(
+                        world,
+                        "current",
+                        this._idCache[world.currentStackId]
+                    );
+                }
+                if (partInstance.name == "Stack") {
+                    let stack = partInstance;
+                    stack.partProperties.setPropertyNamed(
+                        stack,
+                        "current",
+                        this._idCache[stack.currentCardId]
+                    );
+                }
                 this.setViewModel(partInstance);
             });
 

@@ -692,7 +692,8 @@ const System = {
             throw new Error(`No serialization found for this page`);
         }
         let deserializer = new STDeserializer(this);
-        deserializer.useOriginalIds = true;
+        deserializer.useOriginalIds = false;
+        //deserializer.useOriginalIds = true;
         return deserializer.deserialize(serializationEl.textContent);
     },
 
