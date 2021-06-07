@@ -83,6 +83,7 @@ class FieldView extends PartView {
         this.contextMenuOpen = false;
         this.haloLockUnlockButton = null;
         this.selectionRanges = {};
+        this.wantsContextMenu = false;
 
         this.template = document.createElement('template');
         this.template.innerHTML = fieldTemplateString;
