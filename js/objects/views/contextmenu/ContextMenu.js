@@ -58,6 +58,7 @@ class ContextMenu extends HTMLElement {
         );
 
         // Bound methods
+        this.addHaloToggleItem = this.addHaloToggleItem.bind(this);
         this.addCopyAndPasteItems = this.addCopyAndPasteItems.bind(this);
         this.addOpenEditorItem = this.addOpenEditorItem.bind(this);
         this.addScriptEditItem = this.addScriptEditItem.bind(this);
@@ -75,6 +76,7 @@ class ContextMenu extends HTMLElement {
         headerEl.textContent = headerText;
 
         // Render the default menu items
+        this.addHaloToggleItem();
         this.addCopyAndPasteItems();
         this.addOpenEditorItem();
         this.addScriptEditItem();
@@ -95,6 +97,25 @@ class ContextMenu extends HTMLElement {
             itemEl.append(submenu);
         }
         this.append(itemEl);
+    }
+
+    addHaloToggleItem(){
+        let target = window.System.findViewById(this.model.id);
+        if(target.classList.contains('editing')){
+            this.addListItem(
+                'Close Halo',
+                (event) => {
+                    target.closeHalo();
+                }
+            );
+        } else {
+            this.addListItem(
+                'Open Halo',
+                (event) => {
+                    target.openHalo();
+                }
+            );
+        }
     }
 
     addCopyAndPasteItems(){
