@@ -191,7 +191,7 @@ class ContextMenu extends HTMLElement {
         let cardAncestor = this.model.findAncestorOfType('card');
         if(this.model.type != 'card' && cardAncestor){
             this.addListItem(
-                'Edit Owning Card',
+                'Edit Owning Card Script',
                 (event) => {
                     this.model.sendMessage({
                         type: 'command',
