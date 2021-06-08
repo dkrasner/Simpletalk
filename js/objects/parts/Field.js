@@ -158,9 +158,6 @@ class Field extends Part {
     }
 
     setSelection(senders, propertyName, propertyValue){
-        console.log(this.id);
-        console.log(propertyName);
-        console.log(propertyValue);
         // for now just allow properties of type "text-*" to be set
         if(propertyName.startsWith("text-")){
             window.System.findViewsById(this.id).forEach((view) => {
