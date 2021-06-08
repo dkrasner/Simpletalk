@@ -30,7 +30,7 @@ describe("Serialization / Deserialization Tests", () => {
             let second = serializationEl.textContent;
             assert.equal(first, second);
         });
-        it("Deserializing from itself will produce an identical JSON serialization", function(){
+        it.skip("Deserializing from itself will produce an identical JSON serialization", function(){
             let first = getSerializationString();
             // Clear models and views
             System.partsById = {};

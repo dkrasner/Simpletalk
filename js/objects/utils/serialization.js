@@ -30,14 +30,6 @@ class STDeserializer {
         // being attached
         this.rootId = null;
 
-        // By default, we create new IDs for each
-        // deserialized Part (and preserve a mapping
-        // from old to new temporarily).
-        // However, there are cases, like initialLoad,
-        // where we want to preserve the originals.
-        // That flag is set here.
-        this.useOriginalIds = false;
-
         // Bound methods
         this.deserialize = this.deserialize.bind(this);
         this.deserializeData = this.deserializeData.bind(this);
@@ -193,18 +185,6 @@ class STDeserializer {
                 return instance._owner == null || instance._owner == undefined;
             });
 
-            // If we are using the original IDs, we need
-            // to reset the idMaker to be the max of
-            // the current crop of IDs
-            if(this.useOriginalIds){
-                let allIds = this._instanceCache.map(inst => {
-                    return parseInt(inst.id);
-                }).filter(id => {
-                    return !isNaN(id) && id !== null;
-                });
-                idMaker.count = Math.max(...allIds);
-            }
-
             // Insertion should be handled by composed
             // promises elsewhere (see imports and deserialize()
             // for examples)
@@ -286,23 +266,15 @@ class STDeserializer {
 
     handleId(aPart, partData){
         let newId, oldId;
-        if(this.useOriginalIds){
-            return {
-                newId: partData.id,
-                oldId: partData.id
-            };
-        } else {
-            oldId = partData.id;
-            newId = aPart.id;
-            if(aPart.type !== 'world'){
-                newId = idMaker.new();
-            }
-            return {
-                newId,
-                oldId
-            };
+        oldId = partData.id;
+        newId = aPart.id;
+        if(aPart.type !== 'world'){
+            newId = idMaker.new();
         }
-        
+        return {
+            newId,
+            oldId
+        };
     }
 
     addPartsToSystem(aListOfParts){
