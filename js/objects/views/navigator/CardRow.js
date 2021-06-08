@@ -24,6 +24,8 @@ class CardRow extends PartView {
     constructor(){
         super();
 
+        this.wantsHalo = false;
+
         // Set up template
         this.template = document.createElement('template');
         this.template.innerHTML = templateString;

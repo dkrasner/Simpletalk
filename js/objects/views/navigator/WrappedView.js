@@ -37,7 +37,7 @@ const templateString = `
         transition: opacity 0.2s ease-out;
         z-index: 1000;
     }
-    
+
     :host(:not(.current)) > #number-display > span {
         transform: translateY(0px);
         transition: transform 0.2s linear;
@@ -53,6 +53,7 @@ const templateString = `
 class WrappedView extends PartView {
     constructor(){
         super();
+        this.wantsHalo = false;
 
         // Set up template and shadowDom
         this.template = document.createElement('template');

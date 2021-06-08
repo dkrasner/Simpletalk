@@ -116,7 +116,8 @@ class STNavigator extends PartView {
         super();
 
         this.initialized = false;
-        
+        this.wantsHalo = false;
+
         // Set up template
         this.template = document.createElement('template');
         this.template.innerHTML = templateString;

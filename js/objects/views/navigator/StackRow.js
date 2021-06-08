@@ -15,7 +15,7 @@ const templateString = `
         align-items: center;
         justify-content: flex-start;
         flex: 1;
-    }    
+    }
 </style>
 <slot name="stacks"></slot>
 `;
@@ -23,6 +23,7 @@ const templateString = `
 class StackRow extends PartView {
     constructor(){
         super();
+        this.wantsHalo = false;
 
         // Set up template
         this.template = document.createElement('template');
