@@ -248,7 +248,7 @@ class FieldView extends PartView {
             // being created to wrap the contents, such as when styling is continually
             // applied ot the same selection
             let span;
-            if(docFragment.childNodes.length == 1 && docFragment.childNodes[0].nodeName == "TEXT"){
+            if(docFragment.childNodes.length == 1 && docFragment.childNodes[0].nodeName == "SPAN"){
                 span = docFragment.childNodes[0];
                 // Note the use of Obejct.values here for the DOM style attribute object
                 // that's weird
@@ -257,7 +257,7 @@ class FieldView extends PartView {
                 });
             } else {
                 // we need to create a span element to wrap the contents in style
-                span = document.createElement('text');
+                span = document.createElement('span');
                 // While tempting to use range.surroundContents() avoid this
                 // since it will fail with a non-informative error if the range
                 // includes partial nodes (ex text across various nodes)
@@ -270,8 +270,17 @@ class FieldView extends PartView {
                 span.style[key] = cssObject[key];
             });
             range.insertNode(span);
-            // TODO sort this out
-            // an empty div is frequently inserted by range.inserNode
+            this.model.partProperties.setPropertyNamed(
+                this.model,
+                'innerHTML',
+                this.textarea.innerHTML,
+                false // do not notify
+            );
+            // if there is a target and range set then send the target an update message
+            let target = this.model.partProperties.getPropertyNamed(this.model, 'target');
+            if(target){
+                this.setRangeInTarget(target, this.textarea.innerHTML);
+            }
         });
     }
 
