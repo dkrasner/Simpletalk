@@ -11,6 +11,10 @@
  * of the common behavior, including lifecycle methods,
  * for these.
  */
+import ContextMenu from './contextmenu/ContextMenu.js';
+
+window.customElements.define('st-context-menu', ContextMenu);
+
 class PartView extends HTMLElement {
     constructor(){
         super();
@@ -30,6 +34,9 @@ class PartView extends HTMLElement {
         this.wantsHaloDelete = true;
         this.wantsHalo = true;
         // Note: see getter for wantsHaloMove
+
+        // Context menu settings
+        this.wantsContextMenu = true;
 
         // Bind component methods
         this.setModel = this.setModel.bind(this);
@@ -80,6 +87,7 @@ class PartView extends HTMLElement {
         this.onHaloOpenEditor = this.onHaloOpenEditor.bind(this);
         this.onAuxClick = this.onAuxClick.bind(this);
         this.onClick = this.onClick.bind(this);
+        this.onContextMenuClick = this.onContextMenuClick.bind(this);
         this.onMouseDown = this.onMouseDown.bind(this);
         this.onMouseUp = this.onMouseUp.bind(this);
         this.onMouseMove = this.onMouseMove.bind(this);
@@ -87,6 +95,15 @@ class PartView extends HTMLElement {
         this.handleTargetMouseClick = this.handleTargetMouseClick.bind(this);
         this.handleTargetMouseOver = this.handleTargetMouseOver.bind(this);
         this.handleTargetMouseLeave = this.handleTargetMouseLeave.bind(this);
+        this.addContextMenuItems = this.addContextMenuItems.bind(this);
+
+        // Bind editor related methods
+        this.openEditor = this.openEditor.bind(this);
+        this.closeEditor = this.closeEditor.bind(this);
+
+        // Context menu
+        this.openContextMenuAt = this.openContextMenuAt.bind(this);
+        this.closeContextMenu = this.closeContextMenu.bind(this);
 
         // Bind lifecycle methods
         this.afterModelSet = this.afterModelSet.bind(this);
@@ -107,6 +124,7 @@ class PartView extends HTMLElement {
 
             // Register default event handlers manually]
             this.addEventListener('click', this.onClick);
+            this.addEventListener('contextmenu', this.onContextMenuClick);
 
             // Call the lifecycle method when done
             // with the above
@@ -117,6 +135,7 @@ class PartView extends HTMLElement {
     disconnectedCallback(){
         this.removeEventListener('auxclick', this.onAuxClick);
         this.removeEventListener('click', this.onClick);
+        this.removeEventListener('contextmenu', this.onContextMenuClick);
         this.afterDisconnected();
     }
 
@@ -695,6 +714,21 @@ class PartView extends HTMLElement {
         event.target.onclick = event.target.onClick;
     }
 
+    onContextMenuClick(event){
+        if(this.wantsContextMenu){
+            event.preventDefault();
+            event.stopPropagation();
+            if(this.contextMenuIsOpen){
+                this.closeContextMenu();
+            } else {
+                this.openContextMenuAt(
+                    event.clientX,
+                    event.clientY
+                );
+            }
+        }
+    }
+
     onAuxClick(event){
         // Should only open halo when middle
         // mouse button is clicked
@@ -705,6 +739,9 @@ class PartView extends HTMLElement {
     }
 
     onClick(event){
+        if(this.contextMenuIsOpen){
+            this.closeContextMenu();
+        }
         if(event.button == 0 && event.shiftKey){
             event.preventDefault();
             this.onHaloActivationClick(event);
@@ -750,6 +787,31 @@ class PartView extends HTMLElement {
         document.removeEventListener('mouseup', this.onMouseUp);
     }
 
+    openContextMenuAt(x, y){
+        let menuEl = document.createElement('st-context-menu');
+        let worldView = document.querySelector('[part-id="world"]');
+        menuEl.render(this.model);
+        menuEl.style.left = `${x}px`;
+        menuEl.style.top = `${y}px`;
+        worldView.append(menuEl);
+    }
+
+    closeContextMenu(){
+        let found = document.querySelector('st-context-menu');
+        if(found){
+            found.remove();
+        }
+    }
+
+    addContextMenuItems(contextMenu){
+        // The default implementation is to
+        // do nothins.
+        // Subclasses should override and use the
+        // passed-in contextMenu object to construct
+        // list items that are specific to their needs
+        return;
+    }
+
     get wantsHaloMove(){
         if(!this.parentElement || !this.isConnected){
             return false;
@@ -777,6 +839,25 @@ class PartView extends HTMLElement {
         }
 
         return false;
+    }
+
+    get contextMenuIsOpen(){
+        let found = document.querySelector('st-context-menu');
+        if(found){
+            return true;
+        }
+        return false;
+    }
+
+    /* Editor related methods */
+    openEditor(){
+        // Does nothing by default.
+        // Should be implemented in subclass
+    }
+
+    closeEditor(){
+        // Does nothing by default.
+        // Should be implemented in subclass
     }
 };
 

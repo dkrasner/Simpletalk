@@ -285,6 +285,15 @@ class ImageView extends PartView {
         this.haloButton.setAttribute('title', 'Edit link for image file');
         this.haloButton.addEventListener('click', this.updateImageLink);
     }
+
+    addContextMenuItems(contextMenu){
+        contextMenu.addSpacer();
+        contextMenu.addListItem(
+            'Edit Image URL',
+            this.updateImageLink
+        );
+        
+    }
 };
 
 export {

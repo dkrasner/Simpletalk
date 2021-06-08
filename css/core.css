@@ -423,6 +423,45 @@ body.targeting-mode [part-id] {
     cursor: crosshair !important;
 }
 
+/* =Contextual Menu
+ *---------------------------------------------------*/
+.st-context-menu {
+    display: flex;
+    flex-direction: column;
+    position: absolute;
+    border: 1px solid black;
+    background-color: white;
+    box-shadow: 1px 2px 10px rgba(50, 50, 50, 0.7);
+    z-index: 10000;
+    padding-bottom: 8px;
+    min-width: 200px;
+    font-family: 'Helvetica', sans-serif;
+}
+
+.context-menu-item {
+    display: block;
+    padding-left: 16px;
+    padding-right: 16px;
+    padding-top: 4px;
+    padding-bottom: 4px;
+}
+
+.context-menu-item:hover {
+    cursor: pointer;
+    background-color: rgba(50, 50, 50, 0.9);
+    color: white;
+}
+
+.context-menu-spacer {
+    display: block;
+    height: 1px;
+    margin-left: 24px;
+    margin-top: 8px;
+    margin-bottom: 8px;
+    margin-right: 24px;
+    background-color: rgba(150, 150, 150, 0.7);
+}
+
 
 /* Navigator 
  * --------------------------------------------------*/
