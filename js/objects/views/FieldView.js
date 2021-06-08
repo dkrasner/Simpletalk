@@ -8,6 +8,7 @@
  * implementation of Field/FieldView in the future.
  */
 import PartView from './PartView.js';
+import cssStyler from '../utils//styler.js';
 import ColorWheelWidget from './drawing/ColorWheelWidget.js';
 import interpreterSemantics from '../../ohm/interpreter-semantics.js';
 
@@ -79,6 +80,7 @@ class FieldView extends PartView {
         super();
 
         // this.editorCompleter = this.simpleTalkCompleter;
+        this.textStyler = cssStyler;  // we might want to consider a more programmatic way to set this
         this.editorCompleter = null;
         this.contextMenuOpen = false;
         this.haloLockUnlockButton = null;
@@ -95,6 +97,7 @@ class FieldView extends PartView {
         this.onInput = this.onInput.bind(this);
         this.onClick = this.onClick.bind(this);
         this.onKeydown = this.onKeydown.bind(this);
+        this.onMousedown = this.onMousedown.bind(this);
         this.openContextMenu = this.openContextMenu.bind(this);
         this.closeContextMenu = this.closeContextMenu.bind(this);
         this.doIt = this.doIt.bind(this);
@@ -106,6 +109,7 @@ class FieldView extends PartView {
         this.initCustomHaloButtons = this.initCustomHaloButtons.bind(this);
         this.insertRange = this.insertRange.bind(this);
         this.setRangeInTarget = this.setRangeInTarget.bind(this);
+        this.setSelection = this.setSelection.bind(this);
 
         this.setupPropHandlers();
     }
@@ -150,12 +154,20 @@ class FieldView extends PartView {
 
         this.textarea.addEventListener('input', this.onInput);
         this.textarea.addEventListener('keydown', this.onKeydown);
+        this.textarea.addEventListener('mousedown', this.onMousedown);
         // No need to add a click listener as the base PartView class does that
+
+        // in order to deal with range insertions (for styling text fragments within
+        // the textarea), we need to have the default paragraph tag = </br>. Otherwise
+        // the insert new line is of the form <div></br><div> which causes the appearance
+        // of newlines when nodes are inserted into a range
+        document.execCommand("defaultParagraphSeparator", false, "br");
     }
 
     afterDisconnected(){
         this.textarea.removeEventListener('input', this.onInput);
         this.textarea.removeEventListener('keydown', this.onKeydown);
+        this.textarea.removeEventListener('mousedown', this.onMousedown);
     }
 
     afterModelSet(){
@@ -170,7 +182,7 @@ class FieldView extends PartView {
 
         let isEditable = this.model.partProperties.getPropertyNamed(this.model, "editable");
         this.textarea.setAttribute('contenteditable', isEditable);
-        
+
         // setup the lock/unlock halo button
         this.initCustomHaloButtons();
         let editable = this.model.partProperties.getPropertyNamed(
@@ -222,6 +234,56 @@ class FieldView extends PartView {
         }
     }
 
+    /*
+     * set a text-* property on selection to style the selected text
+     * Note: this is done for every current selection, i.e. everthing
+     * in this.selectionRanges
+     */
+    setSelection(propName, value){
+        Object.values(this.selectionRanges).forEach((range) => {
+            let docFragment = range.extractContents();
+            let currentStyle = {};
+            // if the document fragment has one child node and it's a span
+            // we should style that directly. This avoids unncessary DOM elements
+            // being created to wrap the contents, such as when styling is continually
+            // applied ot the same selection
+            let span;
+            if(docFragment.childNodes.length == 1 && docFragment.childNodes[0].nodeName == "SPAN"){
+                span = docFragment.childNodes[0];
+                // Note the use of Obejct.values here for the DOM style attribute object
+                // that's weird
+                Object.values(span.style).forEach((key) => {
+                    currentStyle[key] = span.style[key];
+                });
+            } else {
+                // we need to create a span element to wrap the contents in style
+                span = document.createElement('span');
+                // While tempting to use range.surroundContents() avoid this
+                // since it will fail with a non-informative error if the range
+                // includes partial nodes (ex text across various nodes)
+                while (docFragment.childNodes.length){
+                    span.appendChild(docFragment.childNodes[0]);
+                }
+            }
+            let cssObject = this.textStyler(currentStyle, propName, value);
+            Object.keys(cssObject).forEach((key) => {
+                span.style[key] = cssObject[key];
+            });
+            range.insertNode(span);
+            this.model.partProperties.setPropertyNamed(
+                this.model,
+                'innerHTML',
+                this.textarea.innerHTML,
+                false // do not notify
+            );
+            // if there is a target and range set then send the target an update message
+            let target = this.model.partProperties.getPropertyNamed(this.model, 'target');
+            if(target){
+                this.setRangeInTarget(target, this.textarea.innerHTML);
+            }
+        });
+    }
+
     onInput(event){
         event.stopPropagation();
         event.preventDefault();
@@ -259,6 +321,10 @@ class FieldView extends PartView {
         };
     }
 
+    onMousedown(event){
+        // clear all selections
+        this.selectionRanges = {};
+    }
     onClick(event){
         event.preventDefault();
         event.stopPropagation();
@@ -275,8 +341,8 @@ class FieldView extends PartView {
                         if(!this.contextMenuOpen){
                             this.openContextMenu();
                         }
-                    } else if(event.metaKey){
-                        this.handleSelection();
+                    } else {
+                        this.handleSelection(event.metaKey);
                     }
                 } else {
                     // make sure no context menu is open
@@ -295,7 +361,7 @@ class FieldView extends PartView {
      * in this.selection Object/dict so that modification can be inserted
      * back into the corresponding ranges.
      */
-    handleSelection(){
+    handleSelection(openNewField){
         let selection = window.getSelection();
         for(let i=0; i < selection.rangeCount; i++){
             // make sure this is not a continuing selection
@@ -310,8 +376,10 @@ class FieldView extends PartView {
             // to ensure we don't hit on other views' ranges by accident we need unique id's
             let rangeId = Date.now(); //TODO we need a better random id
             this.selectionRanges[rangeId] = range;
-            // open a field for each new selection and populate it with the range html
-            this.openField(range, rangeId);
+            if(openNewField){
+                // open a field for each new selection and populate it with the range html
+                this.openField(range, rangeId);
+            }
         }
     }
 

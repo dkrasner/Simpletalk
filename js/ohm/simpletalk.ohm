@@ -221,6 +221,7 @@ SimpleTalk {
       | "delete" ObjectSpecifier --deleteModel
       | "delete" "property" stringLiteral "from"? ObjectSpecifier? --deleteProperty
       | "set" propertyName "to" Expression InClause? --setProperty
+      | "set" "selection" propertyName "to" Expression InClause? --setSelection
       | "add" "property" stringLiteral "to"? ObjectSpecifier? --addProperty
       | "add" systemObject stringLiteral? "to" ObjectSpecifier --addModelTo
       | "add" systemObject stringLiteral? --addModel
