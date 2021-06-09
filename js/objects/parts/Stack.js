@@ -14,7 +14,10 @@ import {
 class Stack extends Part {
     constructor(owner, name, deserializing=false){
         super(owner);
-        this.acceptedSubpartTypes = ["card", "window", "button", "area", "field", "drawing", "image", "audio"];
+        this.acceptedSubpartTypes = [
+            "card", "window", "button", "area", "field",
+            "drawing", "image", "audio", "browser"
+        ];
 
         // Set up Stack specific
         // PartProperties
