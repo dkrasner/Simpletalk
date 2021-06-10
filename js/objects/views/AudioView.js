@@ -141,7 +141,7 @@ class AudioView extends PartView {
                     details: {source: url, type: "url"}
 
                 };
-                this.sendMessage({msg}, this.model);
+                this.model.sendMessage({errorMsg}, this.model);
             }
         });
     }
