@@ -52,15 +52,15 @@ class BrowserView extends PartView {
     }
 
     afterModelSet(){
-        let browser = this._shadowRoot.querySelector("iframe");
+        let iframe = this._shadowRoot.querySelector("iframe");
         let src = this.model.partProperties.getPropertyNamed(this.model, "src");
         if(src){
-            browser.src = src;
+            iframe.src = src;
         }
         this.onPropChange("src", (url) => {
             try{
                 // resource load is auto-loaded by the <browser> element
-                browser.src = url;
+                iframe.src = url;
             } catch(error){
                 let errorMsg = {
                     type: "error",
@@ -70,7 +70,7 @@ class BrowserView extends PartView {
                     details: {source: url, type: "url"}
 
                 };
-                this.sendMessage({msg}, this.model);
+                this.model.sendMessage({errorMsg}, this.model);
             }
         });
     }
@@ -131,7 +131,7 @@ class BrowserView extends PartView {
             this.sendMessage(
                 {
                     type: 'command',
-                    commandName: 'loadBrowserFromSource',
+                    commandName: 'setURLTo',
                     args: [ result ]
                 },
                 this.model

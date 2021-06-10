@@ -39,10 +39,12 @@ class Browser extends Part {
         );
 
         // Private command handlers
-        this.setPrivateCommandHandler("setURL", this.setURL);
+        this.setPrivateCommandHandler("setURLTo", this.setURL);
+        this.setPrivateCommandHandler("forward", this.sendMessageToBrowser);
 
         // Bind component methods
         this.setURL = this.setURL.bind(this);
+        this.sendMessageToBrowser = this.sendMessageToBrowser.bind(this);
 
 
         // load the src if provided
@@ -73,6 +75,14 @@ class Browser extends Part {
 
     setURL(senders, sourceUrl){
         this.partProperties.setPropertyNamed(this, "src", sourceUrl);
+    }
+
+    sendMessageToBrowser(senders, message){
+        let views = window.System.findViewsById(this.id);
+        views.forEach((v) => {
+            let iframe = v._shadowRoot.querySelector("iframe");
+            iframe.contentWindow.postMessage(message, window.origin);
+        });
     }
 };
 

@@ -1146,6 +1146,33 @@ document.addEventListener('DOMContentLoaded', () => {
     System.initialLoad();
 });
 
+// add a message listener on window
+// these can include message from a browser part
+// for now filter those not coming from the origin
+window.addEventListener("message", (event) => {
+    if (event.origin !== window.origin)
+        return;
+    console.log(`Message to browser`);
+    // TODO: maybe we need to deal with quote escapes directly
+    // in the grammar
+    let script = event.data.replaceAll("'", '"');
+    // only statements are accepted for now
+    let parsedScript = languageGrammar.match(script, "Statement");
+    if(parsedScript.failed()){
+        // for now just log that it failed
+        console.log("failed to parse script for browser");
+    } else {
+        let semantics = languageGrammar.createSemantics();
+        let world = System.partsById["world"];
+        semantics.addOperation(
+            'interpret',
+            interpreterSemantics(world, System)
+        );
+        let msg = semantics(parsedScript).interpret();
+        System.sendMessage(msg, world, System);
+    }
+});
+
 // global interrupt
 document.addEventListener('keydown', (event) => {
     if(event.ctrlKey && event.key == 'c'){
