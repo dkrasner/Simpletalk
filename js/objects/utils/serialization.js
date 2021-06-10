@@ -26,6 +26,9 @@ class STDeserializer {
         // By default we assume the whole system,
         // ie full deserialization.
         this.targetId = 'system';
+        // the root id is the id of the root part instance
+        // being attached
+        this.rootId = null;
 
         // By default, we create new IDs for each
         // deserialized Part (and preserve a mapping
@@ -81,7 +84,7 @@ class STDeserializer {
                 } else {
                     target.addPart(rootPart);
                 }
-                
+
                 // Finally, append the PartView root node
                 // where it should go in the view tree.
                 if(this.targetId == 'system'){
@@ -118,20 +121,13 @@ class STDeserializer {
                 this.attachSubparts(partInstance);
             });
 
-            // Fourth, we create all the appropriate PartViews
-            // needed by the tree of deserialized parts.
-            this._instanceCache.forEach(partInstance => {
-                this.createView(partInstance);
-            });
+            // Forth and fifth. Create and attach views
+            // Note this is recursive to preserve the subpart + view children order
+            let root = this._instanceCache.filter((part) => {
+                return part.partProperties.getPropertyNamed(part, "id") == this.rootId;
+            })[0];
+            this.createAndAttachViews(root);
 
-            // Fifth, we attach view elements in the tree
-            // to their mapped parent elements. Note that
-            // we do not yet attach the root view to anything
-            // in the actual DOM.
-            this._instanceCache.forEach(partInstance => {
-                this.attachView(partInstance);
-            });
-            
             // Sixth, we set all properties on each created
             // Part model from the deserialized data.
             // We do this using a visitor method on the instances
@@ -169,6 +165,16 @@ class STDeserializer {
 
             return resolve(this);
         });
+    }
+
+    createAndAttachViews(partInstance){
+        this.createView(partInstance);
+        this.attachView(partInstance);
+        if(partInstance.subparts.length){
+            partInstance.subparts.forEach((subpartInstance) => {
+                this.createAndAttachViews(subpartInstance);
+            });
+        }
     }
 
     importFromSerialization(aJSONString, filterFunction){
@@ -218,6 +224,10 @@ class STDeserializer {
         // such as at load time
         let {newId, oldId} = this.handleId(instance, partData);
         instance.id = newId;
+        // cache the new root ID if this is a root instance
+        if(this.data.rootId == oldId){
+            this.rootId = newId;
+        }
 
         // Add to our caches and also to the System
         this._idCache[oldId] = newId;
