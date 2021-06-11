@@ -439,7 +439,7 @@ const createInterpreterSemantics = (partContext, systemContext) => {
             return first <= second;
         },
 
-        ThereIsAnObjectConditional: function(thereisLiteral, aOrAnLiteral, objectSpecifier){
+        ThereIsAnObjectConditional: function(thereLiteral, isLiteral, aOrAnLiteral, objectSpecifier){
             try{
                 objectSpecifier.interpret();
                 return true;
@@ -448,13 +448,55 @@ const createInterpreterSemantics = (partContext, systemContext) => {
             };
         },
 
-        ThereIsNotAnObjectConditional: function(thereisnotaLiteral, aOrAnLiteral, objectSpecifier){
+        ThereIsNotAnObjectConditional: function(thereLiteral, isLiteral, notLiteral, aOrAnLiteral, inClause){
             try{
                 objectSpecifier.interpret();
                 return false;
             } catch(e){
                 return true;
             };
+        },
+
+        ThereIsAPropertyConditional_withSpecifier: function(thereLiteral, isLiteral, aLiteral, propertyLiteral, propName, ofLiteral, objectSpecifier){
+            let targetId = objectSpecifier.interpret();
+            let target = systemContext.partsById[targetId];
+            if(!target){
+                throw new Error(`Could not find part with id ${targetId} (${this.sourceString})`);
+            }
+            let property = target.partProperties.findPropertyNamed(propName.interpret());
+            if(property){
+                return true;
+            }
+            return false;
+        },
+
+        ThereIsAPropertyConditional_withoutSpecifier: function(thereLiteral, isLiteral, aLiteral, propertyLiteral, propName){
+            let property = partContext.partProperties.findPropertyNamed(propName.interpret());
+            if(property){
+                return true;
+            }
+            return false;
+        },
+
+        ThereIsNotAPropertyConditional_withSpecifier: function(thereLiteral, isLiteral, notLiteral, aLiteral, propertyLiteral, propName, ofLiteral, objectSpecifier){
+            let targetId = objectSpecifier.interpret();
+            let target = systemContext.partsById[targetId];
+            if(!target){
+                throw new Error(`Could not find part with id ${targetId} (${this.sourceString})`);
+            }
+            let property = target.partProperties.findPropertyNamed(propName.interpret());
+            if(property){
+                return false;
+            }
+            return true;
+        },
+
+        ThereIsNotAPropertyConditional_withoutSpecifier: function(thereLiteral, isLiteral, notLiteral, aLiteral, propLiteral, propertyName){
+            let property = partContext.partProperties.findPropertyNamed(propName.interpret());
+            if(property){
+                return false;
+            }
+            return true;
         },
 
         IfThenInline: function(ifLiteral, conditional, thenLiteral, statement, optionalComment){

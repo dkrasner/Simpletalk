@@ -105,15 +105,25 @@ SimpleTalk {
       | Expression "is not an" Expression
 
     ThereIsAnObjectConditional
-      = "there is " ("an" | "a") ObjectSpecifier
+      = "there" "is" ("an" | "a") ObjectSpecifier
 
     ThereIsNotAnObjectConditional
-      = "there is not" ("an" | "a") ObjectSpecifier
+      = "there" "is" "not" ("an" | "a") ObjectSpecifier
+
+    ThereIsAPropertyConditional
+      = "there" "is" "a" "property" propertyName "of" ObjectSpecifier --withSpecifier 
+      | "there" "is" "a" "property" propertyName --withoutSpecifier 
+
+    ThereIsNotAPropertyConditional
+      = "there" "is" "a" "not" "property" propertyName "of" ObjectSpecifier --withSpecifier 
+      | "there" "is" "a" "not" "property" propertyName --withoutSpecifier 
 
     Conditional
       = booleanLiteral --booleanLiteral
       | ThereIsAnObjectConditional
       | ThereIsNotAnObjectConditional
+      | ThereIsAPropertyConditional
+      | ThereIsNotAPropertyConditional
       | EqualityConditional
       | NonEqualityConditional
       | KindConditional
