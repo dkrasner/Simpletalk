@@ -183,21 +183,43 @@ const addPositioningStyleProps = (target) => {
     // particular side of its owner Part.
     // Pinning properties only have effect
     // inside of Parts with a strict layout
-    target.partProperties.newBasicProp(
+    target.partProperties.newDynamicProp(
         'pinning-top',
-        false
+        pinningSetter,
+        function(propOwner, propObject){
+            return propObject._value;
+        },
+        false, // not read only
+        false // default value
+
     );
-    target.partProperties.newBasicProp(
+    target.partProperties.newDynamicProp(
         'pinning-left',
-        false
+        pinningSetter,
+        function(propOwner, propObject){
+            return propObject._value;
+        },
+        false, // not read only
+        false // default value
+
     );
-    target.partProperties.newBasicProp(
+    target.partProperties.newDynamicProp(
         'pinning-bottom',
-        false
+        pinningSetter,
+        function(propOwner, propObject){
+            return propObject._value;
+        },
+        false, // not read only
+        false // default value
     );
-    target.partProperties.newBasicProp(
+    target.partProperties.newDynamicProp(
         'pinning-right',
-        false
+        pinningSetter,
+        function(propOwner, propObject){
+            return propObject._value;
+        },
+        false, // not read only
+        false // default value
     );
     target.partProperties.newDynamicProp(
         // Possible values for the compound
@@ -383,6 +405,58 @@ const addLayoutStyleProps = (target) => {
     );
 };
 
+/**
+  * HELPERS
+ **/
+
+const pinningSetter = (propOwner, propObject, value) => {
+    let side = propObject.name.split("-")[1];
+    let topLeft;
+    switch (side){
+    case "right":
+        topLeft = "left";
+        break;
+    case "bottom":
+        topLeft = "top";
+        break;
+    default:
+        topLeft = side;
+    }
+    // we'll need to fix and un-fix the corresponding top or left property depending
+    // on whether value is true of false, respectively
+    let prop = propOwner.partProperties.findPropertyNamed(
+        topLeft 
+    );
+    let oppositeSide;
+    switch (side){
+    case "left":
+        oppositeSide = "right";
+        break;
+    case "right":
+        oppositeSide = "left";
+        break;
+    case "top":
+        oppositeSide = "bottom";
+        break;
+    case "bottom":
+        oppositeSide = "top";
+        break;
+    }
+    if(value){
+        // first make sure that pinning-bottom is false
+        propOwner.partProperties.setPropertyNamed(
+            propOwner,
+            `pinning-${oppositeSide}`,
+            false
+        );
+        prop.readOnly = true;
+    } else {
+        // reset the value back to trigger a notification
+        prop.setValue(propOwner, prop._value);
+        prop.readOnly = false;
+    }
+    propObject._value = value;
+};
 
 const pinningAdjust = (owner, value) => {
     let sides = ['top', 'left', 'right', 'bottom'];
