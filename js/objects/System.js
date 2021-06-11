@@ -926,7 +926,6 @@ System._commandHandlers['openScriptEditor'] = function(senders, targetId){
         return;
     }
 
-    
     let currentCard = this.getCurrentCardModel();
     let window = this.newModel('window', currentCard.id);
     let area = this.newModel('area', window.id);
@@ -959,12 +958,8 @@ System._commandHandlers['openScriptEditor'] = function(senders, targetId){
     saveButton.partProperties.setPropertyNamed(saveButton, "target", `part id ${target.id}`);
 
     saveButton.partProperties.setPropertyNamed(saveButton, "target", `part id ${target.id}`);
-    // TODO sort out why compiling a script on this button goes into an infinite recursion loop
-    // saveButton.partProperties.setPropertyNamed(saveButton, "script", saveScript, false);
-    saveButton._commandHandlers['click'] = function(){
-        let newScript = scriptField.partProperties.getPropertyNamed(scriptField, "text");
-        target.partProperties.setPropertyNamed(target, "script", newScript);
-    };
+    let saveScript = `on click\n\ttell target to set "script" to the "text" of first field\nend click`; 
+    saveButton.partProperties.setPropertyNamed(saveButton, "script", saveScript);
 };
 
 System._commandHandlers['SimpleTalk'] = function(senders){
