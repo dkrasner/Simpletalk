@@ -141,15 +141,15 @@ describe("there is a property" , () => {
         semanticMatchTest(s, "ThereIsAPropertyConditional_withSpecifier");
     });
 });
-describe("there is a property" , () => {
+describe("there is not a property" , () => {
     it ("without specifier", () => {
-        const s = `there is a not property "super prop"`;
+        const s = `there is not a property "super prop"`;
         semanticMatchTest(s, "Conditional");
         semanticMatchTest(s, "ThereIsNotAPropertyConditional");
         semanticMatchTest(s, "ThereIsNotAPropertyConditional_withoutSpecifier");
     });
     it ("with specifier", () => {
-        const s = `there is a not property "super prop" of first button of current card`;
+        const s = `there is not a property "super prop" of first button of current card`;
         semanticMatchTest(s, "Conditional");
         semanticMatchTest(s, "ThereIsNotAPropertyConditional");
         semanticMatchTest(s, "ThereIsNotAPropertyConditional_withSpecifier");

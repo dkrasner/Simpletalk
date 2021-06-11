@@ -491,7 +491,7 @@ const createInterpreterSemantics = (partContext, systemContext) => {
             return true;
         },
 
-        ThereIsNotAPropertyConditional_withoutSpecifier: function(thereLiteral, isLiteral, notLiteral, aLiteral, propLiteral, propertyName){
+        ThereIsNotAPropertyConditional_withoutSpecifier: function(thereLiteral, isLiteral, notLiteral, aLiteral, propLiteral, propName){
             let property = partContext.partProperties.findPropertyNamed(propName.interpret());
             if(property){
                 return false;

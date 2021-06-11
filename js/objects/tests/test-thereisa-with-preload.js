@@ -93,12 +93,20 @@ describe('"there is (not) a property" conditional tests', () => {
             let match = testLanguageGrammar.match(script, 'Conditional');
             assert.isTrue(match.succeeded());
             assert.isFalse(semantics(match).interpret());
+            script = `there is not a property "new-prop"`;
+            match = testLanguageGrammar.match(script, 'Conditional');
+            assert.isTrue(match.succeeded());
+            assert.isTrue(semantics(match).interpret());
         });
         it('Basic (core) property does not exist (with specifier)', () => {
             let script = `there is a property "new-prop" of current card`;
             let match = testLanguageGrammar.match(script, 'Conditional');
             assert.isTrue(match.succeeded());
             assert.isFalse(semantics(match).interpret());
+            script = `there is not a property "new-prop" of current card`;
+            match = testLanguageGrammar.match(script, 'Conditional');
+            assert.isTrue(match.succeeded());
+            assert.isTrue(semantics(match).interpret());
         });
         it('Can add a property to the current card and then it will exist', () => {
             let addScript = `add property "new-prop" to current card`;

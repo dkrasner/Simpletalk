@@ -115,8 +115,8 @@ SimpleTalk {
       | "there" "is" "a" "property" propertyName --withoutSpecifier 
 
     ThereIsNotAPropertyConditional
-      = "there" "is" "a" "not" "property" propertyName "of" ObjectSpecifier --withSpecifier 
-      | "there" "is" "a" "not" "property" propertyName --withoutSpecifier 
+      = "there" "is" "not" "a" "property" propertyName "of" ObjectSpecifier --withSpecifier 
+      | "there" "is" "not" "a" "property" propertyName --withoutSpecifier 
 
     Conditional
       = booleanLiteral --booleanLiteral
