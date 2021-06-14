@@ -1,3 +1,5 @@
+import interpreterSemantics from '../../../ohm/interpreter-semantics.js';
+
 // PREAMBLE
 const arrowLeftIcon = `
 <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-arrow-narrow-left" width="24" height="24" viewBox="0 0 24 24" stroke-width="1.5" stroke="#000000" fill="none" stroke-linecap="round" stroke-linejoin="round">
@@ -79,8 +81,11 @@ class EditorLocationInfo extends HTMLElement {
         this.updateInfo = this.updateInfo.bind(this);
         this.getLocationStringFor = this.getLocationStringFor.bind(this);
         this.getAncestorOfTypeFor = this.getAncestorOfTypeFor.bind(this);
+        this.getLocationViews = this.getLocationViews.bind(this);
         this.onLinkClick = this.onLinkClick.bind(this);
         this.onLocationClick = this.onLocationClick.bind(this);
+        this.onMouseEnter = this.onMouseEnter.bind(this);
+        this.onMouseLeave = this.onMouseLeave.bind(this);
     }
 
     connectedCallback(){
@@ -91,6 +96,12 @@ class EditorLocationInfo extends HTMLElement {
         ownerLinkButton.addEventListener('click', this.onLinkClick);
         locationLinkButton.addEventListener('click', this.onLocationClick);
         idLinkButton.addEventListener('click', this.onLocationClick);
+        ownerLinkButton.addEventListener('mouseenter', this.onMouseEnter);
+        locationLinkButton.addEventListener('mouseenter', this.onMouseEnter);
+        idLinkButton.addEventListener('mouseenter', this.onMouseEnter);
+        ownerLinkButton.addEventListener('mouseleave', this.onMouseLeave);
+        locationLinkButton.addEventListener('mouseleave', this.onMouseLeave);
+        idLinkButton.addEventListener('mouseleave', this.onMouseLeave);
     }
 
     disconnectedCallback(){
@@ -100,6 +111,12 @@ class EditorLocationInfo extends HTMLElement {
         ownerLinkButton.removeEventListener('click', this.onLinkClick);
         locationLinkButton.removeEventListener('click', this.onLocationClick);
         idLinkButton.removeEventListener('click', this.onLocationClick);
+        ownerLinkButton.removeEventListener('mouseenter', this.onMouseEnter);
+        locationLinkButton.removeEventListener('mouseenter', this.onMouseEnter);
+        idLinkButton.removeEventListener('mouseenter', this.onMouseEnter);
+        ownerLinkButton.removeEventListener('mouseleave', this.onMouseLeave);
+        locationLinkButton.removeEventListener('mouseleave', this.onMouseLeave);
+        idLinkButton.removeEventListener('mouseleave', this.onMouseLeave);
     }
 
     render(aModel){
@@ -251,6 +268,39 @@ class EditorLocationInfo extends HTMLElement {
         document.execCommand('copy');
         input.remove();
         currentFocus.focus();
+    }
+
+    onMouseEnter(event){
+        this.getLocationViews(event).forEach((view) => {
+            view.highlight();
+        });
+    }
+
+    onMouseLeave(event){
+        this.getLocationViews(event).forEach((view) => {
+            view.unhighlight();
+        });
+    }
+
+    getLocationViews(event){
+        let targetId;
+        let span = event.currentTarget.querySelector('span');
+        if(span.parentElement.id == 'id-link'){
+            targetId = this.getAttribute('ref-id');
+        } else {
+            let semantics = window.System.grammar.createSemantics();
+            semantics.addOperation(
+                'interpret',
+                interpreterSemantics(window.System.partsById['world'], window.System)
+            );
+            let m = window.System.grammar.match(span.textContent, "ObjectSpecifier");
+            try{
+                targetId = semantics(m).interpret();
+            } catch(e){
+                console.log(`cannot locate ${span.textContent}`);
+            }
+        }
+        return window.System.findViewsById(targetId);
     }
 };
 
