@@ -111,7 +111,7 @@ class PartView extends HTMLElement {
 
         // misc
         this.highlight = this.highlight.bind(this);
-        this.highlight = this.highlight.bind(this);
+        this.unhighlight = this.unhighlight.bind(this);
 
         // Bind lifecycle methods
         this.afterModelSet = this.afterModelSet.bind(this);
@@ -664,7 +664,6 @@ class PartView extends HTMLElement {
             document.addEventListener('keydown', this.handleTargetKey);
             partView.addEventListener('mouseover', this.handleTargetMouseOver);
             partView.addEventListener('mouseleave', this.handleTargetMouseLeave);
-            partView.removeEventListener('click', partView.onClick);
             partView.addEventListener('click', this.handleTargetMouseClick);
         });
         document.body.classList.add('targeting-mode');
@@ -686,11 +685,22 @@ class PartView extends HTMLElement {
     }
 
     highlight(){
-        this.classList.add('highlight');
+        if(!this.name == "StackView" && !this.name == "WorldView"){
+            this._tempBackgroundColor = this.model.partProperties.getPropertyNamed(this.model, "background-color");
+            this._tempBackgroundTransparency = this.model.partProperties.getPropertyNamed(this.model, "background-transparency");
+            this.model.partProperties.setPropertyNamed(this.model, "background-color", "green");
+            this.model.partProperties.setPropertyNamed(this.model, "background-transparency", .5);
+        }
+
     }
 
     unhighlight(){
-        this.classList.remove('highlight');
+        if(!this.name == "StackView" && !this.name == "WorldView"){
+            this.model.partProperties.setPropertyNamed(this.model, "background-color", this._tempBackgroundColor);
+            this.model.partProperties.setPropertyNamed(this.model, "background-transparency", this._tempBackgroundTransparency);
+            this._tempBackgroundColor = null;
+            this._tempBackgroundTransparency = null;
+        }
     }
 
     endHaloTarget(){
@@ -708,7 +718,6 @@ class PartView extends HTMLElement {
             partView.removeEventListener('mouseover', this.handleTargetMouseOver);
             partView.removeEventListener('mouseleave', this.handleTargetMouseLeave);
             partView.removeEventListener('click', this.handleTargetMouseClick);
-            partView.addEventListener('click', partView.onClick);
         });
         document.body.classList.remove('targeting-mode');
     }
@@ -722,14 +731,14 @@ class PartView extends HTMLElement {
     handleTargetMouseOver(event){
         if(!event.target.classList.contains('targeting')){
             event.target.classList.add('targeting');
-            event.target['onclick'] = null;
+            event.target.removeEventListener('click', event.target.onClick);
         }
     }
 
     handleTargetMouseLeave(event){
         if(event.target.classList.contains('targeting')){
             event.target.classList.remove('targeting');
-            event.target['onclick'] = event.target.onClick;
+            event.target.addEventListener('click', event.target.onClick);
         }
     }
 

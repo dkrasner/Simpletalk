@@ -263,7 +263,9 @@ class EditorSubpartsPane extends HTMLElement {
         let currentPart = aPart;
         let currentOwner = aPart._owner;
         while(currentOwner){
-            let indexInParent = currentOwner.subparts.indexOf(currentPart) + 1;
+            let indexInParent = currentOwner.subparts.filter((subpart) => {
+                return subpart.type == currentPart.type;
+            }).indexOf(currentPart) + 1;
             result += `${currentPart.type} ${indexInParent} of `;
             currentPart = currentPart._owner;
             currentOwner = currentOwner._owner;
