@@ -64,6 +64,7 @@ const System = {
     partsById: {},
     _commandHandlers: {},
     _functionHandlers: {},
+    _deserializer: null,
 
     // A dictionary mapping available ST resource (such as plugin) names
     availableResources: {},
@@ -691,8 +692,8 @@ const System = {
         if(!serializationEl){
             throw new Error(`No serialization found for this page`);
         }
-        let deserializer = new STDeserializer(this);
-        return deserializer.deserialize(serializationEl.textContent);
+        this._deserializer = new STDeserializer(this);
+        return this._deserializer.deserialize(serializationEl.textContent);
     },
 
     // Return a *complete* HTML
@@ -872,9 +873,9 @@ System._commandHandlers['importWorld'] = function(sender, sourceUrl){
                     if(!serializationEl){
                         throw new Error(`No serialization found for this page`);
                     }
-                    let deserializer = new STDeserializer(this);
-                    deserializer.targetId = 'world'; // We will insert the stacks into the world
-                    return deserializer.importFromSerialization(
+                    this._deserializer = new STDeserializer(this);
+                    this._deserializer.targetId = 'world'; // We will insert the stacks into the world
+                    return this._deserializer.importFromSerialization(
                         serializationEl.textContent,
                         (part) => {
                             // Return only Stacks that are direct subparts
