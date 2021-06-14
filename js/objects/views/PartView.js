@@ -12,6 +12,7 @@
  * for these.
  */
 import ContextMenu from './contextmenu/ContextMenu.js';
+import interpreterSemantics from '../../ohm/interpreter-semantics.js';
 
 window.customElements.define('st-context-menu', ContextMenu);
 
@@ -83,6 +84,8 @@ class PartView extends HTMLElement {
         this.onHaloCopy = this.onHaloCopy.bind(this);
         this.onHaloTarget = this.onHaloTarget.bind(this);
         this.endHaloTarget = this.endHaloTarget.bind(this);
+        this.onHaloTargetMouseEnter = this.onHaloTargetMouseEnter.bind(this);
+        this.onHaloTargetMouseLeave = this.onHaloTargetMouseLeave.bind(this);
         this.onHaloActivationClick = this.onHaloActivationClick.bind(this);
         this.onHaloOpenEditor = this.onHaloOpenEditor.bind(this);
         this.onAuxClick = this.onAuxClick.bind(this);
@@ -96,6 +99,7 @@ class PartView extends HTMLElement {
         this.handleTargetMouseOver = this.handleTargetMouseOver.bind(this);
         this.handleTargetMouseLeave = this.handleTargetMouseLeave.bind(this);
         this.addContextMenuItems = this.addContextMenuItems.bind(this);
+        this.getCurrentTargetViews = this.getCurrentTargetViews.bind(this);
 
         // Bind editor related methods
         this.openEditor = this.openEditor.bind(this);
@@ -104,6 +108,10 @@ class PartView extends HTMLElement {
         // Context menu
         this.openContextMenuAt = this.openContextMenuAt.bind(this);
         this.closeContextMenu = this.closeContextMenu.bind(this);
+
+        // misc
+        this.highlight = this.highlight.bind(this);
+        this.highlight = this.highlight.bind(this);
 
         // Bind lifecycle methods
         this.afterModelSet = this.afterModelSet.bind(this);
@@ -662,6 +670,28 @@ class PartView extends HTMLElement {
         event.stopPropagation();
     }
 
+    onHaloTargetMouseEnter(){
+        // light up the current target
+        this.getCurrentTargetViews().forEach((view) => {
+            view.highlight();
+        });
+    }
+
+    onHaloTargetMouseLeave(){
+        // light up the current target
+        this.getCurrentTargetViews().forEach((view) => {
+            view.unhighlight();
+        });
+    }
+
+    highlight(){
+        this.classList.add('highlight');
+    }
+
+    unhighlight(){
+        this.classList.remove('highlight');
+    }
+
     endHaloTarget(){
         // Remove all targeting related event listeners
         // that were added during the onHaloTarget
@@ -712,6 +742,22 @@ class PartView extends HTMLElement {
         this.endHaloTarget();
         event.stopImmediatePropagation();
         event.target.onclick = event.target.onClick;
+    }
+
+    getCurrentTargetViews(){
+        // clean up the current target
+        let currentTarget = this.model.partProperties.getPropertyNamed(this.model, "target");
+        if(currentTarget){
+            let semantics = window.System.grammar.createSemantics();
+            semantics.addOperation(
+                'interpret',
+                interpreterSemantics(this.model, window.System)
+            );
+            let m = window.System.grammar.match(currentTarget, "ObjectSpecifier");
+            let targetId = semantics(m).interpret();
+            return window.System.findViewsById(targetId);
+        }
+        return [];
     }
 
     onContextMenuClick(event){
