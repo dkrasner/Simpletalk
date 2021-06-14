@@ -13,6 +13,7 @@ import WorldStack from './parts/WorldStack.js';
 import Window from './parts/Window.js';
 import Drawing from './parts/Drawing.js';
 import Audio from './parts/Audio.js';
+import Browser from './parts/Browser.js';
 import Resource from './parts/Resource.js';
 import Image from './parts/Image.js';
 import Area from './parts/Area.js';
@@ -28,6 +29,7 @@ import DrawingView from './views/drawing/DrawingView.js';
 import ImageView from './views/ImageView.js';
 import AreaView from './views/AreaView.js';
 import AudioView from './views/AudioView.js';
+import BrowserView from './views/BrowserView.js';
 import ResourceView from './views/ResourceView.js';
 
 
@@ -1058,6 +1060,7 @@ System.registerPart('drawing', Drawing);
 System.registerPart('image', Image);
 System.registerPart('area', Area);
 System.registerPart('audio', Audio);
+System.registerPart('browser', Browser);
 System.registerPart('resource', Resource);
 
 /** Register the initial set of views in the system **/
@@ -1071,6 +1074,7 @@ System.registerView('drawing', DrawingView);
 System.registerView('image', ImageView);
 System.registerView('area', AreaView);
 System.registerView('audio', AudioView);
+System.registerView('browser', BrowserView);
 System.registerView('resource', ResourceView);
 
 
@@ -1135,6 +1139,33 @@ document.addEventListener('DOMContentLoaded', () => {
     // Perform the initial setup of
     // the system
     System.initialLoad();
+});
+
+// add a message listener on window
+// these can include message from a browser part
+// for now filter those not coming from the origin
+window.addEventListener("message", (event) => {
+    if (event.origin !== window.origin)
+        return;
+    console.log(`Message to browser`);
+    // TODO: maybe we need to deal with quote escapes directly
+    // in the grammar
+    let script = event.data.replaceAll("'", '"');
+    // only statements are accepted for now
+    let parsedScript = languageGrammar.match(script, "Statement");
+    if(parsedScript.failed()){
+        // for now just log that it failed
+        console.log("failed to parse script for browser");
+    } else {
+        let semantics = languageGrammar.createSemantics();
+        let world = System.partsById["world"];
+        semantics.addOperation(
+            'interpret',
+            interpreterSemantics(world, System)
+        );
+        let msg = semantics(parsedScript).interpret();
+        System.sendMessage(msg, world, System);
+    }
 });
 
 // global interrupt

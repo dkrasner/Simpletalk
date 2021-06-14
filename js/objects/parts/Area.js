@@ -31,6 +31,7 @@ class Area extends Part {
             "audio",
             "resource",
             "drawing",
+            "browser",
             "window"
         ];
 
