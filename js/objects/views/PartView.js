@@ -664,6 +664,7 @@ class PartView extends HTMLElement {
             document.addEventListener('keydown', this.handleTargetKey);
             partView.addEventListener('mouseover', this.handleTargetMouseOver);
             partView.addEventListener('mouseleave', this.handleTargetMouseLeave);
+            partView.removeEventListener('click', partView.onClick);
             partView.addEventListener('click', this.handleTargetMouseClick);
         });
         document.body.classList.add('targeting-mode');
@@ -707,6 +708,7 @@ class PartView extends HTMLElement {
             partView.removeEventListener('mouseover', this.handleTargetMouseOver);
             partView.removeEventListener('mouseleave', this.handleTargetMouseLeave);
             partView.removeEventListener('click', this.handleTargetMouseClick);
+            partView.addEventListener('click', partView.onClick);
         });
         document.body.classList.remove('targeting-mode');
     }
@@ -732,8 +734,12 @@ class PartView extends HTMLElement {
     }
 
     handleTargetMouseClick(event){
-        event.target.classList.remove('targeting');
         event.preventDefault();
+        if(event.button == 0 && event.shiftKey){
+            this.onHaloActivationClick(event);
+            return;
+        }
+        event.target.classList.remove('targeting');
         this.model.partProperties.setPropertyNamed(
             this.model,
             'target',

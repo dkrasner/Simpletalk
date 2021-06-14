@@ -85,16 +85,13 @@ class ImageView extends PartView {
     }
 
     afterConnected(){
-        this['onclick'] = this.onClick;
-
         if(!this.haloButton){
             this.initCustomHaloButton();
         }
     }
 
     afterDisconnected(){
-        this['onclick'] = null;
-    }
+ }
 
     updateImageData(imageData){
         if(this.model.isSvg){
@@ -203,28 +200,6 @@ class ImageView extends PartView {
         }
     }
 
-    onClick(event){
-        if(event.button == 0){
-            if(event.shiftKey){
-                // prevent triggering the on click message
-                event.preventDefault();
-                if(this.hasOpenHalo){
-                    this.closeHalo();
-                } else {
-                    this.openHalo();
-                }
-            } else if(!this.hasOpenHalo){
-                // Send the click command message to self
-                this.model.sendMessage({
-                    type: 'command',
-                    commandName: 'click',
-                    args: [],
-                    shouldIgnore: true // Should ignore if System DNU
-                }, this.model);
-            }
-        }
-    }
-
     openHalo(){
         // Override default. Here we add a custom button
         // when showing.
@@ -292,7 +267,6 @@ class ImageView extends PartView {
             'Edit Image URL',
             this.updateImageLink
         );
-        
     }
 };
 
