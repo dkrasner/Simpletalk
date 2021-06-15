@@ -84,8 +84,8 @@ class PartView extends HTMLElement {
         this.onHaloCopy = this.onHaloCopy.bind(this);
         this.onHaloTarget = this.onHaloTarget.bind(this);
         this.endHaloTarget = this.endHaloTarget.bind(this);
-        this.onHaloTargetMouseEnter = this.onHaloTargetMouseEnter.bind(this);
-        this.onHaloTargetMouseLeave = this.onHaloTargetMouseLeave.bind(this);
+        this.onHaloTargetButtonMouseEnter = this.onHaloTargetButtonMouseEnter.bind(this);
+        this.onHaloTargetButtonMouseLeave = this.onHaloTargetButtonMouseLeave.bind(this);
         this.onHaloActivationClick = this.onHaloActivationClick.bind(this);
         this.onHaloOpenEditor = this.onHaloOpenEditor.bind(this);
         this.onAuxClick = this.onAuxClick.bind(this);
@@ -97,7 +97,7 @@ class PartView extends HTMLElement {
         this.handleTargetKey = this.handleTargetKey.bind(this);
         this.handleTargetMouseClick = this.handleTargetMouseClick.bind(this);
         this.handleTargetMouseOver = this.handleTargetMouseOver.bind(this);
-        this.handleTargetMouseLeave = this.handleTargetMouseLeave.bind(this);
+        this.handleTargetMouseOut = this.handleTargetMouseLeave.bind(this);
         this.addContextMenuItems = this.addContextMenuItems.bind(this);
         this.getCurrentTargetViews = this.getCurrentTargetViews.bind(this);
 
@@ -663,21 +663,21 @@ class PartView extends HTMLElement {
         allTargets.forEach(partView => {
             document.addEventListener('keydown', this.handleTargetKey);
             partView.addEventListener('mouseover', this.handleTargetMouseOver);
-            partView.addEventListener('mouseleave', this.handleTargetMouseLeave);
+            partView.addEventListener('mouseout', this.handleTargetMouseOut);
             partView.addEventListener('click', this.handleTargetMouseClick);
         });
         document.body.classList.add('targeting-mode');
         event.stopPropagation();
     }
 
-    onHaloTargetMouseEnter(){
+    onHaloTargetButtonMouseEnter(){
         // light up the current target
         this.getCurrentTargetViews().forEach((view) => {
             view.highlight("rgb(54, 172, 100)"); //green
         });
     }
 
-    onHaloTargetMouseLeave(){
+    onHaloTargetButtonMouseLeave(){
         // light up the current target
         this.getCurrentTargetViews().forEach((view) => {
             view.unhighlight();
@@ -698,8 +698,6 @@ class PartView extends HTMLElement {
         if(this.name != "StackView" && this.name != "WorldView"){
             this.model.partProperties.setPropertyNamed(this.model, "background-color", this._tempBackgroundColor);
             this.model.partProperties.setPropertyNamed(this.model, "background-transparency", this._tempBackgroundTransparency);
-            this._tempBackgroundColor = null;
-            this._tempBackgroundTransparency = null;
         }
     }
 
@@ -716,7 +714,7 @@ class PartView extends HTMLElement {
             document.removeEventListener('keydown', this.handleTargetKey);
             partView.removeEventListener('keydown', this.handleTargetKey);
             partView.removeEventListener('mouseover', this.handleTargetMouseOver);
-            partView.removeEventListener('mouseleave', this.handleTargetMouseLeave);
+            partView.removeEventListener('mouseout', this.handleTargetMouseOut);
             partView.removeEventListener('click', this.handleTargetMouseClick);
         });
         document.body.classList.remove('targeting-mode');
@@ -729,8 +727,6 @@ class PartView extends HTMLElement {
     }
 
     handleTargetMouseOver(event){
-        console.log("targeting");
-        console.log(event.target);
         if(!event.target.classList.contains('targeting')){
             event.target.classList.add('targeting');
             event.target.highlight("rgb(234, 55, 55)");

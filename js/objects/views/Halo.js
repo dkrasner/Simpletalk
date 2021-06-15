@@ -268,8 +268,8 @@ class Halo extends HTMLElement {
             // Target button
             this.targeter = this.shadowRoot.getElementById('halo-target');
             this.targeter.addEventListener('click', this.targetElement.onHaloTarget);
-            this.targeter.addEventListener('mouseenter', this.targetElement.onHaloTargetMouseEnter);
-            this.targeter.addEventListener('mouseleave', this.targetElement.onHaloTargetMouseLeave);
+            this.targeter.addEventListener('mouseenter', this.targetElement.onHaloTargetButtonMouseEnter);
+            this.targeter.addEventListener('mouseleave', this.targetElement.onHaloTargetButtonMouseLeave);
         }
     }
 
