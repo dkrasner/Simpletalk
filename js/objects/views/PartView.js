@@ -673,7 +673,7 @@ class PartView extends HTMLElement {
     onHaloTargetMouseEnter(){
         // light up the current target
         this.getCurrentTargetViews().forEach((view) => {
-            view.highlight();
+            view.highlight("rgb(54, 172, 100)"); //green
         });
     }
 
@@ -684,18 +684,18 @@ class PartView extends HTMLElement {
         });
     }
 
-    highlight(){
-        if(!this.name == "StackView" && !this.name == "WorldView"){
+    highlight(color){
+        if(this.name != "StackView" && this.name != "WorldView"){
             this._tempBackgroundColor = this.model.partProperties.getPropertyNamed(this.model, "background-color");
+            this.model.partProperties.setPropertyNamed(this.model, "background-color", color);
             this._tempBackgroundTransparency = this.model.partProperties.getPropertyNamed(this.model, "background-transparency");
-            this.model.partProperties.setPropertyNamed(this.model, "background-color", "green");
-            this.model.partProperties.setPropertyNamed(this.model, "background-transparency", .5);
+            this.model.partProperties.setPropertyNamed(this.model, "background-transparency", 1);
         }
 
     }
 
     unhighlight(){
-        if(!this.name == "StackView" && !this.name == "WorldView"){
+        if(this.name != "StackView" && this.name != "WorldView"){
             this.model.partProperties.setPropertyNamed(this.model, "background-color", this._tempBackgroundColor);
             this.model.partProperties.setPropertyNamed(this.model, "background-transparency", this._tempBackgroundTransparency);
             this._tempBackgroundColor = null;
@@ -729,8 +729,11 @@ class PartView extends HTMLElement {
     }
 
     handleTargetMouseOver(event){
+        console.log("targeting");
+        console.log(event.target);
         if(!event.target.classList.contains('targeting')){
             event.target.classList.add('targeting');
+            event.target.highlight("rgb(234, 55, 55)");
             event.target.removeEventListener('click', event.target.onClick);
         }
     }
@@ -738,6 +741,7 @@ class PartView extends HTMLElement {
     handleTargetMouseLeave(event){
         if(event.target.classList.contains('targeting')){
             event.target.classList.remove('targeting');
+            event.target.unhighlight();
             event.target.addEventListener('click', event.target.onClick);
         }
     }
@@ -756,7 +760,8 @@ class PartView extends HTMLElement {
         );
         this.endHaloTarget();
         event.stopImmediatePropagation();
-        event.target.onclick = event.target.onClick;
+        event.target.unhighlight();
+        event.target.addEventListener('click', event.target.onClick);
     }
 
     getCurrentTargetViews(){

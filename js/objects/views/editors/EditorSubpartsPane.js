@@ -1,6 +1,7 @@
 // PREAMBLE
 import EditorLocationInfo from './EditorLocationInfo.js';
 import partIcons from '../../utils/icons.js';
+import {onLocationLinkClick, getLocationStringFor} from './utils/subparts.js';
 
 window.customElements.define('editor-location-info', EditorLocationInfo);
 
@@ -127,13 +128,18 @@ class EditorSubpartsPane extends HTMLElement {
             template.content.cloneNode(true)
         );
 
+        // define and bind methods
+        this.getLocationStringFor = getLocationStringFor.bind(this);
+        this.onLocationLinkClick = onLocationLinkClick.bind(this);
+
         // Bound methods
         this.onAddSubpart = this.onAddSubpart.bind(this);
         this.onSubpartItemClick = this.onSubpartItemClick.bind(this);
-        this.onLocationLinkClick = this.onLocationLinkClick.bind(this);
+        this.onSubpartItemMouseEnter = this.onSubpartItemMouseEnter.bind(this);
+        this.onSubpartItemMouseLeave = this.onSubpartItemMouseLeave.bind(this);
         this.createAddPartButton = this.createAddPartButton.bind(this);
         this.createSubpartComponent = this.createSubpartComponent.bind(this);
-        this.getLocationStringFor = this.getLocationStringFor.bind(this);
+        this.getLocationViews = this.getLocationViews.bind(this);
     }
 
     connectedCallback(){
@@ -157,7 +163,7 @@ class EditorSubpartsPane extends HTMLElement {
     render(aModel){
         this.model = aModel;
         this.headerEl = this._shadowRoot.getElementById('location-area');
-        
+
         // Clear any DOM children
         this.innerHTML = "";
 
@@ -207,6 +213,8 @@ class EditorSubpartsPane extends HTMLElement {
         wrapper.classList.add('subpart-item');
         wrapper.setAttribute('ref-id', aPart.id);
         wrapper.addEventListener('click', this.onSubpartItemClick);
+        wrapper.addEventListener('mouseenter', this.onSubpartItemMouseEnter);
+        wrapper.addEventListener('mouseleave', this.onSubpartItemMouseLeave);
 
         // Add icon area an SVG for Part
         let iconArea = document.createElement('div');
@@ -258,28 +266,24 @@ class EditorSubpartsPane extends HTMLElement {
         return button;
     }
 
-    getLocationStringFor(aPart){
-        let result = "";
-        let currentPart = aPart;
-        let currentOwner = aPart._owner;
-        while(currentOwner){
-            let indexInParent = currentOwner.subparts.filter((subpart) => {
-                return subpart.type == currentPart.type;
-            }).indexOf(currentPart) + 1;
-            result += `${currentPart.type} ${indexInParent} of `;
-            currentPart = currentPart._owner;
-            currentOwner = currentOwner._owner;
-        }
-        result += 'this world';
-        return result;
-    }
-
     onSubpartItemClick(event){
         let id = event.currentTarget.getAttribute('ref-id');
         let targetPart = window.System.partsById[id];
         if(targetPart){
             window.System.editor.render(targetPart);
         }
+    }
+
+    onSubpartItemMouseEnter(event){
+        this.getLocationViews(event).forEach((view) => {
+            view.highlight("rgb(54, 172, 100)"); // green
+        });
+    }
+
+    onSubpartItemMouseLeave(event){
+        this.getLocationViews(event).forEach((view) => {
+            view.unhighlight();
+        });
     }
 
     onAddSubpart(event){
@@ -297,20 +301,10 @@ class EditorSubpartsPane extends HTMLElement {
         this.render(this.model);
     }
 
-    onLocationLinkClick(event){
-        let text = event.currentTarget.querySelector('span').textContent;
-        let input = document.createElement('input');
-        input.style.position = 'absolute';
-        input.style.opacity = 0;
-        document.body.append(input);
-        let currentFocus = document.activeElement;
-        input.focus();
-        input.value = text;
-        console.log(input.value);
-        input.select();
-        document.execCommand('copy');
-        input.remove();
-        currentFocus.focus();
+    getLocationViews(event){
+        let targetId = event.currentTarget.getAttribute('ref-id');
+        let span = event.currentTarget.querySelector('span');
+        return window.System.findViewsById(targetId);
     }
 };
 
