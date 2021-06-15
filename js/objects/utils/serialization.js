@@ -3,7 +3,7 @@
  */
 import idMaker from './id.js';
 
-const version = "0.0.1";
+const version = "0.0.2";
 
 class STDeserializer {
     constructor(aSystem){
