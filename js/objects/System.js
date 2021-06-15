@@ -910,7 +910,7 @@ System._commandHandlers['openScriptEditor'] = function(senders, targetId){
     if(targetName){
         targetName = `"${targetName}"`;
     }
-    let name = `Script For ${target.name} ${targetName} id ${target.id}`;
+    let name = `Script For ${target.name} ${targetName}`;
 
     // If there is already a dinwo opened with this name, then
     // we return without creating anything new.

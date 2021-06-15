@@ -76,7 +76,6 @@ const templateString = `
         align-items: center;
         justify-content: space-around;
         width: 100%;
-        
     }
     
     #pane-area {
@@ -146,11 +145,17 @@ const templateString = `
         width: auto;
         margin-right: 8px;
     }
-    
+
+    #header-left {
+        max-width: 80%;
+    }
+
     #header-left span {
         font-family: monospace;
         font-size: 1.1rem;
         color: rgba(0, 0, 0, 0.5);
+        text-overflow: ellipsis;
+        overflow: hidden;
     }
 
     #icon-display-area {
@@ -425,7 +430,8 @@ class Editor extends HTMLElement {
         }
 
         typeDisplay.textContent = this.model.type.charAt(0).toUpperCase() + this.model.type.slice(1);
-        idDisplay.textContent = `(${this.model.id})`;
+        idDisplay.textContent = `id=${this.model.id}`;
+        idDisplay.title = this.model.id;
 
         if(Object.keys(partIcons).includes(this.model.type)){
             iconDisplay.innerHTML = partIcons[this.model.type];
