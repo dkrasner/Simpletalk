@@ -29,19 +29,15 @@ class CardView extends PartView {
         this.wantsHalo = false;
 
         // Bind component methods
-        this.onClick = this.onClick.bind(this);
     }
 
     afterConnected(){
-        // Add event listeners
-        this['onclick'] = this.onClick;
     }
 
     afterDisconnected(){
-        // Remove event listeners
-        this['onclick'] = null;
     }
 
+    // override the default class method
     onClick(event){
         if(event.button == 0 && event.shiftKey){
             event.preventDefault();

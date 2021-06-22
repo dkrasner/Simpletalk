@@ -12,6 +12,7 @@
  * for these.
  */
 import ContextMenu from './contextmenu/ContextMenu.js';
+import interpreterSemantics from '../../ohm/interpreter-semantics.js';
 
 window.customElements.define('st-context-menu', ContextMenu);
 
@@ -83,6 +84,8 @@ class PartView extends HTMLElement {
         this.onHaloCopy = this.onHaloCopy.bind(this);
         this.onHaloTarget = this.onHaloTarget.bind(this);
         this.endHaloTarget = this.endHaloTarget.bind(this);
+        this.onHaloTargetButtonMouseEnter = this.onHaloTargetButtonMouseEnter.bind(this);
+        this.onHaloTargetButtonMouseLeave = this.onHaloTargetButtonMouseLeave.bind(this);
         this.onHaloActivationClick = this.onHaloActivationClick.bind(this);
         this.onHaloOpenEditor = this.onHaloOpenEditor.bind(this);
         this.onAuxClick = this.onAuxClick.bind(this);
@@ -94,8 +97,9 @@ class PartView extends HTMLElement {
         this.handleTargetKey = this.handleTargetKey.bind(this);
         this.handleTargetMouseClick = this.handleTargetMouseClick.bind(this);
         this.handleTargetMouseOver = this.handleTargetMouseOver.bind(this);
-        this.handleTargetMouseLeave = this.handleTargetMouseLeave.bind(this);
+        this.handleTargetMouseOut = this.handleTargetMouseLeave.bind(this);
         this.addContextMenuItems = this.addContextMenuItems.bind(this);
+        this.getCurrentTargetViews = this.getCurrentTargetViews.bind(this);
 
         // Bind editor related methods
         this.openEditor = this.openEditor.bind(this);
@@ -104,6 +108,10 @@ class PartView extends HTMLElement {
         // Context menu
         this.openContextMenuAt = this.openContextMenuAt.bind(this);
         this.closeContextMenu = this.closeContextMenu.bind(this);
+
+        // misc
+        this.highlight = this.highlight.bind(this);
+        this.unhighlight = this.unhighlight.bind(this);
 
         // Bind lifecycle methods
         this.afterModelSet = this.afterModelSet.bind(this);
@@ -655,11 +663,42 @@ class PartView extends HTMLElement {
         allTargets.forEach(partView => {
             document.addEventListener('keydown', this.handleTargetKey);
             partView.addEventListener('mouseover', this.handleTargetMouseOver);
-            partView.addEventListener('mouseleave', this.handleTargetMouseLeave);
+            partView.addEventListener('mouseout', this.handleTargetMouseOut);
             partView.addEventListener('click', this.handleTargetMouseClick);
         });
         document.body.classList.add('targeting-mode');
         event.stopPropagation();
+    }
+
+    onHaloTargetButtonMouseEnter(){
+        // light up the current target
+        this.getCurrentTargetViews().forEach((view) => {
+            view.highlight("rgb(54, 172, 100)"); //green
+        });
+    }
+
+    onHaloTargetButtonMouseLeave(){
+        // light up the current target
+        this.getCurrentTargetViews().forEach((view) => {
+            view.unhighlight();
+        });
+    }
+
+    highlight(color){
+        if(this.name != "StackView" && this.name != "WorldView"){
+            this._tempBackgroundColor = this.model.partProperties.getPropertyNamed(this.model, "background-color");
+            this.model.partProperties.setPropertyNamed(this.model, "background-color", color);
+            this._tempBackgroundTransparency = this.model.partProperties.getPropertyNamed(this.model, "background-transparency");
+            this.model.partProperties.setPropertyNamed(this.model, "background-transparency", 1);
+        }
+
+    }
+
+    unhighlight(){
+        if(this.name != "StackView" && this.name != "WorldView"){
+            this.model.partProperties.setPropertyNamed(this.model, "background-color", this._tempBackgroundColor);
+            this.model.partProperties.setPropertyNamed(this.model, "background-transparency", this._tempBackgroundTransparency);
+        }
     }
 
     endHaloTarget(){
@@ -675,7 +714,7 @@ class PartView extends HTMLElement {
             document.removeEventListener('keydown', this.handleTargetKey);
             partView.removeEventListener('keydown', this.handleTargetKey);
             partView.removeEventListener('mouseover', this.handleTargetMouseOver);
-            partView.removeEventListener('mouseleave', this.handleTargetMouseLeave);
+            partView.removeEventListener('mouseout', this.handleTargetMouseOut);
             partView.removeEventListener('click', this.handleTargetMouseClick);
         });
         document.body.classList.remove('targeting-mode');
@@ -690,20 +729,26 @@ class PartView extends HTMLElement {
     handleTargetMouseOver(event){
         if(!event.target.classList.contains('targeting')){
             event.target.classList.add('targeting');
-            event.target['onclick'] = null;
+            event.target.highlight("rgb(234, 55, 55)");
+            event.target.removeEventListener('click', event.target.onClick);
         }
     }
 
     handleTargetMouseLeave(event){
         if(event.target.classList.contains('targeting')){
             event.target.classList.remove('targeting');
-            event.target['onclick'] = event.target.onClick;
+            event.target.unhighlight();
+            event.target.addEventListener('click', event.target.onClick);
         }
     }
 
     handleTargetMouseClick(event){
-        event.target.classList.remove('targeting');
         event.preventDefault();
+        if(event.button == 0 && event.shiftKey){
+            this.onHaloActivationClick(event);
+            return;
+        }
+        event.target.classList.remove('targeting');
         this.model.partProperties.setPropertyNamed(
             this.model,
             'target',
@@ -711,7 +756,24 @@ class PartView extends HTMLElement {
         );
         this.endHaloTarget();
         event.stopImmediatePropagation();
-        event.target.onclick = event.target.onClick;
+        event.target.unhighlight();
+        event.target.addEventListener('click', event.target.onClick);
+    }
+
+    getCurrentTargetViews(){
+        // clean up the current target
+        let currentTarget = this.model.partProperties.getPropertyNamed(this.model, "target");
+        if(currentTarget){
+            let semantics = window.System.grammar.createSemantics();
+            semantics.addOperation(
+                'interpret',
+                interpreterSemantics(this.model, window.System)
+            );
+            let m = window.System.grammar.match(currentTarget, "ObjectSpecifier");
+            let targetId = semantics(m).interpret();
+            return window.System.findViewsById(targetId);
+        }
+        return [];
     }
 
     onContextMenuClick(event){

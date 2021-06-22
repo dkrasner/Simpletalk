@@ -407,6 +407,10 @@ editor-subparts button.add-part-button > svg {
     outline: solid 1px var(--palette-orange);
 }
 
+.highlight {
+    background-color: green!important;
+}
+
 .targeting:after {
     content: " ";
     display: block;
@@ -415,7 +419,6 @@ editor-subparts button.add-part-button > svg {
     position: absolute;
     top: 0;
     left: 0;
-    background-color: red;
 }
 
 body.targeting-mode,

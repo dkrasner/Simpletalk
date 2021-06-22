@@ -1,3 +1,6 @@
+import interpreterSemantics from '../../../ohm/interpreter-semantics.js';
+import {onLocationLinkClick, getLocationStringFor} from './utils/subparts.js';
+
 // PREAMBLE
 const arrowLeftIcon = `
 <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-arrow-narrow-left" width="24" height="24" viewBox="0 0 24 24" stroke-width="1.5" stroke="#000000" fill="none" stroke-linecap="round" stroke-linejoin="round">
@@ -61,7 +64,7 @@ const templateString = `
 class EditorLocationInfo extends HTMLElement {
     constructor(){
         super();
-        
+
         // Setup template and shadow root
         const template = document.createElement('template');
         template.innerHTML = templateString;
@@ -73,14 +76,19 @@ class EditorLocationInfo extends HTMLElement {
         // Accepted values for the kind attribute
         this.allowedKinds = ['stack', 'card', 'owner'];
 
+        // define and bind methods
+        this.getLocationStringFor = getLocationStringFor.bind(this);
+        this.onLocationLinkClick = onLocationLinkClick.bind(this);
+
         // Bound methods
         this.handleStackKind = this.handleStackKind.bind(this);
         this.handleCardKind = this.handleCardKind.bind(this);
         this.updateInfo = this.updateInfo.bind(this);
-        this.getLocationStringFor = this.getLocationStringFor.bind(this);
         this.getAncestorOfTypeFor = this.getAncestorOfTypeFor.bind(this);
+        this.getLocationViews = this.getLocationViews.bind(this);
         this.onLinkClick = this.onLinkClick.bind(this);
-        this.onLocationClick = this.onLocationClick.bind(this);
+        this.onMouseEnter = this.onMouseEnter.bind(this);
+        this.onMouseLeave = this.onMouseLeave.bind(this);
     }
 
     connectedCallback(){
@@ -91,15 +99,23 @@ class EditorLocationInfo extends HTMLElement {
         ownerLinkButton.addEventListener('click', this.onLinkClick);
         locationLinkButton.addEventListener('click', this.onLocationClick);
         idLinkButton.addEventListener('click', this.onLocationClick);
+        locationLinkButton.addEventListener('mouseenter', this.onMouseEnter);
+        idLinkButton.addEventListener('mouseenter', this.onMouseEnter);
+        locationLinkButton.addEventListener('mouseleave', this.onMouseLeave);
+        idLinkButton.addEventListener('mouseleave', this.onMouseLeave);
     }
 
     disconnectedCallback(){
         let ownerLinkButton = this._shadowRoot.getElementById('owner-link');
         let locationLinkButton = this._shadowRoot.getElementById('location-link');
         let idLinkButton = this._shadowRoot.getElementById('id-link');
-        ownerLinkButton.removeEventListener('click', this.onLinkClick);
         locationLinkButton.removeEventListener('click', this.onLocationClick);
         idLinkButton.removeEventListener('click', this.onLocationClick);
+        ownerLinkButton.removeEventListener('mouseenter', this.onMouseEnter);
+        locationLinkButton.removeEventListener('mouseenter', this.onMouseEnter);
+        idLinkButton.removeEventListener('mouseenter', this.onMouseEnter);
+        locationLinkButton.removeEventListener('mouseleave', this.onMouseLeave);
+        idLinkButton.removeEventListener('mouseleave', this.onMouseLeave);
     }
 
     render(aModel){
@@ -197,20 +213,6 @@ class EditorLocationInfo extends HTMLElement {
         this.updateInfo();
     }
 
-    getLocationStringFor(aPart){
-        let result = "";
-        let currentPart = aPart;
-        let currentOwner = aPart._owner;
-        while(currentOwner){
-            let indexInParent = currentOwner.subparts.indexOf(currentPart) + 1;
-            result += `${currentPart.type} ${indexInParent} of `;
-            currentPart = currentPart._owner;
-            currentOwner = currentOwner._owner;
-        }
-        result += 'this world';
-        return result;
-    }
-
     getAncestorOfTypeFor(aPart, aType){
         let result;
         let currentOwner = aPart._owner;
@@ -234,23 +236,37 @@ class EditorLocationInfo extends HTMLElement {
         }
     }
 
-    onLocationClick(event){
-        let input = document.createElement('input');
+    onMouseEnter(event){
+        this.getLocationViews(event).forEach((view) => {
+            view.highlight("rgb(54, 172, 100)"); // green
+        });
+    }
+
+    onMouseLeave(event){
+        this.getLocationViews(event).forEach((view) => {
+            view.unhighlight();
+        });
+    }
+
+    getLocationViews(event){
+        let targetId;
         let span = event.currentTarget.querySelector('span');
-        input.style.position = 'absolute';
-        input.style.opacity = 0;
-        document.body.append(input);
-        let currentFocus = document.activeElement;
-        input.focus();
         if(span.parentElement.id == 'id-link'){
-            input.value = this.getAttribute('ref-id');
+            targetId = this.getAttribute('ref-id');
         } else {
-            input.value = span.textContent;
+            let semantics = window.System.grammar.createSemantics();
+            semantics.addOperation(
+                'interpret',
+                interpreterSemantics(window.System.partsById['world'], window.System)
+            );
+            let m = window.System.grammar.match(span.textContent, "ObjectSpecifier");
+            try{
+                targetId = semantics(m).interpret();
+            } catch(e){
+                console.log(`cannot locate ${span.textContent}`);
+            }
         }
-        input.select();
-        document.execCommand('copy');
-        input.remove();
-        currentFocus.focus();
+        return window.System.findViewsById(targetId);
     }
 };
 
