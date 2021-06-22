@@ -65,6 +65,22 @@ const fieldTemplateString = `
             overflow-wrap: anywhere;
         }
 
+        /* Syntax Highlighting
+ *---------------------------------------------------*/
+span[data-st-rule="messageName"]{
+    text-decoration: underline;
+}
+
+span[data-st-rule="keyword"]{
+    font-weight: bold;
+}
+
+span[data-st-rule="ParameterList-item"]{
+    font-style: italic;
+    color: grey;
+}
+
+
     </style>
     <div class="field">
         <div class="field-textarea" spellcheck="false"></div>
@@ -152,7 +168,7 @@ class FieldView extends PartView {
         this.textarea = this._shadowRoot.querySelector('.field-textarea');
 
         this.textarea.addEventListener('input', this.onInput);
-        // this.textarea.addEventListener('beforeinput', this.onBeforeInput);
+        //this.textarea.addEventListener('beforeinput', this.onBeforeInput);
         this.textarea.addEventListener('keydown', this.onKeydown);
         this.textarea.addEventListener('mousedown', this.onMousedown);
         // No need to add a click listener as the base PartView class does that
@@ -161,12 +177,12 @@ class FieldView extends PartView {
         // the textarea), we need to have the default paragraph tag = </br>. Otherwise
         // the insert new line is of the form <div></br><div> which causes the appearance
         // of newlines when nodes are inserted into a range
-        // document.execCommand("defaultParagraphSeparator", false, "br");
+        //document.execCommand("defaultParagraphSeparator", false, "st-line");
     }
 
     afterDisconnected(){
         this.textarea.removeEventListener('input', this.onInput);
-        // this.textarea.removeEventListener('beforeinput', this.onBeforeInput);
+        //this.textarea.removeEventListener('beforeinput', this.onBeforeInput);
         this.textarea.removeEventListener('keydown', this.onKeydown);
         this.textarea.removeEventListener('mousedown', this.onMousedown);
     }
@@ -242,35 +258,38 @@ class FieldView extends PartView {
      */
     setSelection(propName, value){
         Object.values(this.selectionRanges).forEach((range) => {
-            let docFragment = range.extractContents();
             let currentStyle = {};
-            // if the document fragment has one child node and it's a span
-            // we should style that directly. This avoids unncessary DOM elements
-            // being created to wrap the contents, such as when styling is continually
-            // applied ot the same selection
-            let span;
-            if(docFragment.childNodes.length == 1 && docFragment.childNodes[0].nodeName == "SPAN"){
-                span = docFragment.childNodes[0];
-                // Note the use of Obejct.values here for the DOM style attribute object
-                // that's weird
-                Object.values(span.style).forEach((key) => {
-                    currentStyle[key] = span.style[key];
-                });
-            } else {
-                // we need to create a span element to wrap the contents in style
-                span = document.createElement('span');
-                // While tempting to use range.surroundContents() avoid this
-                // since it will fail with a non-informative error if the range
-                // includes partial nodes (ex text across various nodes)
-                while (docFragment.childNodes.length){
-                    span.appendChild(docFragment.childNodes[0]);
-                }
-            }
+            // // if the document fragment has one child node and it's a span
+            // // we should style that directly. This avoids unncessary DOM elements
+            // // being created to wrap the contents, such as when styling is continually
+            // // applied ot the same selection
+            // let span;
+            // if(docFragment.childNodes.length == 1 && docFragment.childNodes[0].nodeName == "SPAN"){
+            //     span = docFragment.childNodes[0];
+            //     // Note the use of Obejct.values here for the DOM style attribute object
+            //     // that's weird
+            //     Object.values(span.style).forEach((key) => {
+            //         currentStyle[key] = span.style[key];
+            //     });
+            // } else {
+            //     // we need to create a span element to wrap the contents in style
+            //     span = document.createElement('span');
+            //     // While tempting to use range.surroundContents() avoid this
+            //     // since it will fail with a non-informative error if the range
+            //     // includes partial nodes (ex text across various nodes)
+            //     while (docFragment.childNodes.length){
+            //         span.appendChild(docFragment.childNodes[0]);
+            //     }
+            // }
+            let span = document.createElement('span');
             let cssObject = this.textStyler(currentStyle, propName, value);
             Object.keys(cssObject).forEach((key) => {
                 span.style[key] = cssObject[key];
             });
+
+            span.append(range.extractContents());
             range.insertNode(span);
+            
             this.model.partProperties.setPropertyNamed(
                 this.model,
                 'innerHTML',
@@ -286,11 +305,19 @@ class FieldView extends PartView {
     }
 
     onBeforeInput(event){
+        let selection = document.getSelection();
+        let selectedRange = selection.getRangeAt(0);
+        let range = selectedRange.cloneRange();
+
+        let innerHTML = event.target.innerHTML;
+        if(!innerHTML.endsWith("<div><br></div>")){
+            innerHTML += "<div><br></div>";
+            event.target.innerHTML = innerHTML;
+        }
+        
         if(event.inputType == "insertParagraph"){
             //event.stopPropagation();
             event.preventDefault();
-            let sel = document.getSelection();
-            let range = sel.getRangeAt(0);
 
             let br = document.createElement('br');
             let br2 = document.createElement('br');
