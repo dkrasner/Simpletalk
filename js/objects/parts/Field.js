@@ -44,7 +44,7 @@ class Field extends Part {
 
         this.partProperties.newBasicProp(
             'innerHTML',
-            '<br>' 
+            ''
         );
 
         this.partProperties.newBasicProp(
@@ -61,11 +61,13 @@ class Field extends Part {
             (owner, prop, value, notify) => {
                 prop._value = value;
                 if(notify){
+                    /*
                     if(!value){
                         value = "<br>";
                     }
                     // replace all newline characters with <br>
                     value = value.replace(/\n/g, "<br>");
+                    */
                     owner.partProperties.setPropertyNamed(owner, 'innerHTML', value, notify);
                 }
             },

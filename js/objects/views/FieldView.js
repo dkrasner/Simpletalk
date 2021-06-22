@@ -96,6 +96,7 @@ class FieldView extends PartView {
 
         // Bind methods
         this.onInput = this.onInput.bind(this);
+        this.onBeforeInput = this.onBeforeInput.bind(this);
         this.onClick = this.onClick.bind(this);
         this.onKeydown = this.onKeydown.bind(this);
         this.onMousedown = this.onMousedown.bind(this);
@@ -151,6 +152,7 @@ class FieldView extends PartView {
         this.textarea = this._shadowRoot.querySelector('.field-textarea');
 
         this.textarea.addEventListener('input', this.onInput);
+        // this.textarea.addEventListener('beforeinput', this.onBeforeInput);
         this.textarea.addEventListener('keydown', this.onKeydown);
         this.textarea.addEventListener('mousedown', this.onMousedown);
         // No need to add a click listener as the base PartView class does that
@@ -159,11 +161,12 @@ class FieldView extends PartView {
         // the textarea), we need to have the default paragraph tag = </br>. Otherwise
         // the insert new line is of the form <div></br><div> which causes the appearance
         // of newlines when nodes are inserted into a range
-        document.execCommand("defaultParagraphSeparator", false, "br");
+        // document.execCommand("defaultParagraphSeparator", false, "br");
     }
 
     afterDisconnected(){
         this.textarea.removeEventListener('input', this.onInput);
+        // this.textarea.removeEventListener('beforeinput', this.onBeforeInput);
         this.textarea.removeEventListener('keydown', this.onKeydown);
         this.textarea.removeEventListener('mousedown', this.onMousedown);
     }
@@ -282,14 +285,31 @@ class FieldView extends PartView {
         });
     }
 
+    onBeforeInput(event){
+        if(event.inputType == "insertParagraph"){
+            //event.stopPropagation();
+            event.preventDefault();
+            let sel = document.getSelection();
+            let range = sel.getRangeAt(0);
+
+            let br = document.createElement('br');
+            let br2 = document.createElement('br');
+            range.insertNode(br);
+            range.collapse(false);
+            range.insertNode(br2);
+            range.setStartAfter(br2);
+            range.setEndAfter(br2);
+        }
+    }
+
     onInput(event){
-        event.stopPropagation();
-        event.preventDefault();
         let innerHTML = event.target.innerHTML;
+        /*
         if(!innerHTML.endsWith("<br>")){
             innerHTML += "<br>";
             event.target.innerHTML = innerHTML;
         }
+        */
 
         if(this.editorCompleter){
             // TODO sort out how this would work
