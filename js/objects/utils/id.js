@@ -19,7 +19,8 @@ import { v4 as uuidv4 } from 'uuid';
  */
 const idMaker = {
     new: function(){
-        return uuidv4().replaceAll('-','');
+        let id = uuidv4();
+        return id.replace(/-/g, '');
     }
 };
 
