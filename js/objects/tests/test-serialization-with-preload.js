@@ -20,13 +20,13 @@ describe("Serialization / Deserialization Tests", () => {
         // We will create a new button to
         // test serialization
         let foundButton;
-        
+
         it("Can match itself on multiple serializations", () => {
-            System.serialize();
+            window.System.serialize();
             var serializationEl = document.getElementById('serialization');
             let first = serializationEl.textContent;
             System.serialize();
-            var serializationEl = document.getElementById('serialization');
+            serializationEl = document.getElementById('serialization');
             let second = serializationEl.textContent;
             assert.equal(first, second);
         });
@@ -42,7 +42,8 @@ describe("Serialization / Deserialization Tests", () => {
                 let idCache = System._deserializer._idCache;
                 for (var oldId in idCache) {
                     let newId = idCache[oldId];
-                    mutableFirst = mutableFirst.replaceAll(oldId, newId);
+                    let re = new RegExp(oldId, "g");
+                    mutableFirst = mutableFirst.replace(re, newId);
                 }
                 assert.equal(mutableFirst, second);
             });
@@ -63,11 +64,19 @@ describe("Serialization / Deserialization Tests", () => {
             assert.include(Object.keys(json.parts), foundButton.id.toString());
         });
         it("Loading from new serialization, we get the correct button", () => {
-            // Clear models and viewa
+            // Clear models and views
             System.partsById = {};
             document.querySelector('st-world').remove();
             System.deserialize().then(() => {
-                assert.exists(System.partsById[foundButton.id]);
+                let currentCard = System.getCurrentCardModel();
+                foundButton = currentCard.subparts.find(subpart => {
+                    let name = subpart.partProperties.getPropertyNamed(
+                        subpart,
+                        'name'
+                    );
+                    return name == "My New Button";
+                });
+                assert.exists(foundButton);
             });
         });
     });
