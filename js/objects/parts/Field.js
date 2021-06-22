@@ -44,7 +44,7 @@ class Field extends Part {
 
         this.partProperties.newBasicProp(
             'innerHTML',
-            ''
+            '<br>' 
         );
 
         this.partProperties.newBasicProp(

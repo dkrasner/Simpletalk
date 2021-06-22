@@ -135,6 +135,9 @@ class FieldView extends PartView {
             this.textarea.textContent = value;
         });
         this.onPropChange('innerHTML', (value, id) => {
+            if(!value){
+                value = "<br>";
+            }
             this.textarea.innerHTML = value;
             this.model.partProperties.setPropertyNamed(
                 this.model,
@@ -288,6 +291,11 @@ class FieldView extends PartView {
     onInput(event){
         event.stopPropagation();
         event.preventDefault();
+        let innerHTML = event.target.innerHTML;
+        if(!innerHTML.endsWith("<br>")){
+            innerHTML += "<br>";
+            event.target.innerHTML = innerHTML;
+        }
 
         if(this.editorCompleter){
             // TODO sort out how this would work
@@ -318,7 +326,17 @@ class FieldView extends PartView {
         // prevent the default tab key to leave focus on the field
         if(event.key==="Tab"){
             event.preventDefault();
-            document.execCommand('insertHTML', false, '&#x9');
+            //document.execCommand('insertHTML', false, '&#x9');
+            let sel = document.getSelection();
+            let range = sel.getRangeAt(0);
+
+            let tabNodeValue = '\t';
+            let tabNode = document.createTextNode(tabNodeValue);
+
+            range.insertNode(tabNode);
+
+            range.setStartAfter(tabNode);
+            range.setEndAfter(tabNode);
         };
     }
 
