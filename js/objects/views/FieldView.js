@@ -131,13 +131,7 @@ class FieldView extends PartView {
         // setting and still allow to not loose markup.
         // 'innerHTML' is a BasicProp. See how these are set, without
         // notification in this.onInput()
-        this.onPropChange('text', (value, id) => {
-            this.textarea.textContent = value;
-        });
         this.onPropChange('innerHTML', (value, id) => {
-            if(!value){
-                value = "<br>";
-            }
             this.textarea.innerHTML = value;
             this.model.partProperties.setPropertyNamed(
                 this.model,
