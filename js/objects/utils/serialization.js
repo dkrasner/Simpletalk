@@ -30,14 +30,6 @@ class STDeserializer {
         // being attached
         this.rootId = null;
 
-        // By default, we create new IDs for each
-        // deserialized Part (and preserve a mapping
-        // from old to new temporarily).
-        // However, there are cases, like initialLoad,
-        // where we want to preserve the originals.
-        // That flag is set here.
-        this.useOriginalIds = false;
-
         // Bound methods
         this.deserialize = this.deserialize.bind(this);
         this.deserializeData = this.deserializeData.bind(this);
@@ -114,6 +106,36 @@ class STDeserializer {
                 this.deserializePart(Object.assign({}, partData));
             });
 
+            // Translate targets
+            for (let modelId in this._propsCache) {
+                let props = this._propsCache[modelId];
+                if (props.target !== null) {
+                    for (let oldId in this._idCache) {
+                        let newId = this._idCache[oldId];
+                        if (props.target === 'part id ' + oldId) {
+                            props.target = 'part id ' + newId;
+                            break;
+                        }
+                    }
+                }
+            }
+            // Translate scripts
+            for (let modelId in this._scriptCache) {
+                let script = this._scriptCache[modelId];
+                if (script !== null && script.match('part id') !== null) {
+                    for (let oldId in this._idCache) {
+                        let newId = this._idCache[oldId];
+                        let oldRe = 'part id ' + oldId;
+                        let newRe = 'part id ' + newId;
+                        if (this._scriptCache[modelId].match(oldRe) !== null) {
+                            console.log(modelId);
+                            let re = new Regex(oldRe, "g");
+                            this._scriptCache[modelId] = script.replace(re, newRe);
+                        }
+                    }
+                }
+            }
+
             // Third, we go through each created Part instance
             // and add any subparts to it. Note that this is not
             // recursive
@@ -136,6 +158,23 @@ class STDeserializer {
             // react to any initial changes to their models.
             this._instanceCache.forEach(partInstance => {
                 this.setProperties(partInstance);
+                // We need to translate new ids to old ones
+                if (partInstance.name == "WorldStack") {
+                    let world = partInstance;
+                    world.partProperties.setPropertyNamed(
+                        world,
+                        "current",
+                        this._idCache[world.currentStackId]
+                    );
+                }
+                if (partInstance.name == "Stack") {
+                    let stack = partInstance;
+                    stack.partProperties.setPropertyNamed(
+                        stack,
+                        "current",
+                        this._idCache[stack.currentCardId]
+                    );
+                }
                 this.setViewModel(partInstance);
             });
 
@@ -146,18 +185,6 @@ class STDeserializer {
             this._rootsCache = this._instanceCache.filter(instance => {
                 return instance._owner == null || instance._owner == undefined;
             });
-
-            // If we are using the original IDs, we need
-            // to reset the idMaker to be the max of
-            // the current crop of IDs
-            if(this.useOriginalIds){
-                let allIds = this._instanceCache.map(inst => {
-                    return parseInt(inst.id);
-                }).filter(id => {
-                    return !isNaN(id) && id !== null;
-                });
-                idMaker.count = Math.max(...allIds);
-            }
 
             // Insertion should be handled by composed
             // promises elsewhere (see imports and deserialize()
@@ -240,23 +267,15 @@ class STDeserializer {
 
     handleId(aPart, partData){
         let newId, oldId;
-        if(this.useOriginalIds){
-            return {
-                newId: partData.id,
-                oldId: partData.id
-            };
-        } else {
-            oldId = partData.id;
-            newId = aPart.id;
-            if(aPart.type !== 'world'){
-                newId = idMaker.new();
-            }
-            return {
-                newId,
-                oldId
-            };
+        oldId = partData.id;
+        newId = aPart.id;
+        if(aPart.type !== 'world'){
+            newId = idMaker.new();
         }
-        
+        return {
+            newId,
+            oldId
+        };
     }
 
     addPartsToSystem(aListOfParts){
