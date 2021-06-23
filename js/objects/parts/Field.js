@@ -161,6 +161,8 @@ class Field extends Part {
         this.setSelection = this.setSelection.bind(this);
         this.setPrivateCommandHandler("insertRange", this.insertRange);
         this.setPrivateCommandHandler("setSelection", this.setSelection);
+        this.setPrivateCommandHandler("highlightSyntax", this.highlightSyntax);
+        this.setPrivateCommandHandler("unhighlightSyntax", this.unhighlightSyntax);
     }
 
     insertRange(senders, rangeId, html, css){
@@ -175,6 +177,20 @@ class Field extends Part {
             window.System.findViewsById(this.id).forEach((view) => {
                 view.setSelection(propertyName, propertyValue);
             });
+        }
+    }
+
+    highlightSyntax(){
+        let view = window.System.findViewById(this.id);
+        if(view){
+            view.highlightSyntax();
+        }
+    }
+
+    unhighlightSyntax(){
+        let view = window.System.findViewById(this.id);
+        if(view){
+            view.unhighlightSyntax();
         }
     }
 

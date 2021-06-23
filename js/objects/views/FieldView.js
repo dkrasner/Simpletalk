@@ -11,6 +11,7 @@ import PartView from './PartView.js';
 import cssStyler from '../utils//styler.js';
 import ColorWheelWidget from './drawing/ColorWheelWidget.js';
 import interpreterSemantics from '../../ohm/interpreter-semantics.js';
+import createHighlighter from '../utils/AltSyntaxHighlighter.js';
 
 const haloEditButtonSVG = `
 <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-tools" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
@@ -103,6 +104,15 @@ class FieldView extends PartView {
         this.selectionRanges = {};
         this.wantsContextMenu = false;
 
+        // Presets for syntax highlighting.
+        // When highlighting is enabled, we will check
+        // each line of the text for the following
+        // grammatical rules:
+        this._syntaxRules = [
+            "MessageHandlerOpen",
+            "MessageHandlerClose"
+        ];
+
         this.template = document.createElement('template');
         this.template.innerHTML = fieldTemplateString;
         this._shadowRoot = this.attachShadow({mode: 'open'});
@@ -128,6 +138,8 @@ class FieldView extends PartView {
         this.insertRange = this.insertRange.bind(this);
         this.setRangeInTarget = this.setRangeInTarget.bind(this);
         this.setSelection = this.setSelection.bind(this);
+        this.highlightSyntax = this.highlightSyntax.bind(this);
+        this.unhighlightSyntax = this.unhighlightSyntax.bind(this);
 
         this.setupPropHandlers();
     }
@@ -671,6 +683,74 @@ class FieldView extends PartView {
         }
     }
 
+    highlightSyntax(){
+        let current = this.getAttribute("syntax");
+        if(current && current !== "false"){
+            this.unhighlightSyntax();
+        }
+        let semantics = window.System.grammar.createSemantics();
+        semantics.addOperation(
+            "highlightSyntax",
+            createHighlighter(this)
+        );
+        let text = this.model.partProperties.getPropertyNamed(
+            this.model,
+            "text"
+        );
+        if(!text){
+            return;
+        }
+        let newHTML = text.split("\n").map(line => {
+            // Loop through each rule and try to match
+            for(let i = 0; i < this._syntaxRules.length; i++){
+                let rule = this._syntaxRules[i];
+                let match = window.System.grammar.match(line, rule);
+                if(match.succeeded()){
+                    return semantics(match).highlightSyntax().outerHTML;
+                }
+            }
+            return line;
+        }).join("\n");
+
+        this.model.partProperties.setPropertyNamed(
+            this.model,
+            "innerHTML",
+            newHTML
+        );
+
+        this.toggleAttribute("syntax", true);
+    }
+
+    unhighlightSyntax(){
+        let text = this.model.partProperties.getPropertyNamed(
+            this.model,
+            "text"
+        );
+        if(!text){
+            return;
+        }
+        let plainElements = text.split("\n").map(line => {
+            let div = document.createElement("div");
+            div.innerText = line;
+            return div;
+        });
+        let finalLine = document.createElement("div");
+        finalLine.append(document.createElement("br"));
+        plainElements.push(finalLine);
+
+        let newHTML = "";
+        plainElements.forEach(element => {
+            newHTML += element.outerHTML;
+        });
+
+        this.model.partProperties.setPropertyNamed(
+            this.model,
+            "innerHTML",
+            newHTML
+        );
+
+        this.toggleAttribute("syntax", false);
+    }
 };
 
 export {

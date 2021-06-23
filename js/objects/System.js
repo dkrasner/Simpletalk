@@ -958,31 +958,19 @@ System._commandHandlers['openScriptEditor'] = function(senders, targetId){
     area.partProperties.setPropertyNamed(area, "height", "fill");
 
     // script field
-    let targetScript = target.partProperties.getPropertyNamed(target, "script");
-    let newHTML = targetScript;
-    if(targetScript){
-        // Attempt to highlight syntax of the text in the script field
-        let semantics = System.grammar.createSemantics();
-        semantics.addOperation('highlightSyntax', createHighlighter());
-        let rules = ["MessageHandlerOpen", "MessageHandlerClose"];
-        let lines = targetScript.split("\n").map(lineString => {
-            for(let i = 0; i < rules.length; i++){
-                let rule = rules[i];
-                let match = System.grammar.match(lineString, rule);
-                if(match.succeeded()){
-                    return semantics(match).highlightSyntax().outerHTML;
-                }
-            }
-            return lineString;
-        });
-        newHTML = lines.join("\n");
-    }
-    
-    
-    scriptField.partProperties.setPropertyNamed(scriptField, "innerHTML", newHTML);
+    let targetScript = target.partProperties.getPropertyNamed(target, "script"); 
+    scriptField.partProperties.setPropertyNamed(scriptField, "text", targetScript);
     scriptField.partProperties.setPropertyNamed(scriptField, "horizontal-resizing", "space-fill");
     scriptField.partProperties.setPropertyNamed(scriptField, "vertical-resizing", "space-fill");
 
+    // Setup syntax highlight
+    scriptField.sendMessage({
+        type: "command",
+        commandName: "highlightSyntax",
+        args: []
+    }, scriptField);
+    
+    
     // setup up the save button properties
     saveButton.partProperties.setPropertyNamed(saveButton, "name", "Save Script");
     saveButton.partProperties.setPropertyNamed(saveButton, "text-size", 20);
