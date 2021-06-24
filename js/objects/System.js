@@ -1141,6 +1141,11 @@ document.addEventListener('DOMContentLoaded', () => {
     document.body.appendChild(System.navigator);
 
     // Add comprehensive editor pane
+    // if one is not already present in the markup
+    let existingEditors = Array.from(document.querySelectorAll('st-editor'));
+    existingEditors.forEach(editorEl => {
+        editorEl.remove();
+    });
     System.editor = document.createElement('st-editor');
     document.body.appendChild(System.editor);
 
