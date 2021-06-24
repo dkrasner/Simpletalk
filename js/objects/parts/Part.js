@@ -507,8 +507,10 @@ class Part {
     }
 
     closeEditorCmdHandler(){
-        let editor = document.querySelector('st-editor');
-        editor.close();
+        let editor = document.querySelector('st-editor.open');
+        if(editor){
+            editor.close();
+        }
     }
 
     setTargetProp(senders, ...args){

@@ -499,6 +499,9 @@ const System = {
         // intervals will error infinitely
         foundModel.stopStepping();
 
+        // make sure the editor is closed
+        foundModel.closeEditorCmdHandler();
+
         let ownerModel = foundModel._owner;
         if(ownerModel){
             ownerModel.removePart(foundModel);
