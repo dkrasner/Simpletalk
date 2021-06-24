@@ -101,20 +101,23 @@ class ContextMenu extends HTMLElement {
 
     addHaloToggleItem(){
         let target = window.System.findViewById(this.model.id);
-        if(target.classList.contains('editing')){
-            this.addListItem(
-                'Close Halo',
-                (event) => {
-                    target.closeHalo();
-                }
-            );
-        } else {
-            this.addListItem(
-                'Open Halo',
-                (event) => {
-                    target.openHalo();
-                }
-            );
+        // don't add halo option to cards, since you can't see those
+        if(target.name != "CardView"){
+            if(target.classList.contains('editing')){
+                this.addListItem(
+                    'Close Halo',
+                    (event) => {
+                        target.closeHalo();
+                    }
+                );
+            } else {
+                this.addListItem(
+                    'Open Halo',
+                    (event) => {
+                        target.openHalo();
+                    }
+                );
+            }
         }
     }
 
