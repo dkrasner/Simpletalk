@@ -6,7 +6,7 @@ import {
 } from '../utils/styleProperties.js';
 
 class Image extends Part {
-    constructor(owner, src, name) {
+    constructor(owner, src) {
         super(owner);
 
         // Properties
@@ -26,13 +26,6 @@ class Image extends Part {
         this.partProperties.newBasicProp(
             "imageData",
             null
-        );
-
-        let myName = name || `Image ${this.id}`;
-        this.partProperties.setPropertyNamed(
-            this,
-            'name',
-            myName
         );
 
         this.partProperties.newBasicProp(

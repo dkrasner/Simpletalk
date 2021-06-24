@@ -49,7 +49,7 @@ class Window extends Part {
 
         this.partProperties.newBasicProp(
             'title',
-            `A Window ${this.id}`
+            "New Window Title"
         );
 
         this.partProperties.newBasicProp(
