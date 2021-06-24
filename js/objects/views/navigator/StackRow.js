@@ -43,6 +43,13 @@ class StackRow extends PartView {
         this.onWrapperClick = this.onWrapperClick.bind(this);
     }
 
+    afterConnected(){
+        // we don't want the context menu to open in the nav since
+        // it doens't make sense atm and will error
+        this.removeEventListener('contextmenu', this.onContextMenuClick);
+    }
+
+
     afterModelSet(){
         this.removeAttribute('part-id');
         this.setAttribute('stack-id', this.model.id);

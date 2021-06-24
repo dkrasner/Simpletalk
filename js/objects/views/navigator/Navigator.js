@@ -136,6 +136,12 @@ class STNavigator extends PartView {
         this.createCardRowFor = this.createCardRowFor.bind(this);
     }
 
+    afterConnected(){
+        // we don't want the context menu to open in the nav since
+        // it doens't make sense atm and will error
+        this.removeEventListener('contextmenu', this.onContextMenuClick);
+    }
+
     afterDisconnected(){
         let worldView = document.querySelector('st-world');
         worldView.removeEventListener('st-view-added', this.handlePartAdded);
