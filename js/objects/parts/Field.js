@@ -142,6 +142,11 @@ class Field extends Part {
                 "1",
             );
         });
+        this.partProperties.setPropertyNamed(
+            this,
+            "width",
+            400,
+        );
 
         // Private command handlers
 

@@ -10,6 +10,10 @@ const templateString = `
                  .st-button-label {
                      user-select: none;
                      pointer-events: none;
+                     text-overflow: ellipsis;
+                     overflow: hidden;
+                     max-width: 95%;
+                     white-space: nowrap;
                  }
                 </style>
                 <span class="st-button-label">

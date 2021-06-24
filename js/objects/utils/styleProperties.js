@@ -105,7 +105,7 @@ const addPositioningStyleProps = (target) => {
     // of the button to fit the button name
     target.partProperties.newStyleProp(
         'width',
-        null,
+        100,
     );
     target.partProperties.newStyleProp(
         'height',

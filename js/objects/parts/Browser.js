@@ -60,6 +60,11 @@ class Browser extends Part {
                 5
             );
         });
+        this.partProperties.setPropertyNamed(
+            this,
+            "width",
+            400,
+        );
     }
 
     get type(){
