@@ -129,7 +129,7 @@ class STDeserializer {
                         let newRe = 'part id ' + newId;
                         if (this._scriptCache[modelId].match(oldRe) !== null) {
                             console.log(modelId);
-                            let re = new Regex(oldRe, "g");
+                            let re = new RegExp(oldRe, "g");
                             this._scriptCache[modelId] = script.replace(re, newRe);
                         }
                     }
