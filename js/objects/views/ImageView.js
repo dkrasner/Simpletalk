@@ -154,11 +154,14 @@ class ImageView extends PartView {
         // set so we have initial dimensions to display. If not present,
         // pull from viewbox.
         if(!newSvgEl.hasAttribute('width') || !newSvgEl.hasAttribute('height')){
-            let viewBox = newSvgEl.getAttribute('viewBox').split(" ");
-            let viewBoxWidth = parseInt(viewBox[2]);
-            let viewBoxHeight = parseInt(viewBox[3]);
-            newSvgEl.setAttribute('height', viewBoxHeight);
-            newSvgEl.setAttribute('width', viewBoxWidth);
+            let viewBox = newSvgEl.getAttribute('viewBox');
+            if(viewBox){
+                viewBox = viewBox.split(" ");
+                let viewBoxWidth = parseInt(viewBox[2]);
+                let viewBoxHeight = parseInt(viewBox[3]);
+                newSvgEl.setAttribute('height', viewBoxHeight);
+                newSvgEl.setAttribute('width', viewBoxWidth);
+            }
         } 
         newSvgEl.id = 'wrapped-svg';
         newSvgEl.classList.add('currently-wrapped');
