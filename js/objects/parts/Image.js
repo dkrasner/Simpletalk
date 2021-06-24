@@ -16,7 +16,7 @@ class Image extends Part {
             this.getSource
         );
 
-        this._src = src || "/images/noun_svg_placeholder.svg";
+        this._src = src;
 
         this.partProperties.newBasicProp(
             "mimeType",
@@ -101,6 +101,11 @@ class Image extends Part {
             })
             .catch(err => {
                 console.error(err);
+                this.partProperties.setPropertyNamed(
+                    this,
+                    'imageData',
+                    null
+                );
             });
     }
 

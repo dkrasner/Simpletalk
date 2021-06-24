@@ -8,6 +8,16 @@ const linkIcon = `
 </svg>
 `;
 
+const pictureIcon = `
+<svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-photo" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+   <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
+   <line x1="15" y1="8" x2="15.01" y2="8"></line>
+   <rect x="4" y="4" width="16" height="16" rx="3"></rect>
+   <path d="M4 15l4 -4a3 5 0 0 1 3 0l5 5"></path>
+   <path d="M14 14l1 -1a3 5 0 0 1 3 0l2 2"></path>
+</svg>
+`;
+
 const templateString = `
 <img id="wrapped-image" class="hidden" />
 <svg class="hidden" id="wrapped-svg" xmlns="http://www.w3.org/2000/svg">
@@ -50,6 +60,7 @@ class ImageView extends PartView {
         this.updateImageData = this.updateImageData.bind(this);
         this.updateSvgImage = this.updateSvgImage.bind(this);
         this.updateBinaryImage = this.updateBinaryImage.bind(this);
+        this.setDefaultImage = this.setDefaultImage.bind(this);
         this.onClick = this.onClick.bind(this);
         this.initCustomHaloButton = this.initCustomHaloButton.bind(this);
         this.updateImageLink = this.updateImageLink.bind(this);
@@ -59,6 +70,9 @@ class ImageView extends PartView {
     afterModelSet(){
         // prop changes
         this.onPropChange("imageData", (imageData) => {
+            if(!imageData){
+                this.setDefaultImage();
+            }
             this.updateImageData(imageData);
         });
 
@@ -72,13 +86,17 @@ class ImageView extends PartView {
             this.model,
             "src"
         );
-        if(!currentImageData && currentSrc){
-            let msg = {
-                type: 'command',
-                commandName: 'loadImageFrom',
-                args: [ currentSrc ]
-            };
-            this.model.sendMessage(msg, this.model);
+        if(!currentImageData){
+            if(currentSrc){
+                let msg = {
+                    type: 'command',
+                    commandName: 'loadImageFrom',
+                    args: [ currentSrc ]
+                };
+                this.model.sendMessage(msg, this.model);
+            } else {
+                this.setDefaultImage();
+            }
         } else {
             this.updateImageData(currentImageData);
         }
@@ -91,7 +109,14 @@ class ImageView extends PartView {
     }
 
     afterDisconnected(){
- }
+    }
+
+    setDefaultImage(){
+        this.model.partProperties.setPropertyNamed(this.model, "imageData", pictureIcon);
+        this.model.partProperties.setPropertyNamed(this.model, "mimeType", "image/svg");
+        this.model.partProperties.setPropertyNamed(this.model, "src", "");
+        this.updateImageData(pictureIcon);
+    }
 
     updateImageData(imageData){
         if(this.model.isSvg){
