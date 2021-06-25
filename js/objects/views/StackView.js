@@ -56,7 +56,13 @@ class StackView extends PartView {
             this.model,
             'current'
         );
-        let nextCurrentCard = this.querySelector(`:scope > st-card[part-id="${nextCurrentId}"]`);
+        let shouldNotify = false;
+        let selector = `:scope > st-card[part-id="${nextCurrentId}"]`;
+        if(this.isLensed){
+            selector = `:scope > st-card[lens-part-id="${nextCurrentId}"]`;
+            shouldNotify = true;
+        }
+        let nextCurrentCard = this.querySelector(selector);
         // if there is no currentCard and no next currentCard we set it to be the first
         // card child (this can happen when new ids are created on deserialization and so
         // the current property stored id is no longer relevant)
@@ -70,7 +76,7 @@ class StackView extends PartView {
                 this.model,
                 "current",
                 nextCurrentCard.id,
-                false // do not notify
+                shouldNotify
             );
         }
         if(nextCurrentCard){
