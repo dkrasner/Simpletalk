@@ -16,6 +16,7 @@ class STClipboard {
         // Bound methods
         this.copyPart = this.copyPart.bind(this);
         this.pasteContentsInto = this.pasteContentsInto.bind(this);
+        this._createLensedChildren = this._createLensedChildren.bind(this);
     }
 
     copyPart(aPart){
@@ -82,6 +83,7 @@ class STClipboard {
                         newLensView.setAttribute('lens-part-id', newPart.id);
                         newLensView.setAttribute('role', 'lens');
                         lensView.appendChild(newLensView);
+                        this._createLensedChildren(newLensView, newPart.subparts);
                     });
                     
                     return;
@@ -91,6 +93,20 @@ class STClipboard {
                 });
         });
         return Promise.all(promises);
+    }
+
+    _createLensedChildren(aLensView, subparts){
+        subparts.forEach(subpart => {
+            let newLensView = document.createElement(
+                this.system.tagNameForViewNamed(subpart.type)
+            );
+            newLensView.setModel(subpart);
+            newLensView.removeAttribute('part-id');
+            newLensView.setAttribute('lens-part-id', subpart.id);
+            newLensView.setAttribute('role', 'lens');
+            aLensView.appendChild(newLensView);
+            this._createLensedChildren(newLensView, subpart.subparts);
+        });
     }
     
     get isEmpty(){
