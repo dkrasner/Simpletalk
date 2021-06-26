@@ -6,7 +6,7 @@ import {
 } from '../utils/styleProperties.js';
 
 class Audio extends Part {
-    constructor(owner, src, name) {
+    constructor(owner, src) {
         super(owner);
 
         // Properties
@@ -16,12 +16,6 @@ class Audio extends Part {
         );
 
         this.src = null;
-        let myName = name || `Audio ${this.id}`;
-        this.partProperties.setPropertyNamed(
-            this,
-            'name',
-            myName
-        );
 
         this.partProperties.newBasicProp(
             'readyState',

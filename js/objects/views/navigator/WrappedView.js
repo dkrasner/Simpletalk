@@ -80,6 +80,10 @@ class WrappedView extends PartView {
             // and styling
             let slotEl = this._shadowRoot.querySelector('slot');
             slotEl.addEventListener('slotchange', this.onChildSlotted);
+
+            // we don't want the context menu to open in the nav since
+            // it doens't make sense atm and will error
+            this.removeEventListener('contextmenu', this.onContextMenuClick);
         }
     }
 

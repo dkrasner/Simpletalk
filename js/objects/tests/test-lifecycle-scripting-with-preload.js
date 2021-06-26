@@ -177,12 +177,12 @@ describe("Lifecycle Scripting Tests", () => {
         before(() => {
             world = System.partsById['world'];
         });
-        it("World does not have a name yet (openWorld not yet triggered)", () => {
+        it("World does not have a new name yet (openWorld not yet triggered)", () => {
             let name = world.partProperties.getPropertyNamed(
                 world,
                 'name'
             );
-            assert.equal(name, '');
+            assert.equal(name, 'New world');
         });
         it("Has the openWorld name change after System.initialLoad", (done) => {
             System.initialLoad();

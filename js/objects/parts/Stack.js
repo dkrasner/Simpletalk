@@ -40,16 +40,6 @@ class Stack extends Part {
             null
         );
 
-        // If we are initializing with a name,
-        // set the name property
-        if(name){
-            this.partProperties.setPropertyNamed(
-                this,
-                'name',
-                name
-            );
-        }
-
         // Bind general methods
         this.sendOpenCardTo = this.sendOpenCardTo.bind(this);
         this.sendCloseCardTo = this.sendCloseCardTo.bind(this);

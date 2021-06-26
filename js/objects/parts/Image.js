@@ -6,7 +6,7 @@ import {
 } from '../utils/styleProperties.js';
 
 class Image extends Part {
-    constructor(owner, src, name) {
+    constructor(owner, src) {
         super(owner);
 
         // Properties
@@ -16,7 +16,7 @@ class Image extends Part {
             this.getSource
         );
 
-        this._src = src || "/images/noun_svg_placeholder.svg";
+        this._src = src;
 
         this.partProperties.newBasicProp(
             "mimeType",
@@ -26,13 +26,6 @@ class Image extends Part {
         this.partProperties.newBasicProp(
             "imageData",
             null
-        );
-
-        let myName = name || `Image ${this.id}`;
-        this.partProperties.setPropertyNamed(
-            this,
-            'name',
-            myName
         );
 
         this.partProperties.newBasicProp(
@@ -108,6 +101,11 @@ class Image extends Part {
             })
             .catch(err => {
                 console.error(err);
+                this.partProperties.setPropertyNamed(
+                    this,
+                    'imageData',
+                    null
+                );
             });
     }
 

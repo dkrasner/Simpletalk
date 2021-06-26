@@ -190,7 +190,7 @@ class Part {
             ),
             new BasicProperty(
                 'name',
-                ''
+                `New ${this.type}`
             ),
             new BasicProperty(
                 'rectangle',
@@ -202,7 +202,7 @@ class Part {
                 'script',
                 null // For now
             ),
-            
+
             // Styling
             // css (really JS style) key-values
             new BasicProperty(
@@ -507,8 +507,10 @@ class Part {
     }
 
     closeEditorCmdHandler(){
-        let editor = document.querySelector('st-editor');
-        editor.close();
+        let editor = document.querySelector('st-editor.open');
+        if(editor){
+            editor.close();
+        }
     }
 
     setTargetProp(senders, ...args){

@@ -44,6 +44,35 @@ class CardView extends PartView {
             event.stopPropagation();
         }
     }
+
+    addContextMenuItems(contextMenu){
+        contextMenu.addSpacer();
+        // Toolbox toggle hide/unhide
+        let currentStack = window.System.getCurrentStackModel();
+        let toolbox = currentStack.subparts.filter((part) => {
+            let name = part.partProperties.getPropertyNamed(part, "name");
+            return name == "Toolbox";
+        })[0];
+        // if there is no toolbox at all, that's weird but don't do anything
+        if(toolbox){
+            let hidden = toolbox.partProperties.getPropertyNamed(toolbox, "hide");
+            if(hidden){
+                contextMenu.addListItem(
+                    "Unhide Toolbox",
+                    (event) => {
+                        toolbox.partProperties.setPropertyNamed(toolbox, "hide", false);
+                    }
+                );
+            } else {
+                contextMenu.addListItem(
+                    "Hide Toolbox",
+                    (event) => {
+                        toolbox.partProperties.setPropertyNamed(toolbox, "hide", true);
+                    }
+                );
+            }
+        }
+    }
 };
 
 export {

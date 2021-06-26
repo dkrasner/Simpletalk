@@ -18,17 +18,8 @@ import {
 } from '../utils/styleProperties.js';
 
 class Button extends Part {
-    constructor(owner, name){
+    constructor(owner){
         super(owner);
-
-        // If we are initializing with a name,
-        // set the name part property
-        let myName = name || `Button ${this.id}`;
-        this.partProperties.setPropertyNamed(
-            this,
-            'name',
-            myName
-        );
 
         this.isButton = true;
 

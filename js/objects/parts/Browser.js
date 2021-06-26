@@ -6,7 +6,7 @@ import {
 } from '../utils/styleProperties.js';
 
 class Browser extends Part {
-    constructor(owner, src, name) {
+    constructor(owner, src) {
         super(owner);
 
         // Properties
@@ -16,13 +16,6 @@ class Browser extends Part {
         );
 
         this.src = null;
-        let myName = name || `Browser ${this.id}`;
-        this.partProperties.setPropertyNamed(
-            this,
-            'name',
-            myName
-        );
-
         this.partProperties.newBasicProp(
             'readyState',
             "HAVE_NOTHING"
@@ -67,6 +60,11 @@ class Browser extends Part {
                 5
             );
         });
+        this.partProperties.setPropertyNamed(
+            this,
+            "width",
+            400,
+        );
     }
 
     get type(){

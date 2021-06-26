@@ -61,6 +61,10 @@ template.innerHTML = `
  }
  .st-window-title {
      user-select: none;
+     text-overflow: ellipsis;
+     overflow: hidden;
+     white-space: nowrap;
+     max-width: 70%;
  }
  .right-gripper {
      left: calc(100% - 15px);

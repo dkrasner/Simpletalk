@@ -6,7 +6,7 @@ import {
 } from '../utils/styleProperties.js';
 
 class Resource extends Part {
-    constructor(owner, src, name) {
+    constructor(owner, src) {
         super(owner);
         this.resource = null;
 
@@ -17,12 +17,6 @@ class Resource extends Part {
         );
 
         this.src = null;
-        let myName = name || `Resource ${this.id}`;
-        this.partProperties.setPropertyNamed(
-            this,
-            'name',
-            myName
-        );
 
         this.partProperties.newBasicProp(
             'readyState',

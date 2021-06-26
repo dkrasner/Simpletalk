@@ -499,6 +499,9 @@ const System = {
         // intervals will error infinitely
         foundModel.stopStepping();
 
+        // make sure the editor is closed
+        foundModel.closeEditorCmdHandler();
+
         let ownerModel = foundModel._owner;
         if(ownerModel){
             ownerModel.removePart(foundModel);
@@ -871,7 +874,9 @@ System._commandHandlers['importWorld'] = function(sender, sourceUrl){
                     // there is no .getElementById() for a node HTML parsed document!
                     let serializationEl = parsedDocument.querySelector('#serialization');
                     if(!serializationEl){
-                        throw new Error(`No serialization found for this page`);
+                        console.log(`No serialization found for ${sourceUrl}`);
+                        alert(`World "${sourceUrl}" not found`);
+                        return;
                     }
                     this._deserializer = new STDeserializer(this);
                     this._deserializer.targetId = 'world'; // We will insert the stacks into the world
@@ -893,13 +898,16 @@ System._commandHandlers['importWorld'] = function(sender, sourceUrl){
             // This ensures that we don't infinitely
             // call the load operation
             this._src = sourceUrl;
+            /*
             // Stop and restart hand interface if it's running.
             if (handInterface.handDetectionRunning) {
                 handInterface.stop();
                 handInterface.start();
             }
+            */
         })
         .catch(err => {
+            alert("Could not load world");
             console.error(err);
         });
 };
@@ -1133,6 +1141,11 @@ document.addEventListener('DOMContentLoaded', () => {
     document.body.appendChild(System.navigator);
 
     // Add comprehensive editor pane
+    // if one is not already present in the markup
+    let existingEditors = Array.from(document.querySelectorAll('st-editor'));
+    existingEditors.forEach(editorEl => {
+        editorEl.remove();
+    });
     System.editor = document.createElement('st-editor');
     document.body.appendChild(System.editor);
 

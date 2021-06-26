@@ -178,7 +178,7 @@ class WorldStack extends Part {
         if(currentCard){
             aStack.sendMessage({
                 type: 'command', 
-                commandName: 'ope nCard',
+                commandName: 'openCard',
                 args: [],
                 shouldIgnore: true
             }, aStack.currentCard);
