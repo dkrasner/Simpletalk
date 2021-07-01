@@ -179,6 +179,29 @@ const createInterpreterSemantics = (partContext, systemContext) => {
             return msg;
         },
 
+        Command_goToBySpecifier: function(goToLiteral, objectSpecifier){
+            let targetId = objectSpecifier.interpret();
+            if(!targetId){
+                return null;
+            }
+            let targetPart = systemContext.partsById[targetId];
+            if(targetPart.type == "card" || targetPart.type == "stack"){
+                return {
+                    type: "command",
+                    commandName: "go to reference",
+                    args: [
+                        targetPart.type,
+                        targetId
+                    ]
+                };
+            }
+
+            // If the specified part is neither a Card nor
+            // a Stack, we don't go to it. Instead, we do
+            // nothing.
+            return null;
+        },
+
         Command_addProperty: function(addLiteral, propertyLiteral, propNameAsLiteral, toLiteral, systemObject){
             let specifiedObjectId = systemObject.interpret()[0] || null;
             let args = [
