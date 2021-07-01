@@ -54,7 +54,7 @@ const createInterpreterSemantics = (partContext, systemContext) => {
         Script: function(scriptParts, _){
             return scriptParts.interpret();
         },
-        MessageHandler: function(handlerOpen, optionalStatementList, handlerClose){
+        MessageHandler: function(handlerOpen, lineTerm, optionalStatementList, handlerClose){
             let {messageName, parameters} = handlerOpen.interpret();
             let handlerFunction = function(senders, ...args){
 
@@ -99,7 +99,7 @@ const createInterpreterSemantics = (partContext, systemContext) => {
             partContext._commandHandlers[messageName] = handlerFunction;
         },
 
-        MessageHandlerOpen: function(literalOn, messageName, optionalParameterList, newLine){
+        MessageHandlerOpen: function(literalOn, messageName, optionalParameterList){
             // Because the ParameterList here is optional, if
             // it is set it will be in the form of a size 1 array.
             // This single array item will itself be an array of the

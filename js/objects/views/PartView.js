@@ -788,6 +788,8 @@ class PartView extends HTMLElement {
                     event.clientY
                 );
             }
+        } else {
+            event.stopPropagation();
         }
     }
 

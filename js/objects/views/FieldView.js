@@ -11,6 +11,7 @@ import PartView from './PartView.js';
 import cssStyler from '../utils//styler.js';
 import ColorWheelWidget from './drawing/ColorWheelWidget.js';
 import interpreterSemantics from '../../ohm/interpreter-semantics.js';
+import createHighlighter from '../utils/AltSyntaxHighlighter.js';
 
 const haloEditButtonSVG = `
 <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-tools" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
@@ -65,6 +66,22 @@ const fieldTemplateString = `
             overflow-wrap: anywhere;
         }
 
+        /* Syntax Highlighting
+ *---------------------------------------------------*/
+span[data-st-rule="messageName"]{
+    text-decoration: underline;
+}
+
+span[data-st-rule="keyword"]{
+    font-weight: bold;
+}
+
+span[data-st-rule="ParameterList-item"]{
+    font-style: italic;
+    color: grey;
+}
+
+
     </style>
     <div class="field">
         <div class="field-textarea" spellcheck="false"></div>
@@ -87,6 +104,15 @@ class FieldView extends PartView {
         this.selectionRanges = {};
         this.wantsContextMenu = false;
 
+        // Presets for syntax highlighting.
+        // When highlighting is enabled, we will check
+        // each line of the text for the following
+        // grammatical rules:
+        this._syntaxRules = [
+            "MessageHandlerOpen",
+            "MessageHandlerClose"
+        ];
+
         this.template = document.createElement('template');
         this.template.innerHTML = fieldTemplateString;
         this._shadowRoot = this.attachShadow({mode: 'open'});
@@ -96,6 +122,7 @@ class FieldView extends PartView {
 
         // Bind methods
         this.onInput = this.onInput.bind(this);
+        this.onBeforeInput = this.onBeforeInput.bind(this);
         this.onClick = this.onClick.bind(this);
         this.onKeydown = this.onKeydown.bind(this);
         this.onMousedown = this.onMousedown.bind(this);
@@ -111,6 +138,8 @@ class FieldView extends PartView {
         this.insertRange = this.insertRange.bind(this);
         this.setRangeInTarget = this.setRangeInTarget.bind(this);
         this.setSelection = this.setSelection.bind(this);
+        this.highlightSyntax = this.highlightSyntax.bind(this);
+        this.unhighlightSyntax = this.unhighlightSyntax.bind(this);
 
         this.setupPropHandlers();
     }
@@ -131,9 +160,6 @@ class FieldView extends PartView {
         // setting and still allow to not loose markup.
         // 'innerHTML' is a BasicProp. See how these are set, without
         // notification in this.onInput()
-        this.onPropChange('text', (value, id) => {
-            this.textarea.textContent = value;
-        });
         this.onPropChange('innerHTML', (value, id) => {
             this.textarea.innerHTML = value;
             this.model.partProperties.setPropertyNamed(
@@ -154,6 +180,7 @@ class FieldView extends PartView {
         this.textarea = this._shadowRoot.querySelector('.field-textarea');
 
         this.textarea.addEventListener('input', this.onInput);
+        //this.textarea.addEventListener('beforeinput', this.onBeforeInput);
         this.textarea.addEventListener('keydown', this.onKeydown);
         this.textarea.addEventListener('mousedown', this.onMousedown);
         // No need to add a click listener as the base PartView class does that
@@ -162,11 +189,12 @@ class FieldView extends PartView {
         // the textarea), we need to have the default paragraph tag = </br>. Otherwise
         // the insert new line is of the form <div></br><div> which causes the appearance
         // of newlines when nodes are inserted into a range
-        document.execCommand("defaultParagraphSeparator", false, "br");
+        //document.execCommand("defaultParagraphSeparator", false, "st-line");
     }
 
     afterDisconnected(){
         this.textarea.removeEventListener('input', this.onInput);
+        //this.textarea.removeEventListener('beforeinput', this.onBeforeInput);
         this.textarea.removeEventListener('keydown', this.onKeydown);
         this.textarea.removeEventListener('mousedown', this.onMousedown);
     }
@@ -242,35 +270,38 @@ class FieldView extends PartView {
      */
     setSelection(propName, value){
         Object.values(this.selectionRanges).forEach((range) => {
-            let docFragment = range.extractContents();
             let currentStyle = {};
-            // if the document fragment has one child node and it's a span
-            // we should style that directly. This avoids unncessary DOM elements
-            // being created to wrap the contents, such as when styling is continually
-            // applied ot the same selection
-            let span;
-            if(docFragment.childNodes.length == 1 && docFragment.childNodes[0].nodeName == "SPAN"){
-                span = docFragment.childNodes[0];
-                // Note the use of Obejct.values here for the DOM style attribute object
-                // that's weird
-                Object.values(span.style).forEach((key) => {
-                    currentStyle[key] = span.style[key];
-                });
-            } else {
-                // we need to create a span element to wrap the contents in style
-                span = document.createElement('span');
-                // While tempting to use range.surroundContents() avoid this
-                // since it will fail with a non-informative error if the range
-                // includes partial nodes (ex text across various nodes)
-                while (docFragment.childNodes.length){
-                    span.appendChild(docFragment.childNodes[0]);
-                }
-            }
+            // // if the document fragment has one child node and it's a span
+            // // we should style that directly. This avoids unncessary DOM elements
+            // // being created to wrap the contents, such as when styling is continually
+            // // applied ot the same selection
+            // let span;
+            // if(docFragment.childNodes.length == 1 && docFragment.childNodes[0].nodeName == "SPAN"){
+            //     span = docFragment.childNodes[0];
+            //     // Note the use of Obejct.values here for the DOM style attribute object
+            //     // that's weird
+            //     Object.values(span.style).forEach((key) => {
+            //         currentStyle[key] = span.style[key];
+            //     });
+            // } else {
+            //     // we need to create a span element to wrap the contents in style
+            //     span = document.createElement('span');
+            //     // While tempting to use range.surroundContents() avoid this
+            //     // since it will fail with a non-informative error if the range
+            //     // includes partial nodes (ex text across various nodes)
+            //     while (docFragment.childNodes.length){
+            //         span.appendChild(docFragment.childNodes[0]);
+            //     }
+            // }
+            let span = document.createElement('span');
             let cssObject = this.textStyler(currentStyle, propName, value);
             Object.keys(cssObject).forEach((key) => {
                 span.style[key] = cssObject[key];
             });
+
+            span.append(range.extractContents());
             range.insertNode(span);
+            
             this.model.partProperties.setPropertyNamed(
                 this.model,
                 'innerHTML',
@@ -285,9 +316,39 @@ class FieldView extends PartView {
         });
     }
 
+    onBeforeInput(event){
+        let selection = document.getSelection();
+        let selectedRange = selection.getRangeAt(0);
+        let range = selectedRange.cloneRange();
+
+        let innerHTML = event.target.innerHTML;
+        if(!innerHTML.endsWith("<div><br></div>")){
+            innerHTML += "<div><br></div>";
+            event.target.innerHTML = innerHTML;
+        }
+        
+        if(event.inputType == "insertParagraph"){
+            //event.stopPropagation();
+            event.preventDefault();
+
+            let br = document.createElement('br');
+            let br2 = document.createElement('br');
+            range.insertNode(br);
+            range.collapse(false);
+            range.insertNode(br2);
+            range.setStartAfter(br2);
+            range.setEndAfter(br2);
+        }
+    }
+
     onInput(event){
-        event.stopPropagation();
-        event.preventDefault();
+        let innerHTML = event.target.innerHTML;
+        /*
+        if(!innerHTML.endsWith("<br>")){
+            innerHTML += "<br>";
+            event.target.innerHTML = innerHTML;
+        }
+        */
 
         if(this.editorCompleter){
             // TODO sort out how this would work
@@ -318,7 +379,17 @@ class FieldView extends PartView {
         // prevent the default tab key to leave focus on the field
         if(event.key==="Tab"){
             event.preventDefault();
-            document.execCommand('insertHTML', false, '&#x9');
+            //document.execCommand('insertHTML', false, '&#x9');
+            let sel = document.getSelection();
+            let range = sel.getRangeAt(0);
+
+            let tabNodeValue = '\t';
+            let tabNode = document.createTextNode(tabNodeValue);
+
+            range.insertNode(tabNode);
+
+            range.setStartAfter(tabNode);
+            range.setEndAfter(tabNode);
         };
     }
 
@@ -612,6 +683,74 @@ class FieldView extends PartView {
         }
     }
 
+    highlightSyntax(){
+        let current = this.getAttribute("syntax");
+        if(current && current !== "false"){
+            this.unhighlightSyntax();
+        }
+        let semantics = window.System.grammar.createSemantics();
+        semantics.addOperation(
+            "highlightSyntax",
+            createHighlighter(this)
+        );
+        let text = this.model.partProperties.getPropertyNamed(
+            this.model,
+            "text"
+        );
+        if(!text){
+            return;
+        }
+        let newHTML = text.split("\n").map(line => {
+            // Loop through each rule and try to match
+            for(let i = 0; i < this._syntaxRules.length; i++){
+                let rule = this._syntaxRules[i];
+                let match = window.System.grammar.match(line, rule);
+                if(match.succeeded()){
+                    return semantics(match).highlightSyntax().outerHTML;
+                }
+            }
+            return line;
+        }).join("\n");
+
+        this.model.partProperties.setPropertyNamed(
+            this.model,
+            "innerHTML",
+            newHTML
+        );
+
+        this.toggleAttribute("syntax", true);
+    }
+
+    unhighlightSyntax(){
+        let text = this.model.partProperties.getPropertyNamed(
+            this.model,
+            "text"
+        );
+        if(!text){
+            return;
+        }
+        let plainElements = text.split("\n").map(line => {
+            let div = document.createElement("div");
+            div.innerText = line;
+            return div;
+        });
+        let finalLine = document.createElement("div");
+        finalLine.append(document.createElement("br"));
+        plainElements.push(finalLine);
+
+        let newHTML = "";
+        plainElements.forEach(element => {
+            newHTML += element.outerHTML;
+        });
+
+        this.model.partProperties.setPropertyNamed(
+            this.model,
+            "innerHTML",
+            newHTML
+        );
+
+        this.toggleAttribute("syntax", false);
+    }
 };
 
 export {

@@ -55,6 +55,7 @@ import plugins from '../../plugins/plugins.js';
 
 const DOMparser = new DOMParser();
 
+import createHighlighter from './utils/AltSyntaxHighlighter.js';
 
 
 const System = {
@@ -113,7 +114,7 @@ const System = {
                 });
         } else {
             this.loadFromEmpty();
-            
+ 
             // By default, we render the World in the
             // Comprehensive Editor
             this.editor.render(this.world);
@@ -957,11 +958,19 @@ System._commandHandlers['openScriptEditor'] = function(senders, targetId){
     area.partProperties.setPropertyNamed(area, "height", "fill");
 
     // script field
-    let targetScript = target.partProperties.getPropertyNamed(target, "script");
+    let targetScript = target.partProperties.getPropertyNamed(target, "script"); 
     scriptField.partProperties.setPropertyNamed(scriptField, "text", targetScript);
     scriptField.partProperties.setPropertyNamed(scriptField, "horizontal-resizing", "space-fill");
     scriptField.partProperties.setPropertyNamed(scriptField, "vertical-resizing", "space-fill");
 
+    // Setup syntax highlight
+    scriptField.sendMessage({
+        type: "command",
+        commandName: "highlightSyntax",
+        args: []
+    }, scriptField);
+    
+    
     // setup up the save button properties
     saveButton.partProperties.setPropertyNamed(saveButton, "name", "Save Script");
     saveButton.partProperties.setPropertyNamed(saveButton, "text-size", 20);
