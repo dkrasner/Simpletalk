@@ -146,6 +146,14 @@ st-window:active {
     z-index: 100;
 }
 
+st-window > .h-space-fill {
+    width: 100% !important;
+}
+
+st-window > .v-space-fill {
+    height: 100% !important;
+}
+
 /* =Area Styles
  *---------------------------------------------------------*/
 st-area {
