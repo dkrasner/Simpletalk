@@ -248,13 +248,11 @@ class ImageView extends PartView {
         let rect = wrappedImage.getBoundingClientRect();
         let newWidth, newHeight;
         if(this.preserveAspectOnResize){
-            let ratio = rect.width / rect.height;
-            let hyp = Math.sqrt((movementX**2) + (movementY**2));
-            if(movementX < 0 || movementY < 0){
-                hyp = hyp * -1;
-            }
-            newHeight = rect.height + hyp;
-            newWidth = rect.width + hyp;
+            let maxWidth = rect.width + movementX;
+            let maxHeight = rect.height + movementY;
+            let ratio = Math.min(maxWidth / rect.width, maxHeight / rect.height);
+            newHeight = rect.height * ratio;
+            newWidth = rect.width * ratio;
         } else {
             newWidth = rect.width + movementX;
             newHeight = rect.height + movementY;
