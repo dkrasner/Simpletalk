@@ -256,13 +256,9 @@ class ImageView extends PartView {
         } else {
             newWidth = rect.width + movementX;
             newHeight = rect.height + movementY;
-            //wrappedImage.style.width = `${newWidth}px`;
-            //wrappedImage.style.height = `${newHeight}px`;
         }
 
         if(newWidth && newHeight){
-            // this.style.width = `${newWidth}px`;
-            // this.style.height = `${newHeight}px`;
             this.model.partProperties.setPropertyNamed(
                 this.model,
                 'width',
