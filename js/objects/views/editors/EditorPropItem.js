@@ -230,7 +230,15 @@ class EditorPropItem extends HTMLElement {
 
     onAcceptClick(event){
         let value = this.inputElement.value;
-        if(this.inputElement.type == 'number' || this.inputElement.type == 'range'){
+        if(this.inputElement.type == 'number'){
+            value = parseFloat(value);
+            if(isNaN(value)){
+                // if we can't parse the value just let it go through
+                // as it might be a prop style keyword such as "fill"
+                // TODO: we might want to limit this to a set of prop keywords
+                value = this.inputElement.value;
+            }
+        } else if(this.inputElement.type == 'range'){
             value = parseFloat(value);
         } else if(this.inputElement.type == 'checkbox'){
             value = this.inputElement.checked;

@@ -969,10 +969,11 @@ System._commandHandlers['openScriptEditor'] = function(senders, targetId){
         commandName: "highlightSyntax",
         args: []
     }, scriptField);
-    
-    
+
+
     // setup up the save button properties
     saveButton.partProperties.setPropertyNamed(saveButton, "name", "Save Script");
+    saveButton.partProperties.setPropertyNamed(saveButton, "width", "fill");
     saveButton.partProperties.setPropertyNamed(saveButton, "text-size", 20);
     saveButton.partProperties.setPropertyNamed(saveButton, "target", `part id ${target.id}`);
 
