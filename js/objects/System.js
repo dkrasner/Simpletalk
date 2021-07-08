@@ -960,8 +960,8 @@ System._commandHandlers['openScriptEditor'] = function(senders, targetId){
     // script field
     let targetScript = target.partProperties.getPropertyNamed(target, "script"); 
     scriptField.partProperties.setPropertyNamed(scriptField, "text", targetScript);
-    scriptField.partProperties.setPropertyNamed(scriptField, "horizontal-resizing", "space-fill");
-    scriptField.partProperties.setPropertyNamed(scriptField, "vertical-resizing", "space-fill");
+    scriptField.partProperties.setPropertyNamed(scriptField, "height", "fill");
+    scriptField.partProperties.setPropertyNamed(scriptField, "width", "fill");
 
     // Setup syntax highlight
     scriptField.sendMessage({
