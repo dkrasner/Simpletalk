@@ -960,8 +960,8 @@ System._commandHandlers['openScriptEditor'] = function(senders, targetId){
     // script field
     let targetScript = target.partProperties.getPropertyNamed(target, "script"); 
     scriptField.partProperties.setPropertyNamed(scriptField, "text", targetScript);
-    scriptField.partProperties.setPropertyNamed(scriptField, "horizontal-resizing", "space-fill");
-    scriptField.partProperties.setPropertyNamed(scriptField, "vertical-resizing", "space-fill");
+    scriptField.partProperties.setPropertyNamed(scriptField, "height", "fill");
+    scriptField.partProperties.setPropertyNamed(scriptField, "width", "fill");
 
     // Setup syntax highlight
     scriptField.sendMessage({
@@ -969,10 +969,11 @@ System._commandHandlers['openScriptEditor'] = function(senders, targetId){
         commandName: "highlightSyntax",
         args: []
     }, scriptField);
-    
-    
+
+
     // setup up the save button properties
     saveButton.partProperties.setPropertyNamed(saveButton, "name", "Save Script");
+    saveButton.partProperties.setPropertyNamed(saveButton, "width", "fill");
     saveButton.partProperties.setPropertyNamed(saveButton, "text-size", 20);
     saveButton.partProperties.setPropertyNamed(saveButton, "target", `part id ${target.id}`);
 
