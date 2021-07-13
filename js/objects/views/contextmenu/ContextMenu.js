@@ -114,6 +114,7 @@ class ContextMenu extends HTMLElement {
             submenu.classList.add('context-submenu', 'submenu-hidden');
             submenu.setAttribute('slot', 'submenu');
             itemEl.append(submenu);
+            itemEl.showCaret();
         }
         this.append(itemEl);
     }

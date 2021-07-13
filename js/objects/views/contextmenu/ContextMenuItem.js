@@ -14,10 +14,24 @@ const templateString = `
     :host(:hover) .submenu-area {
         display: flex;
     }
+
+    .label-area {
+        display: flex;
+        align-items: center;
+    }
+
+    .caret.hidden {
+        display: none;
+    }
+    .caret {
+        display: block;
+        margin-left: auto;
+        font-size: 1.1em;
+    }
 </style>
 <div class="label-area">
     <span class="label"><slot></slot></span>
-    <div class="caret hidden"></div>
+    <div class="caret hidden">→</div>
 </div>
 <div class="submenu-area">
     <slot name="submenu"></slot>
@@ -35,6 +49,15 @@ class ContextMenuItem extends HTMLElement {
         this._shadowRoot.append(
             this.template.content.cloneNode(true)
         );
+
+        // Bound methods
+        this.showCaret = this.showCaret.bind(this);
+    }
+
+    showCaret(){
+        let caretEl = this._shadowRoot.querySelector('.caret');
+        caretEl.classList.remove('hidden');
+        
     }
 };
 
