@@ -455,6 +455,11 @@ body.targeting-mode [part-id] {
     color: white;
 }
 
+.context-menu-item:hover > st-context-menu {
+    background-color: white;
+    color: black;
+}
+
 .context-menu-spacer {
     display: block;
     height: 1px;

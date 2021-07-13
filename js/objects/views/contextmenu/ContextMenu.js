@@ -1,4 +1,7 @@
 // PREAMBLE
+import ContextMenuItem from './ContextMenuItem.js';
+
+window.customElements.define('st-context-menu-item', ContextMenuItem);
 
 const templateString = `
 <style>
@@ -14,6 +17,18 @@ const templateString = `
         min-width: 200px;
         font-family: 'Helvetica', sans-serif;
     }
+
+    :host-context(li) {
+        display: none;
+        position: absolute;
+        left: 100%;
+        top: 0px;
+    }
+
+    :host-context(li):hover {
+        display: flex;
+    }
+
     header {
         position: relative;
         display: flex;
@@ -63,8 +78,10 @@ class ContextMenu extends HTMLElement {
         this.addOpenEditorItem = this.addOpenEditorItem.bind(this);
         this.addScriptEditItem = this.addScriptEditItem.bind(this);
         this.addMovementItems = this.addMovementItems.bind(this);
+        this.addPartSubmenu = this.addPartSubmenu.bind(this);
         this.addListItem = this.addListItem.bind(this);
         this.addSpacer = this.addSpacer.bind(this);
+        this.hideHeader = this.hideHeader.bind(this);
     }
 
     render(aModel){
@@ -79,6 +96,7 @@ class ContextMenu extends HTMLElement {
         this.addHaloToggleItem();
         this.addCopyAndPasteItems();
         this.addOpenEditorItem();
+        this.addPartSubmenu();
         this.addScriptEditItem();
         this.addMovementItems();
 
@@ -88,12 +106,13 @@ class ContextMenu extends HTMLElement {
     }
 
     addListItem(label, callback, submenu=null){
-        let itemEl = document.createElement('li');
+        let itemEl = document.createElement('st-context-menu-item');
         itemEl.textContent = label;
         itemEl.classList.add('context-menu-item');
         itemEl.addEventListener('click', callback);
         if(submenu){             
             submenu.classList.add('context-submenu', 'submenu-hidden');
+            submenu.setAttribute('slot', 'submenu');
             itemEl.append(submenu);
         }
         this.append(itemEl);
@@ -220,6 +239,56 @@ class ContextMenu extends HTMLElement {
         }
     }
 
+    addPartSubmenu(){
+        // First, we need to get a list of names
+        // of subparts that this model accepts
+        let subpartNames;
+        if(this.model.acceptedSubpartTypes[0] == "*"){
+            // This model accepts all subpart types.
+            // We need to get the names for these subparts,
+            // which are registered at the System level.
+            subpartNames = Object.keys(window.System.availableViews);
+        } else {
+            subpartNames = this.model.acceptedSubpartTypes;
+        }
+
+        // If there are no subpart names (meaning
+        // the given part, like a button, doesn't
+        // accept any subparts), then we do nothing.
+        if(subpartNames.length == 0){
+            return;
+        }
+
+        // Now we construct the submenu for adding parts
+        // of the given type
+        let submenu = document.createElement('st-context-menu');
+        submenu.hideHeader();
+        subpartNames.forEach(subpartName => {
+            submenu.addListItem(
+                subpartName[0].toUpperCase() + subpartName.slice(1),
+                () => {
+                    this.model.sendMessage({
+                        type: 'command',
+                        commandName: 'newModel',
+                        args: [
+                            subpartName,
+                            this.model.id
+                        ]
+                    }, this.model);
+                }
+            );
+        });
+
+        // Now add the list item that will "reveal"
+        // the submenu
+        this.addListItem(
+            'Add a new part',
+            null,
+            submenu
+        );
+        
+    }
+
     addMovementItems(){
         let index = this.model._owner.subparts.indexOf(this.model);
         let ownerLength = this.model._owner.subparts.length;
@@ -275,6 +344,11 @@ class ContextMenu extends HTMLElement {
         let item = document.createElement('li');
         item.classList.add('context-menu-spacer');
         this.append(item);
+    }
+
+    hideHeader(){
+        let headerEl = this._shadowRoot.querySelector('header');
+        headerEl.style.display = "none";
     }
 };
 
