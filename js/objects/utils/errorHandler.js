@@ -63,8 +63,14 @@ const errorHandler = {
             }
             scriptEditor.model.partProperties.setPropertyNamed(scriptEditor.model, "text", text);
         }
-        // open the grammar
-        this._openGrammar(aMessage.partId, ruleName);
+        // open the grammar if there is not one open already
+        let currentCard = window.System.getCurrentCardModel();
+        let grammar = currentCard.subparts.filter((part) => {
+            return (part.type == "field") && (part.partProperties.getPropertyNamed(part, "name") == "SimpleTalk");
+        });
+        if(grammar.length == 0){
+            this._openGrammar(aMessage.partId, ruleName);
+        }
     },
 
     handleMessageNotUnderstood(aMessage){
