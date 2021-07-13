@@ -270,7 +270,7 @@ st-world > st-stack > :not(.current-card).list-layout {
 }
 
 .list-layout.list-column > .h-space-fill {
-    width: 100% !important;
+    width: auto !important;
 }
 
 .list-layout:not(.list-column) > .v-space-fill {
@@ -280,7 +280,7 @@ st-world > st-stack > :not(.current-card).list-layout {
 .list-layout.list-column > .v-space-fill,
 .list-layout:not(.list-column) > .h-space-fill {
     flex: 1;
-    height: auto !important;
+    /* height: auto !important; */
 }
 
 .list-layout:not(.list-column) > .h-rigid {
