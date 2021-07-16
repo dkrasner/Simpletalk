@@ -244,6 +244,13 @@ class ImageView extends PartView {
         // We resize the wrapped svg or img instead
         // and have the outer component simply react to
         // the change.
+        // If the part is rotated this will throw off the bounding rectangle
+        // browser calcualtion. So the hack here is to rotate the part to 0
+        // (if necessary) do the calculations and then rotate it back
+        let angle = this.model.partProperties.getPropertyNamed(this.model, "rotate");
+        if(angle){
+            this.model.partProperties.setPropertyNamed(this.model, "rotate", 0);
+        }
         let wrappedImage = this._shadowRoot.querySelector('.currently-wrapped');
         let rect = wrappedImage.getBoundingClientRect();
         let newWidth, newHeight;
@@ -269,6 +276,10 @@ class ImageView extends PartView {
                 'height',
                 newHeight
             );
+        }
+        // reset the rotate angle to the original (if necessary)
+        if(angle){
+            this.model.partProperties.setPropertyNamed(this.model, "rotate", angle);
         }
     }
 
