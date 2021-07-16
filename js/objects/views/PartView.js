@@ -627,6 +627,13 @@ class PartView extends HTMLElement {
         // can override for custom behavior.
         // Default is to update the View component's
         // width and height style properties directly.
+        // If the part is rotated this will throw off the bounding rectangle
+        // browser calcualtion. So the hack here is to rotate the part to 0
+        // (if necessary) do the calculations and then rotate it back
+        let angle = this.model.partProperties.getPropertyNamed(this.model, "rotate");
+        if(angle){
+            this.model.partProperties.setPropertyNamed(this.model, "rotate", 0);
+        }
         let rect = this.getBoundingClientRect();
         let newWidth, newHeight;
         if(this.preserveAspectOnResize){
@@ -643,6 +650,10 @@ class PartView extends HTMLElement {
         }
         this.model.partProperties.setPropertyNamed(this.model, "width", newWidth);
         this.model.partProperties.setPropertyNamed(this.model, "height", newHeight);
+        // reset the rotate angle to the original (if necessary)
+        if(angle){
+            this.model.partProperties.setPropertyNamed(this.model, "rotate", angle);
+        }
     }
 
     onHaloRotate(movementX, movementY){
