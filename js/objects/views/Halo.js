@@ -66,6 +66,13 @@ const settingsIcon = `
 </svg>
 `;
 
+const rotateIcon = `
+<svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-rotate-clockwise" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+   <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
+   <path d="M4.05 11a8 8 0 1 1 .5 4m-.5 5v-5h5"></path>
+</svg>
+`;
+
 const templateString = `
 <style>
  :host {
@@ -167,6 +174,12 @@ const templateString = `
     <div id="halo-resize" class="halo-button" title="Resize this part">
         ${growIcon}
     </div>
+    <div id="halo-script-edit" class="halo-button" title="Edit this part's script">
+        ${editIcon}
+    </div>
+    <div id="halo-edit" class="halo-button" title="Edit this part">
+        ${settingsIcon}
+    </div>
     <slot name="bottom-row"></slot>
 </div>
 
@@ -184,11 +197,8 @@ const templateString = `
 </div>
 
 <div id="halo-right-column" class="halo-column">
-    <div id="halo-script-edit" class="halo-button" title="Edit this part's script">
-        ${editIcon}
-    </div>
-    <div id="halo-edit" class="halo-button" title="Edit this part">
-        ${settingsIcon}
+    <div id="halo-rotate" class="halo-button" title="Rotate this part">
+        ${rotateIcon}
     </div>
     <slot name="right-column"></slot>
 </div>
@@ -217,6 +227,9 @@ class Halo extends HTMLElement {
         this.onResizeMouseDown = this.onResizeMouseDown.bind(this);
         this.onResizeMouseUp = this.onResizeMouseUp.bind(this);
         this.onResizeMouseMove = this.onResizeMouseMove.bind(this);
+        this.onRotateMouseDown = this.onRotateMouseDown.bind(this);
+        this.onRotateMouseUp = this.onRotateMouseUp.bind(this);
+        this.onRotateMouseMove = this.onRotateMouseMove.bind(this);
     }
 
     connectedCallback(){
@@ -235,6 +248,12 @@ class Halo extends HTMLElement {
                 this.resizer.style.visibility = 'hidden';
             }
 
+            // Rotate button
+            this.rotater = this.shadowRoot.getElementById('halo-rotate');
+            this.rotater.addEventListener('mousedown', this.onRotateMouseDown);
+            if(!this.targetElement.wantsHaloRotate){
+                this.rotater.style.visibility = 'hidden';
+            }
             // Delete button
             this.deleter = this.shadowRoot.getElementById('halo-delete');
             this.deleter.addEventListener('click', this.targetElement.onHaloDelete);
@@ -320,6 +339,24 @@ class Halo extends HTMLElement {
 
     onResizeMouseMove(event){
         this.targetElement.onHaloResize(
+            event.movementX,
+            event.movementY
+        );
+    }
+
+    onRotateMouseDown(event){
+        event.stopPropagation();
+        document.addEventListener('mousemove', this.onRotateMouseMove);
+        document.addEventListener('mouseup', this.onRotateMouseUp);
+    }
+
+    onRotateMouseUp(event){
+        document.removeEventListener('mousemove', this.onRotateMouseMove);
+        document.removeEventListener('mouseup', this.onRotateMouseUp);
+    }
+
+    onRotateMouseMove(event){
+        this.targetElement.onHaloRotate(
             event.movementX,
             event.movementY
         );

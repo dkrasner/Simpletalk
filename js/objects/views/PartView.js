@@ -30,6 +30,7 @@ class PartView extends HTMLElement {
 
         // Halo settings. All are on by default
         this.wantsHaloResize = true;
+        this.wantsHaloRotate = true;
         this.wantsHaloScriptEdit = true;
         this.wantsHaloEdit = true;
         this.wantsHaloDelete = true;
@@ -80,6 +81,7 @@ class PartView extends HTMLElement {
         this.onHaloOpenEditor = this.onHaloOpenEditor.bind(this);
         this.onHaloOpenScriptEditor = this.onHaloOpenScriptEditor.bind(this);
         this.onHaloResize = this.onHaloResize.bind(this);
+        this.onHaloRotate = this.onHaloRotate.bind(this);
         this.onHaloPaste = this.onHaloPaste.bind(this);
         this.onHaloCopy = this.onHaloCopy.bind(this);
         this.onHaloTarget = this.onHaloTarget.bind(this);
@@ -641,6 +643,31 @@ class PartView extends HTMLElement {
         }
         this.model.partProperties.setPropertyNamed(this.model, "width", newWidth);
         this.model.partProperties.setPropertyNamed(this.model, "height", newHeight);
+    }
+
+    onHaloRotate(movementX, movementY){
+        // Default implementation on what to do during
+        // halo button rotate opertations. Subclasses
+        // can override for custom behavior.
+        // Default is to update the View component's
+        // rotate style property directly.
+        if(movementX || movementY){
+            let currentAngle = this.model.partProperties.getPropertyNamed(this.model, "rotate");
+            let rect = this.getBoundingClientRect();
+            if(!currentAngle){
+                currentAngle = 0;
+            }
+            let theta1 = Math.atan((rect.height/2)/(rect.width/2));
+            let theta2 = Math.atan((rect.height/2 + movementY)/(rect.width/2 + movementX));
+            let changeAngle = Math.abs((theta2 - theta1)*180/Math.PI);
+            let newAngle = (currentAngle + changeAngle) % 360;
+            if(newAngle < 0){
+                newAngle = 360 + newAngle;
+            }
+            if(newAngle){
+                this.model.partProperties.setPropertyNamed(this.model, "rotate", newAngle);
+            }
+        }
     }
 
     onHaloCopy(){
