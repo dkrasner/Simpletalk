@@ -65,7 +65,9 @@ class AreaView extends PartView {
             "allow-scrolling"
         );
         this.clippingChanged(clipping, this.model.id);
-        this.allowScrollingChanged(allowScrolling, this.model.id);
+        if(clipping && allowScrolling){
+            this.allowScrollingChanged(allowScrolling, this.model.id);
+        }
     }
 
     clippingChanged(newVal, id){
