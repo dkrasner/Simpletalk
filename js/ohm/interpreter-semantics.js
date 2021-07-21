@@ -153,14 +153,14 @@ const createInterpreterSemantics = (partContext, systemContext) => {
             return msg;
         },
 
-        Command_goToByReference: function(goToLiteral, systemObject, objectId){
-            let args = [];
-            args.push(systemObject.sourceString);
-            args.push(objectId.sourceString);
+        Command_goToByObjectSpecifier: function(goToLiteral, objectSpecifier){
+            let args = [
+                objectSpecifier.interpret() // id of the object
+            ];
 
             let msg = {
                 type: "command",
-                commandName: "go to reference",
+                commandName: "go to",
                 args: args
             };
             return msg;
