@@ -50,10 +50,22 @@ describe("Core commands", () => {
                 semanticMatchTest(s, "Statement");
             });
         });
-        it ("go to by reference", () => {
-            const s = "go to card 42";
+        it ("go to by index", () => {
+            const s = "go to card 2";
             semanticMatchTest(s, "Command");
-            semanticMatchTest(s, "Command_goToByReference");
+            semanticMatchTest(s, "Command_goToByObjectSpecifier");
+            semanticMatchTest(s, "Statement");
+        });
+        it ("go to by id", () => {
+            const s = "go to stack id 2";
+            semanticMatchTest(s, "Command");
+            semanticMatchTest(s, "Command_goToByObjectSpecifier");
+            semanticMatchTest(s, "Statement");
+        });
+        it ("go to by name", () => {
+            const s = 'go to stack "cool stack"';
+            semanticMatchTest(s, "Command");
+            semanticMatchTest(s, "Command_goToByObjectSpecifier");
             semanticMatchTest(s, "Statement");
         });
         it ("Bad go to: invalid object", () => {

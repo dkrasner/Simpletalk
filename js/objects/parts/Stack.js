@@ -80,14 +80,18 @@ class Stack extends Part {
     goToCardById(anId){
         let currentCardId = this.currentCardId;
         let currentCard = this.currentCard;
-        let cards = this.subparts.filter(subpart => {
-            return subpart.type == 'card';
+        let cards = Object.values(window.System.partsById).filter((part) => {
+            return part.type == "card";
         });
         let nextCard = cards.find(card => {
             return card.id == anId;
         });
         if(!nextCard){
-            throw new Error(`The card id: ${anId} cant be found on this stack`);
+            throw new Error(`The card id: ${anId} cant be found stack`);
+        }
+        // if the card is not on this stack we should go to the corresponding stack
+        if(nextCard._owner != this){
+            this._owner.goToStackById(nextCard._owner.id);
         }
         this.partProperties.setPropertyNamed(
             this,

@@ -98,19 +98,24 @@ const errorHandler = {
                     this._openScriptEditor(originalSender.id);
                     scriptEditor = window.System.findScriptEditorByTargetId(originalSender.id);
                 }
-                target = scriptEditor.model;
-            }
-            let textLines = text.split("\n");
-            // offending command text line with an error marker
-            for(let i = 0; i < textLines.length; i++){
-                let line = textLines[i];
-                if(line.match(regex)){
-                    textLines[i] = line += ` --<<<[MessageNotUnderstood: command; commandName: "${commandName}"]`;
+                if(scriptEditor){
+                    target = scriptEditor.model;
                 }
             }
-            text = textLines.join("\n");
-            target.partProperties.setPropertyNamed(target, "text", text);
+            // TODO Sort this out
+            if(target){
+                let textLines = text.split("\n");
+                // offending command text line with an error marker
+                for(let i = 0; i < textLines.length; i++){
+                    let line = textLines[i];
+                    if(line.match(regex)){
+                        textLines[i] = line += ` --<<<[MessageNotUnderstood: command; commandName: "${commandName}"]`;
+                    }
+                }
+                text = textLines.join("\n");
+                target.partProperties.setPropertyNamed(target, "text", text);
 
+            }
             // finally open the debugger (or current version thereof)
             // NOTE: this is a bit dangerous, b/c if the System doesn't
             // handle the `openDebugger` command anywhere it will throw

@@ -840,18 +840,22 @@ System._commandHandlers['go to direction'] = function(senders, directive, object
     }
 };
 
-System._commandHandlers['go to reference'] = function(senders, objectName, referenceId){
-    switch(objectName) {
+System._commandHandlers['go to'] = function(senders, id){
+    let model = this.partsById[id];
+    if(!model){
+        alert(`"go to" target not found`);
+    }
+    switch(model.type) {
         case 'card':
-            this.goToCardById(referenceId);
+            this.goToCardById(id);
             break;
 
         case 'stack':
-            this.goToStackById(referenceId);
+            this.goToStackById(id);
             break;
 
         default:
-            alert(`"go to" not implemented for ${objectName}`);
+            alert(`"go to" not implemented for ${model.type}`);
 
     }
 };

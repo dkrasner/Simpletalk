@@ -108,7 +108,6 @@ describe("RepeatBlock tests", () => {
         let str = [
             "repeat until myVariable <= 20.5",
             "doSomething myVariable",
-            "go to card myVariable",
             "end repeat"
         ].join("\n");
         semanticMatchTest(str, "RepeatBlock");
@@ -117,7 +116,6 @@ describe("RepeatBlock tests", () => {
         let str = [
             "repeat while myVariable >= 20.5",
             "doSomething myVariable",
-            "go to card myVariable",
             "end repeat"
         ].join("\n");
         semanticMatchTest(str, "RepeatBlock");
@@ -126,7 +124,6 @@ describe("RepeatBlock tests", () => {
         let str = [
             "repeat with myNum = 0 to 6",
             "doSomething myVariable",
-            "go to card myVariable",
             "end repeat"
         ].join("\n");
         semanticMatchTest(str, "RepeatBlock");
@@ -135,7 +132,6 @@ describe("RepeatBlock tests", () => {
         let str = [
             "repeat",
             "doSomething myVariable",
-            "go to card myVariable",
             "end repeat"
         ].join("\n");
         semanticMatchTest(str, "RepeatBlock");
