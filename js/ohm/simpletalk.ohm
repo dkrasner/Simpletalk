@@ -227,6 +227,7 @@ SimpleTalk {
     Command (a command statement)
       = "go to" ("next" | "previous") systemObject --goToDirection
       | "go to" ObjectSpecifier --goToByObjectSpecifier
+      | "go to" "website" stringLiteral --goToWebsite
       | "answer" (Conditional | Expression) --answer
       | "delete" ObjectSpecifier --deleteModel
       | "delete" "property" stringLiteral "from"? ObjectSpecifier? --deleteProperty

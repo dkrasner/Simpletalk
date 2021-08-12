@@ -846,18 +846,22 @@ System._commandHandlers['go to'] = function(senders, id){
         alert(`"go to" target not found`);
     }
     switch(model.type) {
-        case 'card':
-            this.goToCardById(id);
-            break;
+    case 'card':
+        this.goToCardById(id);
+        break;
 
-        case 'stack':
-            this.goToStackById(id);
-            break;
+    case 'stack':
+        this.goToStackById(id);
+        break;
 
-        default:
-            alert(`"go to" not implemented for ${model.type}`);
+    default:
+        alert(`"go to" not implemented for ${model.type}`);
 
     }
+};
+
+System._commandHandlers['go to website'] = function(senders, url){
+    window.location.href = url;
 };
 
 //Import a world, i.e. its stacks from another source

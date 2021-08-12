@@ -166,6 +166,19 @@ const createInterpreterSemantics = (partContext, systemContext) => {
             return msg;
         },
 
+        Command_goToWebsite: function(goToLiteral, websiteLiteral, url){
+            let args = [
+                url.interpret()
+            ];
+
+            let msg = {
+                type: "command",
+                commandName: "go to website",
+                args: args
+            };
+            return msg;
+        },
+
         Command_addProperty: function(addLiteral, propertyLiteral, propNameAsLiteral, toLiteral, systemObject){
             let specifiedObjectId = systemObject.interpret()[0] || null;
             let args = [

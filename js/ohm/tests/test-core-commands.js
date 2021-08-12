@@ -68,6 +68,12 @@ describe("Core commands", () => {
             semanticMatchTest(s, "Command_goToByObjectSpecifier");
             semanticMatchTest(s, "Statement");
         });
+        it ("go to website", () => {
+            const s = 'go to website "http//coolsite.awesome"';
+            semanticMatchTest(s, "Command");
+            semanticMatchTest(s, "Command_goToWebsite");
+            semanticMatchTest(s, "Statement");
+        });
         it ("Bad go to: invalid object", () => {
             const s = "go to card";
             semanticMatchFailTest(s, "Command");
