@@ -368,6 +368,9 @@ class FieldView extends PartView {
             event.target.innerHTML,
             false // do not notify
         );
+        // Since we update the 'text' property without notification, the part/model
+        // is not sent the "propertyChanged" message so we do so manually
+        this.model.propertyChanged("text", event.target.innerText);
         // if there is a target and range set then send the target an update message
         let target = this.model.partProperties.getPropertyNamed(this.model, 'target');
         if(target){
