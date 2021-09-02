@@ -74,6 +74,7 @@ class ContextMenu extends HTMLElement {
 
         // Bound methods
         this.addHaloToggleItem = this.addHaloToggleItem.bind(this);
+        this.addNavigatorToggleItem = this.addNavigatorToggleItem.bind(this);
         this.addCopyAndPasteItems = this.addCopyAndPasteItems.bind(this);
         this.addOpenEditorItem = this.addOpenEditorItem.bind(this);
         this.addScriptEditItem = this.addScriptEditItem.bind(this);
@@ -99,6 +100,7 @@ class ContextMenu extends HTMLElement {
         this.addPartSubmenu();
         this.addScriptEditItem();
         this.addMovementItems();
+        this.addNavigatorToggleItem();
 
         // Add View-specific items
         let view = document.querySelector(`[part-id="${this.model.id}"]`);
@@ -110,7 +112,7 @@ class ContextMenu extends HTMLElement {
         itemEl.textContent = label;
         itemEl.classList.add('context-menu-item');
         itemEl.addEventListener('click', callback);
-        if(submenu){             
+        if(submenu){
             submenu.classList.add('context-submenu', 'submenu-hidden');
             submenu.setAttribute('slot', 'submenu');
             itemEl.append(submenu);
@@ -138,6 +140,27 @@ class ContextMenu extends HTMLElement {
                     }
                 );
             }
+        }
+    }
+
+    addNavigatorToggleItem(){
+        let nav = document.querySelector('st-navigator');
+        if(nav.classList.contains('open')){
+            nav.classList.toggle('open');
+            this.addListItem(
+                'Close Navigator',
+                (event) => {
+                    nav.close();
+                }
+            );
+        } else {
+            this.addListItem(
+                'Open Navigator',
+                (event) => {
+                    nav.open();
+                    nav.classList.toggle('open');
+                }
+            );
         }
     }
 
