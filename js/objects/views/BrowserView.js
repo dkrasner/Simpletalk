@@ -23,7 +23,7 @@ iframe {
     height: 100%;
 }
 </style>
-<iframe></iframe>
+<iframe frameborder="0" allowfullscreen></iframe>
 `;
 
 class BrowserView extends PartView {
