@@ -153,19 +153,6 @@ const createInterpreterSemantics = (partContext, systemContext) => {
             return msg;
         },
 
-        Command_goToByObjectSpecifier: function(goToLiteral, objectSpecifier){
-            let args = [
-                objectSpecifier.interpret() // id of the object
-            ];
-
-            let msg = {
-                type: "command",
-                commandName: "go to",
-                args: args
-            };
-            return msg;
-        },
-
         Command_goToWebsite: function(goToLiteral, websiteLiteral, url){
             let args = [
                 url.interpret()
