@@ -161,6 +161,14 @@ class PartView extends HTMLElement {
             this.removeAttribute('lens-part-id');
             this.setAttribute('part-id', aModel.id);
         }
+        // deal with 'special' props
+        let wantsMove = this.model.partProperties.getPropertyNamed(
+            this.model,
+            "wants-move"
+        );
+        if(wantsMove){
+            this.addEventListener('mousedown', this.onMouseDown);
+        }
 
         // load all the initial styling
         this.styleCSS();

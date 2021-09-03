@@ -133,7 +133,7 @@ class AreaView extends PartView {
                 );
             } else {
                 contextMenu.addListItem(
-                    "Set List Direction to Column",
+                    "Set List Direction to Row",
                     (event) => {
                         this.model.partProperties.setPropertyNamed(
                             this.model,
