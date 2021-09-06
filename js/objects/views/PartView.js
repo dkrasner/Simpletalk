@@ -904,6 +904,12 @@ class PartView extends HTMLElement {
         menuEl.style.left = `${x}px`;
         menuEl.style.top = `${y}px`;
         worldView.append(menuEl);
+
+        // Ensure that the menu is completely
+        // within the current view. If not (meaning
+        // it is clipped), then adjust so it is
+        // completely in the view.
+        menuEl.adjustToClientView();
     }
 
     closeContextMenu(){
