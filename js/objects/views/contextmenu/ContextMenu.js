@@ -83,6 +83,7 @@ class ContextMenu extends HTMLElement {
         this.addListItem = this.addListItem.bind(this);
         this.addSpacer = this.addSpacer.bind(this);
         this.hideHeader = this.hideHeader.bind(this);
+        this.adjustToClientView = this.adjustToClientView.bind(this);
     }
 
     render(aModel){
@@ -373,6 +374,39 @@ class ContextMenu extends HTMLElement {
     hideHeader(){
         let headerEl = this._shadowRoot.querySelector('header');
         headerEl.style.display = "none";
+    }
+
+    adjustToClientView(){
+        let rect = this.getBoundingClientRect();
+        let padding = 10;
+        let viewportWidth = document.documentElement.clientWidth;
+        let viewportHeight = document.documentElement.clientHeight;
+        let bottomDiff = (rect.bottom + padding) - viewportHeight;
+        let rightDiff = (rect.right + padding) - viewportWidth;
+        if(bottomDiff > 0){
+            this.style.top = `${(rect.top - bottomDiff)}px`;
+
+            // Reposition any hidden submenus, so they open
+            // above
+            Array.from(this.children).filter(childEl => {
+                return childEl.children.length > 0;
+            }).forEach(itemWithSubmenu => {
+                let container = itemWithSubmenu._shadowRoot.querySelector('.submenu-area');
+                container.style.top = `${(-1 * itemWithSubmenu.getBoundingClientRect().height)}px`;
+            });
+        }
+        if(rightDiff > 0){
+            this.style.left = `${rect.left - rightDiff}px`;
+
+            // Reposition any hidden submenus, so they open
+            // to the left (instead of right)
+            Array.from(this.children).filter(childEl => {
+                return childEl.children.length > 0;
+            }).forEach(itemWithSubmenu => {
+                let container = itemWithSubmenu._shadowRoot.querySelector('.submenu-area');
+                container.style.left = `${(-1 * itemWithSubmenu.getBoundingClientRect().width)}px`;
+            });
+        }
     }
 };
 

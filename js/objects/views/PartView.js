@@ -899,11 +899,16 @@ class PartView extends HTMLElement {
 
     openContextMenuAt(x, y){
         let menuEl = document.createElement('st-context-menu');
-        let worldView = document.querySelector('[part-id="world"]');
         menuEl.render(this.model);
         menuEl.style.left = `${x}px`;
         menuEl.style.top = `${y}px`;
-        worldView.append(menuEl);
+        document.body.append(menuEl);
+
+        // Ensure that the menu is completely
+        // within the current view. If not (meaning
+        // it is clipped), then adjust so it is
+        // completely in the view.
+        menuEl.adjustToClientView();
     }
 
     closeContextMenu(){

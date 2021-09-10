@@ -56,8 +56,7 @@ class ContextMenuItem extends HTMLElement {
 
     showCaret(){
         let caretEl = this._shadowRoot.querySelector('.caret');
-        caretEl.classList.remove('hidden');
-        
+        caretEl.classList.remove('hidden');    
     }
 };
 
