@@ -113,6 +113,9 @@ class ContextMenu extends HTMLElement {
         itemEl.textContent = label;
         itemEl.classList.add('context-menu-item');
         itemEl.addEventListener('click', callback);
+        itemEl.addEventListener('click', () => {
+            this.remove();
+        });
         if(submenu){
             submenu.classList.add('context-submenu', 'submenu-hidden');
             submenu.setAttribute('slot', 'submenu');
