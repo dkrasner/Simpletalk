@@ -364,7 +364,7 @@ const System = {
             }
         }
 
-        // Finally if the owner part is either a world or a stack
+        // If the owner part is either a world or a stack
         // and has only one stack or card child, respectively, set
         // that child to be the current
         if(ownerPart.type == "world" || ownerPart.type == "stack"){
@@ -373,6 +373,16 @@ const System = {
                 ownerPart.partProperties.setPropertyNamed(ownerPart, "current", model.id);
             }
         }
+
+        // Finally send the model a message to announce that it is new
+        // to the world, but don't 
+        this.sendMessage({
+            type: 'command',
+            commandName: 'newModel',
+            args: [],
+            shouldNotDelegate: true,
+            shouldIgnore: true
+        }, this, model);
 
         return model;
     },
