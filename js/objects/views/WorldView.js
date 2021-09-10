@@ -15,7 +15,7 @@ const templateString = `<slot></slot>`;
 const NODES_TO_IGNORE_WHEN_ARROW_KEY = [
     'TEXTAREA',
     'INPUT',
-    'ST_FIELD'
+    'ST-FIELD'
 ];
 
 class WorldView extends PartView {
@@ -96,7 +96,7 @@ class WorldView extends PartView {
             // the focus is not in any kind of text input.
             // We send the arrowKey command to the current card
             if(event.code.startsWith('Arrow')){
-                if(!NODES_TO_IGNORE_WHEN_ARROW_KEY.includes(event.target.nodeName)){
+                if(!NODES_TO_IGNORE_WHEN_ARROW_KEY.includes(document.activeElement.nodeName)){
                     this.model.sendMessage({
                         type: 'command',
                         commandName: 'arrowKey',
