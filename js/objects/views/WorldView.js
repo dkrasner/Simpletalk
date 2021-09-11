@@ -12,6 +12,12 @@ import PartView from './PartView.js';
 
 const templateString = `<slot></slot>`;
 
+const NODES_TO_IGNORE_WHEN_ARROW_KEY = [
+    'TEXTAREA',
+    'INPUT',
+    'ST-FIELD'
+];
+
 class WorldView extends PartView {
     constructor(){
         super();
@@ -21,6 +27,7 @@ class WorldView extends PartView {
         // module as formatted text
         const template = document.createElement('template');
         template.innerHTML = templateString;
+        
         this._shadowRoot = this.attachShadow({mode: 'open'});
         this._shadowRoot.appendChild(
             template.content.cloneNode(true)
@@ -84,6 +91,26 @@ class WorldView extends PartView {
         if(event.altKey && event.ctrlKey && event.code == "Space"){
             let navigator = document.querySelector('st-navigator');
             navigator.toggle();
+        } else {
+            // Bind arrow key events if and only if
+            // the focus is not in any kind of text input.
+            // We send the arrowKey command to the current card
+            if(event.code.startsWith('Arrow')){
+                if(!NODES_TO_IGNORE_WHEN_ARROW_KEY.includes(document.activeElement.nodeName)){
+                    this.model.sendMessage({
+                        type: 'command',
+                        commandName: 'arrowKey',
+                        args: [
+                            // First arg is the direction
+                            event.code.split('Arrow')[1].toLowerCase(),
+                            event.ctrlKey,
+                            event.altKey,
+                            event.shiftKey
+                        ],
+                        shouldIgnore: true
+                    }, this.model.currentStack.currentCard);
+                }
+            }
         }
     }
 
