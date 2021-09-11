@@ -611,7 +611,7 @@ class PartView extends HTMLElement {
             type: 'command',
             commandName: 'deleteModel',
             args: [this.model.id]
-        }, window.System);
+        }, this.model);
     }
 
     onHaloOpenScriptEditor(){

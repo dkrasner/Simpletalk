@@ -85,6 +85,13 @@ class STDeserializer {
                     let targetView = document.querySelector(`[part-id="${this.targetId}"]`);
                     targetView.appendChild(rootView);
                     this.dispatchViewAdded(rootView);
+                    rootPart.sendMessage({
+                        type: 'command',
+                        commandName: 'newModel',
+                        args: [],
+                        shouldNotDelegate: true,
+                        shouldIgnore: true
+                    }, rootPart);
                 }
                 return this;
             });
