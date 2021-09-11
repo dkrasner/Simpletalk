@@ -244,8 +244,12 @@ SimpleTalk {
     CommentLines
       = (comment lineTerminator)+
 
-    systemObject (system object such as card, stack etc)
-      = ("w" | "W") "orld" | ("a" | "A") "rea" | ("b"| "B") "ackground" | ("b" | "B") "utton" | ("c" | "C") "ard" | ("f" | "F") "ield" | ("s" | "S") "tack" | ("w" | "W") "indow" | ("d" | "D") "rawing" | ("i" | "I") "mage" | ("a" | "A") "udio" | ("r" | "R") "esource" | ("b" | "B") "rowser"
+    worldObject = ("w" | "W") "orld"
+    
+    basicObject (system object such as card, stack etc excluding world)
+      = ("a" | "A") "rea" | ("b"| "B") "ackground" | ("b" | "B") "utton" | ("c" | "C") "ard" | ("f" | "F") "ield" | ("s" | "S") "tack" | ("w" | "W") "indow" | ("d" | "D") "rawing" | ("i" | "I") "mage" | ("a" | "A") "udio" | ("r" | "R") "esource" | ("b" | "B") "rowser"
+
+    systemObject = worldObject | basicObject
 
     // TODO do we want to restrict message names (start with lowercase etc)?
     // Note: we prevent keyword overloading
@@ -276,7 +280,7 @@ SimpleTalk {
       | "seventh" | "eighth" | "ninth" | "tenth" | "last"
 
     objectId (an identifier of an object, string, numeric or mixed)
-      = ~systemObject (letter | digit)+
+      = ~basicObject (worldObject | (letter | digit)+)
 
 
     // Helper utilities
