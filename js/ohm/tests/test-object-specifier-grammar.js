@@ -62,6 +62,20 @@ describe("Terminal Specifier Tests", () => {
             let str = `part id 2.3`;
             semanticMatchFailTest(str, 'TerminalSpecifier_partById');
         });
+        it("Can parse a part by an alphanumeric id", () => {
+            let str = `part id 24ab22`;
+            semanticMatchTest(str, 'TerminalSpecifier_partById');
+        });
+        it("Can parse a part with 'world' id", () => {
+            let str = `part id world`;
+            semanticMatchTest(str, 'TerminalSpecifier_partById');
+        });
+        it("Cannot parse a part by a basic object (stack, card etc) id", () => {
+            partTypes.forEach(partName => {
+                let str = `part id ${partName}`;
+                semanticMatchFailTest(str, 'TerminalSpecifier_partById');
+            });
+        });
     });
     it('currentSystemObject (card and stack only)', () => {
         let valid = ["card", "stack"];
