@@ -466,21 +466,6 @@ const System = {
             propName,
             value
         );
-
-        // If the target part is a Stack, we also
-        // set this property on all of its Card
-        // subparts
-        if(target.type == 'stack'){
-            target.subparts.filter(subpart => {
-                return subpart.type == 'card';
-            }).forEach(card => {
-                card.partProperties.setPropertyNamed(
-                    card,
-                    propName,
-                    value
-                );
-            });
-        }
     },
 
     // Remove the model with the given ID from

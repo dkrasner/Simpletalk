@@ -362,6 +362,12 @@ class PartView extends HTMLElement {
     }
 
     scriptChanged(value, partId){
+        // make sure that we are only sending the compile
+        // message when dealing with a 'core' st-part views (not
+        // with navigator or related views)
+        if(this.tagName.split("-")[0] != "ST" || this.slot == "wrapped-view"){
+            return;
+        }
         this.model.sendMessage({
             type: 'compile',
             codeString: value,

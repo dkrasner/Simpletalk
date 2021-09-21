@@ -109,7 +109,7 @@ describe('System methods', () => {
                 assert.isFalse(button.model.partProperties.getPropertyNamed(button.model, 'stepping'));
             });
         });
-        it('Global Interrupt key-combo (ctrl-c) stops all stepping .', () => {
+        it.skip('Global Interrupt key-combo (ctrl-c) stops all stepping .', () => {
             buttons.forEach((button) => {
                 button.model.partProperties.setPropertyNamed(button.model, 'stepping', true);
             });
