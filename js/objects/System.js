@@ -1072,6 +1072,86 @@ System._commandHandlers['openDebugger'] = function(senders, partId, type, name){
     });
 };
 
+System._commandHandlers['openGrammar'] = function(senders, partId, ruleName){
+    // first make sure that there are no grammar windows open already
+    let windows = Object.values(window.System.partsById).filter((part) => {return part.name == "Window";});
+    let grammarWindows = windows.filter((window) => {
+        return window.partProperties.getPropertyNamed(window, "name") == "Simpletalk Grammar";
+    });
+    if(grammarWindows.length){
+        return;
+    }
+    let target = this.partsById[partId];
+    // Create the Field model and attach to current card
+    let currentCard = this.getCurrentCardModel();
+    let windowModel = this.newModel('window', currentCard.id);
+    let areaModel = this.newModel('area', windowModel.id);
+    // name the window and setup basic layout
+    windowModel.partProperties.setPropertyNamed(
+        windowModel,
+        'name',
+        "Simpletalk Grammar"
+    );
+    windowModel.partProperties.setPropertyNamed(
+        windowModel,
+        'title',
+        "Simpletalk Grammar"
+    );
+    windowModel.partProperties.setPropertyNamed(
+        windowModel,
+        'width',
+        400
+    );
+    windowModel.partProperties.setPropertyNamed(
+        windowModel,
+        'height',
+        200
+    );
+    areaModel.partProperties.setPropertyNamed(
+        areaModel,
+        'layout',
+        "list"
+    );
+    areaModel.partProperties.setPropertyNamed(
+        areaModel,
+        'list-direction',
+        "column"
+    );
+    areaModel.partProperties.setPropertyNamed(
+        areaModel,
+        'width',
+        "fill"
+    );
+    areaModel.partProperties.setPropertyNamed(
+        areaModel,
+        'height',
+        "fill"
+    );
+    // add the grammar text
+    let text = System.grammar.source.sourceString;
+    let fieldModel = this.newModel('field', areaModel.id);
+    fieldModel.partProperties.setPropertyNamed(
+        fieldModel,
+        'text',
+        text
+    );
+    fieldModel.partProperties.setPropertyNamed(
+        fieldModel,
+        'editable',
+        false
+    );
+    fieldModel.partProperties.setPropertyNamed(
+        fieldModel,
+        'width',
+        "fill"
+    );
+    fieldModel.partProperties.setPropertyNamed(
+        fieldModel,
+        'height',
+        "fill"
+    );
+};
+
 System._commandHandlers['saveHTML'] = function(senders){
     // Stop hand recognition if it's running.
     let handRecognitionOriginallyRunning = handInterface.handDetectionRunning;
