@@ -121,7 +121,7 @@ const errorHandler = {
             // handle the `openDebugger` command anywhere it will throw
             // a MNU error, which will then invoke this handler cuasing
             // an infinite loop!
-            this._openDebugger(originalSender.id);
+            this._openDebugger(originalSender.id, offendingMessage.type, offendingMessage.commandName);
         }
     },
 
@@ -178,12 +178,12 @@ const errorHandler = {
 
     // At the moment this simply opens a st-window st-field with
     // information about the available commands for said parts
-    _openDebugger: function(partId){
+    _openDebugger: function(partId, type, name){
         let target = window.System.partsById[partId];
         let msg = {
             type: "command",
             "commandName": "openDebugger",
-            args: [partId]
+            args: [partId, type, name]
         };
         target.sendMessage(msg, target);
     }
