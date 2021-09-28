@@ -359,7 +359,9 @@ const createInterpreterSemantics = (partContext, systemContext) => {
             // We ignore these.
             if(message && typeof(message) !== 'string'){
                 let commandResult = partContext.sendMessage(message, partContext);
-                systemContext.executionStack.current.setLocal('it', commandResult);
+                if(systemContext.executionStack.current){
+                    systemContext.executionStack.current.setLocal('it', commandResult);
+                }
                 return null;
             } else {
                 return message;

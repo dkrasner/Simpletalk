@@ -67,19 +67,11 @@ class EditorMessenger extends HTMLElement {
     }
 
     sendMessageFromText(){
-        let text = this.messageField.value;
-        let script = `on doIt\n\t${text}\nend doIt`;
-        this.model.sendMessage({
-            type: 'compile',
-            codeString: script,
-            targetId: this.model.id
-        }, this.model);
-        this.model.sendMessage({
-            type: 'command',
-            commandName: 'doIt',
-            args: [],
-            shouldIgnore: true
-        }, this.model);
+        let text = this.messageField.value + '\n';
+        let parsed = window.System.grammar.match(text, 'StatementList');
+        if(parsed.succeeded()){
+            this.model._semantics(parsed).interpret();
+        }
     }
 };
 
