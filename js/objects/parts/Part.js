@@ -90,6 +90,8 @@ class Part {
         // command handlers
         this.setPrivateCommandHandler("openEditor", this.openEditorCmdHandler);
         this.setPrivateCommandHandler("closeEditor", this.closeEditorCmdHandler);
+        this.setPrivateCommandHandler("openHalo", () => {this.partProperties.setPropertyNamed(this, "halo-open", true);});
+        this.setPrivateCommandHandler("closeHalo", () => {this.partProperties.setPropertyNamed(this, "halo-open", false);});
         this.setPrivateCommandHandler("setTargetTo", this.setTargetProp);
         this.setPrivateCommandHandler("copy", this.copyCmdHandler);
         this.setPrivateCommandHandler("paste", this.pasteCmdHandler);
@@ -171,6 +173,10 @@ class Part {
             new BasicProperty(
                 'target',
                 null,
+            ),
+            new BasicProperty(
+                'halo-open',
+                false,
             ),
             new BasicProperty(
                 'contents',

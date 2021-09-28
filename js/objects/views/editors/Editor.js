@@ -301,10 +301,11 @@ class Editor extends HTMLElement {
         // open it on the View for that Model.
         Array.from(document.querySelectorAll(`.editing`)).forEach(el => {
             el.closeHalo();
+            el.model.partProperties.setPropertyNamed(this.model, "halo-open", false);
         });
         let targetView = document.querySelector(`[part-id="${this.model.id}"]`);
         if(targetView && targetView.wantsHalo){
-            targetView.openHalo();
+            targetView.model.partProperties.setPropertyNamed(this.model, "halo-open", true);
         }
         
         this.updateHeader();

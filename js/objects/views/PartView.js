@@ -161,6 +161,12 @@ class PartView extends HTMLElement {
             this.removeAttribute('lens-part-id');
             this.setAttribute('part-id', aModel.id);
         }
+
+        // load all the initial styling
+        this.styleCSS();
+        this.styleTextCSS();
+        this.initLayout();
+
         // deal with 'special' props
         let wantsMove = this.model.partProperties.getPropertyNamed(
             this.model,
@@ -170,10 +176,14 @@ class PartView extends HTMLElement {
             this.addEventListener('mousedown', this.onMouseDown);
         }
 
-        // load all the initial styling
-        this.styleCSS();
-        this.styleTextCSS();
-        this.initLayout();
+        let haloOpen = this.model.partProperties.getPropertyNamed(
+            this.model,
+            "halo-open"
+        );
+        if(haloOpen){
+            this.openHalo();
+        }
+
         this.afterModelSet();
     }
 
@@ -215,6 +225,13 @@ class PartView extends HTMLElement {
                 this.addEventListener('mousedown', this.onMouseDown);
             } else {
                 this.removeEventListener('mousedown', this.onMouseDown);
+            }
+        });
+        this.onPropChange('halo-open', (value) => {
+            if(value){
+                this.openHalo();
+            } else {
+                this.closeHalo();
             }
         });
     }
@@ -701,7 +718,7 @@ class PartView extends HTMLElement {
 
     onHaloPaste(){
         window.System.clipboard.pasteContentsInto(this.model);
-        this.closeHalo();
+        this.model.partProperties.setPropertyNamed(this.model, "halo-open", false);
     }
 
     onHaloTarget(event){
@@ -867,7 +884,7 @@ class PartView extends HTMLElement {
     onHaloActivationClick(event){
         if(this.wantsHalo){
             if(this.hasOpenHalo){
-                this.closeHalo();
+                this.model.partProperties.setPropertyNamed(this.model, "halo-open", false);
             } else {
                 event.stopPropagation();
                 // Find any other open Halos
@@ -878,7 +895,7 @@ class PartView extends HTMLElement {
                 });
 
                 // Finally, open on this view
-                this.openHalo();
+                this.model.partProperties.setPropertyNamed(this.model, "halo-open", true);
             }
         }
     }

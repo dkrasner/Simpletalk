@@ -133,14 +133,14 @@ class ContextMenu extends HTMLElement {
                 this.addListItem(
                     'Close Halo',
                     (event) => {
-                        target.closeHalo();
+                        target.model.partProperties.setPropertyNamed(this.model, "halo-open", false);
                     }
                 );
             } else {
                 this.addListItem(
                     'Open Halo',
                     (event) => {
-                        target.openHalo();
+                        target.model.partProperties.setPropertyNamed(this.model, "halo-open", true);
                     }
                 );
             }
