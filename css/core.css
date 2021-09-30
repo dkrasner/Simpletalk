@@ -162,6 +162,10 @@ st-area:empty {
     width: var(--container-default-width);
     height: var(--container-default-height);
 }
+
+st-area.outer-allow-scroll {
+    overflow: hidden;
+}
 -----------------*/
 
 
