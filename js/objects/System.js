@@ -101,7 +101,9 @@ const System = {
         // attempt to load from it
         let serializationEl = document.getElementById('serialization');
         if(serializationEl && serializationEl.text != ""){
+
             this.deserialize()
+            // this.deserialize()
                 .then(() => {
                     this.sendInitialOpenMessages();
                     System.navigator.setModel(
@@ -111,6 +113,9 @@ const System = {
                     // By default, we render the World in the
                     // Comprehensive Editor
                     this.editor.render(this.world);
+                })
+                .then(() => {
+                    this.hideLoadingScreen();
                 });
         } else {
             this.loadFromEmpty();
@@ -118,6 +123,7 @@ const System = {
             // By default, we render the World in the
             // Comprehensive Editor
             this.editor.render(this.world);
+            this.hideLoadingScreen();
         }
 
         // Attach a new clipboard instance
@@ -754,6 +760,38 @@ const System = {
 
     closeEditorForPart: function(partId){
         this.editor.close();
+    },
+
+    showLoadingScreen: function(){
+        return new Promise((resolve, reject) => {
+           window.requestAnimationFrame(() => {
+               let container = document.createElement('div');
+               container.innerHTML = `<img src="/images/simpletalk-calligraphy1.svg"/>
+<h1>Loading...</h1>`;
+               container.id = "loading-screen";
+               container.style.display = 'flex';
+               container.style.flexDirection = 'column';
+               container.style.alignItems = 'center';
+               container.style.justifyContent = 'space-around';
+               container.children[0].style.width = "45vw";
+               container.style.width = "100vw";
+               container.style.height = "100vh";
+               container.style.backgroundColor = "white";
+               container.style.position = "absolute";
+               document.body.append(container);
+               console.log('showing');
+               return resolve();
+           }); 
+        });
+    },
+
+    hideLoadingScreen: function(){
+        let loadingDiv = document.getElementById('loading-screen');
+        console.log('hiding');
+        if(loadingDiv){
+            console.log('hiding2');
+            loadingDiv.remove();
+        }
     }
 };
 
@@ -1305,7 +1343,12 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // Perform the initial setup of
     // the system
-    System.initialLoad();
+    System.showLoadingScreen()
+        .then(() => {
+            setTimeout(() => {
+                System.initialLoad();
+            }, 50);
+        });
 });
 
 // add a message listener on window
