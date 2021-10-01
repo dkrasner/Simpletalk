@@ -764,7 +764,6 @@ const System = {
 
     showLoadingScreen: function(){
         return new Promise((resolve, reject) => {
-           window.requestAnimationFrame(() => {
                let container = document.createElement('div');
                container.innerHTML = `<img src="/images/simpletalk-calligraphy1.svg"/>
 <h1>Loading...</h1>`;
@@ -779,17 +778,13 @@ const System = {
                container.style.backgroundColor = "white";
                container.style.position = "absolute";
                document.body.append(container);
-               console.log('showing');
                return resolve();
-           }); 
         });
     },
 
     hideLoadingScreen: function(){
         let loadingDiv = document.getElementById('loading-screen');
-        console.log('hiding');
         if(loadingDiv){
-            console.log('hiding2');
             loadingDiv.remove();
         }
     }
@@ -1347,7 +1342,7 @@ document.addEventListener('DOMContentLoaded', () => {
         .then(() => {
             setTimeout(() => {
                 System.initialLoad();
-            }, 50);
+            }, 100);
         });
 });
 
