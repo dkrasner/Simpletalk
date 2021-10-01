@@ -94,6 +94,10 @@ st-card {
     height: 100%;
 }
 
+.current-card {
+    overflow: auto;
+}
+
 .current-card,
 st-card[role="lens"] {
     display: block;
@@ -161,6 +165,11 @@ st-area:empty {
     border: 1px solid rgb(150, 150, 150);
     width: var(--container-default-width);
     height: var(--container-default-height);
+    flex-shrink: 0;
+}
+
+st-area.outer-allow-scroll {
+    overflow: hidden;
 }
 -----------------*/
 

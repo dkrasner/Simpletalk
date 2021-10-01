@@ -83,7 +83,9 @@ class AreaView extends PartView {
         if(newVal == true){
             wrapper.classList.remove('clip');
             wrapper.classList.add('allow-scroll');
+            // this.classList.add('outer-allow-scroll');
         } else {
+            // this.classList.remove('outer-allow-scroll');
             wrapper.classList.remove('allow-scroll');
         }
     }
