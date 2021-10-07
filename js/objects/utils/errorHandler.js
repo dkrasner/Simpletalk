@@ -103,7 +103,7 @@ const errorHandler = {
                 }
             }
             // TODO Sort this out
-            if(target){
+            if(target && text){
                 let textLines = text.split("\n");
                 // offending command text line with an error marker
                 for(let i = 0; i < textLines.length; i++){
