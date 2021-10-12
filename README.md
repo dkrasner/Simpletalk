@@ -1,6 +1,6 @@
 ![](images/simpletalk-calligraphy1.svg)
 # Overview
-This repository hosts a project, currently named "SimpleTalk," begun at the initiation of the UnitedLex computing lab. More information is to come, but below is a short description of one of our projects.
+This repository hosts a project, currently named "SimpleTalk," begun at the initiation of the UnitedLex computing lab. A general overview of our goals and approach to computing can be found in the [manifesto](ComputingManifesto.pdf). __Simpletalk__ represents a single component of this larger story.
 
 # SimpleTalk
 A project inspired by the ideas from [HyperCard](https://en.wikipedia.org/wiki/HyperCard) and [Smalltalk](https://en.wikipedia.org/wiki/Smalltalk). The project is very early stages and represents our desire to think about 'authoring' environments. The goal is not so much to create a working system, although that is one, but to begin thinking about research in personal computing moving forward.
