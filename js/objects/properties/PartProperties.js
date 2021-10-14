@@ -14,9 +14,11 @@ import cssStyler from '../utils//styler.js';
 class BasicProperty {
     constructor(name, defaultValue, readOnly=false, aliases=[]){
         this.name = name;
+        this.default = defaultValue;
         this._value = defaultValue;
         this.readOnly = readOnly;
         this.aliases = aliases;
+        this.isDynamic = false;
 
         // Bound methods
         this.getValue = this.getValue.bind(this);
@@ -81,6 +83,10 @@ class BasicProperty {
         }
         return false;
     }
+
+    get isDefault(){
+        return this.default == this._value;
+    }
 };
 
 
@@ -123,6 +129,7 @@ class DynamicProperty extends BasicProperty {
         super(name, defaultValue, readOnly, aliases);
         this.valueSetter = setter;
         this.valueGetter = getter;
+        this.isDynamic = true;
     }
 
     // In this override, we use the getter

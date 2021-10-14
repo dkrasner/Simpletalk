@@ -682,7 +682,12 @@ class Part {
         this.partProperties._properties.forEach(prop => {
             let name = prop.name;
             let value = prop.getValue(this);
-            result.properties[name] = value;
+            if(value !== prop.default){
+                result.properties[name] = value;
+                console.log(`${prop.name} ==> ${value} is NOT ${prop.default}`);
+            } else {
+                console.log(`${prop.name} ==> ${value} is EQUAL TO ${prop.default}`);
+            }
         });
         return result;
     }

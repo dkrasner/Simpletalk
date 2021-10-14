@@ -200,7 +200,7 @@ class Image extends Part {
                 } else {
                     result.properties.imageData = value;
                 }
-            } else {
+            } else if(value !== prop.default){
                 result.properties[name] = value;
             }
         });

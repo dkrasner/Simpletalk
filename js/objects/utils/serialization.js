@@ -129,7 +129,7 @@ class STDeserializer {
             // Translate scripts
             for (let modelId in this._scriptCache) {
                 let script = this._scriptCache[modelId];
-                if (script !== null && script.match('part id') !== null) {
+                if (script !== undefined && script !== null && script.match('part id') !== null) {
                     for (let oldId in this._idCache) {
                         let newId = this._idCache[oldId];
                         let oldRe = 'part id ' + oldId;
