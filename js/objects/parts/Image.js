@@ -33,6 +33,11 @@ class Image extends Part {
             false
         );
 
+        this.partProperties.newBasicProp(
+            'force-serialization',
+            false
+        );
+
         // Style properties
         addBasicStyleProps(this);
         addPositioningStyleProps(this);
@@ -150,6 +155,56 @@ class Image extends Part {
 
     getSource(owner, property){
         return owner._src;
+    }
+
+    /**
+     * Serialize this Part's state as JSON.
+     * By default, we do not serialize specific
+     * PartCollection information (recursively),
+     * and only include basics including the current
+     * state of all properties.
+     * For Image Parts, we also use a combination of
+     * the presence of a source URL and/or the
+     * `force-serialization` property to determine
+     * whether or not we serialize the `imageData` prop
+     */
+    serialize(){
+        let ownerId = null;
+        if(this._owner){
+            ownerId = this._owner.id;
+        }
+        let result = {
+            type: this.type,
+            id: this.id,
+            properties: {},
+            subparts: this.subparts.map(subpart => {
+                return subpart.id;
+            }),
+            ownerId: ownerId
+        };
+        this.partProperties._properties.forEach(prop => {
+            let name = prop.name;
+            let value = prop.getValue(this);
+            if(name == 'imageData'){
+                // We only want to serialize image
+                // data in cases where:
+                // 1. There no URL specified, but the
+                // part has imageData set;
+                // 2. The `force-serialization` property is
+                // set to true
+                let url = this.partProperties.getPropertyNamed(this, 'src');
+                let hasUrl = (url != null && url != undefined && url != "");
+                let forceSerialization = this.partProperties.getPropertyNamed(this, 'force-serialization');
+                if(hasUrl && !forceSerialization){
+                    result.properties.imageData = null;
+                } else {
+                    result.properties.imageData = value;
+                }
+            } else {
+                result.properties[name] = value;
+            }
+        });
+        return result;
     }
 
     get type(){
