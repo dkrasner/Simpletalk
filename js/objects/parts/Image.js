@@ -95,6 +95,60 @@ class Image extends Part {
         filePicker.click();
     }
 
+    /**
+     * Serialize this Part's state as JSON.
+     * By default, we do not serialize specific
+     * PartCollection information (recursively),
+     * and only include basics including the current
+     * state of all properties.
+     * ---
+     * Note: Here we override the default implementation
+     * in order to account for src/imageData property
+     * serialization logic
+     */
+    serialize(){
+        let ownerId = null;
+        if(this._owner){
+            ownerId = this._owner.id;
+        }
+        let result = {
+            type: this.type,
+            id: this.id,
+            properties: {},
+            subparts: this.subparts.map(subpart => {
+                return subpart.id;
+            }),
+            ownerId: ownerId
+        };
+
+        // Grab the current image src url value
+        // and the current imageData value
+        let url = this.partProperties.getPropertyNamed(
+            this,
+            'src'
+        );
+        let urlIsValid = (url && url !== "");
+        let currentData = this.partProperties.getPropertyNamed(
+            this,
+            'imageData'
+        );
+        this.partProperties._properties.forEach(prop => {
+            let name = prop.name;
+            let value = prop.getValue(this);
+            if(name == "imageData"){
+                if(!urlIsValid){
+                    result.properties.imageData = value;
+                    result.properties.src = null;
+                } else {
+                    result.properties.imageData = null;
+                }
+            } else {
+                result.properties[name] = value;
+            }
+        });
+        return result;
+    }
+
     get type(){
         return 'image';
     }
