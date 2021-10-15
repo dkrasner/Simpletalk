@@ -10,13 +10,10 @@ class Image extends Part {
         super(owner);
 
         // Properties
-        this.partProperties.newDynamicProp(
+        this.partProperties.newBasicProp(
             "src",
-            this.setSource,
-            this.getSource
+            null
         );
-
-        this._src = src;
 
         this.partProperties.newBasicProp(
             "mimeType",
@@ -58,55 +55,12 @@ class Image extends Part {
         this.loadImageFromFile = this.loadImageFromFile.bind(this);
     }
 
-
-    loadImageFromSource(senders, sourceUrl){
-        fetch(sourceUrl)
-            .then(response => {
-                let contentType = response.headers.get('content-type');
-                if(!contentType.startsWith('image')){
-                    throw new Error(`Invalid image mimeType: ${contentType}`);
-                }
-                this.partProperties.setPropertyNamed(
-                    this,
-                    "mimeType",
-                    contentType
-                );
-                if(contentType.startsWith("image/svg")){
-                    return response.text().then(text => {
-                        this.partProperties.setPropertyNamed(
-                            this,
-                            'imageData',
-                            text
-                        );
-                    });
-                } else {
-                    return response.blob().then(blob => {
-                        let reader = new FileReader();
-                        reader.onloadend = () => {
-                            this.partProperties.setPropertyNamed(
-                                this,
-                                'imageData',
-                                reader.result // will be the base64 encoded data
-                            );
-                        };
-                        reader.readAsDataURL(blob);
-                    });
-                }
-            })
-            .then(() => {
-                // Manually set the _src.
-                // This ensures that we don't infinitely
-                // call the load operation
-                this._src = sourceUrl;
-            })
-            .catch(err => {
-                console.error(err);
-                this.partProperties.setPropertyNamed(
-                    this,
-                    'imageData',
-                    null
-                );
-            });
+    loadImageFromSource(senders, url){
+        this.partProperties.setPropertyNamed(
+            this,
+            'src',
+            url
+        );
     }
 
     loadImageFromFile(){
@@ -139,17 +93,6 @@ class Image extends Part {
         });
         document.body.append(filePicker);
         filePicker.click();
-    }
-
-    setSource(owner, property, value){
-        owner._src = value;
-        if(value){
-            owner.loadImageFromSource([this], value);
-        }
-    }
-
-    getSource(owner, property){
-        return owner._src;
     }
 
     get type(){

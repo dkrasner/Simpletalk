@@ -62,44 +62,82 @@ class ImageView extends PartView {
         this.updateBinaryImage = this.updateBinaryImage.bind(this);
         this.setDefaultImage = this.setDefaultImage.bind(this);
         this.onClick = this.onClick.bind(this);
+        this.loadImageFromSource = this.loadImageFromSource.bind(this);
         this.initCustomHaloButton = this.initCustomHaloButton.bind(this);
         this.updateImageLink = this.updateImageLink.bind(this);
         this.updateSizingForViewport = this.updateSizingForViewport.bind(this);
     }
 
     afterModelSet(){
-        // prop changes
-        this.onPropChange("imageData", (imageData) => {
-            if(!imageData){
-                this.setDefaultImage();
+
+        // If the imageData property changes, we only
+        // want to update the enclosed image if there is not
+        // a valid src url. That is the case in which we
+        // are using image data from a local file or data
+        // that should be purely serialized.
+        this.onPropChange('imageData', (imageData) => {
+            let url = this.model.partProperties.getPropertyNamed(
+                this.model,
+                'src'
+            );
+            let urlIsValid = (url && url !== "");
+            if(!urlIsValid){
+                this.updateImageData(imageData);
             }
-            this.updateImageData(imageData);
         });
 
+        // If the src property changes, there are a couple
+        // of possibilities:
+        // 1. There is a valid URL. We reload the image and
+        // update all associated properties;
+        // 2. There is an invalid URL, but there is imageData
+        // present. We do nothing.
+        // 3. There is an invalid URL and no imageData present.
+        // we load the default placeholder image.
+        this.onPropChange('src', (src) => {
+            let urlIsValid = (src && src !== "");
+            let existingImageData = this.model.partProperties.getPropertyNamed(
+                this.model,
+                'imageData'
+            );
+            if(urlIsValid){
+                this.loadImageFromSource(src);
+            } else if(!existingImageData || existingImageData == ""){
+                this.setDefaultImage();
+            }
+        });
+        
         // Make sure we have imageData. If not, try
         // to load from a src.
-        let currentImageData = this.model.partProperties.getPropertyNamed(
-            this.model,
-            "imageData"
-        );
         let currentSrc = this.model.partProperties.getPropertyNamed(
             this.model,
             "src"
         );
-        if(!currentImageData){
-            if(currentSrc){
-                let msg = {
-                    type: 'command',
-                    commandName: 'loadImageFrom',
-                    args: [ currentSrc ]
-                };
-                this.model.sendMessage(msg, this.model);
-            } else {
-                this.setDefaultImage();
-            }
-        } else {
+        let currentImageData = this.model.partProperties.getPropertyNamed(
+                this.model,
+                "imageData"
+            );
+        if(currentSrc && currentSrc !== ""){
+            this.loadImageFromSource(currentSrc);
+        } else if(currentImageData){
             this.updateImageData(currentImageData);
+        } else {
+            this.setDefaultImage();
         }
+        // if(!currentImageData){
+        //     if(currentSrc){
+        //         let msg = {
+        //             type: 'command',
+        //             commandName: 'loadImageFrom',
+        //             args: [ currentSrc ]
+        //         };
+        //         this.model.sendMessage(msg, this.model);
+        //     } else {
+        //         this.setDefaultImage();
+        //     }
+        // } else {
+        //     this.updateImageData(currentImageData);
+        // }
     }
 
     afterConnected(){
@@ -226,6 +264,66 @@ class ImageView extends PartView {
                 (rect.height * ratio)
             );
         }
+    }
+
+    loadImageFromSource(sourceUrl){
+        fetch(sourceUrl)
+            .then(response => {
+                let contentType = response.headers.get('content-type');
+                if(!contentType.startsWith('image')){
+                    throw new Error(`Invalid image mimeType: ${contentType}`);
+                }
+                this.model.partProperties.setPropertyNamed(
+                    this.model,
+                    "mimeType",
+                    contentType
+                );
+
+                if(contentType.startsWith("image/svg")){
+                    return response.text().then(text => {
+                        // Set the content of the appropriate area
+                        // to be SVG inline markup
+                        this.updateSvgImage(text);
+
+                        // Set the imageData property for
+                        // potential serialization purposes
+                        this.model.partProperties.setPropertyNamed(
+                            this.model,
+                            'imageData',
+                            text
+                        );
+                    });
+                } else {
+                    return response.blob().then(blob => {
+                        let reader = new FileReader();
+                        reader.onloadend = () => {
+                            // Set the binary image data
+                            this.updateBinaryImage(reader.result);
+                            // Set the imageData property for potential
+                            // serialization purposes
+                            this.model.partProperties.setPropertyNamed(
+                                this.model,
+                                'imageData',
+                                reader.result
+                            );
+                        };
+                        reader.readAsDataURL(blob);
+                    });
+                }
+            })
+            .catch(err => {
+                console.error(err);
+                this.model.partProperties.setPropertyNamed(
+                    this.model,
+                    'src',
+                    null
+                );
+                this.model.partProperties.setPropertyNamed(
+                    this.model,
+                    'imageData',
+                    null
+                );
+            });
     }
 
     openHalo(){
