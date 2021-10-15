@@ -219,14 +219,11 @@ class ImageView extends PartView {
             'src'
         );
         let result = window.prompt("Edit URL for image:", currentSrc);
-        if(result && result !== '' && result !== currentSrc){
-            this.sendMessage(
-                {
-                    type: 'command',
-                    commandName: 'loadImageFrom',
-                    args: [ result ]
-                },
-                this.model
+        if(result !== currentSrc){
+            this.model.partProperties.setPropertyNamed(
+                this.model,
+                'src',
+                result
             );
         }
     }
