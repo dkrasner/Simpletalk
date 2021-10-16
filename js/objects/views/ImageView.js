@@ -70,18 +70,18 @@ class ImageView extends PartView {
 
     afterModelSet(){
 
-        // If the imageData property changes, we only
-        // want to update the enclosed image if there is not
-        // a valid src url. That is the case in which we
-        // are using image data from a local file or data
-        // that should be purely serialized.
+        // If the imageData property has a valid value,
+        // we want to update the actual image but also
+        // clear any `src` property value (without notifying,
+        // to prevent infinite recursion)
         this.onPropChange('imageData', (imageData) => {
-            let url = this.model.partProperties.getPropertyNamed(
-                this.model,
-                'src'
-            );
-            let urlIsValid = (url && url !== "");
-            if(!urlIsValid){
+            if(imageData && imageData !== ""){
+                this.model.partProperties.setPropertyNamed(
+                    this.model,
+                    src,
+                    "",
+                    false // do not notify
+                );
                 this.updateImageData(imageData);
             }
         });
@@ -219,7 +219,7 @@ class ImageView extends PartView {
             'src'
         );
         let result = window.prompt("Edit URL for image:", currentSrc);
-        if(result !== currentSrc){
+        if(result && result !== currentSrc){
             this.model.partProperties.setPropertyNamed(
                 this.model,
                 'src',
@@ -281,14 +281,6 @@ class ImageView extends PartView {
                         // Set the content of the appropriate area
                         // to be SVG inline markup
                         this.updateSvgImage(text);
-
-                        // Set the imageData property for
-                        // potential serialization purposes
-                        this.model.partProperties.setPropertyNamed(
-                            this.model,
-                            'imageData',
-                            text
-                        );
                     });
                 } else {
                     return response.blob().then(blob => {
@@ -296,13 +288,6 @@ class ImageView extends PartView {
                         reader.onloadend = () => {
                             // Set the binary image data
                             this.updateBinaryImage(reader.result);
-                            // Set the imageData property for potential
-                            // serialization purposes
-                            this.model.partProperties.setPropertyNamed(
-                                this.model,
-                                'imageData',
-                                reader.result
-                            );
                         };
                         reader.readAsDataURL(blob);
                     });
@@ -313,7 +298,7 @@ class ImageView extends PartView {
                 this.model.partProperties.setPropertyNamed(
                     this.model,
                     'src',
-                    null
+                    ""
                 );
                 this.model.partProperties.setPropertyNamed(
                     this.model,
