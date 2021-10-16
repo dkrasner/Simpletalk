@@ -78,7 +78,7 @@ class ImageView extends PartView {
             if(imageData && imageData !== ""){
                 this.model.partProperties.setPropertyNamed(
                     this.model,
-                    src,
+                    'src',
                     "",
                     false // do not notify
                 );
@@ -102,7 +102,7 @@ class ImageView extends PartView {
             );
             if(urlIsValid){
                 this.loadImageFromSource(src);
-            } else if(!existingImageData || existingImageData == ""){
+            } else {
                 this.setDefaultImage();
             }
         });
@@ -150,9 +150,8 @@ class ImageView extends PartView {
     }
 
     setDefaultImage(){
-        this.model.partProperties.setPropertyNamed(this.model, "imageData", pictureIcon);
+        this.model.partProperties.setPropertyNamed(this.model, "imageData", pictureIcon, false);
         this.model.partProperties.setPropertyNamed(this.model, "mimeType", "image/svg");
-        this.model.partProperties.setPropertyNamed(this.model, "src", "");
         this.updateImageData(pictureIcon);
     }
 
@@ -220,6 +219,12 @@ class ImageView extends PartView {
         );
         let result = window.prompt("Edit URL for image:", currentSrc);
         if(result && result !== currentSrc){
+            this.model.partProperties.setPropertyNamed(
+                this.model,
+                'src',
+                result
+            );
+        } else if(result == ""){
             this.model.partProperties.setPropertyNamed(
                 this.model,
                 'src',
