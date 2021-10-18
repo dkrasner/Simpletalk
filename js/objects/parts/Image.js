@@ -10,13 +10,10 @@ class Image extends Part {
         super(owner);
 
         // Properties
-        this.partProperties.newDynamicProp(
+        this.partProperties.newBasicProp(
             "src",
-            this.setSource,
-            this.getSource
+            null
         );
-
-        this._src = src;
 
         this.partProperties.newBasicProp(
             "mimeType",
@@ -58,55 +55,12 @@ class Image extends Part {
         this.loadImageFromFile = this.loadImageFromFile.bind(this);
     }
 
-
-    loadImageFromSource(senders, sourceUrl){
-        fetch(sourceUrl)
-            .then(response => {
-                let contentType = response.headers.get('content-type');
-                if(!contentType.startsWith('image')){
-                    throw new Error(`Invalid image mimeType: ${contentType}`);
-                }
-                this.partProperties.setPropertyNamed(
-                    this,
-                    "mimeType",
-                    contentType
-                );
-                if(contentType.startsWith("image/svg")){
-                    return response.text().then(text => {
-                        this.partProperties.setPropertyNamed(
-                            this,
-                            'imageData',
-                            text
-                        );
-                    });
-                } else {
-                    return response.blob().then(blob => {
-                        let reader = new FileReader();
-                        reader.onloadend = () => {
-                            this.partProperties.setPropertyNamed(
-                                this,
-                                'imageData',
-                                reader.result // will be the base64 encoded data
-                            );
-                        };
-                        reader.readAsDataURL(blob);
-                    });
-                }
-            })
-            .then(() => {
-                // Manually set the _src.
-                // This ensures that we don't infinitely
-                // call the load operation
-                this._src = sourceUrl;
-            })
-            .catch(err => {
-                console.error(err);
-                this.partProperties.setPropertyNamed(
-                    this,
-                    'imageData',
-                    null
-                );
-            });
+    loadImageFromSource(senders, url){
+        this.partProperties.setPropertyNamed(
+            this,
+            'src',
+            url
+        );
     }
 
     loadImageFromFile(){
@@ -141,15 +95,58 @@ class Image extends Part {
         filePicker.click();
     }
 
-    setSource(owner, property, value){
-        owner._src = value;
-        if(value){
-            owner.loadImageFromSource([this], value);
+    /**
+     * Serialize this Part's state as JSON.
+     * By default, we do not serialize specific
+     * PartCollection information (recursively),
+     * and only include basics including the current
+     * state of all properties.
+     * ---
+     * Note: Here we override the default implementation
+     * in order to account for src/imageData property
+     * serialization logic
+     */
+    serialize(){
+        let ownerId = null;
+        if(this._owner){
+            ownerId = this._owner.id;
         }
-    }
+        let result = {
+            type: this.type,
+            id: this.id,
+            properties: {},
+            subparts: this.subparts.map(subpart => {
+                return subpart.id;
+            }),
+            ownerId: ownerId
+        };
 
-    getSource(owner, property){
-        return owner._src;
+        // Grab the current image src url value
+        // and the current imageData value
+        let url = this.partProperties.getPropertyNamed(
+            this,
+            'src'
+        );
+        let urlIsValid = (url && url !== "");
+        let currentData = this.partProperties.getPropertyNamed(
+            this,
+            'imageData'
+        );
+        this.partProperties._properties.forEach(prop => {
+            let name = prop.name;
+            let value = prop.getValue(this);
+            if(name == "imageData"){
+                if(!urlIsValid){
+                    result.properties.imageData = value;
+                    result.properties.src = null;
+                } else {
+                    result.properties.imageData = null;
+                }
+            } else {
+                result.properties[name] = value;
+            }
+        });
+        return result;
     }
 
     get type(){
