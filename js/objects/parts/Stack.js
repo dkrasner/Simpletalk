@@ -93,8 +93,8 @@ class Stack extends Part {
         if(nextCard._owner != this){
             this._owner.goToStackById(nextCard._owner.id);
         }
-        this.partProperties.setPropertyNamed(
-            this,
+        nextCard._owner.partProperties.setPropertyNamed(
+            nextCard._owner,
             'current',
             nextCard.id
         );
