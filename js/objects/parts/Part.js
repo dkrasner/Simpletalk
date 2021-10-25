@@ -718,6 +718,11 @@ class Part {
         };
         this.partProperties._properties.forEach(prop => {
             let name = prop.name;
+            // due to race-conditions incurred if the editor is
+            // open before world we exclude `editor-open` from serialization
+            if(name == "editor-open"){
+                return;
+            }
             let value = prop.getValue(this);
             result.properties[name] = value;
         });
