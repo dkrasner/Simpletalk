@@ -15,6 +15,7 @@ class BasicProperty {
     constructor(name, defaultValue, readOnly=false, aliases=[]){
         this.name = name;
         this._value = defaultValue;
+        this.default = defaultValue;
         this.readOnly = readOnly;
         this.aliases = aliases;
 
