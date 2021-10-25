@@ -49,6 +49,14 @@ class Stack extends Part {
         this.goToPrevCard = this.goToPrevCard.bind(this);
         this.goToCardById = this.goToCardById.bind(this);
         this.goToNthCard = this.goToNthCard.bind(this);
+
+        // remove the halo property and command handlers as these do not makes sense here
+        let haloOpenProp = this.partProperties.findPropertyNamed("halo-open");
+        if(haloOpenProp){
+            this.partProperties.removeProperty(haloOpenProp);
+        }
+        this.removePrivateCommandHandler("openHalo");
+        this.removePrivateCommandHandler("closeHalo");
     }
 
     goToNextCard(){

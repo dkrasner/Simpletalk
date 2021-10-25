@@ -230,6 +230,7 @@ class Editor extends HTMLElement {
         this.onTabActivated = this.onTabActivated.bind(this);
         this.onNameInputChange = this.onNameInputChange.bind(this);
         this.onEditScriptClick = this.onEditScriptClick.bind(this);
+        this.onCloseButtonClick = this.onCloseButtonClick.bind(this);
     }
 
     connectedCallback(){
@@ -237,7 +238,7 @@ class Editor extends HTMLElement {
             this._shadowRoot.addEventListener('tab-activated', this.onTabActivated);
             this._shadowRoot.getElementById('close-button').addEventListener(
                 'click',
-                this.close
+                this.onCloseButtonClick
             );
 
             // Events
@@ -255,7 +256,7 @@ class Editor extends HTMLElement {
             'click',
             this.close
         );
-        
+
         // Events
         let nameInput = this._shadowRoot.getElementById('part-name-input');
         nameInput.removeEventListener('change', this.onNameInputChange);
@@ -296,11 +297,6 @@ class Editor extends HTMLElement {
             this.checkForNavigation();
         }
 
-        let targetView = document.querySelector(`[part-id="${this.model.id}"]`);
-        if(targetView && targetView.wantsHalo){
-            targetView.model.partProperties.setPropertyNamed(this.model, "halo-open", true);
-        }
-        
         this.updateHeader();
 
         // Clear slotted inner DOM
@@ -500,11 +496,32 @@ class Editor extends HTMLElement {
         if(this.model){
             this.model.sendMessage({
                 type: 'command',
+                commandName: 'closeEditor',
+                args: [
+                    this.model.id
+                ]
+            }, this.model);
+            this.model.sendMessage({
+                type: 'command',
                 commandName: 'openScriptEditor',
                 args: [
                     this.model.id
                 ]
             }, this.model);
+        }
+    }
+
+    onCloseButtonClick(event){
+        // it's possible that no model has been set
+        if(this.model){
+            this.model.sendMessage({
+                type: 'command',
+                commandName: 'closeEditor',
+                args: [
+                    this.model.id
+                ]
+            }, this.model);
+        } else {
             this.close();
         }
     }

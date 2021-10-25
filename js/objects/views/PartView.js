@@ -176,6 +176,7 @@ class PartView extends HTMLElement {
             this.addEventListener('mousedown', this.onMouseDown);
         }
 
+        /**
         let haloOpen = this.model.partProperties.getPropertyNamed(
             this.model,
             "halo-open"
@@ -183,6 +184,7 @@ class PartView extends HTMLElement {
         if(haloOpen){
             this.openHalo();
         }
+        **/
 
         this.afterModelSet();
     }
@@ -232,6 +234,13 @@ class PartView extends HTMLElement {
                 this.openHalo();
             } else {
                 this.closeHalo();
+            }
+        });
+        this.onPropChange('editor-open', (value) => {
+            if(value){
+                this.openEditor();
+            } else {
+                this.closeEditor();
             }
         });
     }
@@ -648,8 +657,7 @@ class PartView extends HTMLElement {
     }
 
     onHaloOpenEditor(){
-        window.System.editor.render(this.model);
-        window.System.editor.open();
+        this.model.partProperties.setPropertyNamed(this.model, "editor-open", true);
     }
 
     onHaloResize(movementX, movementY){
@@ -887,14 +895,6 @@ class PartView extends HTMLElement {
                 this.model.partProperties.setPropertyNamed(this.model, "halo-open", false);
             } else {
                 event.stopPropagation();
-                // Find any other open Halos
-                // and automatically close them
-                let exSelector = `.editing:not([part-id="${this.model.id}"])`;
-                Array.from(document.querySelectorAll(exSelector)).forEach(openHaloEl => {
-                    openHaloEl.closeHalo();
-                });
-
-                // Finally, open on this view
                 this.model.partProperties.setPropertyNamed(this.model, "halo-open", true);
             }
         }
@@ -989,13 +989,18 @@ class PartView extends HTMLElement {
 
     /* Editor related methods */
     openEditor(){
-        // Does nothing by default.
-        // Should be implemented in subclass
+        let editor = document.querySelector('st-editor');
+        editor.render(this.model);
+        if(!editor.isOpen){
+            editor.open();
+        }
     }
 
     closeEditor(){
-        // Does nothing by default.
-        // Should be implemented in subclass
+        let editor = document.querySelector('st-editor.open');
+        if(editor){
+            editor.close();
+        }
     }
 };
 

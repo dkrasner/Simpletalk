@@ -175,10 +175,6 @@ class Part {
                 null,
             ),
             new BasicProperty(
-                'halo-open',
-                false,
-            ),
-            new BasicProperty(
                 'contents',
                 null,
             ),
@@ -227,6 +223,48 @@ class Part {
             this.partProperties.addProperty(prop);
         });
 
+        this.partProperties.newDynamicProp(
+            'halo-open',
+            function(propOwner, propObject, val){
+                // close all other halos
+                // (there really should only be one open at a time)
+                if(val){
+                    Array.from(document.querySelectorAll('.editing')).forEach(el => {
+                        el.model.partProperties.setPropertyNamed(el.model, "halo-open", false);
+                    });
+                }
+                propObject._value = val;
+            },
+            function(propOwner, propObject){
+                return propObject._value;
+            },
+            false, // read & write
+            false  // default value
+        );
+        this.partProperties.newDynamicProp(
+            'editor-open',
+            function(propOwner, propObject, val){
+                if(val){
+                    // open the halo on this part if it accepts halos
+                    let haloOpenProp = propOwner.partProperties.findPropertyNamed("halo-open");
+                    if(haloOpenProp){
+                        haloOpenProp.setValue(propOwner, true);
+                    } else {
+                        // even if the part does not accept halos (like card, stack etc)
+                        // we should still close them elsewhere
+                        Array.from(document.querySelectorAll('.editing')).forEach(el => {
+                            el.model.partProperties.setPropertyNamed(el.model, "halo-open", false);
+                        });
+                    }
+                }
+                propObject._value = val;
+            },
+            function(propOwner, propObject){
+                return propObject._value;
+            },
+            false, // read & write
+            false  // default value
+        );
         // the index number of the part in part._owner.subpart
         // array. Note: this is 1-indexed
         this.partProperties.newDynamicProp(
@@ -505,18 +543,11 @@ class Part {
     **/
 
     openEditorCmdHandler(){
-        let editor = document.querySelector('st-editor');
-        editor.render(this);
-        if(!editor.isOpen){
-            editor.open();
-        }
+        this.partProperties.setPropertyNamed(this, "editor-open", true);
     }
 
     closeEditorCmdHandler(){
-        let editor = document.querySelector('st-editor.open');
-        if(editor){
-            editor.close();
-        }
+        this.partProperties.setPropertyNamed(this, "editor-open", false);
     }
 
     setTargetProp(senders, ...args){

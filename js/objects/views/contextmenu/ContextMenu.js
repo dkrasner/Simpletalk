@@ -196,7 +196,11 @@ class ContextMenu extends HTMLElement {
         this.addListItem(
             'Open Editor',
             (event) => {
-                window.System.openEditorForPart(this.model.id);
+                this.model.sendMessage({
+                    type: 'command',
+                    commandName: 'openEditor',
+                    args: [this.model.id]
+                }, this.model);
             }
         );
     }

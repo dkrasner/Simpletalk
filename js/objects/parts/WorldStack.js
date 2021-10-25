@@ -48,6 +48,14 @@ class WorldStack extends Part {
         this.removePrivateCommandHandler("moveDown");
         this.removePrivateCommandHandler("moveToFirst");
         this.removePrivateCommandHandler("moveToLast");
+
+        // remove the halo property and command handlers as these do not makes sense here
+        let haloOpenProp = this.partProperties.findPropertyNamed("halo-open");
+        if(haloOpenProp){
+            this.partProperties.removeProperty(haloOpenProp);
+        }
+        this.removePrivateCommandHandler("openHalo");
+        this.removePrivateCommandHandler("closeHalo");
     }
 
     goToNextStack(){
