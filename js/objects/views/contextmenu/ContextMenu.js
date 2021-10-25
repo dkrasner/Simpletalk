@@ -80,6 +80,7 @@ class ContextMenu extends HTMLElement {
         this.addScriptEditItem = this.addScriptEditItem.bind(this);
         this.addMovementItems = this.addMovementItems.bind(this);
         this.addPartSubmenu = this.addPartSubmenu.bind(this);
+        this.addSaveSnapshotItem = this.addSaveSnapshotItem.bind(this);
         this.addListItem = this.addListItem.bind(this);
         this.addSpacer = this.addSpacer.bind(this);
         this.hideHeader = this.hideHeader.bind(this);
@@ -102,6 +103,7 @@ class ContextMenu extends HTMLElement {
         this.addScriptEditItem();
         this.addMovementItems();
         this.addNavigatorToggleItem();
+        this.addSaveSnapshotItem();
 
         // Add View-specific items
         let view = document.querySelector(`[part-id="${this.model.id}"]`);
@@ -123,6 +125,19 @@ class ContextMenu extends HTMLElement {
             itemEl.showCaret();
         }
         this.append(itemEl);
+    }
+
+    addSaveSnapshotItem(){
+        this.addListItem(
+            'Save Snapshot...',
+            (event) => {
+                window.System.world.sendMessage({
+                    type: 'command',
+                    commandName: 'saveHTML',
+                    args: []
+                }, window.System.world);
+            }
+        );
     }
 
     addHaloToggleItem(){
