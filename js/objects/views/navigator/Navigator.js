@@ -230,11 +230,12 @@ class STNavigator extends PartView {
     }
 
     toggle(){
-        this.classList.toggle('open');
-        if(this.classList.contains('open')){
-            this.open();
+        let world = window.System.partsById["world"];
+        let navOpen = world.partProperties.getPropertyNamed(world, "navigator-open");
+        if(navOpen){
+            world.partProperties.setPropertyNamed(world, "navigator-open", false);
         } else {
-            this.close();
+            world.partProperties.setPropertyNamed(world, "navigator-open", true);
         }
     }
 

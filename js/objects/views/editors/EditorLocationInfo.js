@@ -232,7 +232,7 @@ class EditorLocationInfo extends HTMLElement {
             // Re-render the editor on the Part
             // referenced by the found id
             let target = window.System.partsById[id];
-            window.System.editor.render(target);
+            target.partProperties.setPropertyNamed(target, "editor-open", true);
         }
     }
 

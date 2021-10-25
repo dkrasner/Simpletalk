@@ -12,6 +12,9 @@
  * SimpleTalk environment.
  */
 import Part from './Part.js';
+import {
+    BasicProperty,
+} from '../properties/PartProperties.js';
 
 
 class WorldStack extends Part {
@@ -42,6 +45,23 @@ class WorldStack extends Part {
         this.goToPrevStack = this.goToPrevStack.bind(this);
         this.goToNthStack = this.goToNthStack.bind(this);
         this.goToStackById = this.goToStackById.bind(this);
+
+        // properties
+        this.partProperties.addProperty(
+            new BasicProperty(
+                "navigator-open",
+                false
+            )
+        );
+
+        // private command handlers
+        this.setPrivateCommandHandler("openNavigator", () => {
+            this.partProperties.setPropertyNamed(this, "navigator-open", true);
+        });
+        this.setPrivateCommandHandler("closeNavigator", () => {
+            this.partProperties.setPropertyNamed(this, "navigator-open", false);
+        });
+
 
         // remove command handlers which are not needed for world
         this.removePrivateCommandHandler("moveUp");

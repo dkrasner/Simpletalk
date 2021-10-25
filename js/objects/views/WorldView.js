@@ -27,7 +27,7 @@ class WorldView extends PartView {
         // module as formatted text
         const template = document.createElement('template');
         template.innerHTML = templateString;
-        
+
         this._shadowRoot = this.attachShadow({mode: 'open'});
         this._shadowRoot.appendChild(
             template.content.cloneNode(true)
@@ -41,6 +41,7 @@ class WorldView extends PartView {
         this.receiveMessage = this.receiveMessage.bind(this);
         this.setupPropHandlers = this.setupPropHandlers.bind(this);
         this.handleKeyDown = this.handleKeyDown.bind(this);
+        this.toggleNavigator = this.toggleNavigator.bind(this);
 
         // Setup prop handlers
         this.setupPropHandlers();
@@ -48,10 +49,15 @@ class WorldView extends PartView {
 
     setupPropHandlers(){
         this.onPropChange('current', this.updateCurrentStack);
+        this.onPropChange('navigator-open', this.toggleNavigator);
     }
 
     afterConnected(){
         document.addEventListener('keydown', this.handleKeyDown);
+        let navOpen = this.model.partProperties.getPropertyNamed(this.model, 'navigator-open');
+        if(navOpen){
+            this.toggleNavigator(true);
+        }
     }
 
     afterDisconnected(){
@@ -133,6 +139,16 @@ class WorldView extends PartView {
             }
         } else {
             this.appendChild(newView);
+        }
+    }
+
+    // Navigator
+    toggleNavigator(val){
+        let nav = document.querySelector('st-navigator');
+        if(val){
+            nav.open();
+        } else {
+            nav.close();
         }
     }
 

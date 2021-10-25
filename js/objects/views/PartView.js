@@ -176,15 +176,12 @@ class PartView extends HTMLElement {
             this.addEventListener('mousedown', this.onMouseDown);
         }
 
-        /**
-        let haloOpen = this.model.partProperties.getPropertyNamed(
-            this.model,
+        let haloOpen = this.model.partProperties.findPropertyNamed(
             "halo-open"
         );
-        if(haloOpen){
+        if(haloOpen && haloOpen._value){
             this.openHalo();
         }
-        **/
 
         this.afterModelSet();
     }
