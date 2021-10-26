@@ -56,13 +56,17 @@ class Audio extends Part {
         this.partProperties.setPropertyNamed(
             this,
             'background-transparency',
-            0
+            0,
+            true, // notify
+            true // set default
         );
         ["right", "left", "top", "bottom"].forEach((side) => {
             this.partProperties.setPropertyNamed(
                 this,
                 `border-${side}-width`,
-                1
+                1,
+                true, // notify
+                true // set default
             );
         });
     }

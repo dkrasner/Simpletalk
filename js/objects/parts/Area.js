@@ -45,12 +45,16 @@ class Area extends Part {
         this.partProperties.setPropertyNamed(
             this,
             'width',
-            50
+            50,
+            true, // notify
+            true // set default
         );
         this.partProperties.setPropertyNamed(
             this,
             'height',
-            50
+            50,
+            true, // notify
+            true // set default
         );
         this.partProperties.newBasicProp(
             'clipping',
@@ -65,13 +69,17 @@ class Area extends Part {
         this.partProperties.setPropertyNamed(
             this,
             'background-transparency',
-            0
+            0,
+            true, // notify
+            true // set default
         );
         sides.forEach((s) => {
             this.partProperties.setPropertyNamed(
                 this,
                 `border-${s}-width`,
                 1,
+                true, // notify
+                true // set default
             );
         });
         sides.forEach((s) => {
@@ -79,6 +87,8 @@ class Area extends Part {
                 this,
                 `border-${s}-color`,
                 "rgb(238, 238, 238)",
+                true, // notify
+                true // set default
             );
         });
         sides.forEach((s) => {
@@ -86,6 +96,8 @@ class Area extends Part {
                 this,
                 `border-${s}-transparency`,
                 0.5,
+                true, // notify
+                true // set default
             );
         });
     }

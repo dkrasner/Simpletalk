@@ -38,12 +38,16 @@ class Image extends Part {
         this.partProperties.setPropertyNamed(
             this,
             'background-transparency',
-            0
+            0,
+            true, // notify
+            true  // set default
         );
         this.partProperties.setPropertyNamed(
             this,
             'background-color',
-            "black"
+            "black",
+            true, // notify
+            true  // set default
         );
 
         // Private command handlers

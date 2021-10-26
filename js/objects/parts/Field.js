@@ -120,12 +120,16 @@ class Field extends Part {
             this,
             'background-color',
             "rgb(255, 248, 220)", // var(--palette-cornsik)
+            true, // notify
+            true  // set default
         );
         sides.forEach((s) => {
             this.partProperties.setPropertyNamed(
                 this,
                 `border-${s}-width`,
                 "medium",
+                true, // notify
+                true  // set default
             );
         });
         sides.forEach((s) => {
@@ -133,6 +137,8 @@ class Field extends Part {
                 this,
                 `border-${s}-style`,
                 "solid",
+                true, // notify
+                true  // set default
             );
         });
         sides.forEach((s) => {
@@ -140,6 +146,8 @@ class Field extends Part {
                 this,
                 `border-${s}-color`,
                 "black",
+                true, // notify
+                true  // set default
             );
         });
         sides.forEach((s) => {
@@ -147,12 +155,16 @@ class Field extends Part {
                 this,
                 `border-${s}-width`,
                 "1",
+                true, // notify
+                true  // set default
             );
         });
         this.partProperties.setPropertyNamed(
             this,
             "width",
             400,
+            true, // notify
+            true  // set default
         );
 
         // Private command handlers

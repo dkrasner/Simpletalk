@@ -36,7 +36,7 @@ class BasicProperty {
     // For the basic properties, we set
     // based on the incoming desired value
     // alone (nothing is computed)
-    setValue(owner, val, notify=true){
+    setValue(owner, val, notify=true, setDefault=false){
         if(!this.readOnly){
             this._value = val;
             if(notify){
@@ -44,6 +44,9 @@ class BasicProperty {
                     this.name,
                     val
                 );
+            }
+            if(setDefault){
+                this.default = val;
             }
         }
     }
@@ -136,7 +139,7 @@ class DynamicProperty extends BasicProperty {
     // In this override, we use the setter
     // if available, to dynamically set the
     // incoming value
-    setValue(owner, val, notify=true){
+    setValue(owner, val, notify=true, setDefault=false){
         if(!this.readOnly){
             this.valueSetter(owner, this, val, notify);
             if(notify){
@@ -144,6 +147,9 @@ class DynamicProperty extends BasicProperty {
                     this.name,
                     val
                 );
+            }
+            if(setDefault){
+                this.default = val;
             }
         }
     }
@@ -164,12 +170,12 @@ class StyleProperty extends BasicProperty {
     }
 
     // In this override, we update the cssStyle property
-    setValue(owner, val, notify=true){
+    setValue(owner, val, notify=true, setDefault=false){
         if(!this.readOnly){
             let styleProperty = owner.partProperties.findPropertyNamed(this.propName);
             let style = styleProperty.getValue(owner);
             let newStyle = this.styler(style, this.name, val);
-            styleProperty.setValue(owner, newStyle, notify);
+            styleProperty.setValue(owner, newStyle, notify, false); // do not set as default
 
             // set my value as well
             this._value = val;
@@ -178,6 +184,9 @@ class StyleProperty extends BasicProperty {
                     this.name,
                     val
                 );
+            }
+            if(setDefault){
+                this.default = val;
             }
         }
     }
@@ -258,12 +267,12 @@ class PartProperties {
     // with the given name or alias.
     // If the property is not found, we throw an
     // error
-    setPropertyNamed(owner, aName, aValue, notify=true){
+    setPropertyNamed(owner, aName, aValue, notify=true, setDefault=false){
         let found = this.findPropertyNamed(aName);
         if(!found){
             throw new Error(`${owner} does not have property "${aName}"`);
         }
-        return found.setValue(owner, aValue, notify);
+        return found.setValue(owner, aValue, notify, setDefault);
     }
 
     // If you add a property with a name or alias

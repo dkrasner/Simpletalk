@@ -31,13 +31,17 @@ class Drawing extends Part {
         this.partProperties.setPropertyNamed(
             this,
             'background-transparency',
-            0
+            0,
+            true, // notify
+            true  // set default
         );
         sides.forEach((s) => {
             this.partProperties.setPropertyNamed(
                 this,
                 `border-${s}-width`,
                 1,
+                true, // notify
+                true  // set default
             );
         });
         sides.forEach((s) => {
@@ -45,6 +49,8 @@ class Drawing extends Part {
                 this,
                 `border-${s}-color`,
                 "rgb(238, 238, 238)", //grey
+                true, // notify
+                true  // set default
             );
         });
         sides.forEach((s) => {
@@ -52,17 +58,23 @@ class Drawing extends Part {
                 this,
                 `border-${s}-transparency`,
                 0.5,
+                true, // notify
+                true  // set default
             );
         });
         this.partProperties.setPropertyNamed(
             this,
             'width',
-            300
+            300,
+            true, // notify
+            true  // set default
         );
         this.partProperties.setPropertyNamed(
             this,
             'height',
-            200
+            200,
+            true, // notify
+            true  // set default
         );
 
         // We are using a distinct show-border

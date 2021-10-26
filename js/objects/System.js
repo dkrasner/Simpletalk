@@ -464,7 +464,7 @@ const System = {
         target.partProperties.setPropertyNamed(
             target,
             propName,
-            value
+            value,
         );
     },
 
