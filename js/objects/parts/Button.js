@@ -41,66 +41,92 @@ class Button extends Part {
             this,
             'background-color',
             "rgb(255, 234, 149)", // var(--palette-yellow)
+            true, // notify
+            true  // set default
         );
         this.partProperties.setPropertyNamed(
             this,
             'corner-top-left-round',
-            3
+            3,
+            true, // notify
+            true  // set default
         );
         this.partProperties.setPropertyNamed(
             this,
             'corner-top-right-round',
-            3
+            3,
+            true, // notify
+            true  // set default
         );
         this.partProperties.setPropertyNamed(
             this,
             'corner-bottom-left-round',
-            3
+            3,
+            true, // notify
+            true  // set default
         );
         this.partProperties.setPropertyNamed(
             this,
             'corner-bottom-right-round',
-            3
+            3,
+            true, // notify
+            true  // set default
         );
         this.partProperties.setPropertyNamed(
             this,
             'border-top-width',
-            1
+            1,
+            true, // notify
+            true  // set default
         );
         this.partProperties.setPropertyNamed(
             this,
             'border-bottom-width',
-            1
+            1,
+            true, // notify
+            true  // set default
         );
         this.partProperties.setPropertyNamed(
             this,
             'border-left-width',
-            1
+            1,
+            true, // notify
+            true  // set default
         );
         this.partProperties.setPropertyNamed(
             this,
             'border-right-width',
-            1
+            1,
+            true, // notify
+            true  // set default
         );
         this.partProperties.setPropertyNamed(
             this,
             'shadow-left',
-            1
+            1,
+            true, // notify
+            true  // set default
         );
         this.partProperties.setPropertyNamed(
             this,
             'shadow-top',
-            1
+            1,
+            true, // notify
+            true  // set default
         );
         this.partProperties.setPropertyNamed(
             this,
             'shadow-blur',
-            1
+            1,
+            true, // notify
+            true  // set default
         );
         this.partProperties.setPropertyNamed(
             this,
             'shadow-blur',
-            1
+            1,
+            true, // notify
+            true  // set default
         );
 
     }

@@ -51,19 +51,25 @@ class Browser extends Part {
         this.partProperties.setPropertyNamed(
             this,
             'background-transparency',
-            0
+            0,
+            true, // notify
+            true // set default
         );
         ["right", "left", "top", "bottom"].forEach((side) => {
             this.partProperties.setPropertyNamed(
                 this,
                 `border-${side}-width`,
-                5
+                5,
+                true, // notify
+                true // set default
             );
         });
         this.partProperties.setPropertyNamed(
             this,
             "width",
             400,
+            true, // notify
+            true // set default
         );
     }
 

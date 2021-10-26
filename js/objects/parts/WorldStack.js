@@ -214,7 +214,9 @@ class WorldStack extends Part {
 
         // Serialize current part properties
         // values
-        this.partProperties._properties.forEach(prop => {
+        this.partProperties._properties.filter(prop => {
+            return prop.getValue(this) !== prop.default;
+        }).forEach(prop => {
             let name = prop.name;
             let value = prop.getValue(this);
             result.properties[name] = value;

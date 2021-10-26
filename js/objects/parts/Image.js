@@ -38,12 +38,16 @@ class Image extends Part {
         this.partProperties.setPropertyNamed(
             this,
             'background-transparency',
-            0
+            0,
+            true, // notify
+            true  // set default
         );
         this.partProperties.setPropertyNamed(
             this,
             'background-color',
-            "black"
+            "black",
+            true, // notify
+            true  // set default
         );
 
         // Private command handlers
@@ -132,7 +136,9 @@ class Image extends Part {
             this,
             'imageData'
         );
-        this.partProperties._properties.forEach(prop => {
+        this.partProperties._properties.filter(prop => {
+            return prop.getValue(this) !== prop.default;
+        }).forEach(prop => {
             let name = prop.name;
             let value = prop.getValue(this);
             if(name == "imageData"){

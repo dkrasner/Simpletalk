@@ -64,7 +64,9 @@ class Window extends Part {
         this.partProperties.setPropertyNamed(
             this,
             'background-transparency',
-            0
+            0,
+            true, // notify
+            true  // set default
         );
 
         // Bind methods
