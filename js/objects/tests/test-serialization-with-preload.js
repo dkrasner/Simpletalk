@@ -30,24 +30,6 @@ describe("Serialization / Deserialization Tests", () => {
             let second = serializationEl.textContent;
             assert.equal(first, second);
         });
-        it("Deserializing from itself will produce an identical JSON serialization", function(){
-            let first = getSerializationString();
-            // Clear models and views
-            System.partsById = {};
-            document.querySelector('st-world').remove();
-            return System.deserialize().then(() => {
-                let second = getSerializationString();
-                // Convert ids in first to second
-                var mutableFirst = first;
-                let idCache = System._deserializer._idCache;
-                for (var oldId in idCache) {
-                    let newId = idCache[oldId];
-                    let re = new RegExp(oldId, "g");
-                    mutableFirst = mutableFirst.replace(re, newId);
-                }
-                assert.equal(mutableFirst, second);
-            });
-        });
         it('Adding a button to current card will be serialized', () => {
             let currentCard = System.getCurrentCardModel();
             System.newModel('button', currentCard.id, "My New Button");
