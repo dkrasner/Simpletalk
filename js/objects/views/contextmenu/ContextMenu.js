@@ -148,14 +148,14 @@ class ContextMenu extends HTMLElement {
                 this.addListItem(
                     'Close Halo',
                     (event) => {
-                        target.closeHalo();
+                        target.model.partProperties.setPropertyNamed(this.model, "halo-open", false);
                     }
                 );
             } else {
                 this.addListItem(
                     'Open Halo',
                     (event) => {
-                        target.openHalo();
+                        target.model.partProperties.setPropertyNamed(this.model, "halo-open", true);
                     }
                 );
             }
@@ -163,21 +163,20 @@ class ContextMenu extends HTMLElement {
     }
 
     addNavigatorToggleItem(){
-        let nav = document.querySelector('st-navigator');
-        if(nav.classList.contains('open')){
-            nav.classList.toggle('open');
+        let world = window.System.partsById['world'];
+        let navOpen = world.partProperties.getPropertyNamed(world, "navigator-open");
+        if(navOpen){
             this.addListItem(
                 'Close Navigator',
                 (event) => {
-                    nav.close();
+                    world.partProperties.setPropertyNamed(world, "navigator-open", false);
                 }
             );
         } else {
             this.addListItem(
                 'Open Navigator',
                 (event) => {
-                    nav.open();
-                    nav.classList.toggle('open');
+                    world.partProperties.setPropertyNamed(world, "navigator-open", true);
                 }
             );
         }
@@ -211,7 +210,11 @@ class ContextMenu extends HTMLElement {
         this.addListItem(
             'Open Editor',
             (event) => {
-                window.System.openEditorForPart(this.model.id);
+                this.model.sendMessage({
+                    type: 'command',
+                    commandName: 'openEditor',
+                    args: [this.model.id]
+                }, this.model);
             }
         );
     }

@@ -110,7 +110,7 @@ const System = {
 
                     // By default, we render the World in the
                     // Comprehensive Editor
-                    this.editor.render(this.world);
+                    //this.editor.render(this.world);
                 });
         } else {
             this.loadFromEmpty();

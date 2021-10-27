@@ -12,6 +12,9 @@
  * SimpleTalk environment.
  */
 import Part from './Part.js';
+import {
+    BasicProperty,
+} from '../properties/PartProperties.js';
 
 
 class WorldStack extends Part {
@@ -43,11 +46,36 @@ class WorldStack extends Part {
         this.goToNthStack = this.goToNthStack.bind(this);
         this.goToStackById = this.goToStackById.bind(this);
 
+        // properties
+        this.partProperties.addProperty(
+            new BasicProperty(
+                "navigator-open",
+                false
+            )
+        );
+
+        // private command handlers
+        this.setPrivateCommandHandler("openNavigator", () => {
+            this.partProperties.setPropertyNamed(this, "navigator-open", true);
+        });
+        this.setPrivateCommandHandler("closeNavigator", () => {
+            this.partProperties.setPropertyNamed(this, "navigator-open", false);
+        });
+
+
         // remove command handlers which are not needed for world
         this.removePrivateCommandHandler("moveUp");
         this.removePrivateCommandHandler("moveDown");
         this.removePrivateCommandHandler("moveToFirst");
         this.removePrivateCommandHandler("moveToLast");
+
+        // remove the halo property and command handlers as these do not makes sense here
+        let haloOpenProp = this.partProperties.findPropertyNamed("halo-open");
+        if(haloOpenProp){
+            this.partProperties.removeProperty(haloOpenProp);
+        }
+        this.removePrivateCommandHandler("openHalo");
+        this.removePrivateCommandHandler("closeHalo");
     }
 
     goToNextStack(){

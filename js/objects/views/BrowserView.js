@@ -81,9 +81,9 @@ class BrowserView extends PartView {
                 // prevent triggering the on click message
                 event.preventDefault();
                 if(this.hasOpenHalo){
-                    this.closeHalo();
+                    this.model.partProperties.setPropertyNamed(this.model, "halo-open", false);
                 } else {
-                    this.openHalo();
+                    this.model.partProperties.setPropertyNamed(this.model, "halo-open", true);
                 }
             } else if(!this.hasOpenHalo){
                 // Send the click command message to self
