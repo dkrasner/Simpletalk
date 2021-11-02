@@ -54,10 +54,6 @@ class WorldView extends PartView {
 
     afterConnected(){
         document.addEventListener('keydown', this.handleKeyDown);
-        let navOpen = this.model.partProperties.getPropertyNamed(this.model, 'navigator-open');
-        if(navOpen){
-            this.toggleNavigator(true);
-        }
     }
 
     afterDisconnected(){
@@ -68,6 +64,10 @@ class WorldView extends PartView {
         // Do an initial update to display
         // the model's current stack
         this.updateCurrentStack();
+        let navOpen = this.model.partProperties.getPropertyNamed(this.model, 'navigator-open');
+        if(navOpen){
+            this.toggleNavigator(true);
+        }
     }
 
     updateCurrentStack(){
