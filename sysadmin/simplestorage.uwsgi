@@ -1,0 +1,13 @@
+[uwsgi]
+#http = 127.0.0.1:5000
+uwsgi-socket = /opt/simpletalk/simplestorage.sock
+chmod-socket = 666
+manage-script-name = true
+mount = /_storage=simplestorage.http:app
+no-default-app = true
+# Re-enabling stdin allows debugging app with pdb
+#honour-stdin = true
+# App-specific options
+storage_root = /opt/simpletalk/public
+storage_max_file_size = 52428800
+storage_max_user_size = 52428800
