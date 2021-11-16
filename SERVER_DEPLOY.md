@@ -5,8 +5,8 @@ Server Deploy
 Initial setup of the server
 ---------------------------
 
-1. Create a `simpletalk` user as well as a folder `/opt/simpletalk/` and make the `simpletalk` user the owner of that folder. Everything in this folder should be owned by the `simpletalk` user so take care to ensure that going forward.
-2. Create a folder `/opt/simpletalk/repos/` and clone the `Simpletalk`, `simpleauth`, and `simplestorage` repos into that folder.
+1. Create a sudo user "simpletalk" (`adduser simpletalk` || `usermod -aG sudo simpletalk`) as well as a folder `/opt/simpletalk/` and make the `simpletalk` user the owner of that folder (`sudo chown simpletalk /opt/simpletalk`). Everything in this folder should be owned by the `simpletalk` user so take care to ensure that going forward.
+2. Create a folder `/opt/simpletalk/repos/` and clone the `Simpletalk`, `simpleauth`, and [simplestorage](https://github.com/ApproximateIdentity/simplestorage) repos into that folder.
 3. Create a `python3` virtual environment with `python3 -m venv /opt/simpltalk/venv` and activate it.
 4. Go into the `simpleauth` repo folder and install it by running `pip3 install .` in that folder. Do the same for the `simplestorage` repo. Make sure you do it in this order.
 5. Install `uwsgi` in the virtual environment as well.
