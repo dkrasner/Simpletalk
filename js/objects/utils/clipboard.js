@@ -57,9 +57,6 @@ class STClipboard {
                             10
                         );
                     }
-                    
-                    // Open Halo on the new view
-                    deserializer.rootViews[0].openHalo();
 
                     // Dispatch the CustomEvent that notifies listeners
                     // that a new view was added (used by Nav etc)
@@ -85,7 +82,7 @@ class STClipboard {
                         lensView.appendChild(newLensView);
                         this._createLensedChildren(newLensView, newPart.subparts);
                     });
-                    
+
                     return;
                 })
                 .catch(err => {
