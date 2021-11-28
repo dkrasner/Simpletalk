@@ -140,6 +140,11 @@ class Image extends Part {
             return prop.getValue(this) !== prop.default;
         }).forEach(prop => {
             let name = prop.name;
+            // due to race-conditions incurred if the editor is
+            // open before world we exclude `editor-open` from serialization
+            if(name == "editor-open"){
+                return;
+            }
             let value = prop.getValue(this);
             if(name == "imageData"){
                 if(!urlIsValid){
