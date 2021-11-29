@@ -1,0 +1,3215 @@
+<html xmlns="http://www.w3.org/1999/xhtml"><head>
+    <meta charset="utf-8">
+    <title>System Object Example</title>
+    <link rel="preconnect" href="https://fonts.gstatic.com">
+<link href="https://fonts.googleapis.com/css2?family=Crimson+Pro:ital,wght@0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&amp;display=swap" rel="stylesheet"> 
+    <link rel="stylesheet" href="../../../css/core.css">
+    <script src="../../ohm/simpletalk.ohm" type="text/ohm-js"></script>
+    <script src="../build/devSystem.bundle.js"></script>
+		<!--<script type="text/javascript" src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs@0.13.5/dist/tf.js"></script>>-->
+	</head>
+
+<body>
+    <style>
+        body {
+            display: block;
+            width: 100vw;
+            height: 100vh;
+            padding: 0;
+            margin: 0;
+        }
+    </style>
+    <div id="template-area">
+    </div>
+
+
+
+<script id="serialization" type="application/json">{
+    "version": "0.0.2",
+    "rootId": "world",
+    "type": "world",
+    "id": "world",
+    "parts": {
+        "world": {
+            "type": "world",
+            "id": "world",
+            "properties": {
+                "id": "world",
+                "name": "",
+                "cssStyle": {},
+                "cssTextStyle": {},
+                "number": 1,
+                "custom-properties": {},
+                "stepping": false,
+                "current": "018231460b284c3fb6a52840c495c3fb"
+            },
+            "subparts": [
+                "018231460b284c3fb6a52840c495c3fb"
+            ],
+            "ownerId": null,
+            "loadedStacks": [
+                "018231460b284c3fb6a52840c495c3fb"
+            ]
+        },
+        "018231460b284c3fb6a52840c495c3fb": {
+            "type": "stack",
+            "id": "018231460b284c3fb6a52840c495c3fb",
+            "properties": {
+                "id": "018231460b284c3fb6a52840c495c3fb",
+                "name": "",
+                "script": "on arrowKey direction\n\tif direction is \"right\" then go to next card\n\tif direction is \"left\" then go to previous card\nend arrowKey\n",
+                "cssStyle": {},
+                "cssTextStyle": {},
+                "number": 1,
+                "custom-properties": {},
+                "stepping": false,
+                "current": "e1f54bfa2631493294ac4167d3001e1b"
+            },
+            "subparts": [
+                "5708151faae1438fa848a7df1e9ac2e4",
+                "cda61d7ad2174e22b9b971b68dae460f",
+                "4983d4c74ae64e5882ae7118ad47c334",
+                "82888072a6f442a1a2f2671980d057a5",
+                "66d2b42ad12849bdb5103adbfc1fb0f0",
+                "1f9386b705d94799b14ca97c8aae6873",
+                "13e0b9ecc7ae44349b669f8de27ffd58",
+                "fd28433026f24749ba43f6e6b8dfd092",
+                "e1f54bfa2631493294ac4167d3001e1b",
+                "8b20470410574dfe9251cde7bce1a1de"
+            ],
+            "ownerId": "world"
+        },
+        "5708151faae1438fa848a7df1e9ac2e4": {
+            "type": "card",
+            "id": "5708151faae1438fa848a7df1e9ac2e4",
+            "properties": {
+                "id": "5708151faae1438fa848a7df1e9ac2e4",
+                "name": "",
+                "cssStyle": {
+                    "layout": "strict",
+                    "opacity": 1,
+                    "list-direction": "row",
+                    "border-style": "solid",
+                    "border-top-style": "solid",
+                    "border-bottom-style": "solid",
+                    "border-left-style": "solid",
+                    "border-right-style": "solid",
+                    "border-top-width": "0px",
+                    "border-bottom-width": "0px",
+                    "border-left-width": "0px",
+                    "border-right-width": "0px",
+                    "border-top-color": "rgba(0, 0, 0, 1)",
+                    "border-bottom-color": "rgba(0, 0, 0, 1)",
+                    "border-left-color": "rgba(0, 0, 0, 1)",
+                    "border-right-color": "rgba(0, 0, 0, 1)",
+                    "box-shadow": "0px 0px 0px 0px rgba(238, 238, 238, 1)",
+                    "border-top-left-radius": "0px",
+                    "border-left-transparency": 1,
+                    "border-top-right-radius": "0px",
+                    "border-bottom-left-radius": "0px",
+                    "border-bottom-right-radius": "0px",
+                    "backgroundColor": "rgba(255, 255, 255, 1)"
+                },
+                "cssTextStyle": {},
+                "number": 1,
+                "custom-properties": {},
+                "stepping": false,
+                "background-color": "white"
+            },
+            "subparts": [
+                "ff9594e71600493ab288908d9ebd5c29",
+                "165deae2cadb4fc8a9bc2a3b6ee1bfc1",
+                "4130b548ac2440cd93d6d061d646a87a",
+                "7c28b4feb5044c15a6d83b9aafa5c386",
+                "2e9556f459a94842a4505580ec16c504",
+                "e0a34271a08441c99f8e0e8e4973d8d4",
+                "4c5ab395d4614c5eae6327ced991770f",
+                "00595f30883c45d0ac856a00fa4cd4be",
+                "bea6e9d64ca545c1b7eb358c9029d62a",
+                "dfd0e73774f94cf99c1049fbe1dea9ea",
+                "74b089eb81ca487db654010b32c6e66d",
+                "08df01b0d913405aa87d372c59aa917c"
+            ],
+            "ownerId": "018231460b284c3fb6a52840c495c3fb"
+        },
+        "ff9594e71600493ab288908d9ebd5c29": {
+            "type": "field",
+            "id": "ff9594e71600493ab288908d9ebd5c29",
+            "properties": {
+                "id": "ff9594e71600493ab288908d9ebd5c29",
+                "number": 1,
+                "stepping": false,
+                "innerHTML": "Onwards - Really!<br>",
+                "text": "Onwards - Really!\n",
+                "editable": false,
+                "background-transparency": 0,
+                "width": 145,
+                "height": 47,
+                "top": 36,
+                "left": 698,
+                "pinning": "",
+                "text-size": 20
+            },
+            "subparts": [],
+            "ownerId": "5708151faae1438fa848a7df1e9ac2e4"
+        },
+        "165deae2cadb4fc8a9bc2a3b6ee1bfc1": {
+            "type": "field",
+            "id": "165deae2cadb4fc8a9bc2a3b6ee1bfc1",
+            "properties": {
+                "id": "165deae2cadb4fc8a9bc2a3b6ee1bfc1",
+                "number": 2,
+                "stepping": false,
+                "innerHTML": "<pre class=\"c-mrkdwn__pre\" data-stringify-type=\"pre\" style=\"box-sizing: inherit; margin: 4px 0px; padding: 8px; --saf-0:rgba(var(--sk_foreground_low,29,28,29),0.13); font-size: 12px; line-height: 1.50001; font-variant-ligatures: none; white-space: pre-wrap; overflow-wrap: break-word; word-break: normal; tab-size: 4; font-family: Monaco, Menlo, Consolas, &quot;Courier New&quot;, monospace !important; border: 1px solid var(--saf-0); border-radius: 4px; background: rgba(var(--sk_foreground_min,29,28,29),0.04); counter-reset: list-0 0 list-1 0 list-2 0 list-3 0 list-4 0 list-5 0 list-6 0 list-7 0 list-8 0 list-9 0; color: rgb(29, 28, 29); font-style: normal; font-variant-caps: normal; font-weight: 400; letter-spacing: normal; orphans: 2; text-align: left; text-indent: 0px; text-transform: none; widows: 2; word-spacing: 0px; -webkit-text-stroke-width: 0px; text-decoration-thickness: initial; text-decoration-style: initial; text-decoration-color: initial;\">The conversation will explore aspects of computing as a component of technology as a whole. We'll talk about implications of technology, especially viewed as a mechanism of \"progress,\" in an attempt to highlight the differences between incremental, or quantitative, changes vs the creation of new frameworks, or qualitative jumps. Tying all this back to computing we'll look at some of the good ideas left behind, some of the bad ideas omnipresent, and some ways to think about frameworks for moving forward.</pre>",
+                "text": "The conversation will explore aspects of computing as a component of technology as a whole. We'll talk about implications of technology, especially viewed as a mechanism of \"progress,\" in an attempt to highlight the differences between incremental, or quantitative, changes vs the creation of new frameworks, or qualitative jumps. Tying all this back to computing we'll look at some of the good ideas left behind, some of the bad ideas omnipresent, and some ways to think about frameworks for moving forward.",
+                "background-transparency": 0,
+                "width": 789,
+                "height": 123,
+                "top": 98,
+                "left": 500,
+                "pinning": "",
+                "text-size": 20
+            },
+            "subparts": [],
+            "ownerId": "5708151faae1438fa848a7df1e9ac2e4"
+        },
+        "4130b548ac2440cd93d6d061d646a87a": {
+            "type": "field",
+            "id": "4130b548ac2440cd93d6d061d646a87a",
+            "properties": {
+                "id": "4130b548ac2440cd93d6d061d646a87a",
+                "number": 3,
+                "stepping": false,
+                "innerHTML": "<div>Framing the problem - </div><div><br></div><div>litmus test for a new problem/solution is that it is not described or defined in the old framework</div><div><br></div><div>  if you are talking about benefits or need for technology and you use aspect of said tech to explain it then something is off</div><div><br></div><div>Aristotelian scholastics &amp; Ptolemaic astronomy</div><div><br></div><div> - important to realize that new ideas, qualitative diff, do not necessary quantitavily improve the status quo (ex Galileo was not better, actually worse, at calendar, planet position and navigation at first but the model was better); quantum mechanics and newtonian mechanics </div><div> - asking q's about something new in the old framework is a fallacy </div><div> - quantitive improvements don't imply better models </div><div><br></div><div><br></div><div><br></div>",
+                "text": "Framing the problem - \n\n\nlitmus test for a new problem/solution is that it is not described or defined in the old framework\n\n\n  if you are talking about benefits or need for technology and you use aspect of said tech to explain it then something is off\n\n\nAristotelian scholastics & Ptolemaic astronomy\n\n\n - important to realize that new ideas, qualitative diff, do not necessary quantitavily improve the status quo (ex Galileo was not better, actually worse, at calendar, planet position and navigation at first but the model was better); quantum mechanics and newtonian mechanics \n - asking q's about something new in the old framework is a fallacy \n - quantitive improvements don't imply better models \n\n\n\n\n\n",
+                "background-transparency": 0,
+                "width": 593,
+                "height": 355,
+                "top": 253,
+                "left": 70,
+                "pinning": "",
+                "text-size": 20
+            },
+            "subparts": [],
+            "ownerId": "5708151faae1438fa848a7df1e9ac2e4"
+        },
+        "7c28b4feb5044c15a6d83b9aafa5c386": {
+            "type": "field",
+            "id": "7c28b4feb5044c15a6d83b9aafa5c386",
+            "properties": {
+                "id": "7c28b4feb5044c15a6d83b9aafa5c386",
+                "number": 4,
+                "stepping": false,
+                "innerHTML": "<div>Programming</div><div><br></div><div>What is it? define it</div><div><br></div><div>What is the point of having people learn how to program?</div><div><br></div><div>what is computing literacy (maybe something about personal) <br></div>",
+                "text": "Programming\n\n\nWhat is it? define it\n\n\nWhat is the point of having people learn how to program?\n\n\nwhat is computing literacy (maybe something about personal) \n",
+                "background-transparency": 0,
+                "width": 493,
+                "height": 247,
+                "top": 210,
+                "left": 1027,
+                "pinning": "",
+                "text-size": 20
+            },
+            "subparts": [],
+            "ownerId": "5708151faae1438fa848a7df1e9ac2e4"
+        },
+        "2e9556f459a94842a4505580ec16c504": {
+            "type": "field",
+            "id": "2e9556f459a94842a4505580ec16c504",
+            "properties": {
+                "id": "2e9556f459a94842a4505580ec16c504",
+                "number": 5,
+                "stepping": false,
+                "innerHTML": "<div>The essence of technology is never technological</div><div><br></div><div>not an means to an end of any kind; it is not correlated with progress</div><div>    - most of what we value as progress is changes to our cultural, social fabrics (some of this can be a byproduct of tech) <br></div><div><br></div><div>no tech is inevitable (PARC almost never happened! PC almost never happened)</div><div><br></div><div>wheel:</div><div>   shared axle</div><div>   indep axle</div><div>   castor (Richard Bullet)</div><div><br></div><div>printing press</div><div><br></div><div>tech and culture are dialectic </div><div><br></div><div>myth generally empower commercial interests<br></div>",
+                "text": "The essence of technology is never technological\n\n\nnot an means to an end of any kind; it is not correlated with progress\n    - most of what we value as progress is changes to our cultural, social fabrics (some of this can be a byproduct of tech) \n\n\n\nno tech is inevitable (PARC almost never happened! PC almost never happened)\n\n\nwheel:\n   shared axle\n   indep axle\n   castor (Richard Bullet)\n\n\nprinting press\n\n\ntech and culture are dialectic \n\n\nmyth generally empower commercial interests\n",
+                "background-transparency": 0,
+                "width": 654,
+                "height": 460,
+                "top": 697,
+                "left": 57,
+                "pinning": "",
+                "text-size": 20
+            },
+            "subparts": [],
+            "ownerId": "5708151faae1438fa848a7df1e9ac2e4"
+        },
+        "e0a34271a08441c99f8e0e8e4973d8d4": {
+            "type": "field",
+            "id": "e0a34271a08441c99f8e0e8e4973d8d4",
+            "properties": {
+                "id": "e0a34271a08441c99f8e0e8e4973d8d4",
+                "number": 6,
+                "stepping": false,
+                "innerHTML": "<div>Computers and minds</div><div><br></div><div>the good the bad and the ugly</div><div><br></div><div>the good</div><div>    computers are arguable the closest thing to ourselves which we have made</div><div>    good laboratory for the mind</div><div>   (can make a model for intelligence or behavior and see how it pans out: ML/behaviorism, NN)</div><div><br></div><div>the bad</div><div>    attributing intelligence to computing without a model or def of the former</div><div>    setting yourself up for a tautology<br></div><div><br></div><div>the ugly</div><div>    corrosive metaphors; bycicle for the mind, attributing tech industrial progress frameworks to creativity, thought, intelligence etc </div><div>    <br></div><div><br></div><div><br></div>",
+                "text": "Computers and minds\n\n\nthe good the bad and the ugly\n\n\nthe good\n    computers are arguable the closest thing to ourselves which we have made\n    good laboratory for the mind\n   (can make a model for intelligence or behavior and see how it pans out: ML/behaviorism, NN)\n\n\nthe bad\n    attributing intelligence to computing without a model or def of the former\n    setting yourself up for a tautology\n\n\n\nthe ugly\n    corrosive metaphors; bycicle for the mind, attributing tech industrial progress frameworks to creativity, thought, intelligence etc \n    \n\n\n\n\n",
+                "background-transparency": 0,
+                "width": 791,
+                "height": 458,
+                "top": 875,
+                "left": 1077,
+                "pinning": "",
+                "text-size": 20
+            },
+            "subparts": [],
+            "ownerId": "5708151faae1438fa848a7df1e9ac2e4"
+        },
+        "4c5ab395d4614c5eae6327ced991770f": {
+            "type": "field",
+            "id": "4c5ab395d4614c5eae6327ced991770f",
+            "properties": {
+                "id": "4c5ab395d4614c5eae6327ced991770f",
+                "number": 7,
+                "stepping": false,
+                "innerHTML": "<div>Inverse vandalism </div><div><br></div><div>it's easy to make noise, or make things noisy<br></div>",
+                "text": "Inverse vandalism \n\n\nit's easy to make noise, or make things noisy\n",
+                "background-transparency": 0,
+                "width": 269,
+                "height": 101,
+                "top": 556,
+                "left": 785,
+                "pinning": "",
+                "text-size": 20
+            },
+            "subparts": [],
+            "ownerId": "5708151faae1438fa848a7df1e9ac2e4"
+        },
+        "00595f30883c45d0ac856a00fa4cd4be": {
+            "type": "area",
+            "id": "00595f30883c45d0ac856a00fa4cd4be",
+            "properties": {
+                "id": "00595f30883c45d0ac856a00fa4cd4be",
+                "number": 8,
+                "stepping": false,
+                "border-top-transparency": 0,
+                "border-bottom-transparency": 0,
+                "border-left-transparency": 0,
+                "border-right-transparency": 0,
+                "width": 214,
+                "height": 81,
+                "top": 464,
+                "left": 919,
+                "rotate": 149.64726201090835,
+                "pinning": ""
+            },
+            "subparts": [
+                "91269abfd1b44cb29081f6a1e382a876",
+                "83318a0823b8468a8fa0c6f911231aef",
+                "3c57a3d42400442688bd40e976670199"
+            ],
+            "ownerId": "5708151faae1438fa848a7df1e9ac2e4"
+        },
+        "91269abfd1b44cb29081f6a1e382a876": {
+            "type": "area",
+            "id": "91269abfd1b44cb29081f6a1e382a876",
+            "properties": {
+                "id": "91269abfd1b44cb29081f6a1e382a876",
+                "number": 1,
+                "stepping": false,
+                "background-transparency": 1,
+                "background-color": "black",
+                "width": 123,
+                "height": 11,
+                "top": 34,
+                "left": 37,
+                "pinning": ""
+            },
+            "subparts": [],
+            "ownerId": "00595f30883c45d0ac856a00fa4cd4be"
+        },
+        "83318a0823b8468a8fa0c6f911231aef": {
+            "type": "area",
+            "id": "83318a0823b8468a8fa0c6f911231aef",
+            "properties": {
+                "id": "83318a0823b8468a8fa0c6f911231aef",
+                "number": 2,
+                "stepping": false,
+                "background-transparency": 1,
+                "background-color": "black",
+                "width": 45,
+                "height": 8,
+                "top": 26,
+                "left": 114,
+                "rotate": 22.05453052451625,
+                "pinning": ""
+            },
+            "subparts": [],
+            "ownerId": "00595f30883c45d0ac856a00fa4cd4be"
+        },
+        "3c57a3d42400442688bd40e976670199": {
+            "type": "area",
+            "id": "3c57a3d42400442688bd40e976670199",
+            "properties": {
+                "id": "3c57a3d42400442688bd40e976670199",
+                "number": 3,
+                "stepping": false,
+                "background-transparency": 1,
+                "background-color": "black",
+                "width": 45,
+                "height": 8,
+                "top": 46,
+                "left": 115,
+                "rotate": 332.9484784353214,
+                "pinning": ""
+            },
+            "subparts": [],
+            "ownerId": "00595f30883c45d0ac856a00fa4cd4be"
+        },
+        "bea6e9d64ca545c1b7eb358c9029d62a": {
+            "type": "field",
+            "id": "bea6e9d64ca545c1b7eb358c9029d62a",
+            "properties": {
+                "id": "bea6e9d64ca545c1b7eb358c9029d62a",
+                "number": 9,
+                "stepping": false,
+                "innerHTML": "<div>Optimizations to nowhere</div><div><br></div><div>Efficiency for no means</div><div><br></div><div>Optimization within your framework as opposed to asking fundamental q's about the framework </div><div>    leads to forgetting the original question, and just answer technicalities - Unix, pick a language<br></div>",
+                "text": "Optimizations to nowhere\n\n\nEfficiency for no means\n\n\nOptimization within your framework as opposed to asking fundamental q's about the framework \n    leads to forgetting the original question, and just answer technicalities - Unix, pick a language\n",
+                "background-transparency": 0,
+                "width": 391,
+                "height": 223,
+                "top": 654,
+                "left": 739,
+                "pinning": "",
+                "text-size": 20
+            },
+            "subparts": [],
+            "ownerId": "5708151faae1438fa848a7df1e9ac2e4"
+        },
+        "dfd0e73774f94cf99c1049fbe1dea9ea": {
+            "type": "area",
+            "id": "dfd0e73774f94cf99c1049fbe1dea9ea",
+            "properties": {
+                "id": "dfd0e73774f94cf99c1049fbe1dea9ea",
+                "number": 10,
+                "stepping": false,
+                "border-top-transparency": 0,
+                "border-bottom-transparency": 0,
+                "border-left-transparency": 0,
+                "border-right-transparency": 0,
+                "width": 214,
+                "height": 81,
+                "top": 919,
+                "left": 655,
+                "rotate": 302.58329293882014,
+                "pinning": ""
+            },
+            "subparts": [
+                "e677d129d4254d638401df160a0debb3",
+                "1d1db4affdcb46cebb69b6f4fd6a6e85",
+                "cdd25c212683451298c4267e8e760bda"
+            ],
+            "ownerId": "5708151faae1438fa848a7df1e9ac2e4"
+        },
+        "e677d129d4254d638401df160a0debb3": {
+            "type": "area",
+            "id": "e677d129d4254d638401df160a0debb3",
+            "properties": {
+                "id": "e677d129d4254d638401df160a0debb3",
+                "number": 1,
+                "stepping": false,
+                "background-transparency": 1,
+                "background-color": "black",
+                "width": 123,
+                "height": 11,
+                "top": 34,
+                "left": 37,
+                "pinning": ""
+            },
+            "subparts": [],
+            "ownerId": "dfd0e73774f94cf99c1049fbe1dea9ea"
+        },
+        "1d1db4affdcb46cebb69b6f4fd6a6e85": {
+            "type": "area",
+            "id": "1d1db4affdcb46cebb69b6f4fd6a6e85",
+            "properties": {
+                "id": "1d1db4affdcb46cebb69b6f4fd6a6e85",
+                "number": 2,
+                "stepping": false,
+                "background-transparency": 1,
+                "background-color": "black",
+                "width": 45,
+                "height": 8,
+                "top": 26,
+                "left": 114,
+                "rotate": 22.05453052451625,
+                "pinning": ""
+            },
+            "subparts": [],
+            "ownerId": "dfd0e73774f94cf99c1049fbe1dea9ea"
+        },
+        "cdd25c212683451298c4267e8e760bda": {
+            "type": "area",
+            "id": "cdd25c212683451298c4267e8e760bda",
+            "properties": {
+                "id": "cdd25c212683451298c4267e8e760bda",
+                "number": 3,
+                "stepping": false,
+                "background-transparency": 1,
+                "background-color": "black",
+                "width": 45,
+                "height": 8,
+                "top": 46,
+                "left": 115,
+                "rotate": 332.9484784353214,
+                "pinning": ""
+            },
+            "subparts": [],
+            "ownerId": "dfd0e73774f94cf99c1049fbe1dea9ea"
+        },
+        "74b089eb81ca487db654010b32c6e66d": {
+            "type": "area",
+            "id": "74b089eb81ca487db654010b32c6e66d",
+            "properties": {
+                "id": "74b089eb81ca487db654010b32c6e66d",
+                "number": 11,
+                "stepping": false,
+                "border-top-transparency": 0,
+                "border-bottom-transparency": 0,
+                "border-left-transparency": 0,
+                "border-right-transparency": 0,
+                "width": 214,
+                "height": 81,
+                "top": 867,
+                "left": 900,
+                "rotate": 217.65131980521514,
+                "pinning": ""
+            },
+            "subparts": [
+                "1a3732f3b1614c748fb8c8e8a8608570",
+                "e291136b6f224a979436e19a486bdabd",
+                "6c56c1e83f74428782b68535da06447f"
+            ],
+            "ownerId": "5708151faae1438fa848a7df1e9ac2e4"
+        },
+        "1a3732f3b1614c748fb8c8e8a8608570": {
+            "type": "area",
+            "id": "1a3732f3b1614c748fb8c8e8a8608570",
+            "properties": {
+                "id": "1a3732f3b1614c748fb8c8e8a8608570",
+                "number": 1,
+                "stepping": false,
+                "background-transparency": 1,
+                "background-color": "black",
+                "width": 123,
+                "height": 11,
+                "top": 34,
+                "left": 37,
+                "pinning": ""
+            },
+            "subparts": [],
+            "ownerId": "74b089eb81ca487db654010b32c6e66d"
+        },
+        "e291136b6f224a979436e19a486bdabd": {
+            "type": "area",
+            "id": "e291136b6f224a979436e19a486bdabd",
+            "properties": {
+                "id": "e291136b6f224a979436e19a486bdabd",
+                "number": 2,
+                "stepping": false,
+                "background-transparency": 1,
+                "background-color": "black",
+                "width": 45,
+                "height": 8,
+                "top": 26,
+                "left": 114,
+                "rotate": 22.05453052451625,
+                "pinning": ""
+            },
+            "subparts": [],
+            "ownerId": "74b089eb81ca487db654010b32c6e66d"
+        },
+        "6c56c1e83f74428782b68535da06447f": {
+            "type": "area",
+            "id": "6c56c1e83f74428782b68535da06447f",
+            "properties": {
+                "id": "6c56c1e83f74428782b68535da06447f",
+                "number": 3,
+                "stepping": false,
+                "background-transparency": 1,
+                "background-color": "black",
+                "width": 45,
+                "height": 8,
+                "top": 46,
+                "left": 115,
+                "rotate": 332.9484784353214,
+                "pinning": ""
+            },
+            "subparts": [],
+            "ownerId": "74b089eb81ca487db654010b32c6e66d"
+        },
+        "08df01b0d913405aa87d372c59aa917c": {
+            "type": "area",
+            "id": "08df01b0d913405aa87d372c59aa917c",
+            "properties": {
+                "id": "08df01b0d913405aa87d372c59aa917c",
+                "number": 12,
+                "stepping": false,
+                "border-top-transparency": 0,
+                "border-bottom-transparency": 0,
+                "border-left-transparency": 0,
+                "border-right-transparency": 0,
+                "width": 214,
+                "height": 81,
+                "top": 460,
+                "left": 644,
+                "rotate": 34.63317816168128,
+                "pinning": ""
+            },
+            "subparts": [
+                "b93f8fd51a4b464481a59ad9b8df3900",
+                "c45d4ccae8dd4b7098ad312c74f256ac",
+                "d44cdd0055f440dbbac0722e5b28ad32"
+            ],
+            "ownerId": "5708151faae1438fa848a7df1e9ac2e4"
+        },
+        "b93f8fd51a4b464481a59ad9b8df3900": {
+            "type": "area",
+            "id": "b93f8fd51a4b464481a59ad9b8df3900",
+            "properties": {
+                "id": "b93f8fd51a4b464481a59ad9b8df3900",
+                "number": 1,
+                "stepping": false,
+                "background-transparency": 1,
+                "background-color": "black",
+                "width": 123,
+                "height": 11,
+                "top": 34,
+                "left": 37,
+                "pinning": ""
+            },
+            "subparts": [],
+            "ownerId": "08df01b0d913405aa87d372c59aa917c"
+        },
+        "c45d4ccae8dd4b7098ad312c74f256ac": {
+            "type": "area",
+            "id": "c45d4ccae8dd4b7098ad312c74f256ac",
+            "properties": {
+                "id": "c45d4ccae8dd4b7098ad312c74f256ac",
+                "number": 2,
+                "stepping": false,
+                "background-transparency": 1,
+                "background-color": "black",
+                "width": 45,
+                "height": 8,
+                "top": 26,
+                "left": 114,
+                "rotate": 22.05453052451625,
+                "pinning": ""
+            },
+            "subparts": [],
+            "ownerId": "08df01b0d913405aa87d372c59aa917c"
+        },
+        "d44cdd0055f440dbbac0722e5b28ad32": {
+            "type": "area",
+            "id": "d44cdd0055f440dbbac0722e5b28ad32",
+            "properties": {
+                "id": "d44cdd0055f440dbbac0722e5b28ad32",
+                "number": 3,
+                "stepping": false,
+                "background-transparency": 1,
+                "background-color": "black",
+                "width": 45,
+                "height": 8,
+                "top": 46,
+                "left": 115,
+                "rotate": 332.9484784353214,
+                "pinning": ""
+            },
+            "subparts": [],
+            "ownerId": "08df01b0d913405aa87d372c59aa917c"
+        },
+        "cda61d7ad2174e22b9b971b68dae460f": {
+            "type": "card",
+            "id": "cda61d7ad2174e22b9b971b68dae460f",
+            "properties": {
+                "id": "cda61d7ad2174e22b9b971b68dae460f",
+                "number": 2,
+                "stepping": false,
+                "background-color": "white"
+            },
+            "subparts": [
+                "9179000f6cb34ad2b4570d2b76d9063e",
+                "562dec1eb5194d9a950c82e2c1c8cb64",
+                "36253854a885464fb8816d78bd26292c",
+                "885a6e6e14094f9bb3f48581174faacd"
+            ],
+            "ownerId": "018231460b284c3fb6a52840c495c3fb"
+        },
+        "9179000f6cb34ad2b4570d2b76d9063e": {
+            "type": "area",
+            "id": "9179000f6cb34ad2b4570d2b76d9063e",
+            "properties": {
+                "id": "9179000f6cb34ad2b4570d2b76d9063e",
+                "number": 1,
+                "stepping": false,
+                "border-top-transparency": 0,
+                "border-bottom-transparency": 0,
+                "border-left-transparency": 0,
+                "border-right-transparency": 0,
+                "width": 214,
+                "height": 81,
+                "top": 744,
+                "left": 1423,
+                "pinning": ""
+            },
+            "subparts": [
+                "77905d3e376d4d4aac627a41ce62922a",
+                "ad3cda56b84543fd9253a91f764e5be4",
+                "4d86b292191a48b08ba80361532ca964"
+            ],
+            "ownerId": "cda61d7ad2174e22b9b971b68dae460f"
+        },
+        "77905d3e376d4d4aac627a41ce62922a": {
+            "type": "area",
+            "id": "77905d3e376d4d4aac627a41ce62922a",
+            "properties": {
+                "id": "77905d3e376d4d4aac627a41ce62922a",
+                "number": 1,
+                "stepping": false,
+                "background-transparency": 1,
+                "background-color": "black",
+                "width": 123,
+                "height": 11,
+                "top": 34,
+                "left": 37,
+                "pinning": ""
+            },
+            "subparts": [],
+            "ownerId": "9179000f6cb34ad2b4570d2b76d9063e"
+        },
+        "ad3cda56b84543fd9253a91f764e5be4": {
+            "type": "area",
+            "id": "ad3cda56b84543fd9253a91f764e5be4",
+            "properties": {
+                "id": "ad3cda56b84543fd9253a91f764e5be4",
+                "number": 2,
+                "stepping": false,
+                "background-transparency": 1,
+                "background-color": "black",
+                "width": 45,
+                "height": 8,
+                "top": 26,
+                "left": 114,
+                "rotate": 22.05453052451625,
+                "pinning": ""
+            },
+            "subparts": [],
+            "ownerId": "9179000f6cb34ad2b4570d2b76d9063e"
+        },
+        "4d86b292191a48b08ba80361532ca964": {
+            "type": "area",
+            "id": "4d86b292191a48b08ba80361532ca964",
+            "properties": {
+                "id": "4d86b292191a48b08ba80361532ca964",
+                "number": 3,
+                "stepping": false,
+                "background-transparency": 1,
+                "background-color": "black",
+                "width": 45,
+                "height": 8,
+                "top": 46,
+                "left": 115,
+                "rotate": 332.9484784353214,
+                "pinning": ""
+            },
+            "subparts": [],
+            "ownerId": "9179000f6cb34ad2b4570d2b76d9063e"
+        },
+        "562dec1eb5194d9a950c82e2c1c8cb64": {
+            "type": "field",
+            "id": "562dec1eb5194d9a950c82e2c1c8cb64",
+            "properties": {
+                "id": "562dec1eb5194d9a950c82e2c1c8cb64",
+                "number": 2,
+                "stepping": false,
+                "innerHTML": "<div>Some Good ideas for personal computing </div><div><br></div><div><br></div><div>Many things in computing, including those no longer seen as good ideas, came out of a good place: TT, Multics/Unix </div><div><br></div><div>interactity </div><div><br></div><div>environments (&gt; languages) </div><div>     written language is not all of language, language is not all of thought</div><div>     so much can come across in an environment (morph)</div><div>     not apocalyptic = malleable</div><div>            you define your problem, your issues, not the world</div><div>           working in a debugger (not debugging why the world ended, or about to - pdb), but making choices about what you want to happen and understand what is happening; not a \"de-bugger\" a \"builder\" <br></div><div><br></div><div>different ways to pose the problem </div><div>     constraint based - Sketchpad, prolog <br></div><div><br></div><div>programming is messy (So much of programming is tinkering)</div><div>     both making it</div><div>     the program itself</div><div>     never imagine the perfect no debugger, no bug, program</div><div><br></div><div>scaling</div><div>   what scales - internet? </div><div><br></div><div>metaphors, visions, literacy<br></div><div><br></div><div><br></div><div><br></div>",
+                "text": "Some Good ideas for personal computing \n\n\n\n\nMany things in computing, including those no longer seen as good ideas, came out of a good place: TT, Multics/Unix \n\n\ninteractity \n\n\nenvironments (> languages) \n     written language is not all of language, language is not all of thought\n     so much can come across in an environment (morph)\n     not apocalyptic = malleable\n            you define your problem, your issues, not the world\n           working in a debugger (not debugging why the world ended, or about to - pdb), but making choices about what you want to happen and understand what is happening; not a \"de-bugger\" a \"builder\" \n\n\n\ndifferent ways to pose the problem \n     constraint based - Sketchpad, prolog \n\n\n\nprogramming is messy (So much of programming is tinkering)\n     both making it\n     the program itself\n     never imagine the perfect no debugger, no bug, program\n\n\nscaling\n   what scales - internet? \n\n\nmetaphors, visions, literacy\n\n\n\n\n\n\n",
+                "background-transparency": 0,
+                "width": 725,
+                "height": 1073,
+                "top": 63,
+                "left": 58,
+                "pinning": "",
+                "text-size": 20
+            },
+            "subparts": [],
+            "ownerId": "cda61d7ad2174e22b9b971b68dae460f"
+        },
+        "36253854a885464fb8816d78bd26292c": {
+            "type": "field",
+            "id": "36253854a885464fb8816d78bd26292c",
+            "properties": {
+                "id": "36253854a885464fb8816d78bd26292c",
+                "number": 3,
+                "stepping": false,
+                "innerHTML": "<div>It's easy to build stuff with computers</div><div><br></div><div>resources</div><div><br></div><div>protocols</div><div><br></div><div><br></div>",
+                "text": "It's easy to build stuff with computers\n\n\nresources\n\n\nprotocols\n\n\n\n",
+                "background-transparency": 0,
+                "width": 386,
+                "height": 215,
+                "top": 423,
+                "left": 1350,
+                "pinning": "",
+                "text-size": 20
+            },
+            "subparts": [],
+            "ownerId": "cda61d7ad2174e22b9b971b68dae460f"
+        },
+        "885a6e6e14094f9bb3f48581174faacd": {
+            "type": "field",
+            "id": "885a6e6e14094f9bb3f48581174faacd",
+            "properties": {
+                "id": "885a6e6e14094f9bb3f48581174faacd",
+                "number": 4,
+                "stepping": false,
+                "innerHTML": "<div>TTY; punch card stack</div><div><br></div><div>systems you need taking down to make changes</div><div><br></div><div>no peeling the onion</div><div><br></div><div>pride in esoterics (adduser, useradd)</div><div><br></div><div>things that just can't scale to the universe </div><div><br></div><div>bad metaphors</div><div>   maybe lack of</div><div><br></div><div>lack of systems design (too much \"innovation\" not enough thinking about maintenance) </div><div><br></div><div>perfect programs</div><div><br></div><div>assuming what other people want &lt;-&gt; deciding what they have</div><div>     users vs programmers</div><div>     rigidit systems<br></div>",
+                "text": "TTY; punch card stack\n\n\nsystems you need taking down to make changes\n\n\nno peeling the onion\n\n\npride in esoterics (adduser, useradd)\n\n\nthings that just can't scale to the universe \n\n\nbad metaphors\n   maybe lack of\n\n\nlack of systems design (too much \"innovation\" not enough thinking about maintenance) \n\n\nperfect programs\n\n\nassuming what other people want <-> deciding what they have\n     users vs programmers\n     rigidit systems\n",
+                "background-transparency": 0,
+                "width": 437,
+                "height": 548,
+                "top": 96,
+                "left": 820,
+                "pinning": "",
+                "text-size": 20
+            },
+            "subparts": [],
+            "ownerId": "cda61d7ad2174e22b9b971b68dae460f"
+        },
+        "4983d4c74ae64e5882ae7118ad47c334": {
+            "type": "card",
+            "id": "4983d4c74ae64e5882ae7118ad47c334",
+            "properties": {
+                "id": "4983d4c74ae64e5882ae7118ad47c334",
+                "number": 3,
+                "stepping": false,
+                "background-color": "white"
+            },
+            "subparts": [
+                "51ac9fc0db24490dae2fb44442920e50",
+                "ad66dd4ba8a44e0cbfc0d4264ffba885",
+                "f06b3d356b794d459815081808442a2d",
+                "6569bac4aad341ca98e9bd10ba426b11",
+                "1d1d7b9027ce4282ba58f92c12994bf1"
+            ],
+            "ownerId": "018231460b284c3fb6a52840c495c3fb"
+        },
+        "51ac9fc0db24490dae2fb44442920e50": {
+            "type": "area",
+            "id": "51ac9fc0db24490dae2fb44442920e50",
+            "properties": {
+                "id": "51ac9fc0db24490dae2fb44442920e50",
+                "number": 1,
+                "stepping": false,
+                "border-top-transparency": 0,
+                "border-bottom-transparency": 0,
+                "border-left-transparency": 0,
+                "border-right-transparency": 0,
+                "width": 214,
+                "height": 81,
+                "top": 744,
+                "left": 1423,
+                "pinning": ""
+            },
+            "subparts": [
+                "a23c1054bc2340998db1e3d33721dd6d",
+                "b40e742951c047e08751bfe6ef2efe97",
+                "e1824f302e8649c7999b19717a00077f"
+            ],
+            "ownerId": "4983d4c74ae64e5882ae7118ad47c334"
+        },
+        "a23c1054bc2340998db1e3d33721dd6d": {
+            "type": "area",
+            "id": "a23c1054bc2340998db1e3d33721dd6d",
+            "properties": {
+                "id": "a23c1054bc2340998db1e3d33721dd6d",
+                "number": 1,
+                "stepping": false,
+                "background-transparency": 1,
+                "background-color": "black",
+                "width": 123,
+                "height": 11,
+                "top": 34,
+                "left": 37,
+                "pinning": ""
+            },
+            "subparts": [],
+            "ownerId": "51ac9fc0db24490dae2fb44442920e50"
+        },
+        "b40e742951c047e08751bfe6ef2efe97": {
+            "type": "area",
+            "id": "b40e742951c047e08751bfe6ef2efe97",
+            "properties": {
+                "id": "b40e742951c047e08751bfe6ef2efe97",
+                "number": 2,
+                "stepping": false,
+                "background-transparency": 1,
+                "background-color": "black",
+                "width": 45,
+                "height": 8,
+                "top": 26,
+                "left": 114,
+                "rotate": 22.05453052451625,
+                "pinning": ""
+            },
+            "subparts": [],
+            "ownerId": "51ac9fc0db24490dae2fb44442920e50"
+        },
+        "e1824f302e8649c7999b19717a00077f": {
+            "type": "area",
+            "id": "e1824f302e8649c7999b19717a00077f",
+            "properties": {
+                "id": "e1824f302e8649c7999b19717a00077f",
+                "number": 3,
+                "stepping": false,
+                "background-transparency": 1,
+                "background-color": "black",
+                "width": 45,
+                "height": 8,
+                "top": 46,
+                "left": 115,
+                "rotate": 332.9484784353214,
+                "pinning": ""
+            },
+            "subparts": [],
+            "ownerId": "51ac9fc0db24490dae2fb44442920e50"
+        },
+        "ad66dd4ba8a44e0cbfc0d4264ffba885": {
+            "type": "field",
+            "id": "ad66dd4ba8a44e0cbfc0d4264ffba885",
+            "properties": {
+                "id": "ad66dd4ba8a44e0cbfc0d4264ffba885",
+                "number": 2,
+                "stepping": false,
+                "innerHTML": "Hypercard<div><br></div><div><br></div><div><br></div><div>authors!</div><div><br></div><div>peeling the onion</div><div><br></div><div>4-6 mil authors - that's big % of apple people</div><div><br></div><div>good metaphor</div><div><br></div><div>friends to new people and infrequent people</div><div><br></div><div>all sorts of things were made; basically much of everything other than very specific CAD and scientific software <br></div>",
+                "text": "Hypercard\n\n\n\n\n\n\nauthors!\n\n\npeeling the onion\n\n\n4-6 mil authors - that's big % of apple people\n\n\ngood metaphor\n\n\nfriends to new people and infrequent people\n\n\nall sorts of things were made; basically much of everything other than very specific CAD and scientific software \n",
+                "background-transparency": 0,
+                "width": 516,
+                "height": 384,
+                "top": 44,
+                "left": 40,
+                "pinning": "",
+                "text-size": 20
+            },
+            "subparts": [],
+            "ownerId": "4983d4c74ae64e5882ae7118ad47c334"
+        },
+        "f06b3d356b794d459815081808442a2d": {
+            "type": "field",
+            "id": "f06b3d356b794d459815081808442a2d",
+            "properties": {
+                "id": "f06b3d356b794d459815081808442a2d",
+                "number": 3,
+                "stepping": false,
+                "innerHTML": "<div>Sketchpad </div><div><br></div><div>Ivan did everything in a year</div><div><br></div><div>contraint based<br></div>",
+                "text": "Sketchpad \n\n\nIvan did everything in a year\n\n\ncontraint based\n",
+                "background-transparency": 0,
+                "width": 448,
+                "height": 441,
+                "top": 52,
+                "left": 1177,
+                "pinning": "",
+                "text-size": 20
+            },
+            "subparts": [],
+            "ownerId": "4983d4c74ae64e5882ae7118ad47c334"
+        },
+        "6569bac4aad341ca98e9bd10ba426b11": {
+            "type": "field",
+            "id": "6569bac4aad341ca98e9bd10ba426b11",
+            "properties": {
+                "id": "6569bac4aad341ca98e9bd10ba426b11",
+                "number": 4,
+                "stepping": false,
+                "innerHTML": "<div>Smalltalk</div><div><br></div><div>peeling the onion all the way to the primitives </div><div><br></div><div>scalability (no commands, just messages ie requests)</div><div><br></div><div>environment... </div><div><br></div>",
+                "text": "Smalltalk\n\n\npeeling the onion all the way to the primitives \n\n\nscalability (no commands, just messages ie requests)\n\n\nenvironment... \n\n",
+                "background-transparency": 0,
+                "width": 360,
+                "height": 281,
+                "top": 62,
+                "left": 672,
+                "pinning": "",
+                "text-size": 20
+            },
+            "subparts": [],
+            "ownerId": "4983d4c74ae64e5882ae7118ad47c334"
+        },
+        "1d1d7b9027ce4282ba58f92c12994bf1": {
+            "type": "field",
+            "id": "1d1d7b9027ce4282ba58f92c12994bf1",
+            "properties": {
+                "id": "1d1d7b9027ce4282ba58f92c12994bf1",
+                "number": 5,
+                "stepping": false,
+                "innerHTML": "<div>Simpletalk</div><div><br></div><div>put up the chart</div><div><br></div><div>6 months a few people who don't know much<br></div>",
+                "text": "Simpletalk\n\n\nput up the chart\n\n\n6 months a few people who don't know much\n",
+                "background-transparency": 0,
+                "width": 453,
+                "height": 175,
+                "top": 598,
+                "left": 619,
+                "pinning": "",
+                "text-size": 20
+            },
+            "subparts": [],
+            "ownerId": "4983d4c74ae64e5882ae7118ad47c334"
+        },
+        "82888072a6f442a1a2f2671980d057a5": {
+            "type": "card",
+            "id": "82888072a6f442a1a2f2671980d057a5",
+            "properties": {
+                "id": "82888072a6f442a1a2f2671980d057a5",
+                "number": 4,
+                "stepping": false,
+                "background-color": "white"
+            },
+            "subparts": [
+                "025dbc2a30a546008dd02042aa6bf6f6",
+                "fec4dbf58c144e17b2368092d7ce624b"
+            ],
+            "ownerId": "018231460b284c3fb6a52840c495c3fb"
+        },
+        "025dbc2a30a546008dd02042aa6bf6f6": {
+            "type": "area",
+            "id": "025dbc2a30a546008dd02042aa6bf6f6",
+            "properties": {
+                "id": "025dbc2a30a546008dd02042aa6bf6f6",
+                "number": 1,
+                "stepping": false,
+                "border-top-transparency": 0,
+                "border-bottom-transparency": 0,
+                "border-left-transparency": 0,
+                "border-right-transparency": 0,
+                "width": 214,
+                "height": 81,
+                "top": 744,
+                "left": 1423,
+                "pinning": ""
+            },
+            "subparts": [
+                "1bf878642c2d4d7f8587c03f727b809f",
+                "8c845c7247514ab798616d09dc10aad2",
+                "f65ee25c501d401c989b57eea02e8769"
+            ],
+            "ownerId": "82888072a6f442a1a2f2671980d057a5"
+        },
+        "1bf878642c2d4d7f8587c03f727b809f": {
+            "type": "area",
+            "id": "1bf878642c2d4d7f8587c03f727b809f",
+            "properties": {
+                "id": "1bf878642c2d4d7f8587c03f727b809f",
+                "number": 1,
+                "stepping": false,
+                "background-transparency": 1,
+                "background-color": "black",
+                "width": 123,
+                "height": 11,
+                "top": 34,
+                "left": 37,
+                "pinning": ""
+            },
+            "subparts": [],
+            "ownerId": "025dbc2a30a546008dd02042aa6bf6f6"
+        },
+        "8c845c7247514ab798616d09dc10aad2": {
+            "type": "area",
+            "id": "8c845c7247514ab798616d09dc10aad2",
+            "properties": {
+                "id": "8c845c7247514ab798616d09dc10aad2",
+                "number": 2,
+                "stepping": false,
+                "background-transparency": 1,
+                "background-color": "black",
+                "width": 45,
+                "height": 8,
+                "top": 26,
+                "left": 114,
+                "rotate": 22.05453052451625,
+                "pinning": ""
+            },
+            "subparts": [],
+            "ownerId": "025dbc2a30a546008dd02042aa6bf6f6"
+        },
+        "f65ee25c501d401c989b57eea02e8769": {
+            "type": "area",
+            "id": "f65ee25c501d401c989b57eea02e8769",
+            "properties": {
+                "id": "f65ee25c501d401c989b57eea02e8769",
+                "number": 3,
+                "stepping": false,
+                "background-transparency": 1,
+                "background-color": "black",
+                "width": 45,
+                "height": 8,
+                "top": 46,
+                "left": 115,
+                "rotate": 332.9484784353214,
+                "pinning": ""
+            },
+            "subparts": [],
+            "ownerId": "025dbc2a30a546008dd02042aa6bf6f6"
+        },
+        "fec4dbf58c144e17b2368092d7ce624b": {
+            "type": "field",
+            "id": "fec4dbf58c144e17b2368092d7ce624b",
+            "properties": {
+                "id": "fec4dbf58c144e17b2368092d7ce624b",
+                "number": 2,
+                "stepping": false,
+                "innerHTML": "<div>Off the rails</div><div><br></div><div><br></div><div>Computing isn't really taught</div><div>    - what are your 3 favorite historical systems and why</div><div>    - what are your 3 faviorite books on computing and why (doesn't have to be strictly about computers)</div><div>    - what is computing<br></div><div><br></div><div>Thinking/learning about technology is not doing things with tech</div><div><br></div><div>Short term thinking across the board </div><div><br></div><div>not enough thinking about people (this is not about making people do certain things and it's not about markets/customers and all that); </div><div>      - what are your 3 favorite books about thinking about people</div><div><br></div><div>computer permaculture</div><div><br></div><div>very little teaching of how ideas, innovation, science, art etc actually evoloved. Or we have evolved </div><div><br></div><div>doing things b/c they can be done and assuming they will be done - plenty of things we decide not to do! </div><div>    culture assumptions of tech determinism </div><div><br></div><div>shit is not comprehensible <br></div>",
+                "text": "Off the rails\n\n\n\n\nComputing isn't really taught\n    - what are your 3 favorite historical systems and why\n    - what are your 3 faviorite books on computing and why (doesn't have to be strictly about computers)\n    - what is computing\n\n\n\nThinking/learning about technology is not doing things with tech\n\n\nShort term thinking across the board \n\n\nnot enough thinking about people (this is not about making people do certain things and it's not about markets/customers and all that); \n      - what are your 3 favorite books about thinking about people\n\n\ncomputer permaculture\n\n\nvery little teaching of how ideas, innovation, science, art etc actually evoloved. Or we have evolved \n\n\ndoing things b/c they can be done and assuming they will be done - plenty of things we decide not to do! \n    culture assumptions of tech determinism \n\n\nshit is not comprehensible \n",
+                "background-transparency": 0,
+                "width": 957,
+                "height": 627,
+                "top": 132,
+                "left": 379,
+                "pinning": "",
+                "text-size": 20
+            },
+            "subparts": [],
+            "ownerId": "82888072a6f442a1a2f2671980d057a5"
+        },
+        "66d2b42ad12849bdb5103adbfc1fb0f0": {
+            "type": "card",
+            "id": "66d2b42ad12849bdb5103adbfc1fb0f0",
+            "properties": {
+                "name": "EnvironmentsVSLanguages",
+                "number": 5,
+                "stepping": false,
+                "background-color": "white"
+            },
+            "subparts": [
+                "6793002d765d4809a2a56dce03b80f10",
+                "5bce986b2f35476b8841ad2091a06bad",
+                "83bc784131cc48e1b25f69920d8c30c1",
+                "3927e614ae2043c7b6aae39ec2f4216e",
+                "b3948cab72084677a88059bab42ce0b8"
+            ],
+            "ownerId": "018231460b284c3fb6a52840c495c3fb"
+        },
+        "6793002d765d4809a2a56dce03b80f10": {
+            "type": "field",
+            "id": "6793002d765d4809a2a56dce03b80f10",
+            "properties": {
+                "number": 1,
+                "stepping": false,
+                "innerHTML": "Environments &gt; Languages",
+                "text": "Environments > Languages",
+                "background-transparency": 0,
+                "border-top-transparency": 0,
+                "border-bottom-transparency": 0,
+                "border-left-transparency": 0,
+                "border-right-transparency": 0,
+                "width": 737,
+                "height": 85,
+                "top": 56,
+                "left": 525,
+                "pinning": "",
+                "text-style": "bold",
+                "text-bold": true,
+                "text-size": 60
+            },
+            "subparts": [],
+            "ownerId": "66d2b42ad12849bdb5103adbfc1fb0f0"
+        },
+        "5bce986b2f35476b8841ad2091a06bad": {
+            "type": "area",
+            "id": "5bce986b2f35476b8841ad2091a06bad",
+            "properties": {
+                "name": "language-example",
+                "number": 2,
+                "stepping": false,
+                "width": 501,
+                "height": 258,
+                "top": 224,
+                "left": 136,
+                "pinning": "",
+                "layout": "list",
+                "list-alignment": "center"
+            },
+            "subparts": [
+                "f4d9970f9b9244bfbee8da64dd8a2a38",
+                "c8a6342b376f4c7c94096c0342890abe",
+                "289d92f417984c668f535986e3eae5e2"
+            ],
+            "ownerId": "66d2b42ad12849bdb5103adbfc1fb0f0"
+        },
+        "f4d9970f9b9244bfbee8da64dd8a2a38": {
+            "type": "image",
+            "id": "f4d9970f9b9244bfbee8da64dd8a2a38",
+            "properties": {
+                "number": 1,
+                "stepping": false,
+                "src": "/images/python-language.jpg",
+                "mimeType": "image/jpeg",
+                "imageData": null,
+                "width": 319.3666687011719,
+                "height": 213.14851734605605,
+                "top": 23,
+                "left": 76,
+                "pinning": ""
+            },
+            "subparts": [],
+            "ownerId": "5bce986b2f35476b8841ad2091a06bad"
+        },
+        "c8a6342b376f4c7c94096c0342890abe": {
+            "type": "area",
+            "id": "c8a6342b376f4c7c94096c0342890abe",
+            "properties": {
+                "name": "spacer",
+                "number": 2,
+                "stepping": false,
+                "background-transparency": 1,
+                "background-color": "black",
+                "height": 3,
+                "pinning": ""
+            },
+            "subparts": [],
+            "ownerId": "5bce986b2f35476b8841ad2091a06bad"
+        },
+        "289d92f417984c668f535986e3eae5e2": {
+            "type": "field",
+            "id": "289d92f417984c668f535986e3eae5e2",
+            "properties": {
+                "name": "lang-label",
+                "number": 3,
+                "stepping": false,
+                "innerHTML": "Python",
+                "text": "Python",
+                "editable": false,
+                "background-transparency": 0,
+                "border-top-transparency": 0,
+                "border-bottom-transparency": 0,
+                "border-left-transparency": 0,
+                "border-right-transparency": 0,
+                "top": 32,
+                "left": 406,
+                "horizontal-resizing": "shrink-wrap",
+                "vertical-resizing": "shrink-wrap",
+                "pinning": "",
+                "text-align": "center",
+                "text-font": "monospace",
+                "text-size": 32
+            },
+            "subparts": [],
+            "ownerId": "5bce986b2f35476b8841ad2091a06bad"
+        },
+        "83bc784131cc48e1b25f69920d8c30c1": {
+            "type": "area",
+            "id": "83bc784131cc48e1b25f69920d8c30c1",
+            "properties": {
+                "id": "83bc784131cc48e1b25f69920d8c30c1",
+                "name": "language-example",
+                "number": 3,
+                "stepping": false,
+                "width": 501,
+                "height": 258,
+                "top": 482,
+                "left": 136,
+                "pinning": "",
+                "layout": "list",
+                "list-alignment": "center"
+            },
+            "subparts": [
+                "d5ed23337ce8444c80a22433117b7256",
+                "8a6fe518832b4ab19a8c40ad515a24f6",
+                "7655f198bb484b0ba89e9426e6d8372b"
+            ],
+            "ownerId": "66d2b42ad12849bdb5103adbfc1fb0f0"
+        },
+        "d5ed23337ce8444c80a22433117b7256": {
+            "type": "image",
+            "id": "d5ed23337ce8444c80a22433117b7256",
+            "properties": {
+                "id": "d5ed23337ce8444c80a22433117b7256",
+                "number": 1,
+                "stepping": false,
+                "src": "/images/c-language.gif",
+                "mimeType": "image/gif",
+                "width": 319.3666687011719,
+                "height": 213.14851734605605,
+                "top": 23,
+                "left": 76,
+                "pinning": ""
+            },
+            "subparts": [],
+            "ownerId": "83bc784131cc48e1b25f69920d8c30c1"
+        },
+        "8a6fe518832b4ab19a8c40ad515a24f6": {
+            "type": "area",
+            "id": "8a6fe518832b4ab19a8c40ad515a24f6",
+            "properties": {
+                "id": "8a6fe518832b4ab19a8c40ad515a24f6",
+                "name": "spacer",
+                "number": 2,
+                "stepping": false,
+                "background-transparency": 1,
+                "background-color": "black",
+                "height": 3,
+                "pinning": ""
+            },
+            "subparts": [],
+            "ownerId": "83bc784131cc48e1b25f69920d8c30c1"
+        },
+        "7655f198bb484b0ba89e9426e6d8372b": {
+            "type": "field",
+            "id": "7655f198bb484b0ba89e9426e6d8372b",
+            "properties": {
+                "id": "7655f198bb484b0ba89e9426e6d8372b",
+                "name": "lang-label",
+                "number": 3,
+                "stepping": false,
+                "innerHTML": "<div>C</div>",
+                "text": "C",
+                "editable": false,
+                "background-transparency": 0,
+                "border-top-transparency": 0,
+                "border-bottom-transparency": 0,
+                "border-left-transparency": 0,
+                "border-right-transparency": 0,
+                "top": 32,
+                "left": 406,
+                "horizontal-resizing": "shrink-wrap",
+                "vertical-resizing": "shrink-wrap",
+                "pinning": "",
+                "text-align": "center",
+                "text-font": "monospace",
+                "text-size": 32
+            },
+            "subparts": [],
+            "ownerId": "83bc784131cc48e1b25f69920d8c30c1"
+        },
+        "3927e614ae2043c7b6aae39ec2f4216e": {
+            "type": "area",
+            "id": "3927e614ae2043c7b6aae39ec2f4216e",
+            "properties": {
+                "id": "3927e614ae2043c7b6aae39ec2f4216e",
+                "name": "language-example",
+                "number": 4,
+                "stepping": false,
+                "width": 501,
+                "height": 258,
+                "top": 724,
+                "left": 133,
+                "pinning": "",
+                "layout": "list",
+                "list-alignment": "center"
+            },
+            "subparts": [
+                "7a0dafc861914def92675a56812d8746",
+                "c80e7cb6e43f4d71ac0ce67fa0c69ccc",
+                "c04aacdb8cce4192a57555e463090ec7"
+            ],
+            "ownerId": "66d2b42ad12849bdb5103adbfc1fb0f0"
+        },
+        "7a0dafc861914def92675a56812d8746": {
+            "type": "image",
+            "id": "7a0dafc861914def92675a56812d8746",
+            "properties": {
+                "id": "7a0dafc861914def92675a56812d8746",
+                "number": 1,
+                "stepping": false,
+                "src": "/images/ruby-language.png",
+                "mimeType": "image/png",
+                "width": 319.3666687011719,
+                "height": 213.14851734605605,
+                "top": 23,
+                "left": 76,
+                "pinning": ""
+            },
+            "subparts": [],
+            "ownerId": "3927e614ae2043c7b6aae39ec2f4216e"
+        },
+        "c80e7cb6e43f4d71ac0ce67fa0c69ccc": {
+            "type": "area",
+            "id": "c80e7cb6e43f4d71ac0ce67fa0c69ccc",
+            "properties": {
+                "id": "c80e7cb6e43f4d71ac0ce67fa0c69ccc",
+                "name": "spacer",
+                "number": 2,
+                "stepping": false,
+                "background-transparency": 1,
+                "background-color": "black",
+                "height": 3,
+                "pinning": ""
+            },
+            "subparts": [],
+            "ownerId": "3927e614ae2043c7b6aae39ec2f4216e"
+        },
+        "c04aacdb8cce4192a57555e463090ec7": {
+            "type": "field",
+            "id": "c04aacdb8cce4192a57555e463090ec7",
+            "properties": {
+                "id": "c04aacdb8cce4192a57555e463090ec7",
+                "name": "lang-label",
+                "number": 3,
+                "stepping": false,
+                "innerHTML": "<div>Ruby</div>",
+                "text": "Ruby",
+                "editable": false,
+                "background-transparency": 0,
+                "border-top-transparency": 0,
+                "border-bottom-transparency": 0,
+                "border-left-transparency": 0,
+                "border-right-transparency": 0,
+                "top": 32,
+                "left": 406,
+                "horizontal-resizing": "shrink-wrap",
+                "vertical-resizing": "shrink-wrap",
+                "pinning": "",
+                "text-align": "center",
+                "text-font": "monospace",
+                "text-size": 32
+            },
+            "subparts": [],
+            "ownerId": "3927e614ae2043c7b6aae39ec2f4216e"
+        },
+        "b3948cab72084677a88059bab42ce0b8": {
+            "type": "area",
+            "id": "b3948cab72084677a88059bab42ce0b8",
+            "properties": {
+                "number": 5,
+                "stepping": false,
+                "background-transparency": 0.4,
+                "background-color": "black",
+                "width": 728,
+                "height": 761,
+                "top": 225,
+                "left": 930,
+                "pinning": ""
+            },
+            "subparts": [
+                "325050e6c7194150b60065b7ff3c63e4",
+                "d8f5d28686344aecb4700f23db30cc77",
+                "c4a9610fcbca455dbde377aaf9408c36",
+                "b2646946c0b04f7d9dc8dff07dfda032",
+                "2ef5bfbc128340a599600b35f44cbdf5",
+                "62aad7c706b64de7bc0545ece71e9731",
+                "1837a87419224fd5b670516deb2af46b"
+            ],
+            "ownerId": "66d2b42ad12849bdb5103adbfc1fb0f0"
+        },
+        "325050e6c7194150b60065b7ff3c63e4": {
+            "type": "image",
+            "id": "325050e6c7194150b60065b7ff3c63e4",
+            "properties": {
+                "number": 1,
+                "stepping": false,
+                "src": "/images/Smalltalk76Interface.jpg",
+                "mimeType": "image/jpeg",
+                "imageData": null,
+                "width": 281.95001220703125,
+                "height": 331.4411371431177,
+                "top": 10,
+                "left": 432,
+                "pinning": ""
+            },
+            "subparts": [],
+            "ownerId": "b3948cab72084677a88059bab42ce0b8"
+        },
+        "d8f5d28686344aecb4700f23db30cc77": {
+            "type": "image",
+            "id": "d8f5d28686344aecb4700f23db30cc77",
+            "properties": {
+                "number": 2,
+                "stepping": false,
+                "src": "/images/symbolics.gif",
+                "mimeType": "image/gif",
+                "imageData": null,
+                "width": 370.3833312988281,
+                "height": 270.2833251953125,
+                "top": 230,
+                "left": 21,
+                "pinning": ""
+            },
+            "subparts": [],
+            "ownerId": "b3948cab72084677a88059bab42ce0b8"
+        },
+        "c4a9610fcbca455dbde377aaf9408c36": {
+            "type": "image",
+            "id": "c4a9610fcbca455dbde377aaf9408c36",
+            "properties": {
+                "number": 3,
+                "stepping": false,
+                "src": "/images/sk8-2.jpg",
+                "mimeType": "image/jpeg",
+                "imageData": null,
+                "width": 333.33333333333337,
+                "height": 250,
+                "top": 487,
+                "left": 25,
+                "pinning": ""
+            },
+            "subparts": [],
+            "ownerId": "b3948cab72084677a88059bab42ce0b8"
+        },
+        "b2646946c0b04f7d9dc8dff07dfda032": {
+            "type": "image",
+            "id": "b2646946c0b04f7d9dc8dff07dfda032",
+            "properties": {
+                "number": 4,
+                "stepping": false,
+                "src": "/images/hypercard.jpg",
+                "mimeType": "image/jpeg",
+                "imageData": null,
+                "width": 326.25,
+                "height": 230.5500030517578,
+                "top": 18,
+                "left": 19,
+                "pinning": ""
+            },
+            "subparts": [],
+            "ownerId": "b3948cab72084677a88059bab42ce0b8"
+        },
+        "2ef5bfbc128340a599600b35f44cbdf5": {
+            "type": "image",
+            "id": "2ef5bfbc128340a599600b35f44cbdf5",
+            "properties": {
+                "number": 5,
+                "stepping": false,
+                "src": "/images/visual-basic.png",
+                "mimeType": "image/png",
+                "imageData": null,
+                "width": 255.01666259765625,
+                "height": 195.64893317707708,
+                "top": 340,
+                "left": 469,
+                "pinning": ""
+            },
+            "subparts": [],
+            "ownerId": "b3948cab72084677a88059bab42ce0b8"
+        },
+        "62aad7c706b64de7bc0545ece71e9731": {
+            "type": "image",
+            "id": "62aad7c706b64de7bc0545ece71e9731",
+            "properties": {
+                "number": 6,
+                "stepping": false,
+                "src": "/images/scratch.png",
+                "mimeType": "image/png",
+                "imageData": null,
+                "width": 334.3666687011719,
+                "height": 261.04998779296875,
+                "top": 494,
+                "left": 379,
+                "pinning": ""
+            },
+            "subparts": [],
+            "ownerId": "b3948cab72084677a88059bab42ce0b8"
+        },
+        "1837a87419224fd5b670516deb2af46b": {
+            "type": "image",
+            "id": "1837a87419224fd5b670516deb2af46b",
+            "properties": {
+                "number": 7,
+                "stepping": false,
+                "src": "/images/elevr.png",
+                "mimeType": "image/png",
+                "imageData": null,
+                "width": 277.3999938964844,
+                "height": 155.25697933811568,
+                "top": 336,
+                "left": 234,
+                "pinning": ""
+            },
+            "subparts": [],
+            "ownerId": "b3948cab72084677a88059bab42ce0b8"
+        },
+        "1f9386b705d94799b14ca97c8aae6873": {
+            "type": "card",
+            "id": "1f9386b705d94799b14ca97c8aae6873",
+            "properties": {
+                "name": "Progress 1",
+                "number": 6,
+                "stepping": false,
+                "background-color": "white"
+            },
+            "subparts": [
+                "d589ec85fe0348378e7e69fcede58b99",
+                "90ff2a34988b4ae8a34a5d85d36f7a88",
+                "27a5bf32c6cb4e519f458d4f36676b6c"
+            ],
+            "ownerId": "018231460b284c3fb6a52840c495c3fb"
+        },
+        "d589ec85fe0348378e7e69fcede58b99": {
+            "type": "area",
+            "id": "d589ec85fe0348378e7e69fcede58b99",
+            "properties": {
+                "number": 1,
+                "stepping": false,
+                "background-transparency": 1,
+                "background-color": "rgb(245, 245, 245)",
+                "width": 940,
+                "height": 291,
+                "top": 279,
+                "left": 301,
+                "pinning": ""
+            },
+            "subparts": [
+                "f29994ece80940eebec9435770693b28",
+                "140638ac56094d5baf76bc748d5e69e0",
+                "f6d002a8080842589b642cce11cd3813"
+            ],
+            "ownerId": "1f9386b705d94799b14ca97c8aae6873"
+        },
+        "f29994ece80940eebec9435770693b28": {
+            "type": "area",
+            "id": "f29994ece80940eebec9435770693b28",
+            "properties": {
+                "id": "f29994ece80940eebec9435770693b28",
+                "name": "tools",
+                "number": 1,
+                "stepping": false,
+                "background-color": "rgb(245, 245, 245)",
+                "width": 912,
+                "height": 193.60000610351562,
+                "top": 10,
+                "left": 10,
+                "horizontal-resizing": "space-fill",
+                "vertical-resizing": "shrink-wrap",
+                "pinning": "",
+                "layout": "list",
+                "list-alignment": "center",
+                "list-distribution": "space-around"
+            },
+            "subparts": [
+                "0c592cd97b7946d3a54018ebe818ba87",
+                "ff030067b17f466d9d99f2cb1b038b31",
+                "6e2fd53717b04a5b896b05c83b79bae0",
+                "c1ca1a1c26824ba8ab582fbc756c5237",
+                "0555ca38d4db4e8abcc916e505a6ecec"
+            ],
+            "ownerId": "d589ec85fe0348378e7e69fcede58b99"
+        },
+        "0c592cd97b7946d3a54018ebe818ba87": {
+            "type": "image",
+            "id": "0c592cd97b7946d3a54018ebe818ba87",
+            "properties": {
+                "id": "0c592cd97b7946d3a54018ebe818ba87",
+                "number": 1,
+                "stepping": false,
+                "src": "/images/stone-tool-2.jpg",
+                "mimeType": "image/jpeg",
+                "width": 174.22598705602138,
+                "height": 191.6000061035156,
+                "top": 165,
+                "left": 74,
+                "pinning": ""
+            },
+            "subparts": [],
+            "ownerId": "f29994ece80940eebec9435770693b28"
+        },
+        "ff030067b17f466d9d99f2cb1b038b31": {
+            "type": "image",
+            "id": "ff030067b17f466d9d99f2cb1b038b31",
+            "properties": {
+                "id": "ff030067b17f466d9d99f2cb1b038b31",
+                "number": 2,
+                "stepping": false,
+                "src": "/images/fire.png",
+                "mimeType": "image/png",
+                "top": 194,
+                "left": 305,
+                "pinning": ""
+            },
+            "subparts": [],
+            "ownerId": "f29994ece80940eebec9435770693b28"
+        },
+        "6e2fd53717b04a5b896b05c83b79bae0": {
+            "type": "image",
+            "id": "6e2fd53717b04a5b896b05c83b79bae0",
+            "properties": {
+                "id": "6e2fd53717b04a5b896b05c83b79bae0",
+                "number": 3,
+                "stepping": false,
+                "src": "/images/stone-wheel.jpg",
+                "mimeType": "image/jpeg",
+                "width": 146.71665954589844,
+                "height": 125.19999694824219,
+                "top": 203,
+                "left": 445,
+                "pinning": ""
+            },
+            "subparts": [],
+            "ownerId": "f29994ece80940eebec9435770693b28"
+        },
+        "c1ca1a1c26824ba8ab582fbc756c5237": {
+            "type": "image",
+            "id": "c1ca1a1c26824ba8ab582fbc756c5237",
+            "properties": {
+                "id": "c1ca1a1c26824ba8ab582fbc756c5237",
+                "number": 4,
+                "stepping": false,
+                "src": "/images/satellite-drawing.png",
+                "mimeType": "image/png",
+                "width": 169.85000610351562,
+                "height": 135.64726248788898,
+                "top": 199,
+                "left": 644,
+                "pinning": ""
+            },
+            "subparts": [],
+            "ownerId": "f29994ece80940eebec9435770693b28"
+        },
+        "0555ca38d4db4e8abcc916e505a6ecec": {
+            "type": "image",
+            "id": "0555ca38d4db4e8abcc916e505a6ecec",
+            "properties": {
+                "id": "0555ca38d4db4e8abcc916e505a6ecec",
+                "number": 5,
+                "stepping": false,
+                "src": "/images/desktop-computer.jpg",
+                "mimeType": "image/jpeg",
+                "width": 196.35000610351562,
+                "height": 144.05030609564713,
+                "top": 194,
+                "left": 845,
+                "pinning": ""
+            },
+            "subparts": [],
+            "ownerId": "f29994ece80940eebec9435770693b28"
+        },
+        "140638ac56094d5baf76bc748d5e69e0": {
+            "type": "drawing",
+            "id": "140638ac56094d5baf76bc748d5e69e0",
+            "properties": {
+                "id": "140638ac56094d5baf76bc748d5e69e0",
+                "number": 2,
+                "stepping": false,
+                "image": "data:image/png;base64,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",
+                "mode": "viewing",
+                "width": 913,
+                "height": 163,
+                "top": 160,
+                "left": 22,
+                "pinning": "",
+                "show-border": false
+            },
+            "subparts": [],
+            "ownerId": "d589ec85fe0348378e7e69fcede58b99"
+        },
+        "f6d002a8080842589b642cce11cd3813": {
+            "type": "drawing",
+            "id": "f6d002a8080842589b642cce11cd3813",
+            "properties": {
+                "id": "f6d002a8080842589b642cce11cd3813",
+                "number": 3,
+                "stepping": false,
+                "image": "data:image/png;base64,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",
+                "mode": "viewing",
+                "width": 785,
+                "height": 242,
+                "top": -2,
+                "left": 68,
+                "pinning": "",
+                "show-border": false
+            },
+            "subparts": [],
+            "ownerId": "d589ec85fe0348378e7e69fcede58b99"
+        },
+        "90ff2a34988b4ae8a34a5d85d36f7a88": {
+            "type": "area",
+            "id": "90ff2a34988b4ae8a34a5d85d36f7a88",
+            "properties": {
+                "number": 2,
+                "stepping": false,
+                "width": 351,
+                "height": 344,
+                "top": 488,
+                "left": 661,
+                "pinning": ""
+            },
+            "subparts": [
+                "9160075c0a374cb198b2051683924968",
+                "aaedd5d6ab924063817762c56245daf1",
+                "ea6f5dd036784b28949ac94e602fd868",
+                "ab6ebf5f377348fcaaaf587dc2a079e5"
+            ],
+            "ownerId": "1f9386b705d94799b14ca97c8aae6873"
+        },
+        "9160075c0a374cb198b2051683924968": {
+            "type": "image",
+            "id": "9160075c0a374cb198b2051683924968",
+            "properties": {
+                "id": "9160075c0a374cb198b2051683924968",
+                "number": 1,
+                "stepping": false,
+                "src": "/images/camel-book.jpg",
+                "mimeType": "image/jpeg",
+                "width": 150.64601511332077,
+                "height": 239.36666870117188,
+                "top": 3,
+                "left": 1,
+                "pinning": ""
+            },
+            "subparts": [],
+            "ownerId": "90ff2a34988b4ae8a34a5d85d36f7a88"
+        },
+        "aaedd5d6ab924063817762c56245daf1": {
+            "type": "image",
+            "id": "aaedd5d6ab924063817762c56245daf1",
+            "properties": {
+                "number": 2,
+                "stepping": false,
+                "src": "/images/precolumbian-toy.jpg",
+                "mimeType": "image/jpeg",
+                "width": 125.69999694824217,
+                "height": 110.21009914460649,
+                "top": 210,
+                "left": 13,
+                "pinning": ""
+            },
+            "subparts": [],
+            "ownerId": "90ff2a34988b4ae8a34a5d85d36f7a88"
+        },
+        "ea6f5dd036784b28949ac94e602fd868": {
+            "type": "image",
+            "id": "ea6f5dd036784b28949ac94e602fd868",
+            "properties": {
+                "id": "ea6f5dd036784b28949ac94e602fd868",
+                "number": 3,
+                "stepping": false,
+                "src": "/images/the-wheel-book.jpg",
+                "mimeType": "image/jpeg",
+                "width": 178.3992557662581,
+                "height": 238.10000610351562,
+                "top": 4,
+                "left": 164,
+                "pinning": ""
+            },
+            "subparts": [],
+            "ownerId": "90ff2a34988b4ae8a34a5d85d36f7a88"
+        },
+        "ab6ebf5f377348fcaaaf587dc2a079e5": {
+            "type": "image",
+            "id": "ab6ebf5f377348fcaaaf587dc2a079e5",
+            "properties": {
+                "id": "ab6ebf5f377348fcaaaf587dc2a079e5",
+                "number": 4,
+                "stepping": false,
+                "src": "/images/bullet.jpg",
+                "mimeType": "image/jpeg",
+                "width": 158.4166717529297,
+                "height": 168.86873081813246,
+                "top": 164,
+                "left": 130,
+                "pinning": ""
+            },
+            "subparts": [],
+            "ownerId": "90ff2a34988b4ae8a34a5d85d36f7a88"
+        },
+        "27a5bf32c6cb4e519f458d4f36676b6c": {
+            "type": "field",
+            "id": "27a5bf32c6cb4e519f458d4f36676b6c",
+            "properties": {
+                "number": 3,
+                "stepping": false,
+                "innerHTML": "History = Technological \"Progress\"?",
+                "text": "History = Technological \"Progress\"?",
+                "background-transparency": 0,
+                "border-top-transparency": 0,
+                "border-bottom-transparency": 0,
+                "border-left-transparency": 0,
+                "border-right-transparency": 0,
+                "width": 977,
+                "height": 87,
+                "top": 41,
+                "left": 271,
+                "pinning": "",
+                "text-align": "center",
+                "text-size": 60
+            },
+            "subparts": [],
+            "ownerId": "1f9386b705d94799b14ca97c8aae6873"
+        },
+        "13e0b9ecc7ae44349b669f8de27ffd58": {
+            "type": "card",
+            "id": "13e0b9ecc7ae44349b669f8de27ffd58",
+            "properties": {
+                "number": 7,
+                "stepping": false,
+                "background-color": "white"
+            },
+            "subparts": [
+                "0d95051eb73046f0bd2f836edc93346c",
+                "b2b125c3ad0a4482af56f54df73ee323",
+                "a753c041d7324d15938cff05a26543ba"
+            ],
+            "ownerId": "018231460b284c3fb6a52840c495c3fb"
+        },
+        "0d95051eb73046f0bd2f836edc93346c": {
+            "type": "field",
+            "id": "0d95051eb73046f0bd2f836edc93346c",
+            "properties": {
+                "number": 1,
+                "stepping": false,
+                "innerHTML": "<div>Is Computing \"Productive\"?</div>",
+                "text": "Is Computing \"Productive\"?",
+                "background-transparency": 0,
+                "border-top-transparency": 0,
+                "border-bottom-transparency": 0,
+                "border-left-transparency": 0,
+                "border-right-transparency": 0,
+                "width": 714,
+                "height": 78,
+                "top": 62,
+                "left": 59,
+                "pinning": "",
+                "text-size": 60
+            },
+            "subparts": [],
+            "ownerId": "13e0b9ecc7ae44349b669f8de27ffd58"
+        },
+        "b2b125c3ad0a4482af56f54df73ee323": {
+            "type": "area",
+            "id": "b2b125c3ad0a4482af56f54df73ee323",
+            "properties": {
+                "number": 2,
+                "stepping": false,
+                "border-top-transparency": 0,
+                "border-bottom-transparency": 0,
+                "border-left-transparency": 0,
+                "border-right-transparency": 0,
+                "width": 690,
+                "height": 314,
+                "top": 183,
+                "left": 49,
+                "pinning": "",
+                "layout": "list"
+            },
+            "subparts": [
+                "19cbdf4a591e4228bbee9fed9fe4ff88",
+                "e6209138b2f94a879461a652871f435f"
+            ],
+            "ownerId": "13e0b9ecc7ae44349b669f8de27ffd58"
+        },
+        "19cbdf4a591e4228bbee9fed9fe4ff88": {
+            "type": "image",
+            "id": "19cbdf4a591e4228bbee9fed9fe4ff88",
+            "properties": {
+                "id": "19cbdf4a591e4228bbee9fed9fe4ff88",
+                "number": 1,
+                "stepping": false,
+                "src": "/images/solow.jpg",
+                "mimeType": "image/jpeg",
+                "width": 264.70001220703125,
+                "height": 308.83331298828125,
+                "top": 10,
+                "left": 10,
+                "pinning": ""
+            },
+            "subparts": [],
+            "ownerId": "b2b125c3ad0a4482af56f54df73ee323"
+        },
+        "e6209138b2f94a879461a652871f435f": {
+            "type": "area",
+            "id": "e6209138b2f94a879461a652871f435f",
+            "properties": {
+                "id": "e6209138b2f94a879461a652871f435f",
+                "number": 2,
+                "stepping": false,
+                "border-top-transparency": 0,
+                "border-bottom-transparency": 0,
+                "border-left-transparency": 0,
+                "border-right-transparency": 0,
+                "width": 789,
+                "height": 504,
+                "top": 130,
+                "left": -266,
+                "horizontal-resizing": "space-fill",
+                "vertical-resizing": "shrink-wrap",
+                "pinning": "",
+                "layout": "list",
+                "list-direction": "column"
+            },
+            "subparts": [
+                "dc15f7dcbec44cc2826258e96054790d",
+                "aac91a3da0624bdba4b210b2a0747b58"
+            ],
+            "ownerId": "b2b125c3ad0a4482af56f54df73ee323"
+        },
+        "dc15f7dcbec44cc2826258e96054790d": {
+            "type": "field",
+            "id": "dc15f7dcbec44cc2826258e96054790d",
+            "properties": {
+                "id": "dc15f7dcbec44cc2826258e96054790d",
+                "number": 1,
+                "stepping": false,
+                "innerHTML": "You can see the computing age everywhere but in the productivity statistics.",
+                "text": "You can see the computing age everywhere but in the productivity statistics.",
+                "editable": false,
+                "background-transparency": 0,
+                "border-top-transparency": 0,
+                "border-bottom-transparency": 0,
+                "border-left-transparency": 0,
+                "border-right-transparency": 0,
+                "top": 11,
+                "left": 11,
+                "horizontal-resizing": "space-fill",
+                "vertical-resizing": "shrink-wrap",
+                "bottom-margin": "40",
+                "pinning": "",
+                "text-style": "",
+                "text-italic": true,
+                "text-size": 40
+            },
+            "subparts": [],
+            "ownerId": "e6209138b2f94a879461a652871f435f"
+        },
+        "aac91a3da0624bdba4b210b2a0747b58": {
+            "type": "field",
+            "id": "aac91a3da0624bdba4b210b2a0747b58",
+            "properties": {
+                "id": "aac91a3da0624bdba4b210b2a0747b58",
+                "number": 2,
+                "stepping": false,
+                "innerHTML": "Robert Solow",
+                "text": "Robert Solow",
+                "editable": false,
+                "background-transparency": 0,
+                "border-top-transparency": 0,
+                "border-bottom-transparency": 0,
+                "border-left-transparency": 0,
+                "border-right-transparency": 0,
+                "top": 280,
+                "left": 302,
+                "horizontal-resizing": "space-fill",
+                "vertical-resizing": "shrink-wrap",
+                "pinning": "",
+                "text-align": "right",
+                "text-style": "",
+                "text-bold": true,
+                "text-size": 24
+            },
+            "subparts": [],
+            "ownerId": "e6209138b2f94a879461a652871f435f"
+        },
+        "a753c041d7324d15938cff05a26543ba": {
+            "type": "area",
+            "id": "a753c041d7324d15938cff05a26543ba",
+            "properties": {
+                "number": 3,
+                "stepping": false,
+                "width": 360,
+                "height": 533,
+                "top": 195,
+                "left": 864,
+                "pinning": ""
+            },
+            "subparts": [
+                "cb277a71dc484986971f46918292ecc5",
+                "5d97f07ddf004736aa6e59cce952dcbb"
+            ],
+            "ownerId": "13e0b9ecc7ae44349b669f8de27ffd58"
+        },
+        "cb277a71dc484986971f46918292ecc5": {
+            "type": "image",
+            "id": "cb277a71dc484986971f46918292ecc5",
+            "properties": {
+                "id": "cb277a71dc484986971f46918292ecc5",
+                "number": 1,
+                "stepping": false,
+                "src": "/images/shallows-book.jpg",
+                "mimeType": "image/jpeg",
+                "border-top-width": 1,
+                "border-bottom-width": 1,
+                "border-left-width": 1,
+                "border-right-width": 1,
+                "width": 261.66668701171875,
+                "height": 392.45001220703125,
+                "top": 10,
+                "left": 10,
+                "pinning": ""
+            },
+            "subparts": [],
+            "ownerId": "a753c041d7324d15938cff05a26543ba"
+        },
+        "5d97f07ddf004736aa6e59cce952dcbb": {
+            "type": "image",
+            "id": "5d97f07ddf004736aa6e59cce952dcbb",
+            "properties": {
+                "id": "5d97f07ddf004736aa6e59cce952dcbb",
+                "number": 2,
+                "stepping": false,
+                "src": "/images/computer-stress.gif",
+                "mimeType": "image/gif",
+                "width": 179,
+                "height": 210,
+                "top": 321,
+                "left": 165,
+                "pinning": ""
+            },
+            "subparts": [],
+            "ownerId": "a753c041d7324d15938cff05a26543ba"
+        },
+        "fd28433026f24749ba43f6e6b8dfd092": {
+            "type": "card",
+            "id": "fd28433026f24749ba43f6e6b8dfd092",
+            "properties": {
+                "number": 8,
+                "stepping": false,
+                "background-color": "white"
+            },
+            "subparts": [
+                "e4ffc985549e469793cc823704a0f484",
+                "028910e318bc4e7883961f54857a9e58"
+            ],
+            "ownerId": "018231460b284c3fb6a52840c495c3fb"
+        },
+        "e4ffc985549e469793cc823704a0f484": {
+            "type": "field",
+            "id": "e4ffc985549e469793cc823704a0f484",
+            "properties": {
+                "number": 1,
+                "stepping": false,
+                "innerHTML": "Short Term Thinking",
+                "text": "Short Term Thinking",
+                "background-transparency": 0,
+                "border-top-transparency": 0,
+                "border-bottom-transparency": 0,
+                "border-left-transparency": 0,
+                "border-right-transparency": 0,
+                "width": 530,
+                "height": 61,
+                "top": 64,
+                "left": 93,
+                "pinning": "",
+                "text-align": "center",
+                "text-size": 40
+            },
+            "subparts": [],
+            "ownerId": "fd28433026f24749ba43f6e6b8dfd092"
+        },
+        "028910e318bc4e7883961f54857a9e58": {
+            "type": "area",
+            "id": "028910e318bc4e7883961f54857a9e58",
+            "properties": {
+                "number": 2,
+                "stepping": false,
+                "width": 602,
+                "height": 402,
+                "top": 211,
+                "left": 266,
+                "pinning": ""
+            },
+            "subparts": [
+                "dc3fb936ed7743c2a9f5cc4095cbda1f",
+                "6647d74007804dc1abb70f5d2e292381"
+            ],
+            "ownerId": "fd28433026f24749ba43f6e6b8dfd092"
+        },
+        "dc3fb936ed7743c2a9f5cc4095cbda1f": {
+            "type": "image",
+            "id": "dc3fb936ed7743c2a9f5cc4095cbda1f",
+            "properties": {
+                "number": 1,
+                "stepping": false,
+                "src": "/images/stock-exchange.jpeg",
+                "mimeType": "image/jpeg",
+                "width": 385.5,
+                "height": 256.95001220703125,
+                "top": 10,
+                "left": 18,
+                "pinning": ""
+            },
+            "subparts": [],
+            "ownerId": "028910e318bc4e7883961f54857a9e58"
+        },
+        "6647d74007804dc1abb70f5d2e292381": {
+            "type": "image",
+            "id": "6647d74007804dc1abb70f5d2e292381",
+            "properties": {
+                "number": 2,
+                "stepping": false,
+                "src": "/images/end-of-world.jpg",
+                "mimeType": "image/jpeg",
+                "imageData": null,
+                "width": 334.7266521896416,
+                "height": 338.1000061035156,
+                "top": 54,
+                "left": 231,
+                "pinning": ""
+            },
+            "subparts": [],
+            "ownerId": "028910e318bc4e7883961f54857a9e58"
+        },
+        "e1f54bfa2631493294ac4167d3001e1b": {
+            "type": "card",
+            "id": "e1f54bfa2631493294ac4167d3001e1b",
+            "properties": {
+                "number": 9,
+                "stepping": false,
+                "background-color": "white"
+            },
+            "subparts": [
+                "2cd14b590d5b420cbe7a57d0ea94fc58",
+                "86a236e85d464f71a242bfcd1e797c93",
+                "e565d707841c4ccdb4ca5806bc58886b",
+                "a85c0d7cb787478c976758c96ef8699a",
+                "2b2b6514bde14a198805f2100edfe3c8"
+            ],
+            "ownerId": "018231460b284c3fb6a52840c495c3fb"
+        },
+        "2cd14b590d5b420cbe7a57d0ea94fc58": {
+            "type": "field",
+            "id": "2cd14b590d5b420cbe7a57d0ea94fc58",
+            "properties": {
+                "number": 1,
+                "stepping": false,
+                "innerHTML": "Current Social/Cultural Assumptions",
+                "text": "Current Social/Cultural Assumptions",
+                "background-transparency": 0,
+                "border-top-transparency": 0,
+                "border-bottom-transparency": 0,
+                "border-left-transparency": 0,
+                "border-right-transparency": 0,
+                "width": 683,
+                "height": 60,
+                "top": 56,
+                "left": 112,
+                "pinning": "",
+                "text-align": "center",
+                "text-size": 40
+            },
+            "subparts": [],
+            "ownerId": "e1f54bfa2631493294ac4167d3001e1b"
+        },
+        "86a236e85d464f71a242bfcd1e797c93": {
+            "type": "area",
+            "id": "86a236e85d464f71a242bfcd1e797c93",
+            "properties": {
+                "number": 2,
+                "stepping": false,
+                "background-transparency": 1,
+                "background-color": "rgb(245, 245, 245)",
+                "width": 662,
+                "height": 219,
+                "top": 176,
+                "left": 217,
+                "horizontal-resizing": "shrink-wrap",
+                "vertical-resizing": "shrink-wrap",
+                "pinning": "",
+                "layout": "list",
+                "list-alignment": "center",
+                "list-distribution": "start"
+            },
+            "subparts": [
+                "0989d68660da40079b456d90f0da5f3f",
+                "ba253c8baacf45dc8376c234b54f6e61",
+                "c558cc84e41241a08a90d844a94677e4"
+            ],
+            "ownerId": "e1f54bfa2631493294ac4167d3001e1b"
+        },
+        "0989d68660da40079b456d90f0da5f3f": {
+            "type": "image",
+            "id": "0989d68660da40079b456d90f0da5f3f",
+            "properties": {
+                "number": 1,
+                "stepping": false,
+                "src": "/images/broadband-internet.jpg",
+                "mimeType": "image/jpeg",
+                "imageData": null,
+                "width": 184.98333740234375,
+                "height": 166.9860367781362,
+                "top": 22,
+                "left": 23,
+                "pinning": ""
+            },
+            "subparts": [],
+            "ownerId": "86a236e85d464f71a242bfcd1e797c93"
+        },
+        "ba253c8baacf45dc8376c234b54f6e61": {
+            "type": "area",
+            "id": "ba253c8baacf45dc8376c234b54f6e61",
+            "properties": {
+                "number": 2,
+                "stepping": false,
+                "top": 1,
+                "pinning": ""
+            },
+            "subparts": [],
+            "ownerId": "86a236e85d464f71a242bfcd1e797c93"
+        },
+        "c558cc84e41241a08a90d844a94677e4": {
+            "type": "field",
+            "id": "c558cc84e41241a08a90d844a94677e4",
+            "properties": {
+                "number": 3,
+                "stepping": false,
+                "innerHTML": "Always globally connected and available Internet access",
+                "text": "Always globally connected and available Internet access",
+                "editable": false,
+                "background-transparency": 0,
+                "border-top-transparency": 0,
+                "border-bottom-transparency": 0,
+                "border-left-transparency": 0,
+                "border-right-transparency": 0,
+                "width": 434,
+                "height": 67,
+                "top": 64,
+                "left": 216,
+                "pinning": "",
+                "text-size": 26
+            },
+            "subparts": [],
+            "ownerId": "86a236e85d464f71a242bfcd1e797c93"
+        },
+        "e565d707841c4ccdb4ca5806bc58886b": {
+            "type": "area",
+            "id": "e565d707841c4ccdb4ca5806bc58886b",
+            "properties": {
+                "id": "e565d707841c4ccdb4ca5806bc58886b",
+                "number": 3,
+                "stepping": false,
+                "background-transparency": 1,
+                "background-color": "rgb(245, 245, 245)",
+                "width": 662,
+                "height": 219,
+                "top": 410,
+                "left": 216,
+                "horizontal-resizing": "space-fill",
+                "vertical-resizing": "shrink-wrap",
+                "pinning": "",
+                "layout": "list",
+                "list-alignment": "center",
+                "list-distribution": "start"
+            },
+            "subparts": [
+                "743ad8c865864f8d97cf9dd3bd653245",
+                "1f5e6c8d0a324d0c9b3422c62ca4f7a1",
+                "76e4c2c65da74729afd2ed5c4918e660"
+            ],
+            "ownerId": "e1f54bfa2631493294ac4167d3001e1b"
+        },
+        "743ad8c865864f8d97cf9dd3bd653245": {
+            "type": "image",
+            "id": "743ad8c865864f8d97cf9dd3bd653245",
+            "properties": {
+                "id": "743ad8c865864f8d97cf9dd3bd653245",
+                "number": 1,
+                "stepping": false,
+                "src": "/images/powerlines.jpg",
+                "mimeType": "image/jpeg",
+                "width": 184.98333740234375,
+                "height": 166.9860367781362,
+                "top": 9,
+                "left": 10,
+                "pinning": ""
+            },
+            "subparts": [],
+            "ownerId": "e565d707841c4ccdb4ca5806bc58886b"
+        },
+        "1f5e6c8d0a324d0c9b3422c62ca4f7a1": {
+            "type": "area",
+            "id": "1f5e6c8d0a324d0c9b3422c62ca4f7a1",
+            "properties": {
+                "id": "1f5e6c8d0a324d0c9b3422c62ca4f7a1",
+                "number": 2,
+                "stepping": false,
+                "top": 10,
+                "left": 10,
+                "pinning": ""
+            },
+            "subparts": [],
+            "ownerId": "e565d707841c4ccdb4ca5806bc58886b"
+        },
+        "76e4c2c65da74729afd2ed5c4918e660": {
+            "type": "field",
+            "id": "76e4c2c65da74729afd2ed5c4918e660",
+            "properties": {
+                "id": "76e4c2c65da74729afd2ed5c4918e660",
+                "number": 3,
+                "stepping": false,
+                "innerHTML": "Always available electricity<br>",
+                "text": "Always available electricity\n",
+                "editable": false,
+                "background-transparency": 0,
+                "border-top-transparency": 0,
+                "border-bottom-transparency": 0,
+                "border-left-transparency": 0,
+                "border-right-transparency": 0,
+                "width": 304,
+                "height": 39,
+                "top": 57,
+                "left": 217,
+                "pinning": "",
+                "text-size": 26
+            },
+            "subparts": [],
+            "ownerId": "e565d707841c4ccdb4ca5806bc58886b"
+        },
+        "a85c0d7cb787478c976758c96ef8699a": {
+            "type": "area",
+            "id": "a85c0d7cb787478c976758c96ef8699a",
+            "properties": {
+                "id": "a85c0d7cb787478c976758c96ef8699a",
+                "number": 4,
+                "stepping": false,
+                "background-transparency": 1,
+                "background-color": "rgb(245, 245, 245)",
+                "width": 662,
+                "height": 219,
+                "top": 622,
+                "left": 219,
+                "horizontal-resizing": "space-fill",
+                "vertical-resizing": "shrink-wrap",
+                "pinning": "",
+                "layout": "list",
+                "list-alignment": "center",
+                "list-distribution": "start"
+            },
+            "subparts": [
+                "5a8f0c587a344625a8d1bf5fb80207c4",
+                "4de88af23dc74e36a458577b5060e4d1",
+                "5e3023e2c5a94568a41f51a8b8db9180"
+            ],
+            "ownerId": "e1f54bfa2631493294ac4167d3001e1b"
+        },
+        "5a8f0c587a344625a8d1bf5fb80207c4": {
+            "type": "image",
+            "id": "5a8f0c587a344625a8d1bf5fb80207c4",
+            "properties": {
+                "id": "5a8f0c587a344625a8d1bf5fb80207c4",
+                "number": 1,
+                "stepping": false,
+                "src": "/images/natural-resources.jpg",
+                "mimeType": "image/jpeg",
+                "width": 184.98333740234375,
+                "height": 166.9860367781362,
+                "top": 9,
+                "left": 10,
+                "pinning": ""
+            },
+            "subparts": [],
+            "ownerId": "a85c0d7cb787478c976758c96ef8699a"
+        },
+        "4de88af23dc74e36a458577b5060e4d1": {
+            "type": "area",
+            "id": "4de88af23dc74e36a458577b5060e4d1",
+            "properties": {
+                "id": "4de88af23dc74e36a458577b5060e4d1",
+                "number": 2,
+                "stepping": false,
+                "top": 10,
+                "left": 10,
+                "pinning": ""
+            },
+            "subparts": [],
+            "ownerId": "a85c0d7cb787478c976758c96ef8699a"
+        },
+        "5e3023e2c5a94568a41f51a8b8db9180": {
+            "type": "field",
+            "id": "5e3023e2c5a94568a41f51a8b8db9180",
+            "properties": {
+                "id": "5e3023e2c5a94568a41f51a8b8db9180",
+                "number": 3,
+                "stepping": false,
+                "innerHTML": "Unlimited resources<br>",
+                "text": "Unlimited resources\n",
+                "editable": false,
+                "background-transparency": 0,
+                "border-top-transparency": 0,
+                "border-bottom-transparency": 0,
+                "border-left-transparency": 0,
+                "border-right-transparency": 0,
+                "width": 304,
+                "height": 39,
+                "top": 57,
+                "left": 217,
+                "pinning": "",
+                "text-size": 26
+            },
+            "subparts": [],
+            "ownerId": "a85c0d7cb787478c976758c96ef8699a"
+        },
+        "2b2b6514bde14a198805f2100edfe3c8": {
+            "type": "area",
+            "id": "2b2b6514bde14a198805f2100edfe3c8",
+            "properties": {
+                "id": "2b2b6514bde14a198805f2100edfe3c8",
+                "number": 5,
+                "stepping": false,
+                "background-transparency": 1,
+                "background-color": "rgb(245, 245, 245)",
+                "width": 662,
+                "height": 219,
+                "top": 410,
+                "left": 916,
+                "horizontal-resizing": "space-fill",
+                "vertical-resizing": "shrink-wrap",
+                "pinning": "",
+                "layout": "list",
+                "list-alignment": "center",
+                "list-distribution": "start"
+            },
+            "subparts": [
+                "2ac59133972341f3bce46c1c00ef84a2",
+                "b71e8a7bbcba4c2296dcc5c4ccc3ff40",
+                "d40f16319291486ba55e4228ec24a82c"
+            ],
+            "ownerId": "e1f54bfa2631493294ac4167d3001e1b"
+        },
+        "2ac59133972341f3bce46c1c00ef84a2": {
+            "type": "image",
+            "id": "2ac59133972341f3bce46c1c00ef84a2",
+            "properties": {
+                "id": "2ac59133972341f3bce46c1c00ef84a2",
+                "number": 1,
+                "stepping": false,
+                "src": "/images/growth.png",
+                "mimeType": "image/png",
+                "width": 184.98333740234375,
+                "height": 166.9860367781362,
+                "top": 9,
+                "left": 10,
+                "pinning": ""
+            },
+            "subparts": [],
+            "ownerId": "2b2b6514bde14a198805f2100edfe3c8"
+        },
+        "b71e8a7bbcba4c2296dcc5c4ccc3ff40": {
+            "type": "area",
+            "id": "b71e8a7bbcba4c2296dcc5c4ccc3ff40",
+            "properties": {
+                "id": "b71e8a7bbcba4c2296dcc5c4ccc3ff40",
+                "number": 2,
+                "stepping": false,
+                "top": 10,
+                "left": 10,
+                "pinning": ""
+            },
+            "subparts": [],
+            "ownerId": "2b2b6514bde14a198805f2100edfe3c8"
+        },
+        "d40f16319291486ba55e4228ec24a82c": {
+            "type": "field",
+            "id": "d40f16319291486ba55e4228ec24a82c",
+            "properties": {
+                "id": "d40f16319291486ba55e4228ec24a82c",
+                "number": 3,
+                "stepping": false,
+                "innerHTML": "Limitless growth<br>",
+                "text": "Limitless growth\n",
+                "editable": false,
+                "background-transparency": 0,
+                "border-top-transparency": 0,
+                "border-bottom-transparency": 0,
+                "border-left-transparency": 0,
+                "border-right-transparency": 0,
+                "width": 304,
+                "height": 39,
+                "top": 57,
+                "left": 217,
+                "pinning": "",
+                "text-size": 26
+            },
+            "subparts": [],
+            "ownerId": "2b2b6514bde14a198805f2100edfe3c8"
+        },
+        "8b20470410574dfe9251cde7bce1a1de": {
+            "type": "window",
+            "id": "8b20470410574dfe9251cde7bce1a1de",
+            "properties": {
+                "id": "8b20470410574dfe9251cde7bce1a1de",
+                "name": "Toolbox",
+                "cssStyle": {
+                    "backgroundColor": "rgba(255, 255, 255, 0)",
+                    "opacity": 1,
+                    "border-top-style": "solid",
+                    "border-bottom-style": "solid",
+                    "border-left-style": "solid",
+                    "border-right-style": "solid",
+                    "border-top-width": "0px",
+                    "border-bottom-width": "0px",
+                    "border-left-width": "0px",
+                    "border-right-width": "0px",
+                    "border-top-color": "rgba(0, 0, 0, 1)",
+                    "border-bottom-color": "rgba(0, 0, 0, 1)",
+                    "border-left-color": "rgba(0, 0, 0, 1)",
+                    "border-right-color": "rgba(0, 0, 0, 1)",
+                    "border-left-transparency": 1,
+                    "box-shadow": "0px 0px 0px 0px rgba(238, 238, 238, 1)",
+                    "border-top-left-radius": "0px",
+                    "border-top-right-radius": "0px",
+                    "border-bottom-left-radius": "0px",
+                    "border-bottom-right-radius": "0px",
+                    "display": null,
+                    "top": "60px",
+                    "left": "1667px",
+                    "horizontal-resizing": "rigid",
+                    "vertical-resizing": "rigid",
+                    "width": "185px",
+                    "height": "288px"
+                },
+                "cssTextStyle": {},
+                "number": 10,
+                "custom-properties": {},
+                "stepping": false,
+                "title": "Toolbox",
+                "width": 185,
+                "height": 288,
+                "top": 60,
+                "left": 1667,
+                "pinning": ""
+            },
+            "subparts": [
+                "0d389d26303d408aa161d50a39985cf4"
+            ],
+            "ownerId": "018231460b284c3fb6a52840c495c3fb"
+        },
+        "0d389d26303d408aa161d50a39985cf4": {
+            "type": "area",
+            "id": "0d389d26303d408aa161d50a39985cf4",
+            "properties": {
+                "id": "0d389d26303d408aa161d50a39985cf4",
+                "name": "",
+                "cssStyle": {
+                    "width": "187px",
+                    "height": "274px",
+                    "backgroundColor": "rgba(255, 255, 255, 0)",
+                    "opacity": 1,
+                    "border-top-style": "solid",
+                    "border-bottom-style": "solid",
+                    "border-left-style": "solid",
+                    "border-right-style": "solid",
+                    "border-top-width": "1px",
+                    "border-bottom-width": "1px",
+                    "border-left-width": "1px",
+                    "border-right-width": "1px",
+                    "border-top-color": "rgba(238, 238, 238, 0.5)",
+                    "border-bottom-color": "rgba(238, 238, 238, 0.5)",
+                    "border-left-color": "rgba(238, 238, 238, 0.5)",
+                    "border-right-color": "rgba(238, 238, 238, 0.5)",
+                    "border-left-transparency": 0.5,
+                    "box-shadow": "0px 0px 0px 0px rgba(238, 238, 238, 1)",
+                    "border-top-left-radius": "0px",
+                    "border-top-right-radius": "0px",
+                    "border-bottom-left-radius": "0px",
+                    "border-bottom-right-radius": "0px",
+                    "display": null,
+                    "top": "0px",
+                    "left": "0px",
+                    "horizontal-resizing": "space-fill",
+                    "vertical-resizing": "rigid",
+                    "right-padding": "2",
+                    "paddingRight": "2px"
+                },
+                "cssTextStyle": {},
+                "number": 1,
+                "custom-properties": {},
+                "stepping": false,
+                "width": 187,
+                "height": 274,
+                "horizontal-resizing": "space-fill",
+                "pinning": "",
+                "layout": "list",
+                "list-direction": "column",
+                "right-padding": "2",
+                "list-alignment": "center"
+            },
+            "subparts": [
+                "fc3141c833e0438ea4b49ec2d324012b",
+                "cbae699bd02049278f0d71e149d2ffdd",
+                "a3bc7caa83fe478d9dd171c5ced19684",
+                "b9d8b4a0c32840a0ae80ecc2a2a3b2b7",
+                "a16f1e365f9d48499ad45bff52a1db5c",
+                "47b4f410055349e5a791be2d02cd7c4a",
+                "d6065c1b0c664510aacf154cf7de9840",
+                "d7daff7972994b39b63396a8d4a162f5",
+                "64c7730391ea4f409c5a0583e4cc1a3b"
+            ],
+            "ownerId": "8b20470410574dfe9251cde7bce1a1de"
+        },
+        "fc3141c833e0438ea4b49ec2d324012b": {
+            "type": "button",
+            "id": "fc3141c833e0438ea4b49ec2d324012b",
+            "properties": {
+                "id": "fc3141c833e0438ea4b49ec2d324012b",
+                "name": "Add Button",
+                "script": "on click\n\tadd button to current card\nend click\n",
+                "cssStyle": {
+                    "backgroundColor": "rgba(255, 234, 149, 1)",
+                    "opacity": 1,
+                    "border-top-style": "solid",
+                    "border-bottom-style": "solid",
+                    "border-left-style": "solid",
+                    "border-right-style": "solid",
+                    "border-top-width": "1px",
+                    "border-bottom-width": "1px",
+                    "border-left-width": "1px",
+                    "border-right-width": "1px",
+                    "border-top-color": "rgba(0, 0, 0, 1)",
+                    "border-bottom-color": "rgba(0, 0, 0, 1)",
+                    "border-left-color": "rgba(0, 0, 0, 1)",
+                    "border-right-color": "rgba(0, 0, 0, 1)",
+                    "border-left-transparency": 1,
+                    "box-shadow": "1px 1px 1px 0px rgba(238, 238, 238, 1)",
+                    "border-top-left-radius": "3px",
+                    "border-top-right-radius": "3px",
+                    "border-bottom-left-radius": "3px",
+                    "border-bottom-right-radius": "3px",
+                    "display": null,
+                    "top": "0px",
+                    "left": "0px",
+                    "horizontal-resizing": "rigid",
+                    "vertical-resizing": "rigid",
+                    "width": "100%"
+                },
+                "cssTextStyle": {
+                    "textAlign": "left",
+                    "fontFamily": "default",
+                    "color": "rgba(0, 0, 0, 1)",
+                    "textStyle": "plain",
+                    "font-weight": "normal",
+                    "font-style": "normal",
+                    "fontSize": 15
+                },
+                "number": 1,
+                "custom-properties": {},
+                "stepping": false,
+                "width": "fill",
+                "pinning": ""
+            },
+            "subparts": [],
+            "ownerId": "0d389d26303d408aa161d50a39985cf4"
+        },
+        "cbae699bd02049278f0d71e149d2ffdd": {
+            "type": "button",
+            "id": "cbae699bd02049278f0d71e149d2ffdd",
+            "properties": {
+                "id": "cbae699bd02049278f0d71e149d2ffdd",
+                "name": "Add Image",
+                "script": "on click\n\tadd image to current card\nend click",
+                "cssStyle": {
+                    "backgroundColor": "rgba(255, 234, 149, 1)",
+                    "opacity": 1,
+                    "border-top-style": "solid",
+                    "border-bottom-style": "solid",
+                    "border-left-style": "solid",
+                    "border-right-style": "solid",
+                    "border-top-width": "1px",
+                    "border-bottom-width": "1px",
+                    "border-left-width": "1px",
+                    "border-right-width": "1px",
+                    "border-top-color": "rgba(0, 0, 0, 1)",
+                    "border-bottom-color": "rgba(0, 0, 0, 1)",
+                    "border-left-color": "rgba(0, 0, 0, 1)",
+                    "border-right-color": "rgba(0, 0, 0, 1)",
+                    "border-left-transparency": 1,
+                    "box-shadow": "1px 1px 1px 0px rgba(238, 238, 238, 1)",
+                    "border-top-left-radius": "3px",
+                    "border-top-right-radius": "3px",
+                    "border-bottom-left-radius": "3px",
+                    "border-bottom-right-radius": "3px",
+                    "display": null,
+                    "top": "31px",
+                    "left": "-1px",
+                    "horizontal-resizing": "rigid",
+                    "vertical-resizing": "rigid",
+                    "width": "100%"
+                },
+                "cssTextStyle": {
+                    "textAlign": "left",
+                    "fontFamily": "default",
+                    "color": "rgba(0, 0, 0, 1)",
+                    "textStyle": "plain",
+                    "font-weight": "normal",
+                    "font-style": "normal",
+                    "fontSize": 15
+                },
+                "number": 2,
+                "custom-properties": {},
+                "stepping": false,
+                "width": "fill",
+                "top": 31,
+                "left": -1,
+                "pinning": ""
+            },
+            "subparts": [],
+            "ownerId": "0d389d26303d408aa161d50a39985cf4"
+        },
+        "a3bc7caa83fe478d9dd171c5ced19684": {
+            "type": "button",
+            "id": "a3bc7caa83fe478d9dd171c5ced19684",
+            "properties": {
+                "id": "a3bc7caa83fe478d9dd171c5ced19684",
+                "name": "Add Drawing",
+                "script": "on click\n\tadd drawing to current card\nend click",
+                "cssStyle": {
+                    "backgroundColor": "rgba(255, 234, 149, 1)",
+                    "opacity": 1,
+                    "border-top-style": "solid",
+                    "border-bottom-style": "solid",
+                    "border-left-style": "solid",
+                    "border-right-style": "solid",
+                    "border-top-width": "1px",
+                    "border-bottom-width": "1px",
+                    "border-left-width": "1px",
+                    "border-right-width": "1px",
+                    "border-top-color": "rgba(0, 0, 0, 1)",
+                    "border-bottom-color": "rgba(0, 0, 0, 1)",
+                    "border-left-color": "rgba(0, 0, 0, 1)",
+                    "border-right-color": "rgba(0, 0, 0, 1)",
+                    "border-left-transparency": 1,
+                    "box-shadow": "1px 1px 1px 0px rgba(238, 238, 238, 1)",
+                    "border-top-left-radius": "3px",
+                    "border-top-right-radius": "3px",
+                    "border-bottom-left-radius": "3px",
+                    "border-bottom-right-radius": "3px",
+                    "display": null,
+                    "top": "10px",
+                    "left": "10px",
+                    "horizontal-resizing": "rigid",
+                    "vertical-resizing": "rigid",
+                    "width": "100%"
+                },
+                "cssTextStyle": {
+                    "textAlign": "left",
+                    "fontFamily": "default",
+                    "color": "rgba(0, 0, 0, 1)",
+                    "textStyle": "plain",
+                    "font-weight": "normal",
+                    "font-style": "normal",
+                    "fontSize": 15
+                },
+                "number": 3,
+                "custom-properties": {},
+                "stepping": false,
+                "width": "fill",
+                "top": 10,
+                "left": 10,
+                "pinning": ""
+            },
+            "subparts": [],
+            "ownerId": "0d389d26303d408aa161d50a39985cf4"
+        },
+        "b9d8b4a0c32840a0ae80ecc2a2a3b2b7": {
+            "type": "button",
+            "id": "b9d8b4a0c32840a0ae80ecc2a2a3b2b7",
+            "properties": {
+                "id": "b9d8b4a0c32840a0ae80ecc2a2a3b2b7",
+                "name": "Add Area",
+                "script": "on click\n\tadd area to current card\nend click",
+                "cssStyle": {
+                    "backgroundColor": "rgba(255, 234, 149, 1)",
+                    "opacity": 1,
+                    "border-top-style": "solid",
+                    "border-bottom-style": "solid",
+                    "border-left-style": "solid",
+                    "border-right-style": "solid",
+                    "border-top-width": "1px",
+                    "border-bottom-width": "1px",
+                    "border-left-width": "1px",
+                    "border-right-width": "1px",
+                    "border-top-color": "rgba(0, 0, 0, 1)",
+                    "border-bottom-color": "rgba(0, 0, 0, 1)",
+                    "border-left-color": "rgba(0, 0, 0, 1)",
+                    "border-right-color": "rgba(0, 0, 0, 1)",
+                    "border-left-transparency": 1,
+                    "box-shadow": "1px 1px 1px 0px rgba(238, 238, 238, 1)",
+                    "border-top-left-radius": "3px",
+                    "border-top-right-radius": "3px",
+                    "border-bottom-left-radius": "3px",
+                    "border-bottom-right-radius": "3px",
+                    "display": null,
+                    "top": "9px",
+                    "left": "10px",
+                    "horizontal-resizing": "rigid",
+                    "vertical-resizing": "rigid",
+                    "width": "100%"
+                },
+                "cssTextStyle": {
+                    "textAlign": "left",
+                    "fontFamily": "default",
+                    "color": "rgba(0, 0, 0, 1)",
+                    "textStyle": "plain",
+                    "font-weight": "normal",
+                    "font-style": "normal",
+                    "fontSize": 15
+                },
+                "number": 4,
+                "custom-properties": {},
+                "stepping": false,
+                "width": "fill",
+                "top": 9,
+                "left": 10,
+                "pinning": ""
+            },
+            "subparts": [],
+            "ownerId": "0d389d26303d408aa161d50a39985cf4"
+        },
+        "a16f1e365f9d48499ad45bff52a1db5c": {
+            "type": "button",
+            "id": "a16f1e365f9d48499ad45bff52a1db5c",
+            "properties": {
+                "id": "a16f1e365f9d48499ad45bff52a1db5c",
+                "name": "Add Field",
+                "script": "on click\n\tadd field to current card\nend click",
+                "cssStyle": {
+                    "backgroundColor": "rgba(255, 234, 149, 1)",
+                    "opacity": 1,
+                    "border-top-style": "solid",
+                    "border-bottom-style": "solid",
+                    "border-left-style": "solid",
+                    "border-right-style": "solid",
+                    "border-top-width": "1px",
+                    "border-bottom-width": "1px",
+                    "border-left-width": "1px",
+                    "border-right-width": "1px",
+                    "border-top-color": "rgba(0, 0, 0, 1)",
+                    "border-bottom-color": "rgba(0, 0, 0, 1)",
+                    "border-left-color": "rgba(0, 0, 0, 1)",
+                    "border-right-color": "rgba(0, 0, 0, 1)",
+                    "border-left-transparency": 1,
+                    "box-shadow": "1px 1px 1px 0px rgba(238, 238, 238, 1)",
+                    "border-top-left-radius": "3px",
+                    "border-top-right-radius": "3px",
+                    "border-bottom-left-radius": "3px",
+                    "border-bottom-right-radius": "3px",
+                    "display": null,
+                    "top": "10px",
+                    "left": "12px",
+                    "horizontal-resizing": "rigid",
+                    "vertical-resizing": "rigid",
+                    "width": "100%"
+                },
+                "cssTextStyle": {
+                    "textAlign": "left",
+                    "fontFamily": "default",
+                    "color": "rgba(0, 0, 0, 1)",
+                    "textStyle": "plain",
+                    "font-weight": "normal",
+                    "font-style": "normal",
+                    "fontSize": 15
+                },
+                "number": 5,
+                "custom-properties": {},
+                "stepping": false,
+                "width": "fill",
+                "top": 10,
+                "left": 12,
+                "pinning": ""
+            },
+            "subparts": [],
+            "ownerId": "0d389d26303d408aa161d50a39985cf4"
+        },
+        "47b4f410055349e5a791be2d02cd7c4a": {
+            "type": "button",
+            "id": "47b4f410055349e5a791be2d02cd7c4a",
+            "properties": {
+                "id": "47b4f410055349e5a791be2d02cd7c4a",
+                "name": "Add Card",
+                "script": "on click\n\tadd card\nend click",
+                "cssStyle": {
+                    "backgroundColor": "rgba(255, 234, 149, 1)",
+                    "opacity": 1,
+                    "border-top-style": "solid",
+                    "border-bottom-style": "solid",
+                    "border-left-style": "solid",
+                    "border-right-style": "solid",
+                    "border-top-width": "1px",
+                    "border-bottom-width": "1px",
+                    "border-left-width": "1px",
+                    "border-right-width": "1px",
+                    "border-top-color": "rgba(0, 0, 0, 1)",
+                    "border-bottom-color": "rgba(0, 0, 0, 1)",
+                    "border-left-color": "rgba(0, 0, 0, 1)",
+                    "border-right-color": "rgba(0, 0, 0, 1)",
+                    "border-left-transparency": 1,
+                    "box-shadow": "1px 1px 1px 0px rgba(238, 238, 238, 1)",
+                    "border-top-left-radius": "3px",
+                    "border-top-right-radius": "3px",
+                    "border-bottom-left-radius": "3px",
+                    "border-bottom-right-radius": "3px",
+                    "display": null,
+                    "top": "9px",
+                    "left": "10px",
+                    "horizontal-resizing": "rigid",
+                    "vertical-resizing": "rigid",
+                    "width": "100%"
+                },
+                "cssTextStyle": {
+                    "textAlign": "left",
+                    "fontFamily": "default",
+                    "color": "rgba(0, 0, 0, 1)",
+                    "textStyle": "plain",
+                    "font-weight": "normal",
+                    "font-style": "normal",
+                    "fontSize": 15
+                },
+                "number": 6,
+                "custom-properties": {},
+                "stepping": false,
+                "width": "fill",
+                "top": 9,
+                "left": 10,
+                "pinning": ""
+            },
+            "subparts": [],
+            "ownerId": "0d389d26303d408aa161d50a39985cf4"
+        },
+        "d6065c1b0c664510aacf154cf7de9840": {
+            "type": "button",
+            "id": "d6065c1b0c664510aacf154cf7de9840",
+            "properties": {
+                "id": "d6065c1b0c664510aacf154cf7de9840",
+                "name": "Add Toolbox Button",
+                "script": "on click\n\tadd button\n\ttell last button to set \"width\" to \"fill\"\nend click",
+                "cssStyle": {
+                    "backgroundColor": "rgba(255, 234, 149, 1)",
+                    "opacity": 1,
+                    "border-top-style": "solid",
+                    "border-bottom-style": "solid",
+                    "border-left-style": "solid",
+                    "border-right-style": "solid",
+                    "border-top-width": "1px",
+                    "border-bottom-width": "1px",
+                    "border-left-width": "1px",
+                    "border-right-width": "1px",
+                    "border-top-color": "rgba(0, 0, 0, 1)",
+                    "border-bottom-color": "rgba(0, 0, 0, 1)",
+                    "border-left-color": "rgba(0, 0, 0, 1)",
+                    "border-right-color": "rgba(0, 0, 0, 1)",
+                    "border-left-transparency": 1,
+                    "box-shadow": "1px 1px 1px 0px rgba(238, 238, 238, 1)",
+                    "border-top-left-radius": "3px",
+                    "border-top-right-radius": "3px",
+                    "border-bottom-left-radius": "3px",
+                    "border-bottom-right-radius": "3px",
+                    "display": null,
+                    "top": "0px",
+                    "left": "1px",
+                    "horizontal-resizing": "rigid",
+                    "vertical-resizing": "rigid",
+                    "width": "100%"
+                },
+                "cssTextStyle": {
+                    "textAlign": "left",
+                    "fontFamily": "default",
+                    "color": "rgba(0, 0, 0, 1)",
+                    "textStyle": "plain",
+                    "font-weight": "normal",
+                    "font-style": "normal",
+                    "fontSize": 15
+                },
+                "number": 7,
+                "custom-properties": {},
+                "stepping": false,
+                "width": "fill",
+                "left": 1,
+                "pinning": ""
+            },
+            "subparts": [],
+            "ownerId": "0d389d26303d408aa161d50a39985cf4"
+        },
+        "d7daff7972994b39b63396a8d4a162f5": {
+            "type": "button",
+            "id": "d7daff7972994b39b63396a8d4a162f5",
+            "properties": {
+                "id": "d7daff7972994b39b63396a8d4a162f5",
+                "name": "Import World",
+                "script": "on click\n\timportWorld\nend click",
+                "cssStyle": {
+                    "backgroundColor": "rgba(255, 234, 149, 1)",
+                    "opacity": 1,
+                    "border-top-style": "solid",
+                    "border-bottom-style": "solid",
+                    "border-left-style": "solid",
+                    "border-right-style": "solid",
+                    "border-top-width": "1px",
+                    "border-bottom-width": "1px",
+                    "border-left-width": "1px",
+                    "border-right-width": "1px",
+                    "border-top-color": "rgba(0, 0, 0, 1)",
+                    "border-bottom-color": "rgba(0, 0, 0, 1)",
+                    "border-left-color": "rgba(0, 0, 0, 1)",
+                    "border-right-color": "rgba(0, 0, 0, 1)",
+                    "border-left-transparency": 1,
+                    "box-shadow": "1px 1px 1px 0px rgba(238, 238, 238, 1)",
+                    "border-top-left-radius": "3px",
+                    "border-top-right-radius": "3px",
+                    "border-bottom-left-radius": "3px",
+                    "border-bottom-right-radius": "3px",
+                    "display": null,
+                    "top": "-1px",
+                    "left": "1px",
+                    "horizontal-resizing": "rigid",
+                    "vertical-resizing": "rigid",
+                    "width": "100%"
+                },
+                "cssTextStyle": {
+                    "textAlign": "left",
+                    "fontFamily": "default",
+                    "color": "rgba(0, 0, 0, 1)",
+                    "textStyle": "plain",
+                    "font-weight": "normal",
+                    "font-style": "normal",
+                    "fontSize": 15
+                },
+                "number": 8,
+                "custom-properties": {},
+                "stepping": false,
+                "width": "fill",
+                "top": -1,
+                "left": 1,
+                "pinning": ""
+            },
+            "subparts": [],
+            "ownerId": "0d389d26303d408aa161d50a39985cf4"
+        },
+        "64c7730391ea4f409c5a0583e4cc1a3b": {
+            "type": "button",
+            "id": "64c7730391ea4f409c5a0583e4cc1a3b",
+            "properties": {
+                "id": "64c7730391ea4f409c5a0583e4cc1a3b",
+                "name": "Save",
+                "script": "on click\n\tsaveHTML\nend click",
+                "cssStyle": {
+                    "backgroundColor": "rgba(255, 234, 149, 1)",
+                    "opacity": 1,
+                    "border-top-style": "solid",
+                    "border-bottom-style": "solid",
+                    "border-left-style": "solid",
+                    "border-right-style": "solid",
+                    "border-top-width": "1px",
+                    "border-bottom-width": "1px",
+                    "border-left-width": "1px",
+                    "border-right-width": "1px",
+                    "border-top-color": "rgba(0, 0, 0, 1)",
+                    "border-bottom-color": "rgba(0, 0, 0, 1)",
+                    "border-left-color": "rgba(0, 0, 0, 1)",
+                    "border-right-color": "rgba(0, 0, 0, 1)",
+                    "border-left-transparency": 1,
+                    "box-shadow": "1px 1px 1px 0px rgba(238, 238, 238, 1)",
+                    "border-top-left-radius": "3px",
+                    "border-top-right-radius": "3px",
+                    "border-bottom-left-radius": "3px",
+                    "border-bottom-right-radius": "3px",
+                    "display": null,
+                    "top": "0px",
+                    "left": "0px",
+                    "horizontal-resizing": "rigid",
+                    "vertical-resizing": "rigid",
+                    "width": "100%"
+                },
+                "cssTextStyle": {
+                    "textAlign": "left",
+                    "fontFamily": "default",
+                    "color": "rgba(0, 0, 0, 1)",
+                    "textStyle": "plain",
+                    "font-weight": "normal",
+                    "font-style": "normal",
+                    "fontSize": 15
+                },
+                "number": 9,
+                "custom-properties": {},
+                "stepping": false,
+                "width": "fill",
+                "pinning": ""
+            },
+            "subparts": [],
+            "ownerId": "0d389d26303d408aa161d50a39985cf4"
+        }
+    }
+}</script>
+
+
+
+
+<st-editor class=""><editor-props-list tab-name="properties" class="show-pane"><editor-prop-item name="allow-scrolling" owner-id="e565d707841c4ccdb4ca5806bc58886b" class="item-hidden"></editor-prop-item><editor-prop-item name="background-color" owner-id="e565d707841c4ccdb4ca5806bc58886b" class="item-hidden"></editor-prop-item><editor-prop-item name="background-transparency" owner-id="e565d707841c4ccdb4ca5806bc58886b" class="item-hidden"></editor-prop-item><editor-prop-item name="border-bottom-color" owner-id="e565d707841c4ccdb4ca5806bc58886b" class="item-hidden"></editor-prop-item><editor-prop-item name="border-bottom-style" owner-id="e565d707841c4ccdb4ca5806bc58886b" class="item-hidden"></editor-prop-item><editor-prop-item name="border-bottom-transparency" owner-id="e565d707841c4ccdb4ca5806bc58886b" class="item-hidden"></editor-prop-item><editor-prop-item name="border-bottom-width" owner-id="e565d707841c4ccdb4ca5806bc58886b" class="item-hidden"></editor-prop-item><editor-prop-item name="border-left-color" owner-id="e565d707841c4ccdb4ca5806bc58886b" class="item-hidden"></editor-prop-item><editor-prop-item name="border-left-style" owner-id="e565d707841c4ccdb4ca5806bc58886b" class="item-hidden"></editor-prop-item><editor-prop-item name="border-left-transparency" owner-id="e565d707841c4ccdb4ca5806bc58886b" class="item-hidden"></editor-prop-item><editor-prop-item name="border-left-width" owner-id="e565d707841c4ccdb4ca5806bc58886b" class="item-hidden"></editor-prop-item><editor-prop-item name="border-right-color" owner-id="e565d707841c4ccdb4ca5806bc58886b" class="item-hidden"></editor-prop-item><editor-prop-item name="border-right-style" owner-id="e565d707841c4ccdb4ca5806bc58886b" class="item-hidden"></editor-prop-item><editor-prop-item name="border-right-transparency" owner-id="e565d707841c4ccdb4ca5806bc58886b" class="item-hidden"></editor-prop-item><editor-prop-item name="border-right-width" owner-id="e565d707841c4ccdb4ca5806bc58886b" class="item-hidden"></editor-prop-item><editor-prop-item name="border-top-color" owner-id="e565d707841c4ccdb4ca5806bc58886b" class="item-hidden"></editor-prop-item><editor-prop-item name="border-top-style" owner-id="e565d707841c4ccdb4ca5806bc58886b" class="item-hidden"></editor-prop-item><editor-prop-item name="border-top-transparency" owner-id="e565d707841c4ccdb4ca5806bc58886b" class="item-hidden"></editor-prop-item><editor-prop-item name="border-top-width" owner-id="e565d707841c4ccdb4ca5806bc58886b" class="item-hidden"></editor-prop-item><editor-prop-item name="bottom-margin" owner-id="e565d707841c4ccdb4ca5806bc58886b" class="item-hidden"></editor-prop-item><editor-prop-item name="bottom-padding" owner-id="e565d707841c4ccdb4ca5806bc58886b" class="item-hidden"></editor-prop-item><editor-prop-item name="clipping" owner-id="e565d707841c4ccdb4ca5806bc58886b" class="item-hidden"></editor-prop-item><editor-prop-item name="contents" owner-id="e565d707841c4ccdb4ca5806bc58886b" class="item-hidden"></editor-prop-item><editor-prop-item name="corner-bottom-left-round" owner-id="e565d707841c4ccdb4ca5806bc58886b" class="item-hidden"></editor-prop-item><editor-prop-item name="corner-bottom-right-round" owner-id="e565d707841c4ccdb4ca5806bc58886b" class="item-hidden"></editor-prop-item><editor-prop-item name="corner-top-left-round" owner-id="e565d707841c4ccdb4ca5806bc58886b" class="item-hidden"></editor-prop-item><editor-prop-item name="corner-top-right-round" owner-id="e565d707841c4ccdb4ca5806bc58886b" class="item-hidden"></editor-prop-item><editor-prop-item name="editor-open" owner-id="e565d707841c4ccdb4ca5806bc58886b" class="item-hidden"></editor-prop-item><editor-prop-item name="enabled" owner-id="e565d707841c4ccdb4ca5806bc58886b" class="item-hidden"></editor-prop-item><editor-prop-item name="halo-open" owner-id="e565d707841c4ccdb4ca5806bc58886b" class="item-hidden"></editor-prop-item><editor-prop-item name="height" owner-id="e565d707841c4ccdb4ca5806bc58886b" class="item-hidden"></editor-prop-item><editor-prop-item name="hide" owner-id="e565d707841c4ccdb4ca5806bc58886b" class="item-hidden"></editor-prop-item><editor-prop-item name="horizontal-resizing" owner-id="e565d707841c4ccdb4ca5806bc58886b"></editor-prop-item><editor-prop-item name="layout" owner-id="e565d707841c4ccdb4ca5806bc58886b" class="item-hidden"></editor-prop-item><editor-prop-item name="left" owner-id="e565d707841c4ccdb4ca5806bc58886b" class="item-hidden"></editor-prop-item><editor-prop-item name="left-margin" owner-id="e565d707841c4ccdb4ca5806bc58886b" class="item-hidden"></editor-prop-item><editor-prop-item name="left-padding" owner-id="e565d707841c4ccdb4ca5806bc58886b" class="item-hidden"></editor-prop-item><editor-prop-item name="list-alignment" owner-id="e565d707841c4ccdb4ca5806bc58886b" class="item-hidden"></editor-prop-item><editor-prop-item name="list-direction" owner-id="e565d707841c4ccdb4ca5806bc58886b" class="item-hidden"></editor-prop-item><editor-prop-item name="list-distribution" owner-id="e565d707841c4ccdb4ca5806bc58886b" class="item-hidden"></editor-prop-item><editor-prop-item name="list-wrapping" owner-id="e565d707841c4ccdb4ca5806bc58886b" class="item-hidden"></editor-prop-item><editor-prop-item name="number" owner-id="e565d707841c4ccdb4ca5806bc58886b" class="item-hidden"></editor-prop-item><editor-prop-item name="pinning" owner-id="e565d707841c4ccdb4ca5806bc58886b" class="item-hidden"></editor-prop-item><editor-prop-item name="pinning-bottom" owner-id="e565d707841c4ccdb4ca5806bc58886b" class="item-hidden"></editor-prop-item><editor-prop-item name="pinning-left" owner-id="e565d707841c4ccdb4ca5806bc58886b" class="item-hidden"></editor-prop-item><editor-prop-item name="pinning-right" owner-id="e565d707841c4ccdb4ca5806bc58886b" class="item-hidden"></editor-prop-item><editor-prop-item name="pinning-top" owner-id="e565d707841c4ccdb4ca5806bc58886b" class="item-hidden"></editor-prop-item><editor-prop-item name="rectangle" owner-id="e565d707841c4ccdb4ca5806bc58886b" class="item-hidden"></editor-prop-item><editor-prop-item name="right-margin" owner-id="e565d707841c4ccdb4ca5806bc58886b" class="item-hidden"></editor-prop-item><editor-prop-item name="right-padding" owner-id="e565d707841c4ccdb4ca5806bc58886b" class="item-hidden"></editor-prop-item><editor-prop-item name="rotate" owner-id="e565d707841c4ccdb4ca5806bc58886b" class="item-hidden"></editor-prop-item><editor-prop-item name="shadow-blur" owner-id="e565d707841c4ccdb4ca5806bc58886b" class="item-hidden"></editor-prop-item><editor-prop-item name="shadow-color" owner-id="e565d707841c4ccdb4ca5806bc58886b" class="item-hidden"></editor-prop-item><editor-prop-item name="shadow-left" owner-id="e565d707841c4ccdb4ca5806bc58886b" class="item-hidden"></editor-prop-item><editor-prop-item name="shadow-spread" owner-id="e565d707841c4ccdb4ca5806bc58886b" class="item-hidden"></editor-prop-item><editor-prop-item name="shadow-top" owner-id="e565d707841c4ccdb4ca5806bc58886b" class="item-hidden"></editor-prop-item><editor-prop-item name="shadow-transparency" owner-id="e565d707841c4ccdb4ca5806bc58886b" class="item-hidden"></editor-prop-item><editor-prop-item name="stepping" owner-id="e565d707841c4ccdb4ca5806bc58886b" class="item-hidden"></editor-prop-item><editor-prop-item name="stepTime" owner-id="e565d707841c4ccdb4ca5806bc58886b" class="item-hidden"></editor-prop-item><editor-prop-item name="top" owner-id="e565d707841c4ccdb4ca5806bc58886b" class="item-hidden"></editor-prop-item><editor-prop-item name="top-margin" owner-id="e565d707841c4ccdb4ca5806bc58886b" class="item-hidden"></editor-prop-item><editor-prop-item name="top-padding" owner-id="e565d707841c4ccdb4ca5806bc58886b" class="item-hidden"></editor-prop-item><editor-prop-item name="transparency" owner-id="e565d707841c4ccdb4ca5806bc58886b" class="item-hidden"></editor-prop-item><editor-prop-item name="vertical-resizing" owner-id="e565d707841c4ccdb4ca5806bc58886b"></editor-prop-item><editor-prop-item name="wants-move" owner-id="e565d707841c4ccdb4ca5806bc58886b" class="item-hidden"></editor-prop-item><editor-prop-item name="width" owner-id="e565d707841c4ccdb4ca5806bc58886b" class="item-hidden"></editor-prop-item></editor-props-list><editor-messenger tab-name="messenger"></editor-messenger><editor-custom-list tab-name="custom"></editor-custom-list><editor-subparts tab-name="subparts"><editor-location-info slot="ancestor-info" kind="stack" ref-id="018231460b284c3fb6a52840c495c3fb"></editor-location-info><editor-location-info slot="ancestor-info" kind="card" ref-id="e1f54bfa2631493294ac4167d3001e1b"></editor-location-info><editor-location-info slot="ancestor-info" kind="owner" ref-id="e1f54bfa2631493294ac4167d3001e1b"></editor-location-info><button slot="button" data-type="area" title="Add a area to this area" class="add-part-button">
+<svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-shape" width="24" height="24" viewBox="0 0 24 24" stroke-width="1.5" stroke="#000000" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
+  <circle cx="5" cy="5" r="2"></circle>
+  <circle cx="19" cy="5" r="2"></circle>
+  <circle cx="5" cy="19" r="2"></circle>
+  <circle cx="19" cy="19" r="2"></circle>
+  <line x1="5" y1="7" x2="5" y2="17"></line>
+  <line x1="7" y1="5" x2="17" y2="5"></line>
+  <line x1="7" y1="19" x2="17" y2="19"></line>
+  <line x1="19" y1="7" x2="19" y2="17"></line>
+</svg>
+</button><button slot="button" data-type="button" title="Add a button to this area" class="add-part-button">
+<svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-hand-finger" width="44" height="44" viewBox="0 0 24 24" stroke-width="1.5" stroke="#2c3e50" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
+  <path d="M8 13v-8.5a1.5 1.5 0 0 1 3 0v7.5"></path>
+  <path d="M11 11.5v-2a1.5 1.5 0 1 1 3 0v2.5"></path>
+  <path d="M14 10.5a1.5 1.5 0 0 1 3 0v1.5"></path>
+  <path d="M17 11.5a1.5 1.5 0 0 1 3 0v4.5a6 6 0 0 1 -6 6h-2h.208a6 6 0 0 1 -5.012 -2.7a69.74 69.74 0 0 1 -.196 -.3c-.312 -.479 -1.407 -2.388 -3.286 -5.728a1.5 1.5 0 0 1 .536 -2.022a1.867 1.867 0 0 1 2.28 .28l1.47 1.47"></path>
+</svg>
+</button><button slot="button" data-type="field" title="Add a field to this area" class="add-part-button">
+<svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-forms" width="24" height="24" viewBox="0 0 24 24" stroke-width="1.5" stroke="#000000" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
+  <path d="M12 3a3 3 0 0 0 -3 3v12a3 3 0 0 0 3 3"></path>
+  <path d="M6 3a3 3 0 0 1 3 3v12a3 3 0 0 1 -3 3"></path>
+  <path d="M13 7h7a1 1 0 0 1 1 1v8a1 1 0 0 1 -1 1h-7"></path>
+  <path d="M5 7h-1a1 1 0 0 0 -1 1v8a1 1 0 0 0 1 1h1"></path>
+  <path d="M17 12h.01"></path>
+  <path d="M13 12h.01"></path>
+</svg>
+</button><button slot="button" data-type="image" title="Add a image to this area" class="add-part-button">
+<svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-photo" width="24" height="24" viewBox="0 0 24 24" stroke-width="1.5" stroke="#000000" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
+  <line x1="15" y1="8" x2="15.01" y2="8"></line>
+  <rect x="4" y="4" width="16" height="16" rx="3"></rect>
+  <path d="M4 15l4 -4a3 5 0 0 1 3 0l5 5"></path>
+  <path d="M14 14l1 -1a3 5 0 0 1 3 0l2 2"></path>
+</svg>
+</button><button slot="button" data-type="audio" title="Add a audio to this area" class="add-part-button">
+<svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-puzzle" width="44" height="44" viewBox="0 0 24 24" stroke-width="1.5" stroke="#2c3e50" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
+  <path d="M4 7h3a1 1 0 0 0 1 -1v-1a2 2 0 0 1 4 0v1a1 1 0 0 0 1 1h3a1 1 0 0 1 1 1v3a1 1 0 0 0 1 1h1a2 2 0 0 1 0 4h-1a1 1 0 0 0 -1 1v3a1 1 0 0 1 -1 1h-3a1 1 0 0 1 -1 -1v-1a2 2 0 0 0 -4 0v1a1 1 0 0 1 -1 1h-3a1 1 0 0 1 -1 -1v-3a1 1 0 0 1 1 -1h1a2 2 0 0 0 0 -4h-1a1 1 0 0 1 -1 -1v-3a1 1 0 0 1 1 -1"></path>
+</svg>
+</button><button slot="button" data-type="resource" title="Add a resource to this area" class="add-part-button">
+<svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-puzzle" width="44" height="44" viewBox="0 0 24 24" stroke-width="1.5" stroke="#2c3e50" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
+  <path d="M4 7h3a1 1 0 0 0 1 -1v-1a2 2 0 0 1 4 0v1a1 1 0 0 0 1 1h3a1 1 0 0 1 1 1v3a1 1 0 0 0 1 1h1a2 2 0 0 1 0 4h-1a1 1 0 0 0 -1 1v3a1 1 0 0 1 -1 1h-3a1 1 0 0 1 -1 -1v-1a2 2 0 0 0 -4 0v1a1 1 0 0 1 -1 1h-3a1 1 0 0 1 -1 -1v-3a1 1 0 0 1 1 -1h1a2 2 0 0 0 0 -4h-1a1 1 0 0 1 -1 -1v-3a1 1 0 0 1 1 -1"></path>
+</svg>
+</button><button slot="button" data-type="drawing" title="Add a drawing to this area" class="add-part-button">
+<svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-palette" width="24" height="24" viewBox="0 0 24 24" stroke-width="1.5" stroke="#000000" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
+  <path d="M12 21a9 9 0 1 1 0 -18a9 8 0 0 1 9 8a4.5 4 0 0 1 -4.5 4h-2.5a2 2 0 0 0 -1 3.75a1.3 1.3 0 0 1 -1 2.25"></path>
+  <circle cx="7.5" cy="10.5" r=".5" fill="currentColor"></circle>
+  <circle cx="12" cy="7.5" r=".5" fill="currentColor"></circle>
+  <circle cx="16.5" cy="10.5" r=".5" fill="currentColor"></circle>
+</svg>
+</button><button slot="button" data-type="browser" title="Add a browser to this area" class="add-part-button">
+<svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-puzzle" width="44" height="44" viewBox="0 0 24 24" stroke-width="1.5" stroke="#2c3e50" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
+  <path d="M4 7h3a1 1 0 0 0 1 -1v-1a2 2 0 0 1 4 0v1a1 1 0 0 0 1 1h3a1 1 0 0 1 1 1v3a1 1 0 0 0 1 1h1a2 2 0 0 1 0 4h-1a1 1 0 0 0 -1 1v3a1 1 0 0 1 -1 1h-3a1 1 0 0 1 -1 -1v-1a2 2 0 0 0 -4 0v1a1 1 0 0 1 -1 1h-3a1 1 0 0 1 -1 -1v-3a1 1 0 0 1 1 -1h1a2 2 0 0 0 0 -4h-1a1 1 0 0 1 -1 -1v-3a1 1 0 0 1 1 -1"></path>
+</svg>
+</button><button slot="button" data-type="window" title="Add a window to this area" class="add-part-button">
+<svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-window" width="24" height="24" viewBox="0 0 24 24" stroke-width="1.5" stroke="#000000" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
+  <path d="M12 3c-3.866 0 -7 3.272 -7 7v10a1 1 0 0 0 1 1h12a1 1 0 0 0 1 -1v-10c0 -3.728 -3.134 -7 -7 -7z"></path>
+  <line x1="5" y1="13" x2="19" y2="13"></line>
+  <line x1="12" y1="3" x2="12" y2="21"></line>
+</svg>
+</button><li class="subpart-item" ref-id="743ad8c865864f8d97cf9dd3bd653245"><div class="icon-display-area">
+<svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-photo" width="24" height="24" viewBox="0 0 24 24" stroke-width="1.5" stroke="#000000" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
+  <line x1="15" y1="8" x2="15.01" y2="8"></line>
+  <rect x="4" y="4" width="16" height="16" rx="3"></rect>
+  <path d="M4 15l4 -4a3 5 0 0 1 3 0l5 5"></path>
+  <path d="M14 14l1 -1a3 5 0 0 1 3 0l2 2"></path>
+</svg>
+</div><h3>a Image</h3><span class="name-span">"New image"</span><span class="id-span">(743ad8c865864f8d97cf9dd3bd653245)</span></li><li class="subpart-item" ref-id="1f5e6c8d0a324d0c9b3422c62ca4f7a1"><div class="icon-display-area">
+<svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-shape" width="24" height="24" viewBox="0 0 24 24" stroke-width="1.5" stroke="#000000" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
+  <circle cx="5" cy="5" r="2"></circle>
+  <circle cx="19" cy="5" r="2"></circle>
+  <circle cx="5" cy="19" r="2"></circle>
+  <circle cx="19" cy="19" r="2"></circle>
+  <line x1="5" y1="7" x2="5" y2="17"></line>
+  <line x1="7" y1="5" x2="17" y2="5"></line>
+  <line x1="7" y1="19" x2="17" y2="19"></line>
+  <line x1="19" y1="7" x2="19" y2="17"></line>
+</svg>
+</div><h3>a Area</h3><span class="name-span">"New area"</span><span class="id-span">(1f5e6c8d0a324d0c9b3422c62ca4f7a1)</span></li><li class="subpart-item" ref-id="76e4c2c65da74729afd2ed5c4918e660"><div class="icon-display-area">
+<svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-forms" width="24" height="24" viewBox="0 0 24 24" stroke-width="1.5" stroke="#000000" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
+  <path d="M12 3a3 3 0 0 0 -3 3v12a3 3 0 0 0 3 3"></path>
+  <path d="M6 3a3 3 0 0 1 3 3v12a3 3 0 0 1 -3 3"></path>
+  <path d="M13 7h7a1 1 0 0 1 1 1v8a1 1 0 0 1 -1 1h-7"></path>
+  <path d="M5 7h-1a1 1 0 0 0 -1 1v8a1 1 0 0 0 1 1h1"></path>
+  <path d="M17 12h.01"></path>
+  <path d="M13 12h.01"></path>
+</svg>
+</div><h3>a Field</h3><span class="name-span">"New field"</span><span class="id-span">(76e4c2c65da74729afd2ed5c4918e660)</span></li></editor-subparts></st-editor></body></html>
