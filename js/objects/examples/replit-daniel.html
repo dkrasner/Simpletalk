@@ -9,7 +9,7 @@
 		<!--<script type="text/javascript" src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs@0.13.5/dist/tf.js"></script>>-->
 	</head>
 
-<body>
+<body class="">
     <style>
         body {
             display: block;
@@ -41,14 +41,17 @@
                 "number": 1,
                 "custom-properties": {},
                 "stepping": false,
-                "current": "feeafc546ec84090994e58968d482cae"
+                "current": "feeafc546ec84090994e58968d482cae",
+                "navigator-open": true
             },
             "subparts": [
-                "feeafc546ec84090994e58968d482cae"
+                "feeafc546ec84090994e58968d482cae",
+                "09735bfedce04865a6723124c6d08291"
             ],
             "ownerId": null,
             "loadedStacks": [
-                "feeafc546ec84090994e58968d482cae"
+                "feeafc546ec84090994e58968d482cae",
+                "09735bfedce04865a6723124c6d08291"
             ]
         },
         "feeafc546ec84090994e58968d482cae": {
@@ -62,7 +65,7 @@
                 "number": 1,
                 "custom-properties": {},
                 "stepping": false,
-                "current": "cee762cfc7be45b58808931f307bb77d"
+                "current": "0527c6967a8644d5a7d6d7fdb237ccda"
             },
             "subparts": [
                 "3de3df6016884e8593f607b606328916",
@@ -72,7 +75,9 @@
                 "198e0640c9d344839789d02d49928abd",
                 "f71131a22a4c4af086c399157583c838",
                 "cee762cfc7be45b58808931f307bb77d",
+                "8e5d9ca74d3b4712957fedc15e5f0aa6",
                 "0527c6967a8644d5a7d6d7fdb237ccda",
+                "ba810c4df74b4b358611f5a1066178bd",
                 "00295db73abb4b5183d86b32715dc038"
             ],
             "ownerId": "world"
@@ -1102,8 +1107,8 @@
                 "mimeType": "image/jpeg",
                 "width": 431.8666687011719,
                 "height": 346.1000061035156,
-                "top": 72,
-                "left": 83,
+                "top": 63,
+                "left": 207,
                 "pinning": ""
             },
             "subparts": [],
@@ -1138,8 +1143,8 @@
                 "mimeType": "image/jpeg",
                 "width": 437.4666748046875,
                 "height": 388.75,
-                "top": 148,
-                "left": 944,
+                "top": 111,
+                "left": 1018,
                 "pinning": ""
             },
             "subparts": [],
@@ -1157,7 +1162,7 @@
                 "width": 434.51666259765625,
                 "height": 289.25,
                 "top": 321,
-                "left": 391,
+                "left": 393,
                 "pinning": ""
             },
             "subparts": [],
@@ -1174,8 +1179,8 @@
                 "mimeType": "image/jpeg",
                 "width": 370,
                 "height": 450,
-                "top": 591,
-                "left": 833,
+                "top": 537,
+                "left": 852,
                 "pinning": ""
             },
             "subparts": [],
@@ -1192,8 +1197,8 @@
                 "mimeType": "image/jpeg",
                 "width": 699,
                 "height": 349.5,
-                "top": 879,
-                "left": 1098,
+                "top": 878,
+                "left": 1100,
                 "pinning": ""
             },
             "subparts": [],
@@ -1216,8 +1221,8 @@
                 "border-right-transparency": 0,
                 "width": 351,
                 "height": 245,
-                "top": 482,
-                "left": 35,
+                "top": 364,
+                "left": 50,
                 "pinning": "",
                 "text-align": "center",
                 "text-font": "cursive",
@@ -1335,8 +1340,8 @@
                 "src": "https://www.youtube.com/embed/UwahG1s4dqI",
                 "width": 466,
                 "height": 331,
-                "top": 192,
-                "left": 625,
+                "top": 416,
+                "left": 1607,
                 "pinning": ""
             },
             "subparts": [],
@@ -1376,14 +1381,16 @@
             "type": "card",
             "id": "cee762cfc7be45b58808931f307bb77d",
             "properties": {
-                "script": "on arrowKey direction\n\tif direction is \"right\"\n\tthen\n\t\ttell first image of area \"Sheeler\" to set \"hide\" to false\n\t\ttell field \"Sheeler\" of area \"Sheeler\" to set \"hide\" to false\n\telse\n\t\ttell first image of area \"Sheeler\" to set \"hide\" to true\n\t\ttell field \"Sheeler\" of area \"Sheeler\" to set \"hide\" to true\n\tend if\n\nend arrowKey \n",
+                "script": "on arrowKey direction\n\tif direction is \"right\"\n\tthen\n\t\tif (the \"showing\" of current card) is \"Consumers\"\n\t\tthen\n\t\t\ttell area \"Byproduct\" to show\n\t\t\tset \"showing\" to \"Byproduct\"\n\t\tend if\n\t\tif (the \"showing\" of current card) is \"Producers\"\n\t\tthen\n\t\t\ttell area \"Consumers\" to show\n\t\t\tset \"showing\" to \"Consumers\"\n\t\tend if\n\t\tif (the \"showing\" of current card) is \"Sheeler\"\n\t\tthen\n\t\t\ttell area \"Producers\" to show\n\n\t\t\tset \"showing\" to \"Producers\"\n\t\tend if\n\t\tif (the \"showing\" of current card) is \"start\"\n\t\tthen\n\t\t\ttell area \"Sheeler\" to show\n\t\t\tset \"showing\" to \"Sheeler\"\n\t\tend if\n\telse \n\t\tif direction is \"left\"\n\t\tthen\n\t\t\ttell area \"Sheeler\" to hide\n\t\t\ttell area \"Producers\" to hide\n\t\t\ttell area \"Consumers\" to hide\n\t\t\ttell area \"Byproduct\" to hide\n\t\t\tset \"showing\" to \"start\"\n\t\tend if\n\tend if\nend arrowKey \n",
                 "number": 7,
                 "stepping": false,
                 "background-color": "white"
             },
             "subparts": [
                 "899b34427d1846aab9f955b02b9a224e",
-                "a1045618dae64c36803005ce96d57d00"
+                "e3b41b8223364c03a5e50ab5966c0a90",
+                "fd06198095984b5694d91bd925ff4aac",
+                "8ecec9bf4aed4799860a8142f5bf20e2"
             ],
             "ownerId": "feeafc546ec84090994e58968d482cae"
         },
@@ -1392,12 +1399,17 @@
             "id": "899b34427d1846aab9f955b02b9a224e",
             "properties": {
                 "name": "Sheeler",
+                "script": "on show \n\ttell first image to set \"hide\" to false\n\ttell field \"Sheeler\" to set \"hide\" to false\nend show \n\n\non hide \n\ttell first image to set \"hide\" to true\n\ttell field \"Sheeler\" to set \"hide\" to true \nend hide ",
                 "number": 1,
                 "stepping": false,
+                "border-top-transparency": 0,
+                "border-bottom-transparency": 0,
+                "border-left-transparency": 0,
+                "border-right-transparency": 0,
                 "width": 774,
                 "height": 1038,
-                "top": 26,
-                "left": 181,
+                "top": 27,
+                "left": 36,
                 "pinning": ""
             },
             "subparts": [
@@ -1405,7 +1417,9 @@
                 "6704084f4d1f45b2b1da4aebf7f7a588",
                 "fcebda64c8444acd93e6168cb57fd617",
                 "ef8692e5db084ff19d1975b42ffa25b1",
-                "d81dac2345c74105aa7264de12e71040"
+                "d81dac2345c74105aa7264de12e71040",
+                "92293bca67f3407183597e381189eeeb",
+                "b45ce45e3eb546d2b9a551c23f4d0796"
             ],
             "ownerId": "cee762cfc7be45b58808931f307bb77d"
         },
@@ -1418,9 +1432,10 @@
                 "stepping": false,
                 "src": "/images/sheeler.jpg",
                 "mimeType": "image/jpeg",
+                "hide": true,
                 "width": 766.5,
                 "height": 1001.3206408270473,
-                "top": -4,
+                "top": -5,
                 "left": 2,
                 "pinning": ""
             },
@@ -1444,8 +1459,8 @@
                 "border-right-transparency": 0,
                 "width": 476,
                 "height": 108,
-                "top": 293,
-                "left": 23,
+                "top": 303,
+                "left": 43,
                 "rotate": 25.68462756185728,
                 "pinning": "",
                 "text-align": "center",
@@ -1475,8 +1490,8 @@
                 "border-right-transparency": 0,
                 "width": 425,
                 "height": 94,
-                "top": 416,
-                "left": 351,
+                "top": 375,
+                "left": 398,
                 "rotate": 319.19040601341476,
                 "pinning": "",
                 "text-align": "center",
@@ -1484,7 +1499,7 @@
                 "text-color": "rgb(219, 18, 45)",
                 "text-style": "cursive",
                 "text-bold": true,
-                "text-size": 60
+                "text-size": 55
             },
             "subparts": [],
             "ownerId": "899b34427d1846aab9f955b02b9a224e"
@@ -1504,18 +1519,18 @@
                 "border-bottom-transparency": 0,
                 "border-left-transparency": 0,
                 "border-right-transparency": 0,
-                "width": 292,
-                "height": 87,
-                "top": 853,
-                "left": 247,
-                "rotate": 0.7393339953402761,
+                "width": 114,
+                "height": 37,
+                "top": 743,
+                "left": 647,
+                "rotate": 351.9454248062969,
                 "pinning": "",
                 "text-align": "center",
                 "text-font": "Monaco",
                 "text-color": "rgb(219, 18, 45)",
                 "text-style": "cursive",
                 "text-bold": true,
-                "text-size": 60
+                "text-size": 20
             },
             "subparts": [],
             "ownerId": "899b34427d1846aab9f955b02b9a224e"
@@ -1525,6 +1540,512 @@
             "id": "d81dac2345c74105aa7264de12e71040",
             "properties": {
                 "id": "d81dac2345c74105aa7264de12e71040",
+                "name": "Sheeler",
+                "number": 5,
+                "stepping": false,
+                "innerHTML": "Charles Sheeler -- Ford Motor Company 1927-28<br>",
+                "text": "Charles Sheeler -- Ford Motor Company 1927-28\n",
+                "editable": false,
+                "background-transparency": 0,
+                "border-top-transparency": 0,
+                "border-bottom-transparency": 0,
+                "border-left-transparency": 0,
+                "border-right-transparency": 0,
+                "hide": true,
+                "width": 410,
+                "height": 22,
+                "top": 997,
+                "left": 356,
+                "pinning": "",
+                "text-align": "center",
+                "text-font": "Arial",
+                "text-color": "gray",
+                "text-style": "Arial",
+                "text-bold": true,
+                "text-size": 17
+            },
+            "subparts": [],
+            "ownerId": "899b34427d1846aab9f955b02b9a224e"
+        },
+        "92293bca67f3407183597e381189eeeb": {
+            "type": "field",
+            "id": "92293bca67f3407183597e381189eeeb",
+            "properties": {
+                "id": "92293bca67f3407183597e381189eeeb",
+                "number": 6,
+                "stepping": false,
+                "innerHTML": "Delivery",
+                "text": "Delivery",
+                "editable": false,
+                "background-transparency": 0,
+                "border-top-transparency": 0,
+                "border-bottom-transparency": 0,
+                "border-left-transparency": 0,
+                "border-right-transparency": 0,
+                "width": 151,
+                "height": 52,
+                "top": 607,
+                "left": 161,
+                "rotate": 25.032591298957527,
+                "pinning": "",
+                "text-align": "center",
+                "text-font": "Monaco",
+                "text-color": "rgb(219, 18, 45)",
+                "text-style": "cursive",
+                "text-bold": true,
+                "text-size": 25
+            },
+            "subparts": [],
+            "ownerId": "899b34427d1846aab9f955b02b9a224e"
+        },
+        "b45ce45e3eb546d2b9a551c23f4d0796": {
+            "type": "field",
+            "id": "b45ce45e3eb546d2b9a551c23f4d0796",
+            "properties": {
+                "id": "b45ce45e3eb546d2b9a551c23f4d0796",
+                "number": 7,
+                "stepping": false,
+                "innerHTML": "Productivity",
+                "text": "Productivity",
+                "editable": false,
+                "background-transparency": 0,
+                "border-top-transparency": 0,
+                "border-bottom-transparency": 0,
+                "border-left-transparency": 0,
+                "border-right-transparency": 0,
+                "width": 162,
+                "height": 38,
+                "top": 341,
+                "left": 389,
+                "rotate": 0,
+                "pinning": "",
+                "text-align": "center",
+                "text-font": "Monaco",
+                "text-color": "rgb(219, 18, 45)",
+                "text-style": "cursive",
+                "text-bold": true
+            },
+            "subparts": [],
+            "ownerId": "899b34427d1846aab9f955b02b9a224e"
+        },
+        "e3b41b8223364c03a5e50ab5966c0a90": {
+            "type": "area",
+            "id": "e3b41b8223364c03a5e50ab5966c0a90",
+            "properties": {
+                "id": "e3b41b8223364c03a5e50ab5966c0a90",
+                "name": "Producers",
+                "script": "on show \n\tset \"hide\" to false\nend show \n\non hide \n\tset \"hide\" to true\nend hide ",
+                "number": 2,
+                "stepping": false,
+                "background-transparency": 1,
+                "background-color": "rgb(250, 250, 250)",
+                "border-top-style": "ridge",
+                "border-bottom-style": "ridge",
+                "border-left-style": "ridge",
+                "border-right-style": "ridge",
+                "border-top-width": 5,
+                "border-bottom-width": 2,
+                "border-left-width": 2,
+                "border-right-width": 2,
+                "border-top-transparency": 1,
+                "border-bottom-transparency": 1,
+                "border-left-transparency": 1,
+                "border-right-transparency": 1,
+                "hide": true,
+                "width": 613,
+                "height": 814,
+                "top": 26,
+                "left": 807,
+                "pinning": ""
+            },
+            "subparts": [
+                "4dc1fdeb5dd54abaa5bfc9b2256d63ac",
+                "6947679061f14cc990f3b61e70726f36",
+                "15b517cebe444d128842dc51866c5977"
+            ],
+            "ownerId": "cee762cfc7be45b58808931f307bb77d"
+        },
+        "4dc1fdeb5dd54abaa5bfc9b2256d63ac": {
+            "type": "image",
+            "id": "4dc1fdeb5dd54abaa5bfc9b2256d63ac",
+            "properties": {
+                "id": "4dc1fdeb5dd54abaa5bfc9b2256d63ac",
+                "number": 1,
+                "stepping": false,
+                "src": "/images/textileindustry.jpg",
+                "mimeType": "image/jpeg",
+                "width": 398.95001220703125,
+                "height": 266.066650390625,
+                "top": 3,
+                "left": 5,
+                "pinning": ""
+            },
+            "subparts": [],
+            "ownerId": "e3b41b8223364c03a5e50ab5966c0a90"
+        },
+        "6947679061f14cc990f3b61e70726f36": {
+            "type": "image",
+            "id": "6947679061f14cc990f3b61e70726f36",
+            "properties": {
+                "id": "6947679061f14cc990f3b61e70726f36",
+                "number": 2,
+                "stepping": false,
+                "src": "https://www.history.com/.image/t_share/MTgyODcxMjIwMzM5ODc3MjE2/gettyimages-514874606.jpg",
+                "mimeType": "image/jpeg",
+                "width": 374.80244836748614,
+                "height": 300.433349609375,
+                "top": 227,
+                "left": 109,
+                "pinning": ""
+            },
+            "subparts": [],
+            "ownerId": "e3b41b8223364c03a5e50ab5966c0a90"
+        },
+        "15b517cebe444d128842dc51866c5977": {
+            "type": "image",
+            "id": "15b517cebe444d128842dc51866c5977",
+            "properties": {
+                "id": "15b517cebe444d128842dc51866c5977",
+                "number": 3,
+                "stepping": false,
+                "src": "https://4.bp.blogspot.com/-JnvKFdIat4s/XMSGXfJ4-5I/AAAAAAADf3U/rMgKvds0YNwzZWSf3bKIAVkDh79A5ddZwCLcBGAs/s1600/cubicle-farm-2.jpg",
+                "mimeType": "image/jpeg",
+                "width": 303.3666687011719,
+                "height": 369.01666259765625,
+                "top": 417,
+                "left": 261,
+                "pinning": ""
+            },
+            "subparts": [],
+            "ownerId": "e3b41b8223364c03a5e50ab5966c0a90"
+        },
+        "fd06198095984b5694d91bd925ff4aac": {
+            "type": "area",
+            "id": "fd06198095984b5694d91bd925ff4aac",
+            "properties": {
+                "id": "fd06198095984b5694d91bd925ff4aac",
+                "name": "Consumers",
+                "script": "on show \n\tset \"hide\" to false\nend show \n\non hide \n\tset \"hide\" to true\nend hide ",
+                "number": 3,
+                "stepping": false,
+                "background-transparency": 1,
+                "background-color": "rgb(250, 250, 250)",
+                "border-top-style": "ridge",
+                "border-bottom-style": "ridge",
+                "border-left-style": "ridge",
+                "border-right-style": "ridge",
+                "border-top-width": 5,
+                "border-bottom-width": 2,
+                "border-left-width": 2,
+                "border-right-width": 2,
+                "border-top-transparency": 1,
+                "border-bottom-transparency": 1,
+                "border-left-transparency": 1,
+                "border-right-transparency": 1,
+                "hide": true,
+                "width": 621,
+                "height": 729,
+                "top": 49,
+                "left": 1296,
+                "pinning": ""
+            },
+            "subparts": [
+                "836ca32261ab4083a3e2191fbde2202b",
+                "91c025cfcc574e90818d83d4db3e4306",
+                "de4b3b965bc148959320f64aeb66bbd2"
+            ],
+            "ownerId": "cee762cfc7be45b58808931f307bb77d"
+        },
+        "836ca32261ab4083a3e2191fbde2202b": {
+            "type": "image",
+            "id": "836ca32261ab4083a3e2191fbde2202b",
+            "properties": {
+                "id": "836ca32261ab4083a3e2191fbde2202b",
+                "number": 1,
+                "stepping": false,
+                "src": "/images/salon.jpg",
+                "mimeType": "image/jpeg",
+                "width": 378.95001220703125,
+                "height": 252.73333740234375,
+                "top": 4,
+                "left": 4,
+                "pinning": ""
+            },
+            "subparts": [],
+            "ownerId": "fd06198095984b5694d91bd925ff4aac"
+        },
+        "91c025cfcc574e90818d83d4db3e4306": {
+            "type": "image",
+            "id": "91c025cfcc574e90818d83d4db3e4306",
+            "properties": {
+                "id": "91c025cfcc574e90818d83d4db3e4306",
+                "number": 2,
+                "stepping": false,
+                "src": "/images/phones.jpg",
+                "mimeType": "image/jpeg",
+                "width": 359.4666748046875,
+                "height": 278.4157175396542,
+                "top": 212,
+                "left": 107,
+                "pinning": ""
+            },
+            "subparts": [],
+            "ownerId": "fd06198095984b5694d91bd925ff4aac"
+        },
+        "de4b3b965bc148959320f64aeb66bbd2": {
+            "type": "image",
+            "id": "de4b3b965bc148959320f64aeb66bbd2",
+            "properties": {
+                "id": "de4b3b965bc148959320f64aeb66bbd2",
+                "number": 3,
+                "stepping": false,
+                "src": "https://www.debatingeurope.eu/wp-content/uploads/2018/07/phone-addiction.jpg",
+                "mimeType": "image/jpeg",
+                "width": 473,
+                "height": 236.5,
+                "top": 473,
+                "left": 139,
+                "pinning": ""
+            },
+            "subparts": [],
+            "ownerId": "fd06198095984b5694d91bd925ff4aac"
+        },
+        "8ecec9bf4aed4799860a8142f5bf20e2": {
+            "type": "area",
+            "id": "8ecec9bf4aed4799860a8142f5bf20e2",
+            "properties": {
+                "id": "8ecec9bf4aed4799860a8142f5bf20e2",
+                "name": "Byproduct",
+                "script": "on show \n\tset \"hide\" to false\nend show \n\non hide \n\tset \"hide\" to true\nend hide ",
+                "number": 4,
+                "stepping": false,
+                "background-transparency": 1,
+                "background-color": "rgb(250, 250, 250)",
+                "border-top-style": "ridge",
+                "border-bottom-style": "ridge",
+                "border-left-style": "ridge",
+                "border-right-style": "ridge",
+                "border-top-width": 5,
+                "border-bottom-width": 2,
+                "border-left-width": 2,
+                "border-right-width": 2,
+                "border-top-transparency": 1,
+                "border-bottom-transparency": 1,
+                "border-left-transparency": 1,
+                "border-right-transparency": 1,
+                "hide": true,
+                "width": 613,
+                "height": 814,
+                "top": 416,
+                "left": 895,
+                "pinning": ""
+            },
+            "subparts": [
+                "0238e7aef31245bcb584d6dcc02c7b36",
+                "8107a28b538e4943ae4369e5539a66e3"
+            ],
+            "ownerId": "cee762cfc7be45b58808931f307bb77d"
+        },
+        "0238e7aef31245bcb584d6dcc02c7b36": {
+            "type": "image",
+            "id": "0238e7aef31245bcb584d6dcc02c7b36",
+            "properties": {
+                "id": "0238e7aef31245bcb584d6dcc02c7b36",
+                "number": 1,
+                "stepping": false,
+                "src": "/images/spend.jpg",
+                "mimeType": "image/jpeg",
+                "width": 393.9666748046875,
+                "height": 479.2166748046875,
+                "top": 313,
+                "left": 9,
+                "pinning": ""
+            },
+            "subparts": [],
+            "ownerId": "8ecec9bf4aed4799860a8142f5bf20e2"
+        },
+        "8107a28b538e4943ae4369e5539a66e3": {
+            "type": "browser",
+            "id": "8107a28b538e4943ae4369e5539a66e3",
+            "properties": {
+                "id": "8107a28b538e4943ae4369e5539a66e3",
+                "name": "Modern Times",
+                "number": 2,
+                "stepping": false,
+                "src": "https://www.youtube.com/embed/UwahG1s4dqI",
+                "width": 466,
+                "height": 331,
+                "top": 8,
+                "left": 124,
+                "pinning": ""
+            },
+            "subparts": [],
+            "ownerId": "8ecec9bf4aed4799860a8142f5bf20e2"
+        },
+        "8e5d9ca74d3b4712957fedc15e5f0aa6": {
+            "type": "card",
+            "id": "8e5d9ca74d3b4712957fedc15e5f0aa6",
+            "properties": {
+                "id": "8e5d9ca74d3b4712957fedc15e5f0aa6",
+                "script": "on arrowKey direction\n\tif direction is \"right\"\n\tthen\n\t\tif (the \"showing\" of current card) is \"Technics\"\n\t\tthen\n\t\t\ttell area \"Walden\" to show\n\n\t\t\tset \"showing\" to \"Walden\"\n\t\tend if\n\t\tif (the \"showing\" of current card) is \"Keynes\"\n\t\tthen\n\t\t\ttell area \"Technics\" to show\n\n\t\t\tset \"showing\" to \"Technics\"\n\t\tend if\n\t\tif (the \"showing\" of current card) is \"Sheeler\"\n\t\tthen\n\t\t\ttell area \"Keynes\" to show\n\t\t\tset \"showing\" to \"Keynes\"\n\t\tend if\n\t\tif (the \"showing\" of current card) is \"start\"\n\t\tthen\n\t\t\ttell area \"Sheeler\" to show\n\t\t\tset \"showing\" to \"Sheeler\"\n\t\tend if\n\telse\n\t\ttell area \"Sheeler\" to hide\n\t\ttell area \"Technics\" to hide\n\t\ttell area \"Walden\" to hide\n\t\ttell area \"Keynes\" to hide\n\t\tset \"showing\" to \"start\"\n\tend if\nend arrowKey \n",
+                "number": 8,
+                "stepping": false,
+                "background-color": "white"
+            },
+            "subparts": [
+                "50916f768a6c4f608344f8f327948f73",
+                "1589c0979c0e49bfb463348e90dc486e",
+                "32114677731444639012d14f4db462ef",
+                "16b85e878b5d41dd97edb78b523ff718"
+            ],
+            "ownerId": "feeafc546ec84090994e58968d482cae"
+        },
+        "50916f768a6c4f608344f8f327948f73": {
+            "type": "area",
+            "id": "50916f768a6c4f608344f8f327948f73",
+            "properties": {
+                "id": "50916f768a6c4f608344f8f327948f73",
+                "name": "Sheeler",
+                "script": "on show \n\ttell first image to set \"hide\" to false\n\ttell field \"Sheeler\" to set \"hide\" to false\nend show \n\n\non hide \n\ttell first image to set \"hide\" to true\n\ttell field \"Sheeler\" to set \"hide\" to true \nend hide ",
+                "number": 1,
+                "stepping": false,
+                "border-top-transparency": 0,
+                "border-bottom-transparency": 0,
+                "border-left-transparency": 0,
+                "border-right-transparency": 0,
+                "width": 774,
+                "height": 1038,
+                "top": 146,
+                "left": 141,
+                "pinning": ""
+            },
+            "subparts": [
+                "f0b2b43af47647fd9d0f24a0398db86a",
+                "cffcbb91a93b40859da804455265eece",
+                "8efc2af9634f4e88a58b67ff2cd8076d",
+                "582e5e9f1fed477a8b1f925295ce8c68",
+                "d715c66aab4a4f109c3e9debb00d54d6",
+                "7d78d308aa0c46ac923aa4b9d158e061",
+                "3d4f604f7029464d9bd4e2c31012b6a8"
+            ],
+            "ownerId": "8e5d9ca74d3b4712957fedc15e5f0aa6"
+        },
+        "f0b2b43af47647fd9d0f24a0398db86a": {
+            "type": "image",
+            "id": "f0b2b43af47647fd9d0f24a0398db86a",
+            "properties": {
+                "id": "f0b2b43af47647fd9d0f24a0398db86a",
+                "number": 1,
+                "stepping": false,
+                "src": "/images/sheeler.jpg",
+                "mimeType": "image/jpeg",
+                "width": 766.5,
+                "height": 1001.3206408270473,
+                "top": -6,
+                "left": 3,
+                "pinning": ""
+            },
+            "subparts": [],
+            "ownerId": "50916f768a6c4f608344f8f327948f73"
+        },
+        "cffcbb91a93b40859da804455265eece": {
+            "type": "field",
+            "id": "cffcbb91a93b40859da804455265eece",
+            "properties": {
+                "id": "cffcbb91a93b40859da804455265eece",
+                "number": 2,
+                "stepping": false,
+                "innerHTML": "Optimization",
+                "text": "Optimization",
+                "editable": false,
+                "background-transparency": 0,
+                "border-top-transparency": 0,
+                "border-bottom-transparency": 0,
+                "border-left-transparency": 0,
+                "border-right-transparency": 0,
+                "width": 476,
+                "height": 108,
+                "top": 303,
+                "left": 43,
+                "rotate": 25.68462756185728,
+                "pinning": "",
+                "text-align": "center",
+                "text-font": "Monaco",
+                "text-color": "rgb(219, 18, 45)",
+                "text-style": "cursive",
+                "text-bold": true,
+                "text-size": 60
+            },
+            "subparts": [],
+            "ownerId": "50916f768a6c4f608344f8f327948f73"
+        },
+        "8efc2af9634f4e88a58b67ff2cd8076d": {
+            "type": "field",
+            "id": "8efc2af9634f4e88a58b67ff2cd8076d",
+            "properties": {
+                "id": "8efc2af9634f4e88a58b67ff2cd8076d",
+                "number": 3,
+                "stepping": false,
+                "innerHTML": "Efficiency<br>",
+                "text": "Efficiency\n",
+                "editable": false,
+                "background-transparency": 0,
+                "border-top-transparency": 0,
+                "border-bottom-transparency": 0,
+                "border-left-transparency": 0,
+                "border-right-transparency": 0,
+                "width": 425,
+                "height": 94,
+                "top": 375,
+                "left": 398,
+                "rotate": 319.19040601341476,
+                "pinning": "",
+                "text-align": "center",
+                "text-font": "Monaco",
+                "text-color": "rgb(219, 18, 45)",
+                "text-style": "cursive",
+                "text-bold": true,
+                "text-size": 55
+            },
+            "subparts": [],
+            "ownerId": "50916f768a6c4f608344f8f327948f73"
+        },
+        "582e5e9f1fed477a8b1f925295ce8c68": {
+            "type": "field",
+            "id": "582e5e9f1fed477a8b1f925295ce8c68",
+            "properties": {
+                "id": "582e5e9f1fed477a8b1f925295ce8c68",
+                "number": 4,
+                "stepping": false,
+                "innerHTML": "Progress",
+                "text": "Progress",
+                "editable": false,
+                "background-transparency": 0,
+                "border-top-transparency": 0,
+                "border-bottom-transparency": 0,
+                "border-left-transparency": 0,
+                "border-right-transparency": 0,
+                "width": 114,
+                "height": 37,
+                "top": 743,
+                "left": 647,
+                "rotate": 351.9454248062969,
+                "pinning": "",
+                "text-align": "center",
+                "text-font": "Monaco",
+                "text-color": "rgb(219, 18, 45)",
+                "text-style": "cursive",
+                "text-bold": true,
+                "text-size": 20
+            },
+            "subparts": [],
+            "ownerId": "50916f768a6c4f608344f8f327948f73"
+        },
+        "d715c66aab4a4f109c3e9debb00d54d6": {
+            "type": "field",
+            "id": "d715c66aab4a4f109c3e9debb00d54d6",
+            "properties": {
+                "id": "d715c66aab4a4f109c3e9debb00d54d6",
                 "name": "Sheeler",
                 "number": 5,
                 "stepping": false,
@@ -1549,13 +2070,76 @@
                 "text-size": 17
             },
             "subparts": [],
-            "ownerId": "899b34427d1846aab9f955b02b9a224e"
+            "ownerId": "50916f768a6c4f608344f8f327948f73"
         },
-        "a1045618dae64c36803005ce96d57d00": {
-            "type": "area",
-            "id": "a1045618dae64c36803005ce96d57d00",
+        "7d78d308aa0c46ac923aa4b9d158e061": {
+            "type": "field",
+            "id": "7d78d308aa0c46ac923aa4b9d158e061",
             "properties": {
+                "id": "7d78d308aa0c46ac923aa4b9d158e061",
+                "number": 6,
+                "stepping": false,
+                "innerHTML": "Delivery",
+                "text": "Delivery",
+                "editable": false,
+                "background-transparency": 0,
+                "border-top-transparency": 0,
+                "border-bottom-transparency": 0,
+                "border-left-transparency": 0,
+                "border-right-transparency": 0,
+                "width": 151,
+                "height": 52,
+                "top": 607,
+                "left": 161,
+                "rotate": 25.032591298957527,
+                "pinning": "",
+                "text-align": "center",
+                "text-font": "Monaco",
+                "text-color": "rgb(219, 18, 45)",
+                "text-style": "cursive",
+                "text-bold": true,
+                "text-size": 25
+            },
+            "subparts": [],
+            "ownerId": "50916f768a6c4f608344f8f327948f73"
+        },
+        "3d4f604f7029464d9bd4e2c31012b6a8": {
+            "type": "field",
+            "id": "3d4f604f7029464d9bd4e2c31012b6a8",
+            "properties": {
+                "id": "3d4f604f7029464d9bd4e2c31012b6a8",
+                "number": 7,
+                "stepping": false,
+                "innerHTML": "Productivity",
+                "text": "Productivity",
+                "editable": false,
+                "background-transparency": 0,
+                "border-top-transparency": 0,
+                "border-bottom-transparency": 0,
+                "border-left-transparency": 0,
+                "border-right-transparency": 0,
+                "width": 162,
+                "height": 38,
+                "top": 342,
+                "left": 388,
+                "rotate": 0,
+                "pinning": "",
+                "text-align": "center",
+                "text-font": "Monaco",
+                "text-color": "rgb(219, 18, 45)",
+                "text-style": "cursive",
+                "text-bold": true
+            },
+            "subparts": [],
+            "ownerId": "50916f768a6c4f608344f8f327948f73"
+        },
+        "1589c0979c0e49bfb463348e90dc486e": {
+            "type": "area",
+            "id": "1589c0979c0e49bfb463348e90dc486e",
+            "properties": {
+                "id": "1589c0979c0e49bfb463348e90dc486e",
                 "name": "Technics",
+                "script": "on show \n\tset \"hide\" to false\nend show \n\non hide \n\tset \"hide\" to true\nend hide ",
                 "number": 2,
                 "stepping": false,
                 "border-top-style": "ridge",
@@ -1570,23 +2154,23 @@
                 "border-bottom-transparency": 1,
                 "border-left-transparency": 1,
                 "border-right-transparency": 1,
-                "width": 647,
-                "height": 408,
-                "top": 67,
-                "left": 1114,
+                "width": 650,
+                "height": 384,
+                "top": 414,
+                "left": 1179,
                 "pinning": ""
             },
             "subparts": [
-                "ab1249aa3ce34db78ac7c5f044264350",
-                "efff51e1f80d45b5b26951beb6187a06"
+                "a6c972ea16274a1f81697ba9b1d7041c",
+                "66be5c0879fa48f7ac03a50470791685"
             ],
-            "ownerId": "cee762cfc7be45b58808931f307bb77d"
+            "ownerId": "8e5d9ca74d3b4712957fedc15e5f0aa6"
         },
-        "ab1249aa3ce34db78ac7c5f044264350": {
+        "a6c972ea16274a1f81697ba9b1d7041c": {
             "type": "field",
-            "id": "ab1249aa3ce34db78ac7c5f044264350",
+            "id": "a6c972ea16274a1f81697ba9b1d7041c",
             "properties": {
-                "id": "ab1249aa3ce34db78ac7c5f044264350",
+                "id": "a6c972ea16274a1f81697ba9b1d7041c",
                 "number": 1,
                 "stepping": false,
                 "innerHTML": "..the machine come into our civilization not to save man from the servitude to ignoble work, but to make more widely possible the servitude to ignoble standards of consumption...  - 1934<br>",
@@ -1609,13 +2193,13 @@
                 "text-size": 25
             },
             "subparts": [],
-            "ownerId": "a1045618dae64c36803005ce96d57d00"
+            "ownerId": "1589c0979c0e49bfb463348e90dc486e"
         },
-        "efff51e1f80d45b5b26951beb6187a06": {
+        "66be5c0879fa48f7ac03a50470791685": {
             "type": "image",
-            "id": "efff51e1f80d45b5b26951beb6187a06",
+            "id": "66be5c0879fa48f7ac03a50470791685",
             "properties": {
-                "id": "efff51e1f80d45b5b26951beb6187a06",
+                "id": "66be5c0879fa48f7ac03a50470791685",
                 "number": 2,
                 "stepping": false,
                 "src": "/images/technics.jpg",
@@ -1627,61 +2211,60 @@
                 "pinning": ""
             },
             "subparts": [],
-            "ownerId": "a1045618dae64c36803005ce96d57d00"
+            "ownerId": "1589c0979c0e49bfb463348e90dc486e"
         },
-        "0527c6967a8644d5a7d6d7fdb237ccda": {
-            "type": "card",
-            "id": "0527c6967a8644d5a7d6d7fdb237ccda",
+        "32114677731444639012d14f4db462ef": {
+            "type": "area",
+            "id": "32114677731444639012d14f4db462ef",
             "properties": {
-                "id": "0527c6967a8644d5a7d6d7fdb237ccda",
-                "number": 8,
+                "id": "32114677731444639012d14f4db462ef",
+                "name": "Walden",
+                "script": "on show \n\tset \"hide\" to false\nend show \n\non hide \n\tset \"hide\" to true\nend hide ",
+                "number": 3,
                 "stepping": false,
-                "background-color": "white"
-            },
-            "subparts": [
-                "0ae22f9005c74aecb550b20334345ba9",
-                "01aead0f53fc4cd6beac7053af81d72f",
-                "461bc14233c843edb5194a078167f130"
-            ],
-            "ownerId": "feeafc546ec84090994e58968d482cae"
-        },
-        "0ae22f9005c74aecb550b20334345ba9": {
-            "type": "image",
-            "id": "0ae22f9005c74aecb550b20334345ba9",
-            "properties": {
-                "id": "0ae22f9005c74aecb550b20334345ba9",
-                "number": 1,
-                "stepping": false,
-                "src": "/images/technics.jpg",
-                "mimeType": "image/jpeg",
-                "width": 231.13333129882812,
-                "height": 339.8500061035156,
-                "top": 326,
-                "left": 226,
+                "border-top-style": "ridge",
+                "border-bottom-style": "ridge",
+                "border-left-style": "ridge",
+                "border-right-style": "ridge",
+                "border-top-width": 5,
+                "border-bottom-width": 5,
+                "border-left-width": 5,
+                "border-right-width": 5,
+                "border-top-transparency": 1,
+                "border-bottom-transparency": 1,
+                "border-left-transparency": 1,
+                "border-right-transparency": 1,
+                "width": 584,
+                "height": 377,
+                "top": 803,
+                "left": 1451,
                 "pinning": ""
             },
-            "subparts": [],
-            "ownerId": "0527c6967a8644d5a7d6d7fdb237ccda"
+            "subparts": [
+                "2df76234e413441abcd788146b770ee5",
+                "41d1ba88dc54464abe69b65d6435c216"
+            ],
+            "ownerId": "8e5d9ca74d3b4712957fedc15e5f0aa6"
         },
-        "01aead0f53fc4cd6beac7053af81d72f": {
+        "2df76234e413441abcd788146b770ee5": {
             "type": "field",
-            "id": "01aead0f53fc4cd6beac7053af81d72f",
+            "id": "2df76234e413441abcd788146b770ee5",
             "properties": {
-                "id": "01aead0f53fc4cd6beac7053af81d72f",
-                "number": 2,
+                "id": "2df76234e413441abcd788146b770ee5",
+                "number": 1,
                 "stepping": false,
-                "innerHTML": "..the machine come into our civilization not to save man from the servitude to ignoble work, but to make more widely possible the servitude to ignoble standards of consumption...<br>",
-                "text": "..the machine come into our civilization not to save man from the servitude to ignoble work, but to make more widely possible the servitude to ignoble standards of consumption...\n",
+                "innerHTML": "Our inventions are wont to be pretty toys which distract our attention from serious things.  - 1854<br>",
+                "text": "Our inventions are wont to be pretty toys which distract our attention from serious things.  - 1854\n",
                 "editable": false,
                 "background-transparency": 0,
                 "border-top-transparency": 0,
                 "border-bottom-transparency": 0,
                 "border-left-transparency": 0,
                 "border-right-transparency": 0,
-                "width": 434,
-                "height": 226,
-                "top": 480,
-                "left": 560,
+                "width": 298,
+                "height": 170,
+                "top": 86,
+                "left": 273,
                 "pinning": "",
                 "text-align": "center",
                 "text-font": "cursive",
@@ -1690,14 +2273,183 @@
                 "text-size": 25
             },
             "subparts": [],
+            "ownerId": "32114677731444639012d14f4db462ef"
+        },
+        "41d1ba88dc54464abe69b65d6435c216": {
+            "type": "image",
+            "id": "41d1ba88dc54464abe69b65d6435c216",
+            "properties": {
+                "id": "41d1ba88dc54464abe69b65d6435c216",
+                "number": 2,
+                "stepping": false,
+                "src": "/images/walden.jpg",
+                "mimeType": "image/jpeg",
+                "width": 231.13333129882812,
+                "height": 339.8500061035156,
+                "top": 12,
+                "left": 23,
+                "pinning": ""
+            },
+            "subparts": [],
+            "ownerId": "32114677731444639012d14f4db462ef"
+        },
+        "16b85e878b5d41dd97edb78b523ff718": {
+            "type": "area",
+            "id": "16b85e878b5d41dd97edb78b523ff718",
+            "properties": {
+                "id": "16b85e878b5d41dd97edb78b523ff718",
+                "name": "Keynes",
+                "script": "on show \n\tset \"hide\" to false\nend show \n\non hide \n\tset \"hide\" to true\nend hide ",
+                "number": 4,
+                "stepping": false,
+                "border-top-style": "ridge",
+                "border-bottom-style": "ridge",
+                "border-left-style": "ridge",
+                "border-right-style": "ridge",
+                "border-top-width": 5,
+                "border-bottom-width": 5,
+                "border-left-width": 5,
+                "border-right-width": 5,
+                "border-top-transparency": 1,
+                "border-bottom-transparency": 1,
+                "border-left-transparency": 1,
+                "border-right-transparency": 1,
+                "width": 650,
+                "height": 384,
+                "top": 28,
+                "left": 964,
+                "pinning": ""
+            },
+            "subparts": [
+                "d273c009f4234a1ebc797999ff928395",
+                "9613a7a54dca41408cf76250a1bf50cc"
+            ],
+            "ownerId": "8e5d9ca74d3b4712957fedc15e5f0aa6"
+        },
+        "d273c009f4234a1ebc797999ff928395": {
+            "type": "field",
+            "id": "d273c009f4234a1ebc797999ff928395",
+            "properties": {
+                "id": "d273c009f4234a1ebc797999ff928395",
+                "number": 1,
+                "stepping": false,
+                "innerHTML": "In the 21st century a 15 hour work week will suffice, as we turn instead to how to use freedom from pressing economic cares. - 1930<br>",
+                "text": "In the 21st century a 15 hour work week will suffice, as we turn instead to how to use freedom from pressing economic cares. - 1930\n",
+                "editable": false,
+                "background-transparency": 0,
+                "border-top-transparency": 0,
+                "border-bottom-transparency": 0,
+                "border-left-transparency": 0,
+                "border-right-transparency": 0,
+                "width": 316,
+                "height": 256,
+                "top": 62,
+                "left": 300,
+                "pinning": "",
+                "text-align": "center",
+                "text-font": "cursive",
+                "text-style": "cursive",
+                "text-bold": true,
+                "text-size": 25
+            },
+            "subparts": [],
+            "ownerId": "16b85e878b5d41dd97edb78b523ff718"
+        },
+        "9613a7a54dca41408cf76250a1bf50cc": {
+            "type": "image",
+            "id": "9613a7a54dca41408cf76250a1bf50cc",
+            "properties": {
+                "id": "9613a7a54dca41408cf76250a1bf50cc",
+                "number": 2,
+                "stepping": false,
+                "src": "/images/keynes.jpg",
+                "mimeType": "image/jpeg",
+                "width": 250,
+                "height": 339.8500061035156,
+                "top": 14,
+                "left": 20,
+                "pinning": ""
+            },
+            "subparts": [],
+            "ownerId": "16b85e878b5d41dd97edb78b523ff718"
+        },
+        "0527c6967a8644d5a7d6d7fdb237ccda": {
+            "type": "card",
+            "id": "0527c6967a8644d5a7d6d7fdb237ccda",
+            "properties": {
+                "id": "0527c6967a8644d5a7d6d7fdb237ccda",
+                "script": "on arrowKey direction\n\tif direction is \"right\"\n\tthen\n\t\tif (the \"showing\" of current card) is \"main\"\n\t\tthen\n\t\t\ttell area \"Technics\" to show\n\t\t\tset \"showing\" to \"Technics\"\n\t\tend if\n\t\tif (the \"showing\" of current card) is \"start\"\n\t\tthen\n\t\t\ttell area \"Print\" to show\n\t\t\ttell area \"Physics\" to show\n\t\t\ttell area \"Immunization\" to show\n\t\t\ttell area \"Science\" to show\n\t\t\tset \"showing\" to \"main\"\n\t\tend if\n\telse \n\t\tif direction is \"left\"\n\t\tthen\n\t\t\ttell area \"Print\" to hide\n\t\t\ttell area \"Physics\" to hide\n\t\t\ttell area \"Immunization\" to hide\n\t\t\ttell area \"Science\" to hide\n\t\t\ttell area \"Technics\" to hide\n\t\t\tset \"showing\" to \"start\"\n\t\tend if\n\tend if\nend arrowKey \n",
+                "number": 9,
+                "stepping": false,
+                "background-color": "white"
+            },
+            "subparts": [
+                "2177df1a7a2041da990e21b7e6ba73ca",
+                "3ed43731ed6b470fa10d1344d3f3cfa1",
+                "fca032bb353d4b0599209e416a378b2a",
+                "30e949b86a2245f489e14304d5d2e309",
+                "e5a90e46ad3549e1ae85ab1845bcf3ef",
+                "75cf9b47f3004b35af06414329d7dc76"
+            ],
+            "ownerId": "feeafc546ec84090994e58968d482cae"
+        },
+        "2177df1a7a2041da990e21b7e6ba73ca": {
+            "type": "area",
+            "id": "2177df1a7a2041da990e21b7e6ba73ca",
+            "properties": {
+                "id": "2177df1a7a2041da990e21b7e6ba73ca",
+                "name": "Technics",
+                "script": "on show \n\tset \"hide\" to false\nend show \n\non hide \n\tset \"hide\" to true\nend hide ",
+                "number": 1,
+                "stepping": false,
+                "border-top-style": "ridge",
+                "border-bottom-style": "ridge",
+                "border-left-style": "ridge",
+                "border-right-style": "ridge",
+                "border-top-width": 5,
+                "border-bottom-width": 5,
+                "border-left-width": 5,
+                "border-right-width": 5,
+                "border-top-transparency": 1,
+                "border-bottom-transparency": 1,
+                "border-left-transparency": 1,
+                "border-right-transparency": 1,
+                "width": 650,
+                "height": 384,
+                "top": 496,
+                "left": 1368,
+                "pinning": ""
+            },
+            "subparts": [
+                "f3f79ec6d4d54f37b8f89f1cb44809af",
+                "53e70b25c12f4c5db8534c73c116ef84"
+            ],
             "ownerId": "0527c6967a8644d5a7d6d7fdb237ccda"
         },
-        "461bc14233c843edb5194a078167f130": {
-            "type": "field",
-            "id": "461bc14233c843edb5194a078167f130",
+        "f3f79ec6d4d54f37b8f89f1cb44809af": {
+            "type": "image",
+            "id": "f3f79ec6d4d54f37b8f89f1cb44809af",
             "properties": {
-                "id": "461bc14233c843edb5194a078167f130",
-                "number": 3,
+                "id": "f3f79ec6d4d54f37b8f89f1cb44809af",
+                "number": 1,
+                "stepping": false,
+                "src": "/images/technics.jpg",
+                "mimeType": "image/jpeg",
+                "width": 231.13333129882812,
+                "height": 339.8500061035156,
+                "top": 12,
+                "left": 23,
+                "pinning": ""
+            },
+            "subparts": [],
+            "ownerId": "2177df1a7a2041da990e21b7e6ba73ca"
+        },
+        "53e70b25c12f4c5db8534c73c116ef84": {
+            "type": "field",
+            "id": "53e70b25c12f4c5db8534c73c116ef84",
+            "properties": {
+                "id": "53e70b25c12f4c5db8534c73c116ef84",
+                "number": 2,
                 "stepping": false,
                 "innerHTML": "...he who does not see choice in the development of the machine merely betrays his incapacity to observe cumulative effects until they are bunched together so closely that they seem completely external and impersonal.<br>",
                 "text": "...he who does not see choice in the development of the machine merely betrays his incapacity to observe cumulative effects until they are bunched together so closely that they seem completely external and impersonal.\n",
@@ -1707,10 +2459,10 @@
                 "border-bottom-transparency": 0,
                 "border-left-transparency": 0,
                 "border-right-transparency": 0,
-                "width": 402,
-                "height": 286,
-                "top": 11,
-                "left": 51,
+                "width": 358,
+                "height": 283,
+                "top": 53,
+                "left": 265,
                 "pinning": "",
                 "text-align": "center",
                 "text-font": "cursive",
@@ -1719,7 +2471,652 @@
                 "text-size": 25
             },
             "subparts": [],
+            "ownerId": "2177df1a7a2041da990e21b7e6ba73ca"
+        },
+        "3ed43731ed6b470fa10d1344d3f3cfa1": {
+            "type": "field",
+            "id": "3ed43731ed6b470fa10d1344d3f3cfa1",
+            "properties": {
+                "id": "3ed43731ed6b470fa10d1344d3f3cfa1",
+                "number": 2,
+                "stepping": false,
+                "innerHTML": "What might (not) have been",
+                "text": "What might (not) have been",
+                "editable": false,
+                "background-transparency": 0,
+                "border-top-transparency": 0,
+                "border-bottom-transparency": 0,
+                "border-left-transparency": 0,
+                "border-right-transparency": 0,
+                "width": 399,
+                "height": 111,
+                "top": 36,
+                "left": 66,
+                "rotate": 0,
+                "pinning": "",
+                "text-align": "center",
+                "text-font": "Monaco",
+                "text-color": "rgb(219, 18, 45)",
+                "text-style": "cursive",
+                "text-bold": true,
+                "text-size": 40
+            },
+            "subparts": [],
             "ownerId": "0527c6967a8644d5a7d6d7fdb237ccda"
+        },
+        "fca032bb353d4b0599209e416a378b2a": {
+            "type": "area",
+            "id": "fca032bb353d4b0599209e416a378b2a",
+            "properties": {
+                "id": "fca032bb353d4b0599209e416a378b2a",
+                "name": "Physics",
+                "script": "on show \n\tset \"hide\" to false\nend show \n\non hide \n\tset \"hide\" to true\nend hide ",
+                "number": 3,
+                "stepping": false,
+                "border-top-style": "ridge",
+                "border-bottom-style": "ridge",
+                "border-left-style": "ridge",
+                "border-right-style": "ridge",
+                "border-top-width": 5,
+                "border-bottom-width": 5,
+                "border-left-width": 5,
+                "border-right-width": 5,
+                "border-top-transparency": 1,
+                "border-bottom-transparency": 1,
+                "border-left-transparency": 1,
+                "border-right-transparency": 1,
+                "width": 555,
+                "height": 403,
+                "top": 574,
+                "left": 663,
+                "pinning": ""
+            },
+            "subparts": [
+                "dc64a8a9df0d4d74b2b0e590ad6867c4",
+                "0a16d3ceb18d4a52bca7ec971fa77c83",
+                "56519b9e4be04ba4997bc091d495db27"
+            ],
+            "ownerId": "0527c6967a8644d5a7d6d7fdb237ccda"
+        },
+        "dc64a8a9df0d4d74b2b0e590ad6867c4": {
+            "type": "field",
+            "id": "dc64a8a9df0d4d74b2b0e590ad6867c4",
+            "properties": {
+                "id": "dc64a8a9df0d4d74b2b0e590ad6867c4",
+                "number": 1,
+                "stepping": false,
+                "innerHTML": "Physics?",
+                "text": "Physics?",
+                "editable": false,
+                "background-transparency": 0,
+                "border-top-transparency": 0,
+                "border-bottom-transparency": 0,
+                "border-left-transparency": 0,
+                "border-right-transparency": 0,
+                "width": 254,
+                "height": 59,
+                "top": 9,
+                "left": 299,
+                "rotate": 0,
+                "pinning": "",
+                "text-align": "center",
+                "text-font": "Monaco",
+                "text-color": "black",
+                "text-style": "cursive",
+                "text-bold": true,
+                "text-size": 35
+            },
+            "subparts": [],
+            "ownerId": "fca032bb353d4b0599209e416a378b2a"
+        },
+        "0a16d3ceb18d4a52bca7ec971fa77c83": {
+            "type": "image",
+            "id": "0a16d3ceb18d4a52bca7ec971fa77c83",
+            "properties": {
+                "id": "0a16d3ceb18d4a52bca7ec971fa77c83",
+                "number": 2,
+                "stepping": false,
+                "src": "/images/clock.jpg",
+                "mimeType": "image/jpeg",
+                "width": 277.41668701171875,
+                "height": 314.25,
+                "top": 26,
+                "left": 9,
+                "pinning": ""
+            },
+            "subparts": [],
+            "ownerId": "fca032bb353d4b0599209e416a378b2a"
+        },
+        "56519b9e4be04ba4997bc091d495db27": {
+            "type": "image",
+            "id": "56519b9e4be04ba4997bc091d495db27",
+            "properties": {
+                "id": "56519b9e4be04ba4997bc091d495db27",
+                "number": 3,
+                "stepping": false,
+                "src": "/images/newton.jpg",
+                "mimeType": "image/jpeg",
+                "width": 277.41668701171875,
+                "height": 314.25,
+                "top": 68,
+                "left": 250,
+                "pinning": ""
+            },
+            "subparts": [],
+            "ownerId": "fca032bb353d4b0599209e416a378b2a"
+        },
+        "30e949b86a2245f489e14304d5d2e309": {
+            "type": "area",
+            "id": "30e949b86a2245f489e14304d5d2e309",
+            "properties": {
+                "id": "30e949b86a2245f489e14304d5d2e309",
+                "name": "Science",
+                "script": "on show \n\tset \"hide\" to false\nend show \n\non hide \n\tset \"hide\" to true\nend hide ",
+                "number": 4,
+                "stepping": false,
+                "border-top-style": "ridge",
+                "border-bottom-style": "ridge",
+                "border-left-style": "ridge",
+                "border-right-style": "ridge",
+                "border-top-width": 5,
+                "border-bottom-width": 5,
+                "border-left-width": 5,
+                "border-right-width": 5,
+                "border-top-transparency": 1,
+                "border-bottom-transparency": 1,
+                "border-left-transparency": 1,
+                "border-right-transparency": 1,
+                "width": 700,
+                "height": 522,
+                "top": 51,
+                "left": 570,
+                "pinning": ""
+            },
+            "subparts": [
+                "503a5588e66f4c618f39a6368cf40808",
+                "17699c31c8da41c0ae2550a185d7e52b",
+                "bc51442629df4f68bd45bd6b67db42a7",
+                "a363dddd94074f24903285d59e6ef1d7"
+            ],
+            "ownerId": "0527c6967a8644d5a7d6d7fdb237ccda"
+        },
+        "503a5588e66f4c618f39a6368cf40808": {
+            "type": "image",
+            "id": "503a5588e66f4c618f39a6368cf40808",
+            "properties": {
+                "id": "503a5588e66f4c618f39a6368cf40808",
+                "number": 1,
+                "stepping": false,
+                "src": "/images/bacon.jpg",
+                "mimeType": "image/jpeg",
+                "width": 231.13333129882812,
+                "height": 339.8500061035156,
+                "top": 12,
+                "left": 22,
+                "pinning": ""
+            },
+            "subparts": [],
+            "ownerId": "30e949b86a2245f489e14304d5d2e309"
+        },
+        "17699c31c8da41c0ae2550a185d7e52b": {
+            "type": "field",
+            "id": "17699c31c8da41c0ae2550a185d7e52b",
+            "properties": {
+                "id": "17699c31c8da41c0ae2550a185d7e52b",
+                "number": 2,
+                "stepping": false,
+                "innerHTML": "Science?",
+                "text": "Science?",
+                "editable": false,
+                "background-transparency": 0,
+                "border-top-transparency": 0,
+                "border-bottom-transparency": 0,
+                "border-left-transparency": 0,
+                "border-right-transparency": 0,
+                "width": 248,
+                "height": 57,
+                "top": 25,
+                "left": 330,
+                "rotate": 0,
+                "pinning": "",
+                "text-align": "center",
+                "text-font": "Monaco",
+                "text-color": "black",
+                "text-style": "cursive",
+                "text-bold": true,
+                "text-size": 35
+            },
+            "subparts": [],
+            "ownerId": "30e949b86a2245f489e14304d5d2e309"
+        },
+        "bc51442629df4f68bd45bd6b67db42a7": {
+            "type": "image",
+            "id": "bc51442629df4f68bd45bd6b67db42a7",
+            "properties": {
+                "id": "bc51442629df4f68bd45bd6b67db42a7",
+                "number": 3,
+                "stepping": false,
+                "src": "/images/kuhn.jpg",
+                "mimeType": "image/jpeg",
+                "width": 231.13333129882812,
+                "height": 339.8500061035156,
+                "top": 97,
+                "left": 227,
+                "pinning": ""
+            },
+            "subparts": [],
+            "ownerId": "30e949b86a2245f489e14304d5d2e309"
+        },
+        "a363dddd94074f24903285d59e6ef1d7": {
+            "type": "image",
+            "id": "a363dddd94074f24903285d59e6ef1d7",
+            "properties": {
+                "id": "a363dddd94074f24903285d59e6ef1d7",
+                "number": 4,
+                "stepping": false,
+                "src": "/images/sleepwalkers.jpg",
+                "mimeType": "image/jpeg",
+                "width": 231.13333129882812,
+                "height": 339.8500061035156,
+                "top": 156,
+                "left": 445,
+                "pinning": ""
+            },
+            "subparts": [],
+            "ownerId": "30e949b86a2245f489e14304d5d2e309"
+        },
+        "e5a90e46ad3549e1ae85ab1845bcf3ef": {
+            "type": "area",
+            "id": "e5a90e46ad3549e1ae85ab1845bcf3ef",
+            "properties": {
+                "id": "e5a90e46ad3549e1ae85ab1845bcf3ef",
+                "name": "Immunization",
+                "script": "on show \n\tset \"hide\" to false\nend show \n\non hide \n\tset \"hide\" to true\nend hide ",
+                "number": 5,
+                "stepping": false,
+                "border-top-style": "ridge",
+                "border-bottom-style": "ridge",
+                "border-left-style": "ridge",
+                "border-right-style": "ridge",
+                "border-top-width": 5,
+                "border-bottom-width": 5,
+                "border-left-width": 5,
+                "border-right-width": 5,
+                "border-top-transparency": 1,
+                "border-bottom-transparency": 1,
+                "border-left-transparency": 1,
+                "border-right-transparency": 1,
+                "width": 672,
+                "height": 393,
+                "top": 57,
+                "left": 1254,
+                "pinning": ""
+            },
+            "subparts": [
+                "845f6f3d57cc49528ce76f693854f748",
+                "79b05a46333c4137b86559b7a6a2e3db",
+                "ad51340acbdd49f990cfa894a7b8f3f3"
+            ],
+            "ownerId": "0527c6967a8644d5a7d6d7fdb237ccda"
+        },
+        "845f6f3d57cc49528ce76f693854f748": {
+            "type": "field",
+            "id": "845f6f3d57cc49528ce76f693854f748",
+            "properties": {
+                "id": "845f6f3d57cc49528ce76f693854f748",
+                "number": 1,
+                "stepping": false,
+                "innerHTML": "Immunization?",
+                "text": "Immunization?",
+                "editable": false,
+                "background-transparency": 0,
+                "border-top-transparency": 0,
+                "border-bottom-transparency": 0,
+                "border-left-transparency": 0,
+                "border-right-transparency": 0,
+                "width": 314,
+                "height": 68,
+                "top": 16,
+                "left": 355,
+                "rotate": 0,
+                "pinning": "",
+                "text-align": "center",
+                "text-font": "Monaco",
+                "text-color": "black",
+                "text-style": "cursive",
+                "text-bold": true,
+                "text-size": 35
+            },
+            "subparts": [],
+            "ownerId": "e5a90e46ad3549e1ae85ab1845bcf3ef"
+        },
+        "79b05a46333c4137b86559b7a6a2e3db": {
+            "type": "image",
+            "id": "79b05a46333c4137b86559b7a6a2e3db",
+            "properties": {
+                "id": "79b05a46333c4137b86559b7a6a2e3db",
+                "number": 2,
+                "stepping": false,
+                "src": "/images/pasteur.jpg",
+                "mimeType": "image/jpeg",
+                "width": 336.76666259765625,
+                "height": 326.98333740234375,
+                "top": 21,
+                "left": 9,
+                "pinning": ""
+            },
+            "subparts": [],
+            "ownerId": "e5a90e46ad3549e1ae85ab1845bcf3ef"
+        },
+        "ad51340acbdd49f990cfa894a7b8f3f3": {
+            "type": "image",
+            "id": "ad51340acbdd49f990cfa894a7b8f3f3",
+            "properties": {
+                "id": "ad51340acbdd49f990cfa894a7b8f3f3",
+                "number": 3,
+                "stepping": false,
+                "src": "/images/jenner.jpg",
+                "mimeType": "image/jpeg",
+                "width": 218.48477399878874,
+                "height": 285.51666259765625,
+                "top": 85,
+                "left": 311,
+                "pinning": ""
+            },
+            "subparts": [],
+            "ownerId": "e5a90e46ad3549e1ae85ab1845bcf3ef"
+        },
+        "75cf9b47f3004b35af06414329d7dc76": {
+            "type": "area",
+            "id": "75cf9b47f3004b35af06414329d7dc76",
+            "properties": {
+                "id": "75cf9b47f3004b35af06414329d7dc76",
+                "name": "Print",
+                "script": "on show \n\tset \"hide\" to false\nend show \n\non hide \n\tset \"hide\" to true\nend hide ",
+                "number": 6,
+                "stepping": false,
+                "border-top-style": "ridge",
+                "border-bottom-style": "ridge",
+                "border-left-style": "ridge",
+                "border-right-style": "ridge",
+                "border-top-width": 5,
+                "border-bottom-width": 5,
+                "border-left-width": 5,
+                "border-right-width": 5,
+                "border-top-transparency": 1,
+                "border-bottom-transparency": 1,
+                "border-left-transparency": 1,
+                "border-right-transparency": 1,
+                "width": 644,
+                "height": 453,
+                "top": 226,
+                "left": 16,
+                "pinning": ""
+            },
+            "subparts": [
+                "52ba825d9bce47249b97a4fac971ea90",
+                "124585b5550e447db2d1172931e0fcc1",
+                "cf4c1f8a316848b5827e105e82b6bee5"
+            ],
+            "ownerId": "0527c6967a8644d5a7d6d7fdb237ccda"
+        },
+        "52ba825d9bce47249b97a4fac971ea90": {
+            "type": "image",
+            "id": "52ba825d9bce47249b97a4fac971ea90",
+            "properties": {
+                "id": "52ba825d9bce47249b97a4fac971ea90",
+                "number": 1,
+                "stepping": false,
+                "src": "/images/gutenberg.jpg",
+                "mimeType": "image/jpeg",
+                "width": 350,
+                "height": 339.8500061035156,
+                "top": 9,
+                "left": 25,
+                "pinning": ""
+            },
+            "subparts": [],
+            "ownerId": "75cf9b47f3004b35af06414329d7dc76"
+        },
+        "124585b5550e447db2d1172931e0fcc1": {
+            "type": "field",
+            "id": "124585b5550e447db2d1172931e0fcc1",
+            "properties": {
+                "id": "124585b5550e447db2d1172931e0fcc1",
+                "number": 2,
+                "stepping": false,
+                "innerHTML": "Print?",
+                "text": "Print?",
+                "editable": false,
+                "background-transparency": 0,
+                "border-top-transparency": 0,
+                "border-bottom-transparency": 0,
+                "border-left-transparency": 0,
+                "border-right-transparency": 0,
+                "width": 198,
+                "height": 61,
+                "top": 10,
+                "left": 413,
+                "rotate": 0,
+                "pinning": "",
+                "text-align": "center",
+                "text-font": "Monaco",
+                "text-color": "black",
+                "text-style": "cursive",
+                "text-bold": true,
+                "text-size": 35
+            },
+            "subparts": [],
+            "ownerId": "75cf9b47f3004b35af06414329d7dc76"
+        },
+        "cf4c1f8a316848b5827e105e82b6bee5": {
+            "type": "image",
+            "id": "cf4c1f8a316848b5827e105e82b6bee5",
+            "properties": {
+                "id": "cf4c1f8a316848b5827e105e82b6bee5",
+                "number": 3,
+                "stepping": false,
+                "src": "/images/manutius.jpg",
+                "mimeType": "image/jpeg",
+                "width": 350,
+                "height": 339.8500061035156,
+                "top": 94,
+                "left": 268,
+                "pinning": ""
+            },
+            "subparts": [],
+            "ownerId": "75cf9b47f3004b35af06414329d7dc76"
+        },
+        "ba810c4df74b4b358611f5a1066178bd": {
+            "type": "card",
+            "id": "ba810c4df74b4b358611f5a1066178bd",
+            "properties": {
+                "id": "ba810c4df74b4b358611f5a1066178bd",
+                "script": "on arrowKey direction\n\tif direction is \"right\"\n\tthen\n\t\tif (the \"showing\" of current card) is \"Technics\"\n\t\tthen\n\t\t\ttell area \"Walden\" to show\n\n\t\t\tset \"showing\" to \"Walden\"\n\t\tend if\nif (the \"showing\" of current card) is \"Sheeler\"\n\t\tthen\n\t\t\ttell area \"Technics\" to show\n\n\t\t\tset \"showing\" to \"Technics\"\n\t\tend if\n\t\tif (the \"showing\" of current card) is \"start\"\n\t\tthen\n\t\t\ttell area \"Sheeler\" to show\n\t\t\tset \"showing\" to \"Sheeler\"\n\t\tend if\n\telse\n\t\ttell area \"Sheeler\" to hide\n\t\ttell area \"Technics\" to hide\n\t\ttell area \"Walden\" to hide\n\n\t\tset \"showing\" to \"start\"\n\tend if\nend arrowKey \n",
+                "number": 10,
+                "stepping": false,
+                "background-color": "white"
+            },
+            "subparts": [
+                "1db22d4373e44a2fad1d89ec4ffb8b86",
+                "0e0207d98cc64bd7b7185b4a8ded3110"
+            ],
+            "ownerId": "feeafc546ec84090994e58968d482cae"
+        },
+        "1db22d4373e44a2fad1d89ec4ffb8b86": {
+            "type": "area",
+            "id": "1db22d4373e44a2fad1d89ec4ffb8b86",
+            "properties": {
+                "id": "1db22d4373e44a2fad1d89ec4ffb8b86",
+                "name": "Consumers",
+                "script": "on show \n\tset \"hide\" to false\nend show \n\non hide \n\tset \"hide\" to true\nend hide ",
+                "number": 1,
+                "stepping": false,
+                "border-top-style": "ridge",
+                "border-bottom-style": "ridge",
+                "border-left-style": "ridge",
+                "border-right-style": "ridge",
+                "border-top-width": 5,
+                "border-bottom-width": 2,
+                "border-left-width": 2,
+                "border-right-width": 2,
+                "border-top-transparency": 1,
+                "border-bottom-transparency": 1,
+                "border-left-transparency": 1,
+                "border-right-transparency": 1,
+                "width": 774,
+                "height": 933,
+                "top": 25,
+                "left": 1021,
+                "pinning": ""
+            },
+            "subparts": [
+                "f8829dfbaf624ece96441906b3fbb74b",
+                "f702f116e5fd46beb3a5d13427d124ea",
+                "83e29bdebce247eb9eaec8524dd93398"
+            ],
+            "ownerId": "ba810c4df74b4b358611f5a1066178bd"
+        },
+        "f8829dfbaf624ece96441906b3fbb74b": {
+            "type": "image",
+            "id": "f8829dfbaf624ece96441906b3fbb74b",
+            "properties": {
+                "id": "f8829dfbaf624ece96441906b3fbb74b",
+                "number": 1,
+                "stepping": false,
+                "src": "/images/salon.jpg",
+                "mimeType": "image/jpeg",
+                "width": 435.45001220703125,
+                "height": 290.3999938964844,
+                "left": 6,
+                "pinning": ""
+            },
+            "subparts": [],
+            "ownerId": "1db22d4373e44a2fad1d89ec4ffb8b86"
+        },
+        "f702f116e5fd46beb3a5d13427d124ea": {
+            "type": "image",
+            "id": "f702f116e5fd46beb3a5d13427d124ea",
+            "properties": {
+                "id": "f702f116e5fd46beb3a5d13427d124ea",
+                "number": 2,
+                "stepping": false,
+                "src": "/images/phones.jpg",
+                "mimeType": "image/jpeg",
+                "width": 451.9166564941406,
+                "height": 350.04998779296875,
+                "top": 255,
+                "left": 89,
+                "pinning": ""
+            },
+            "subparts": [],
+            "ownerId": "1db22d4373e44a2fad1d89ec4ffb8b86"
+        },
+        "83e29bdebce247eb9eaec8524dd93398": {
+            "type": "image",
+            "id": "83e29bdebce247eb9eaec8524dd93398",
+            "properties": {
+                "id": "83e29bdebce247eb9eaec8524dd93398",
+                "number": 3,
+                "stepping": false,
+                "src": "https://www.debatingeurope.eu/wp-content/uploads/2018/07/phone-addiction.jpg",
+                "mimeType": "image/jpeg",
+                "width": 597,
+                "height": 298.5,
+                "top": 594,
+                "left": 150,
+                "pinning": ""
+            },
+            "subparts": [],
+            "ownerId": "1db22d4373e44a2fad1d89ec4ffb8b86"
+        },
+        "0e0207d98cc64bd7b7185b4a8ded3110": {
+            "type": "area",
+            "id": "0e0207d98cc64bd7b7185b4a8ded3110",
+            "properties": {
+                "id": "0e0207d98cc64bd7b7185b4a8ded3110",
+                "name": "Producers",
+                "script": "on show \n\tset \"hide\" to false\nend show \n\non hide \n\tset \"hide\" to true\nend hide ",
+                "number": 2,
+                "stepping": false,
+                "border-top-style": "ridge",
+                "border-bottom-style": "ridge",
+                "border-left-style": "ridge",
+                "border-right-style": "ridge",
+                "border-top-width": 5,
+                "border-bottom-width": 2,
+                "border-left-width": 2,
+                "border-right-width": 2,
+                "border-top-transparency": 1,
+                "border-bottom-transparency": 1,
+                "border-left-transparency": 1,
+                "border-right-transparency": 1,
+                "width": 735,
+                "height": 929,
+                "top": 22,
+                "left": 261,
+                "pinning": ""
+            },
+            "subparts": [
+                "da0c4d21d3384f6499faaec01be5a83b",
+                "09afaa96e9ca40a189b5b29150e4bd7e",
+                "280f11054d514daa98fdfaf2abfa34ad"
+            ],
+            "ownerId": "ba810c4df74b4b358611f5a1066178bd"
+        },
+        "da0c4d21d3384f6499faaec01be5a83b": {
+            "type": "image",
+            "id": "da0c4d21d3384f6499faaec01be5a83b",
+            "properties": {
+                "id": "da0c4d21d3384f6499faaec01be5a83b",
+                "number": 1,
+                "stepping": false,
+                "src": "/images/textileindustry.jpg",
+                "mimeType": "image/jpeg",
+                "width": 435.45001220703125,
+                "height": 290.3999938964844,
+                "top": 3,
+                "left": 5,
+                "pinning": ""
+            },
+            "subparts": [],
+            "ownerId": "0e0207d98cc64bd7b7185b4a8ded3110"
+        },
+        "09afaa96e9ca40a189b5b29150e4bd7e": {
+            "type": "image",
+            "id": "09afaa96e9ca40a189b5b29150e4bd7e",
+            "properties": {
+                "id": "09afaa96e9ca40a189b5b29150e4bd7e",
+                "number": 2,
+                "stepping": false,
+                "src": "https://www.history.com/.image/t_share/MTgyODcxMjIwMzM5ODc3MjE2/gettyimages-514874606.jpg",
+                "mimeType": "image/jpeg",
+                "width": 422.51666259765625,
+                "height": 338.7166748046875,
+                "top": 225,
+                "left": 93,
+                "pinning": ""
+            },
+            "subparts": [],
+            "ownerId": "0e0207d98cc64bd7b7185b4a8ded3110"
+        },
+        "280f11054d514daa98fdfaf2abfa34ad": {
+            "type": "image",
+            "id": "280f11054d514daa98fdfaf2abfa34ad",
+            "properties": {
+                "id": "280f11054d514daa98fdfaf2abfa34ad",
+                "number": 3,
+                "stepping": false,
+                "src": "https://4.bp.blogspot.com/-JnvKFdIat4s/XMSGXfJ4-5I/AAAAAAADf3U/rMgKvds0YNwzZWSf3bKIAVkDh79A5ddZwCLcBGAs/s1600/cubicle-farm-2.jpg",
+                "mimeType": "image/jpeg",
+                "width": 362.52779228633545,
+                "height": 440.91668701171875,
+                "top": 452,
+                "left": 344,
+                "pinning": ""
+            },
+            "subparts": [],
+            "ownerId": "0e0207d98cc64bd7b7185b4a8ded3110"
         },
         "00295db73abb4b5183d86b32715dc038": {
             "type": "window",
@@ -1749,22 +3146,22 @@
                     "border-bottom-left-radius": "0px",
                     "border-bottom-right-radius": "0px",
                     "display": null,
-                    "top": "612px",
-                    "left": "1184px",
+                    "top": "30px",
+                    "left": "2201px",
                     "horizontal-resizing": "rigid",
                     "vertical-resizing": "rigid",
                     "width": "185px",
                     "height": "288px"
                 },
                 "cssTextStyle": {},
-                "number": 9,
+                "number": 11,
                 "custom-properties": {},
                 "stepping": false,
                 "title": "Toolbox",
                 "width": 185,
                 "height": 288,
-                "top": 612,
-                "left": 1184,
+                "top": 30,
+                "left": 2201,
                 "pinning": ""
             },
             "subparts": [
@@ -2340,6 +3737,1490 @@
             },
             "subparts": [],
             "ownerId": "edd1335386974942a727aa64be6dd8b5"
+        },
+        "09735bfedce04865a6723124c6d08291": {
+            "type": "stack",
+            "id": "09735bfedce04865a6723124c6d08291",
+            "properties": {
+                "id": "09735bfedce04865a6723124c6d08291",
+                "name": "",
+                "cssStyle": {},
+                "cssTextStyle": {},
+                "number": 2,
+                "custom-properties": {},
+                "stepping": false,
+                "current": "6ea4d949ed354ccaa9eb7f347f11788b"
+            },
+            "subparts": [
+                "6ea4d949ed354ccaa9eb7f347f11788b",
+                "d69fe6c294f44ffb813a8db5b99677e6",
+                "73e392534e4e4a9eb357644375d312fd",
+                "584c54ad99ec493ca8adbfcea28079c1"
+            ],
+            "ownerId": "world"
+        },
+        "6ea4d949ed354ccaa9eb7f347f11788b": {
+            "type": "card",
+            "id": "6ea4d949ed354ccaa9eb7f347f11788b",
+            "properties": {
+                "id": "6ea4d949ed354ccaa9eb7f347f11788b",
+                "name": "",
+                "cssStyle": {
+                    "layout": "strict",
+                    "opacity": 1,
+                    "list-direction": "row",
+                    "border-style": "solid",
+                    "border-top-style": "solid",
+                    "border-bottom-style": "solid",
+                    "border-left-style": "solid",
+                    "border-right-style": "solid",
+                    "border-top-width": "0px",
+                    "border-bottom-width": "0px",
+                    "border-left-width": "0px",
+                    "border-right-width": "0px",
+                    "border-top-color": "rgba(0, 0, 0, 1)",
+                    "border-bottom-color": "rgba(0, 0, 0, 1)",
+                    "border-left-color": "rgba(0, 0, 0, 1)",
+                    "border-right-color": "rgba(0, 0, 0, 1)",
+                    "box-shadow": "0px 0px 0px 0px rgba(238, 238, 238, 1)",
+                    "border-top-left-radius": "0px",
+                    "border-left-transparency": 1,
+                    "border-top-right-radius": "0px",
+                    "border-bottom-left-radius": "0px",
+                    "border-bottom-right-radius": "0px",
+                    "backgroundColor": "rgba(255, 255, 255, 1)"
+                },
+                "cssTextStyle": {},
+                "number": 1,
+                "custom-properties": {},
+                "stepping": false,
+                "background-color": "white"
+            },
+            "subparts": [
+                "f919f06b818d4b2cadf8892a74eab392",
+                "ad021d1dccc14f0b9efb725cd6ac41b9"
+            ],
+            "ownerId": "09735bfedce04865a6723124c6d08291"
+        },
+        "f919f06b818d4b2cadf8892a74eab392": {
+            "type": "area",
+            "id": "f919f06b818d4b2cadf8892a74eab392",
+            "properties": {
+                "id": "f919f06b818d4b2cadf8892a74eab392",
+                "cssStyle": {
+                    "width": "324px",
+                    "height": "719px",
+                    "backgroundColor": "rgba(111, 111, 111, 0.65)",
+                    "opacity": 1,
+                    "border-top-style": "solid",
+                    "border-bottom-style": "solid",
+                    "border-left-style": "solid",
+                    "border-right-style": "solid",
+                    "border-top-width": "1px",
+                    "border-bottom-width": "1px",
+                    "border-left-width": "1px",
+                    "border-right-width": "1px",
+                    "border-top-color": "rgba(238, 238, 238, 0.5)",
+                    "border-bottom-color": "rgba(238, 238, 238, 0.5)",
+                    "border-left-color": "rgba(238, 238, 238, 0.5)",
+                    "border-right-color": "rgba(238, 238, 238, 0.5)",
+                    "box-shadow": "0px 0px 0px 0px rgba(238, 238, 238, 1)",
+                    "border-top-left-radius": "0px",
+                    "border-top-right-radius": "0px",
+                    "border-bottom-left-radius": "0px",
+                    "border-bottom-right-radius": "0px",
+                    "display": null,
+                    "top": "191px",
+                    "left": "1427px",
+                    "horizontal-resizing": "rigid",
+                    "vertical-resizing": "rigid"
+                },
+                "cssTextStyle": {},
+                "number": 1,
+                "custom-properties": {},
+                "stepping": false,
+                "background-transparency": 0.65,
+                "background-color": "rgb(111, 111, 111)",
+                "width": 324,
+                "height": 719,
+                "top": 191,
+                "left": 1427,
+                "pinning": "",
+                "layout": "list",
+                "list-direction": "column",
+                "list-alignment": "center",
+                "list-distribution": "space-around"
+            },
+            "subparts": [
+                "449ea1629533494a9084cdd211a9501c",
+                "e1a7b1b96cbd4b46ab0e2a6c3f225c26",
+                "9db9c396ddba4090932e1ccb4032f2b9",
+                "3ea311875caf41c79304c97284c2147f",
+                "90fa64c6eea94229b8c94ae9e995d7fd",
+                "6df15e88a74c4406844c44b5e3eb8cd6"
+            ],
+            "ownerId": "6ea4d949ed354ccaa9eb7f347f11788b"
+        },
+        "449ea1629533494a9084cdd211a9501c": {
+            "type": "button",
+            "id": "449ea1629533494a9084cdd211a9501c",
+            "properties": {
+                "id": "449ea1629533494a9084cdd211a9501c",
+                "name": "Teal",
+                "script": "on click\n\ttell target to set \"background-color\" to the \"background-color\"\nend click\n",
+                "cssStyle": {
+                    "backgroundColor": "rgba(50, 153, 153, 1)",
+                    "opacity": 1,
+                    "border-top-style": "solid",
+                    "border-bottom-style": "solid",
+                    "border-left-style": "solid",
+                    "border-right-style": "solid",
+                    "border-top-width": "1px",
+                    "border-bottom-width": "1px",
+                    "border-left-width": "1px",
+                    "border-right-width": "1px",
+                    "border-top-color": "rgba(0, 0, 0, 1)",
+                    "border-bottom-color": "rgba(0, 0, 0, 1)",
+                    "border-left-color": "rgba(0, 0, 0, 1)",
+                    "border-right-color": "rgba(0, 0, 0, 1)",
+                    "box-shadow": "1px 1px 1px 2px rgba(238, 238, 238, 1)",
+                    "border-top-left-radius": "10px",
+                    "border-top-right-radius": "10px",
+                    "border-bottom-left-radius": "10px",
+                    "border-bottom-right-radius": "10px",
+                    "display": null,
+                    "width": "198px",
+                    "top": "9px",
+                    "left": "12px",
+                    "horizontal-resizing": "rigid",
+                    "vertical-resizing": "rigid",
+                    "height": "81px"
+                },
+                "cssTextStyle": {
+                    "textAlign": "left",
+                    "fontFamily": "Gill Sans",
+                    "color": "rgba(0, 0, 0, 1)",
+                    "textStyle": "default",
+                    "font-weight": "normal",
+                    "font-style": "normal",
+                    "fontSize": 25
+                },
+                "number": 1,
+                "target": "part id d6c2139ef5e542f1905fab432ec54ec8",
+                "custom-properties": {},
+                "stepping": false,
+                "background-color": "rgb(50, 153, 153)",
+                "shadow-spread": 2,
+                "corner-top-left-round": 10,
+                "corner-top-right-round": 10,
+                "corner-bottom-left-round": 10,
+                "corner-bottom-right-round": 10,
+                "width": 198,
+                "height": 81,
+                "top": 9,
+                "left": 12,
+                "pinning": "",
+                "text-font": "Gill Sans",
+                "text-style": "default",
+                "text-size": 25
+            },
+            "subparts": [],
+            "ownerId": "f919f06b818d4b2cadf8892a74eab392"
+        },
+        "e1a7b1b96cbd4b46ab0e2a6c3f225c26": {
+            "type": "button",
+            "id": "e1a7b1b96cbd4b46ab0e2a6c3f225c26",
+            "properties": {
+                "id": "e1a7b1b96cbd4b46ab0e2a6c3f225c26",
+                "name": "Purple",
+                "script": "on click\n\ttell target to set \"background-color\" to the \"background-color\"\nend click",
+                "cssStyle": {
+                    "backgroundColor": "rgba(124, 123, 144, 1)",
+                    "opacity": 1,
+                    "border-top-style": "solid",
+                    "border-bottom-style": "solid",
+                    "border-left-style": "solid",
+                    "border-right-style": "solid",
+                    "border-top-width": "1px",
+                    "border-bottom-width": "1px",
+                    "border-left-width": "1px",
+                    "border-right-width": "1px",
+                    "border-top-color": "rgba(0, 0, 0, 1)",
+                    "border-bottom-color": "rgba(0, 0, 0, 1)",
+                    "border-left-color": "rgba(0, 0, 0, 1)",
+                    "border-right-color": "rgba(0, 0, 0, 1)",
+                    "box-shadow": "1px 1px 1px 2px rgba(238, 238, 238, 1)",
+                    "border-top-left-radius": "10px",
+                    "border-top-right-radius": "10px",
+                    "border-bottom-left-radius": "10px",
+                    "border-bottom-right-radius": "10px",
+                    "display": null,
+                    "width": "198px",
+                    "top": "10px",
+                    "left": "10px",
+                    "horizontal-resizing": "rigid",
+                    "vertical-resizing": "rigid",
+                    "height": "81px"
+                },
+                "cssTextStyle": {
+                    "textAlign": "left",
+                    "fontFamily": "Gill Sans",
+                    "color": "rgba(0, 0, 0, 1)",
+                    "textStyle": "default",
+                    "font-weight": "normal",
+                    "font-style": "normal",
+                    "fontSize": 25
+                },
+                "number": 2,
+                "custom-properties": {},
+                "stepping": false,
+                "background-color": "rgb(124, 123, 144)",
+                "shadow-spread": 2,
+                "corner-top-left-round": 10,
+                "corner-top-right-round": 10,
+                "corner-bottom-left-round": 10,
+                "corner-bottom-right-round": 10,
+                "width": 198,
+                "height": 81,
+                "top": 10,
+                "left": 10,
+                "pinning": "",
+                "text-font": "Gill Sans",
+                "text-style": "default",
+                "text-size": 25
+            },
+            "subparts": [],
+            "ownerId": "f919f06b818d4b2cadf8892a74eab392"
+        },
+        "9db9c396ddba4090932e1ccb4032f2b9": {
+            "type": "button",
+            "id": "9db9c396ddba4090932e1ccb4032f2b9",
+            "properties": {
+                "id": "9db9c396ddba4090932e1ccb4032f2b9",
+                "name": "Pink",
+                "script": "on click\n\ttell target to set \"background-color\" to the \"background-color\"\nend click",
+                "cssStyle": {
+                    "backgroundColor": "rgba(245, 198, 196, 1)",
+                    "opacity": 1,
+                    "border-top-style": "solid",
+                    "border-bottom-style": "solid",
+                    "border-left-style": "solid",
+                    "border-right-style": "solid",
+                    "border-top-width": "1px",
+                    "border-bottom-width": "1px",
+                    "border-left-width": "1px",
+                    "border-right-width": "1px",
+                    "border-top-color": "rgba(0, 0, 0, 1)",
+                    "border-bottom-color": "rgba(0, 0, 0, 1)",
+                    "border-left-color": "rgba(0, 0, 0, 1)",
+                    "border-right-color": "rgba(0, 0, 0, 1)",
+                    "box-shadow": "1px 1px 1px 2px rgba(238, 238, 238, 1)",
+                    "border-top-left-radius": "10px",
+                    "border-top-right-radius": "10px",
+                    "border-bottom-left-radius": "10px",
+                    "border-bottom-right-radius": "10px",
+                    "display": null,
+                    "width": "198px",
+                    "top": "9px",
+                    "left": "12px",
+                    "horizontal-resizing": "rigid",
+                    "vertical-resizing": "rigid",
+                    "height": "81px"
+                },
+                "cssTextStyle": {
+                    "textAlign": "left",
+                    "fontFamily": "Gill Sans",
+                    "color": "rgba(0, 0, 0, 1)",
+                    "textStyle": "default",
+                    "font-weight": "normal",
+                    "font-style": "normal",
+                    "fontSize": 25
+                },
+                "number": 3,
+                "custom-properties": {},
+                "stepping": false,
+                "background-color": "rgb(245, 198, 196)",
+                "shadow-spread": 2,
+                "corner-top-left-round": 10,
+                "corner-top-right-round": 10,
+                "corner-bottom-left-round": 10,
+                "corner-bottom-right-round": 10,
+                "width": 198,
+                "height": 81,
+                "top": 9,
+                "left": 12,
+                "pinning": "",
+                "text-font": "Gill Sans",
+                "text-style": "default",
+                "text-size": 25
+            },
+            "subparts": [],
+            "ownerId": "f919f06b818d4b2cadf8892a74eab392"
+        },
+        "3ea311875caf41c79304c97284c2147f": {
+            "type": "button",
+            "id": "3ea311875caf41c79304c97284c2147f",
+            "properties": {
+                "id": "3ea311875caf41c79304c97284c2147f",
+                "name": "Light Purple",
+                "script": "on click\n\ttell target to set \"background-color\" to the \"background-color\"\nend click",
+                "cssStyle": {
+                    "backgroundColor": "rgba(231, 229, 255, 1)",
+                    "opacity": 1,
+                    "border-top-style": "solid",
+                    "border-bottom-style": "solid",
+                    "border-left-style": "solid",
+                    "border-right-style": "solid",
+                    "border-top-width": "1px",
+                    "border-bottom-width": "1px",
+                    "border-left-width": "1px",
+                    "border-right-width": "1px",
+                    "border-top-color": "rgba(0, 0, 0, 1)",
+                    "border-bottom-color": "rgba(0, 0, 0, 1)",
+                    "border-left-color": "rgba(0, 0, 0, 1)",
+                    "border-right-color": "rgba(0, 0, 0, 1)",
+                    "box-shadow": "1px 1px 1px 2px rgba(238, 238, 238, 1)",
+                    "border-top-left-radius": "10px",
+                    "border-top-right-radius": "10px",
+                    "border-bottom-left-radius": "10px",
+                    "border-bottom-right-radius": "10px",
+                    "display": null,
+                    "width": "198px",
+                    "top": "10px",
+                    "left": "12px",
+                    "horizontal-resizing": "rigid",
+                    "vertical-resizing": "rigid",
+                    "height": "81px"
+                },
+                "cssTextStyle": {
+                    "textAlign": "left",
+                    "fontFamily": "Gill Sans",
+                    "color": "rgba(0, 0, 0, 1)",
+                    "textStyle": "default",
+                    "font-weight": "normal",
+                    "font-style": "normal",
+                    "fontSize": 25
+                },
+                "number": 4,
+                "target": "part id ad021d1dccc14f0b9efb725cd6ac41b9",
+                "custom-properties": {},
+                "stepping": false,
+                "background-color": "rgb(231, 229, 255)",
+                "shadow-spread": 2,
+                "corner-top-left-round": 10,
+                "corner-top-right-round": 10,
+                "corner-bottom-left-round": 10,
+                "corner-bottom-right-round": 10,
+                "width": 198,
+                "height": 81,
+                "top": 10,
+                "left": 12,
+                "pinning": "",
+                "text-font": "Gill Sans",
+                "text-style": "default",
+                "text-size": 25
+            },
+            "subparts": [],
+            "ownerId": "f919f06b818d4b2cadf8892a74eab392"
+        },
+        "90fa64c6eea94229b8c94ae9e995d7fd": {
+            "type": "button",
+            "id": "90fa64c6eea94229b8c94ae9e995d7fd",
+            "properties": {
+                "id": "90fa64c6eea94229b8c94ae9e995d7fd",
+                "name": "Light Gray",
+                "script": "on click\n\ttell target to set \"background-color\" to the \"background-color\"\nend click",
+                "cssStyle": {
+                    "backgroundColor": "rgba(204, 204, 204, 1)",
+                    "opacity": 1,
+                    "border-top-style": "solid",
+                    "border-bottom-style": "solid",
+                    "border-left-style": "solid",
+                    "border-right-style": "solid",
+                    "border-top-width": "1px",
+                    "border-bottom-width": "1px",
+                    "border-left-width": "1px",
+                    "border-right-width": "1px",
+                    "border-top-color": "rgba(0, 0, 0, 1)",
+                    "border-bottom-color": "rgba(0, 0, 0, 1)",
+                    "border-left-color": "rgba(0, 0, 0, 1)",
+                    "border-right-color": "rgba(0, 0, 0, 1)",
+                    "box-shadow": "1px 1px 1px 2px rgba(238, 238, 238, 1)",
+                    "border-top-left-radius": "10px",
+                    "border-top-right-radius": "10px",
+                    "border-bottom-left-radius": "10px",
+                    "border-bottom-right-radius": "10px",
+                    "display": null,
+                    "width": "198px",
+                    "top": "9px",
+                    "left": "10px",
+                    "horizontal-resizing": "rigid",
+                    "vertical-resizing": "rigid",
+                    "height": "81px"
+                },
+                "cssTextStyle": {
+                    "textAlign": "left",
+                    "fontFamily": "Gill Sans",
+                    "color": "rgba(0, 0, 0, 1)",
+                    "textStyle": "default",
+                    "font-weight": "normal",
+                    "font-style": "normal",
+                    "fontSize": 25
+                },
+                "number": 5,
+                "target": "part id ad021d1dccc14f0b9efb725cd6ac41b9",
+                "custom-properties": {},
+                "stepping": false,
+                "background-color": "rgb(204, 204, 204)",
+                "shadow-spread": 2,
+                "corner-top-left-round": 10,
+                "corner-top-right-round": 10,
+                "corner-bottom-left-round": 10,
+                "corner-bottom-right-round": 10,
+                "width": 198,
+                "height": 81,
+                "top": 9,
+                "left": 10,
+                "pinning": "",
+                "text-font": "Gill Sans",
+                "text-style": "default",
+                "text-size": 25
+            },
+            "subparts": [],
+            "ownerId": "f919f06b818d4b2cadf8892a74eab392"
+        },
+        "6df15e88a74c4406844c44b5e3eb8cd6": {
+            "type": "button",
+            "id": "6df15e88a74c4406844c44b5e3eb8cd6",
+            "properties": {
+                "id": "6df15e88a74c4406844c44b5e3eb8cd6",
+                "name": "Red",
+                "script": "on click\n\ttell target to set \"background-color\" to the \"background-color\"\nend click",
+                "cssStyle": {
+                    "backgroundColor": "rgba(234, 47, 5, 1)",
+                    "opacity": 1,
+                    "border-top-style": "solid",
+                    "border-bottom-style": "solid",
+                    "border-left-style": "solid",
+                    "border-right-style": "solid",
+                    "border-top-width": "1px",
+                    "border-bottom-width": "1px",
+                    "border-left-width": "1px",
+                    "border-right-width": "1px",
+                    "border-top-color": "rgba(0, 0, 0, 1)",
+                    "border-bottom-color": "rgba(0, 0, 0, 1)",
+                    "border-left-color": "rgba(0, 0, 0, 1)",
+                    "border-right-color": "rgba(0, 0, 0, 1)",
+                    "box-shadow": "1px 1px 1px 2px rgba(238, 238, 238, 1)",
+                    "border-top-left-radius": "10px",
+                    "border-top-right-radius": "10px",
+                    "border-bottom-left-radius": "10px",
+                    "border-bottom-right-radius": "10px",
+                    "display": null,
+                    "width": "198px",
+                    "top": "10px",
+                    "left": "10px",
+                    "horizontal-resizing": "rigid",
+                    "vertical-resizing": "rigid",
+                    "height": "81px"
+                },
+                "cssTextStyle": {
+                    "textAlign": "left",
+                    "fontFamily": "Gill Sans",
+                    "color": "rgba(0, 0, 0, 1)",
+                    "textStyle": "default",
+                    "font-weight": "normal",
+                    "font-style": "normal",
+                    "fontSize": 25
+                },
+                "number": 6,
+                "custom-properties": {},
+                "stepping": false,
+                "background-color": "rgb(234, 47, 5)",
+                "shadow-spread": 2,
+                "corner-top-left-round": 10,
+                "corner-top-right-round": 10,
+                "corner-bottom-left-round": 10,
+                "corner-bottom-right-round": 10,
+                "width": 198,
+                "height": 81,
+                "top": 10,
+                "left": 10,
+                "pinning": "",
+                "text-font": "Gill Sans",
+                "text-style": "default",
+                "text-size": 25
+            },
+            "subparts": [],
+            "ownerId": "f919f06b818d4b2cadf8892a74eab392"
+        },
+        "ad021d1dccc14f0b9efb725cd6ac41b9": {
+            "type": "field",
+            "id": "ad021d1dccc14f0b9efb725cd6ac41b9",
+            "properties": {
+                "id": "ad021d1dccc14f0b9efb725cd6ac41b9",
+                "cssStyle": {
+                    "backgroundColor": "rgba(204, 204, 204, 0.65)",
+                    "opacity": 1,
+                    "border-top-style": "ridge",
+                    "border-bottom-style": "ridge",
+                    "border-left-style": "ridge",
+                    "border-right-style": "solid",
+                    "border-top-width": "3px",
+                    "border-bottom-width": "3px",
+                    "border-left-width": "3px",
+                    "border-right-width": "3px",
+                    "border-top-color": "rgba(0, 0, 0, 1)",
+                    "border-bottom-color": "rgba(0, 0, 0, 1)",
+                    "border-left-color": "rgba(0, 0, 0, 1)",
+                    "border-right-color": "rgba(0, 0, 0, 1)",
+                    "box-shadow": "0px 0px 0px 0px rgba(238, 238, 238, 1)",
+                    "border-top-left-radius": "0px",
+                    "border-top-right-radius": "0px",
+                    "border-bottom-left-radius": "0px",
+                    "border-bottom-right-radius": "0px",
+                    "display": null,
+                    "width": "662px",
+                    "top": "251px",
+                    "left": "375px",
+                    "horizontal-resizing": "rigid",
+                    "vertical-resizing": "rigid",
+                    "height": "174px"
+                },
+                "cssTextStyle": {
+                    "textAlign": "center",
+                    "fontFamily": "Gill Sans",
+                    "color": "rgba(0, 0, 0, 1)",
+                    "textStyle": "plain",
+                    "font-weight": "normal",
+                    "font-style": "normal",
+                    "fontSize": 25
+                },
+                "number": 2,
+                "custom-properties": {},
+                "stepping": false,
+                "innerHTML": "<div><br></div><div><br></div><div>This is some text.</div>",
+                "text": "\n\n\n\nThis is some text.",
+                "editable": false,
+                "background-transparency": 0.65,
+                "background-color": "rgb(204, 204, 204)",
+                "border-top-style": "ridge",
+                "border-bottom-style": "ridge",
+                "border-left-style": "ridge",
+                "border-top-width": "3",
+                "border-bottom-width": "3",
+                "border-left-width": "3",
+                "border-right-width": "3",
+                "width": 662,
+                "height": 174,
+                "top": 251,
+                "left": 375,
+                "pinning": "",
+                "text-align": "center",
+                "text-font": "Gill Sans",
+                "text-size": 25
+            },
+            "subparts": [],
+            "ownerId": "6ea4d949ed354ccaa9eb7f347f11788b"
+        },
+        "d69fe6c294f44ffb813a8db5b99677e6": {
+            "type": "card",
+            "id": "d69fe6c294f44ffb813a8db5b99677e6",
+            "properties": {
+                "id": "d69fe6c294f44ffb813a8db5b99677e6",
+                "cssStyle": {
+                    "backgroundColor": "rgba(255, 255, 255, 1)",
+                    "opacity": 1,
+                    "border-top-style": "solid",
+                    "border-bottom-style": "solid",
+                    "border-left-style": "solid",
+                    "border-right-style": "solid",
+                    "border-top-width": "0px",
+                    "border-bottom-width": "0px",
+                    "border-left-width": "0px",
+                    "border-right-width": "0px",
+                    "border-top-color": "rgba(0, 0, 0, 1)",
+                    "border-bottom-color": "rgba(0, 0, 0, 1)",
+                    "border-left-color": "rgba(0, 0, 0, 1)",
+                    "border-right-color": "rgba(0, 0, 0, 1)",
+                    "box-shadow": "0px 0px 0px 0px rgba(238, 238, 238, 1)",
+                    "border-top-left-radius": "0px",
+                    "border-top-right-radius": "0px",
+                    "border-bottom-left-radius": "0px",
+                    "border-bottom-right-radius": "0px"
+                },
+                "cssTextStyle": {},
+                "number": 2,
+                "custom-properties": {},
+                "stepping": false,
+                "background-color": "white"
+            },
+            "subparts": [
+                "a35ed5ad141e410ca799888678e826de",
+                "511068fd7f6649fea965e10d7f117342"
+            ],
+            "ownerId": "09735bfedce04865a6723124c6d08291"
+        },
+        "a35ed5ad141e410ca799888678e826de": {
+            "type": "area",
+            "id": "a35ed5ad141e410ca799888678e826de",
+            "properties": {
+                "id": "a35ed5ad141e410ca799888678e826de",
+                "name": "Jobs Bicycle",
+                "cssStyle": {
+                    "width": "672px",
+                    "height": "516px",
+                    "backgroundColor": "rgba(255, 255, 255, 0)",
+                    "opacity": 1,
+                    "border-top-style": "solid",
+                    "border-bottom-style": "solid",
+                    "border-left-style": "solid",
+                    "border-right-style": "solid",
+                    "border-top-width": "1px",
+                    "border-bottom-width": "1px",
+                    "border-left-width": "1px",
+                    "border-right-width": "1px",
+                    "border-top-color": "rgba(238, 238, 238, 0)",
+                    "border-bottom-color": "rgba(238, 238, 238, 0)",
+                    "border-left-color": "rgba(238, 238, 238, 0)",
+                    "border-right-color": "rgba(238, 238, 238, 0)",
+                    "box-shadow": "0px 0px 0px 0px rgba(238, 238, 238, 1)",
+                    "border-top-left-radius": "0px",
+                    "border-top-right-radius": "0px",
+                    "border-bottom-left-radius": "0px",
+                    "border-bottom-right-radius": "0px",
+                    "display": null,
+                    "top": "156px",
+                    "left": "647px",
+                    "horizontal-resizing": "rigid",
+                    "vertical-resizing": "rigid",
+                    "transform": "rotate(3950deg)"
+                },
+                "cssTextStyle": {},
+                "number": 1,
+                "custom-properties": {},
+                "stepping": false,
+                "border-top-transparency": 0,
+                "border-bottom-transparency": 0,
+                "border-left-transparency": 0,
+                "border-right-transparency": 0,
+                "width": 672,
+                "height": 516,
+                "top": 156,
+                "left": 647,
+                "rotate": 3950,
+                "pinning": ""
+            },
+            "subparts": [
+                "e66bb3437d5c4e138037afa40b9724ba",
+                "0f2b576d9d264753ae02b2854cee8d64"
+            ],
+            "ownerId": "d69fe6c294f44ffb813a8db5b99677e6"
+        },
+        "e66bb3437d5c4e138037afa40b9724ba": {
+            "type": "image",
+            "id": "e66bb3437d5c4e138037afa40b9724ba",
+            "properties": {
+                "id": "e66bb3437d5c4e138037afa40b9724ba",
+                "cssStyle": {
+                    "backgroundColor": "rgba(0, 0, 0, 0)",
+                    "opacity": 1,
+                    "border-top-style": "solid",
+                    "border-bottom-style": "solid",
+                    "border-left-style": "solid",
+                    "border-right-style": "solid",
+                    "border-top-width": "0px",
+                    "border-bottom-width": "0px",
+                    "border-left-width": "0px",
+                    "border-right-width": "0px",
+                    "border-top-color": "rgba(0, 0, 0, 1)",
+                    "border-bottom-color": "rgba(0, 0, 0, 1)",
+                    "border-left-color": "rgba(0, 0, 0, 1)",
+                    "border-right-color": "rgba(0, 0, 0, 1)",
+                    "box-shadow": "0px 0px 0px 0px rgba(238, 238, 238, 1)",
+                    "border-top-left-radius": "0px",
+                    "border-top-right-radius": "0px",
+                    "border-bottom-left-radius": "0px",
+                    "border-bottom-right-radius": "0px",
+                    "display": null,
+                    "width": "100%",
+                    "top": "23px",
+                    "left": "-2px",
+                    "horizontal-resizing": "rigid",
+                    "vertical-resizing": "rigid",
+                    "height": "100%"
+                },
+                "cssTextStyle": {},
+                "number": 1,
+                "custom-properties": {},
+                "stepping": false,
+                "src": "https://upload.wikimedia.org/wikipedia/commons/8/84/Apple_Computer_Logo_rainbow.svg",
+                "mimeType": "image/svg+xml",
+                "imageData": null,
+                "width": "fill",
+                "height": "fill",
+                "top": 23,
+                "left": -2,
+                "pinning": ""
+            },
+            "subparts": [],
+            "ownerId": "a35ed5ad141e410ca799888678e826de"
+        },
+        "0f2b576d9d264753ae02b2854cee8d64": {
+            "type": "browser",
+            "id": "0f2b576d9d264753ae02b2854cee8d64",
+            "properties": {
+                "id": "0f2b576d9d264753ae02b2854cee8d64",
+                "cssStyle": {
+                    "backgroundColor": "rgba(255, 255, 255, 0)",
+                    "opacity": 1,
+                    "border-top-style": "solid",
+                    "border-bottom-style": "solid",
+                    "border-left-style": "solid",
+                    "border-right-style": "solid",
+                    "border-top-width": "5px",
+                    "border-bottom-width": "5px",
+                    "border-left-width": "5px",
+                    "border-right-width": "5px",
+                    "border-top-color": "rgba(0, 0, 0, 0.2)",
+                    "border-bottom-color": "rgba(0, 0, 0, 0.35)",
+                    "border-left-color": "rgba(0, 0, 0, 0.25)",
+                    "border-right-color": "rgba(0, 0, 0, 0.2)",
+                    "box-shadow": "0px 0px 0px 0px rgba(238, 238, 238, 1)",
+                    "border-top-left-radius": "0px",
+                    "border-top-right-radius": "0px",
+                    "border-bottom-left-radius": "0px",
+                    "border-bottom-right-radius": "0px",
+                    "display": null,
+                    "width": "390px",
+                    "top": "211px",
+                    "left": "141px",
+                    "horizontal-resizing": "rigid",
+                    "vertical-resizing": "rigid",
+                    "height": "214px"
+                },
+                "cssTextStyle": {},
+                "number": 2,
+                "custom-properties": {},
+                "stepping": false,
+                "src": "https://www.youtube.com/embed/rTRzYjoZhIY",
+                "border-top-transparency": 0.2,
+                "border-bottom-transparency": 0.35,
+                "border-left-transparency": 0.25,
+                "border-right-transparency": 0.2,
+                "width": 390,
+                "height": 214,
+                "top": 211,
+                "left": 141,
+                "pinning": ""
+            },
+            "subparts": [],
+            "ownerId": "a35ed5ad141e410ca799888678e826de"
+        },
+        "511068fd7f6649fea965e10d7f117342": {
+            "type": "button",
+            "id": "511068fd7f6649fea965e10d7f117342",
+            "properties": {
+                "id": "511068fd7f6649fea965e10d7f117342",
+                "name": "Bicycles bicycles...",
+                "script": "on click \n\tif the \"stepping\"\n\tthen\n\t\tset \"stepping\" to false\n\telse\n\t\tset \"stepping\" to true\n\tend if\nend click \n\n\non step \n\ttell target to set \"rotate\" to (the \"rotate\" of target + 10)\n\tset \"stepTime\" to 100\nend step \n",
+                "cssStyle": {
+                    "backgroundColor": "rgba(50, 153, 153, 1)",
+                    "opacity": 1,
+                    "border-top-style": "solid",
+                    "border-bottom-style": "solid",
+                    "border-left-style": "solid",
+                    "border-right-style": "solid",
+                    "border-top-width": "1px",
+                    "border-bottom-width": "1px",
+                    "border-left-width": "1px",
+                    "border-right-width": "1px",
+                    "border-top-color": "rgba(0, 0, 0, 1)",
+                    "border-bottom-color": "rgba(0, 0, 0, 1)",
+                    "border-left-color": "rgba(0, 0, 0, 1)",
+                    "border-right-color": "rgba(0, 0, 0, 1)",
+                    "box-shadow": "1px 1px 1px 2px rgba(238, 238, 238, 1)",
+                    "border-top-left-radius": "10px",
+                    "border-top-right-radius": "10px",
+                    "border-bottom-left-radius": "10px",
+                    "border-bottom-right-radius": "10px",
+                    "display": null,
+                    "width": "272px",
+                    "top": "315px",
+                    "left": "1397px",
+                    "horizontal-resizing": "rigid",
+                    "vertical-resizing": "rigid",
+                    "height": "71px"
+                },
+                "cssTextStyle": {
+                    "textAlign": "left",
+                    "fontFamily": "Gill Sans",
+                    "color": "rgba(0, 0, 0, 1)",
+                    "textStyle": "default",
+                    "font-weight": "normal",
+                    "font-style": "normal",
+                    "fontSize": 25
+                },
+                "number": 2,
+                "target": "part id a35ed5ad141e410ca799888678e826de",
+                "custom-properties": {},
+                "stepTime": 100,
+                "stepping": false,
+                "background-color": "rgb(50, 153, 153)",
+                "shadow-spread": 2,
+                "corner-top-left-round": 10,
+                "corner-top-right-round": 10,
+                "corner-bottom-left-round": 10,
+                "corner-bottom-right-round": 10,
+                "width": 272,
+                "height": 71,
+                "top": 315,
+                "left": 1397,
+                "pinning": "",
+                "text-font": "Gill Sans",
+                "text-style": "default",
+                "text-size": 25
+            },
+            "subparts": [],
+            "ownerId": "d69fe6c294f44ffb813a8db5b99677e6"
+        },
+        "73e392534e4e4a9eb357644375d312fd": {
+            "type": "card",
+            "id": "73e392534e4e4a9eb357644375d312fd",
+            "properties": {
+                "id": "73e392534e4e4a9eb357644375d312fd",
+                "cssStyle": {
+                    "backgroundColor": "rgba(0, 75, 103, 1)",
+                    "opacity": 1,
+                    "border-top-style": "solid",
+                    "border-bottom-style": "solid",
+                    "border-left-style": "solid",
+                    "border-right-style": "solid",
+                    "border-top-width": "0px",
+                    "border-bottom-width": "0px",
+                    "border-left-width": "0px",
+                    "border-right-width": "0px",
+                    "border-top-color": "rgba(0, 0, 0, 1)",
+                    "border-bottom-color": "rgba(0, 0, 0, 1)",
+                    "border-left-color": "rgba(0, 0, 0, 1)",
+                    "border-right-color": "rgba(0, 0, 0, 1)",
+                    "box-shadow": "0px 0px 0px 0px rgba(238, 238, 238, 1)",
+                    "border-top-left-radius": "0px",
+                    "border-top-right-radius": "0px",
+                    "border-bottom-left-radius": "0px",
+                    "border-bottom-right-radius": "0px"
+                },
+                "cssTextStyle": {},
+                "number": 3,
+                "custom-properties": {},
+                "stepping": false
+            },
+            "subparts": [],
+            "ownerId": "09735bfedce04865a6723124c6d08291"
+        },
+        "584c54ad99ec493ca8adbfcea28079c1": {
+            "type": "window",
+            "id": "584c54ad99ec493ca8adbfcea28079c1",
+            "properties": {
+                "id": "584c54ad99ec493ca8adbfcea28079c1",
+                "name": "Toolbox",
+                "cssStyle": {
+                    "backgroundColor": "rgba(255, 255, 255, 0)",
+                    "opacity": 1,
+                    "border-top-style": "solid",
+                    "border-bottom-style": "solid",
+                    "border-left-style": "solid",
+                    "border-right-style": "solid",
+                    "border-top-width": "0px",
+                    "border-bottom-width": "0px",
+                    "border-left-width": "0px",
+                    "border-right-width": "0px",
+                    "border-top-color": "rgba(0, 0, 0, 1)",
+                    "border-bottom-color": "rgba(0, 0, 0, 1)",
+                    "border-left-color": "rgba(0, 0, 0, 1)",
+                    "border-right-color": "rgba(0, 0, 0, 1)",
+                    "border-left-transparency": 1,
+                    "box-shadow": "0px 0px 0px 0px rgba(238, 238, 238, 1)",
+                    "border-top-left-radius": "0px",
+                    "border-top-right-radius": "0px",
+                    "border-bottom-left-radius": "0px",
+                    "border-bottom-right-radius": "0px",
+                    "display": null,
+                    "top": "92px",
+                    "left": "2027px",
+                    "horizontal-resizing": "rigid",
+                    "vertical-resizing": "rigid",
+                    "width": "185px",
+                    "height": "288px"
+                },
+                "cssTextStyle": {},
+                "number": 4,
+                "custom-properties": {},
+                "stepping": false,
+                "title": "Toolbox",
+                "width": 185,
+                "height": 288,
+                "top": 92,
+                "left": 2027,
+                "pinning": ""
+            },
+            "subparts": [
+                "1d1bb4781acc476ea3f5987d551c2611"
+            ],
+            "ownerId": "09735bfedce04865a6723124c6d08291"
+        },
+        "1d1bb4781acc476ea3f5987d551c2611": {
+            "type": "area",
+            "id": "1d1bb4781acc476ea3f5987d551c2611",
+            "properties": {
+                "id": "1d1bb4781acc476ea3f5987d551c2611",
+                "name": "",
+                "cssStyle": {
+                    "width": "187px",
+                    "height": "274px",
+                    "backgroundColor": "rgba(255, 255, 255, 0)",
+                    "opacity": 1,
+                    "border-top-style": "solid",
+                    "border-bottom-style": "solid",
+                    "border-left-style": "solid",
+                    "border-right-style": "solid",
+                    "border-top-width": "1px",
+                    "border-bottom-width": "1px",
+                    "border-left-width": "1px",
+                    "border-right-width": "1px",
+                    "border-top-color": "rgba(238, 238, 238, 0.5)",
+                    "border-bottom-color": "rgba(238, 238, 238, 0.5)",
+                    "border-left-color": "rgba(238, 238, 238, 0.5)",
+                    "border-right-color": "rgba(238, 238, 238, 0.5)",
+                    "border-left-transparency": 0.5,
+                    "box-shadow": "0px 0px 0px 0px rgba(238, 238, 238, 1)",
+                    "border-top-left-radius": "0px",
+                    "border-top-right-radius": "0px",
+                    "border-bottom-left-radius": "0px",
+                    "border-bottom-right-radius": "0px",
+                    "display": null,
+                    "top": "0px",
+                    "left": "0px",
+                    "horizontal-resizing": "space-fill",
+                    "vertical-resizing": "rigid",
+                    "right-padding": "2",
+                    "paddingRight": "2px"
+                },
+                "cssTextStyle": {},
+                "number": 1,
+                "custom-properties": {},
+                "stepping": false,
+                "width": 187,
+                "height": 274,
+                "horizontal-resizing": "space-fill",
+                "pinning": "",
+                "layout": "list",
+                "list-direction": "column",
+                "right-padding": "2",
+                "list-alignment": "center"
+            },
+            "subparts": [
+                "b693998f2a9042118eb6658fa4e16059",
+                "65222a4f3f4f47cba5a541b4b552f67f",
+                "535c1377f4eb41408ddca5c77f5d4598",
+                "87df46e718f74b54bca18a9630daafac",
+                "02f5cef631b2485eaeb1f58cb42a53a6",
+                "29f9bcba47e6481ea4d702b149ac4030",
+                "e87933d9c4804c7693ac62b21fb66727",
+                "0f19f157ec3a4cd58ad73440ce776dcf",
+                "4f79c68003e94ba6bedd3011b1944cbd"
+            ],
+            "ownerId": "584c54ad99ec493ca8adbfcea28079c1"
+        },
+        "b693998f2a9042118eb6658fa4e16059": {
+            "type": "button",
+            "id": "b693998f2a9042118eb6658fa4e16059",
+            "properties": {
+                "id": "b693998f2a9042118eb6658fa4e16059",
+                "name": "Add Button",
+                "script": "on click\n\tadd button to current card\nend click\n",
+                "cssStyle": {
+                    "backgroundColor": "rgba(255, 234, 149, 1)",
+                    "opacity": 1,
+                    "border-top-style": "solid",
+                    "border-bottom-style": "solid",
+                    "border-left-style": "solid",
+                    "border-right-style": "solid",
+                    "border-top-width": "1px",
+                    "border-bottom-width": "1px",
+                    "border-left-width": "1px",
+                    "border-right-width": "1px",
+                    "border-top-color": "rgba(0, 0, 0, 1)",
+                    "border-bottom-color": "rgba(0, 0, 0, 1)",
+                    "border-left-color": "rgba(0, 0, 0, 1)",
+                    "border-right-color": "rgba(0, 0, 0, 1)",
+                    "border-left-transparency": 1,
+                    "box-shadow": "1px 1px 1px 0px rgba(238, 238, 238, 1)",
+                    "border-top-left-radius": "3px",
+                    "border-top-right-radius": "3px",
+                    "border-bottom-left-radius": "3px",
+                    "border-bottom-right-radius": "3px",
+                    "display": null,
+                    "top": "0px",
+                    "left": "0px",
+                    "horizontal-resizing": "rigid",
+                    "vertical-resizing": "rigid",
+                    "width": "100%"
+                },
+                "cssTextStyle": {
+                    "textAlign": "left",
+                    "fontFamily": "default",
+                    "color": "rgba(0, 0, 0, 1)",
+                    "textStyle": "plain",
+                    "font-weight": "normal",
+                    "font-style": "normal",
+                    "fontSize": 15
+                },
+                "number": 1,
+                "custom-properties": {},
+                "stepping": false,
+                "width": "fill",
+                "pinning": ""
+            },
+            "subparts": [],
+            "ownerId": "1d1bb4781acc476ea3f5987d551c2611"
+        },
+        "65222a4f3f4f47cba5a541b4b552f67f": {
+            "type": "button",
+            "id": "65222a4f3f4f47cba5a541b4b552f67f",
+            "properties": {
+                "id": "65222a4f3f4f47cba5a541b4b552f67f",
+                "name": "Add Image",
+                "script": "on click\n\tadd image to current card\nend click",
+                "cssStyle": {
+                    "backgroundColor": "rgba(255, 234, 149, 1)",
+                    "opacity": 1,
+                    "border-top-style": "solid",
+                    "border-bottom-style": "solid",
+                    "border-left-style": "solid",
+                    "border-right-style": "solid",
+                    "border-top-width": "1px",
+                    "border-bottom-width": "1px",
+                    "border-left-width": "1px",
+                    "border-right-width": "1px",
+                    "border-top-color": "rgba(0, 0, 0, 1)",
+                    "border-bottom-color": "rgba(0, 0, 0, 1)",
+                    "border-left-color": "rgba(0, 0, 0, 1)",
+                    "border-right-color": "rgba(0, 0, 0, 1)",
+                    "border-left-transparency": 1,
+                    "box-shadow": "1px 1px 1px 0px rgba(238, 238, 238, 1)",
+                    "border-top-left-radius": "3px",
+                    "border-top-right-radius": "3px",
+                    "border-bottom-left-radius": "3px",
+                    "border-bottom-right-radius": "3px",
+                    "display": null,
+                    "top": "31px",
+                    "left": "-1px",
+                    "horizontal-resizing": "rigid",
+                    "vertical-resizing": "rigid",
+                    "width": "100%"
+                },
+                "cssTextStyle": {
+                    "textAlign": "left",
+                    "fontFamily": "default",
+                    "color": "rgba(0, 0, 0, 1)",
+                    "textStyle": "plain",
+                    "font-weight": "normal",
+                    "font-style": "normal",
+                    "fontSize": 15
+                },
+                "number": 2,
+                "custom-properties": {},
+                "stepping": false,
+                "width": "fill",
+                "top": 31,
+                "left": -1,
+                "pinning": ""
+            },
+            "subparts": [],
+            "ownerId": "1d1bb4781acc476ea3f5987d551c2611"
+        },
+        "535c1377f4eb41408ddca5c77f5d4598": {
+            "type": "button",
+            "id": "535c1377f4eb41408ddca5c77f5d4598",
+            "properties": {
+                "id": "535c1377f4eb41408ddca5c77f5d4598",
+                "name": "Add Drawing",
+                "script": "on click\n\tadd drawing to current card\nend click",
+                "cssStyle": {
+                    "backgroundColor": "rgba(255, 234, 149, 1)",
+                    "opacity": 1,
+                    "border-top-style": "solid",
+                    "border-bottom-style": "solid",
+                    "border-left-style": "solid",
+                    "border-right-style": "solid",
+                    "border-top-width": "1px",
+                    "border-bottom-width": "1px",
+                    "border-left-width": "1px",
+                    "border-right-width": "1px",
+                    "border-top-color": "rgba(0, 0, 0, 1)",
+                    "border-bottom-color": "rgba(0, 0, 0, 1)",
+                    "border-left-color": "rgba(0, 0, 0, 1)",
+                    "border-right-color": "rgba(0, 0, 0, 1)",
+                    "border-left-transparency": 1,
+                    "box-shadow": "1px 1px 1px 0px rgba(238, 238, 238, 1)",
+                    "border-top-left-radius": "3px",
+                    "border-top-right-radius": "3px",
+                    "border-bottom-left-radius": "3px",
+                    "border-bottom-right-radius": "3px",
+                    "display": null,
+                    "top": "10px",
+                    "left": "10px",
+                    "horizontal-resizing": "rigid",
+                    "vertical-resizing": "rigid",
+                    "width": "100%"
+                },
+                "cssTextStyle": {
+                    "textAlign": "left",
+                    "fontFamily": "default",
+                    "color": "rgba(0, 0, 0, 1)",
+                    "textStyle": "plain",
+                    "font-weight": "normal",
+                    "font-style": "normal",
+                    "fontSize": 15
+                },
+                "number": 3,
+                "custom-properties": {},
+                "stepping": false,
+                "width": "fill",
+                "top": 10,
+                "left": 10,
+                "pinning": ""
+            },
+            "subparts": [],
+            "ownerId": "1d1bb4781acc476ea3f5987d551c2611"
+        },
+        "87df46e718f74b54bca18a9630daafac": {
+            "type": "button",
+            "id": "87df46e718f74b54bca18a9630daafac",
+            "properties": {
+                "id": "87df46e718f74b54bca18a9630daafac",
+                "name": "Add Area",
+                "script": "on click\n\tadd area to current card\nend click",
+                "cssStyle": {
+                    "backgroundColor": "rgba(255, 234, 149, 1)",
+                    "opacity": 1,
+                    "border-top-style": "solid",
+                    "border-bottom-style": "solid",
+                    "border-left-style": "solid",
+                    "border-right-style": "solid",
+                    "border-top-width": "1px",
+                    "border-bottom-width": "1px",
+                    "border-left-width": "1px",
+                    "border-right-width": "1px",
+                    "border-top-color": "rgba(0, 0, 0, 1)",
+                    "border-bottom-color": "rgba(0, 0, 0, 1)",
+                    "border-left-color": "rgba(0, 0, 0, 1)",
+                    "border-right-color": "rgba(0, 0, 0, 1)",
+                    "border-left-transparency": 1,
+                    "box-shadow": "1px 1px 1px 0px rgba(238, 238, 238, 1)",
+                    "border-top-left-radius": "3px",
+                    "border-top-right-radius": "3px",
+                    "border-bottom-left-radius": "3px",
+                    "border-bottom-right-radius": "3px",
+                    "display": null,
+                    "top": "9px",
+                    "left": "10px",
+                    "horizontal-resizing": "rigid",
+                    "vertical-resizing": "rigid",
+                    "width": "100%"
+                },
+                "cssTextStyle": {
+                    "textAlign": "left",
+                    "fontFamily": "default",
+                    "color": "rgba(0, 0, 0, 1)",
+                    "textStyle": "plain",
+                    "font-weight": "normal",
+                    "font-style": "normal",
+                    "fontSize": 15
+                },
+                "number": 4,
+                "custom-properties": {},
+                "stepping": false,
+                "width": "fill",
+                "top": 9,
+                "left": 10,
+                "pinning": ""
+            },
+            "subparts": [],
+            "ownerId": "1d1bb4781acc476ea3f5987d551c2611"
+        },
+        "02f5cef631b2485eaeb1f58cb42a53a6": {
+            "type": "button",
+            "id": "02f5cef631b2485eaeb1f58cb42a53a6",
+            "properties": {
+                "id": "02f5cef631b2485eaeb1f58cb42a53a6",
+                "name": "Add Field",
+                "script": "on click\n\tadd field to current card\nend click",
+                "cssStyle": {
+                    "backgroundColor": "rgba(255, 234, 149, 1)",
+                    "opacity": 1,
+                    "border-top-style": "solid",
+                    "border-bottom-style": "solid",
+                    "border-left-style": "solid",
+                    "border-right-style": "solid",
+                    "border-top-width": "1px",
+                    "border-bottom-width": "1px",
+                    "border-left-width": "1px",
+                    "border-right-width": "1px",
+                    "border-top-color": "rgba(0, 0, 0, 1)",
+                    "border-bottom-color": "rgba(0, 0, 0, 1)",
+                    "border-left-color": "rgba(0, 0, 0, 1)",
+                    "border-right-color": "rgba(0, 0, 0, 1)",
+                    "border-left-transparency": 1,
+                    "box-shadow": "1px 1px 1px 0px rgba(238, 238, 238, 1)",
+                    "border-top-left-radius": "3px",
+                    "border-top-right-radius": "3px",
+                    "border-bottom-left-radius": "3px",
+                    "border-bottom-right-radius": "3px",
+                    "display": null,
+                    "top": "10px",
+                    "left": "12px",
+                    "horizontal-resizing": "rigid",
+                    "vertical-resizing": "rigid",
+                    "width": "100%"
+                },
+                "cssTextStyle": {
+                    "textAlign": "left",
+                    "fontFamily": "default",
+                    "color": "rgba(0, 0, 0, 1)",
+                    "textStyle": "plain",
+                    "font-weight": "normal",
+                    "font-style": "normal",
+                    "fontSize": 15
+                },
+                "number": 5,
+                "custom-properties": {},
+                "stepping": false,
+                "width": "fill",
+                "top": 10,
+                "left": 12,
+                "pinning": ""
+            },
+            "subparts": [],
+            "ownerId": "1d1bb4781acc476ea3f5987d551c2611"
+        },
+        "29f9bcba47e6481ea4d702b149ac4030": {
+            "type": "button",
+            "id": "29f9bcba47e6481ea4d702b149ac4030",
+            "properties": {
+                "id": "29f9bcba47e6481ea4d702b149ac4030",
+                "name": "Add Card",
+                "script": "on click\n\tadd card\nend click",
+                "cssStyle": {
+                    "backgroundColor": "rgba(255, 234, 149, 1)",
+                    "opacity": 1,
+                    "border-top-style": "solid",
+                    "border-bottom-style": "solid",
+                    "border-left-style": "solid",
+                    "border-right-style": "solid",
+                    "border-top-width": "1px",
+                    "border-bottom-width": "1px",
+                    "border-left-width": "1px",
+                    "border-right-width": "1px",
+                    "border-top-color": "rgba(0, 0, 0, 1)",
+                    "border-bottom-color": "rgba(0, 0, 0, 1)",
+                    "border-left-color": "rgba(0, 0, 0, 1)",
+                    "border-right-color": "rgba(0, 0, 0, 1)",
+                    "border-left-transparency": 1,
+                    "box-shadow": "1px 1px 1px 0px rgba(238, 238, 238, 1)",
+                    "border-top-left-radius": "3px",
+                    "border-top-right-radius": "3px",
+                    "border-bottom-left-radius": "3px",
+                    "border-bottom-right-radius": "3px",
+                    "display": null,
+                    "top": "9px",
+                    "left": "10px",
+                    "horizontal-resizing": "rigid",
+                    "vertical-resizing": "rigid",
+                    "width": "100%"
+                },
+                "cssTextStyle": {
+                    "textAlign": "left",
+                    "fontFamily": "default",
+                    "color": "rgba(0, 0, 0, 1)",
+                    "textStyle": "plain",
+                    "font-weight": "normal",
+                    "font-style": "normal",
+                    "fontSize": 15
+                },
+                "number": 6,
+                "custom-properties": {},
+                "stepping": false,
+                "width": "fill",
+                "top": 9,
+                "left": 10,
+                "pinning": ""
+            },
+            "subparts": [],
+            "ownerId": "1d1bb4781acc476ea3f5987d551c2611"
+        },
+        "e87933d9c4804c7693ac62b21fb66727": {
+            "type": "button",
+            "id": "e87933d9c4804c7693ac62b21fb66727",
+            "properties": {
+                "id": "e87933d9c4804c7693ac62b21fb66727",
+                "name": "Add Toolbox Button",
+                "script": "on click\n\tadd button\n\ttell last button to set \"width\" to \"fill\"\nend click",
+                "cssStyle": {
+                    "backgroundColor": "rgba(255, 234, 149, 1)",
+                    "opacity": 1,
+                    "border-top-style": "solid",
+                    "border-bottom-style": "solid",
+                    "border-left-style": "solid",
+                    "border-right-style": "solid",
+                    "border-top-width": "1px",
+                    "border-bottom-width": "1px",
+                    "border-left-width": "1px",
+                    "border-right-width": "1px",
+                    "border-top-color": "rgba(0, 0, 0, 1)",
+                    "border-bottom-color": "rgba(0, 0, 0, 1)",
+                    "border-left-color": "rgba(0, 0, 0, 1)",
+                    "border-right-color": "rgba(0, 0, 0, 1)",
+                    "border-left-transparency": 1,
+                    "box-shadow": "1px 1px 1px 0px rgba(238, 238, 238, 1)",
+                    "border-top-left-radius": "3px",
+                    "border-top-right-radius": "3px",
+                    "border-bottom-left-radius": "3px",
+                    "border-bottom-right-radius": "3px",
+                    "display": null,
+                    "top": "0px",
+                    "left": "1px",
+                    "horizontal-resizing": "rigid",
+                    "vertical-resizing": "rigid",
+                    "width": "100%"
+                },
+                "cssTextStyle": {
+                    "textAlign": "left",
+                    "fontFamily": "default",
+                    "color": "rgba(0, 0, 0, 1)",
+                    "textStyle": "plain",
+                    "font-weight": "normal",
+                    "font-style": "normal",
+                    "fontSize": 15
+                },
+                "number": 7,
+                "custom-properties": {},
+                "stepping": false,
+                "width": "fill",
+                "left": 1,
+                "pinning": ""
+            },
+            "subparts": [],
+            "ownerId": "1d1bb4781acc476ea3f5987d551c2611"
+        },
+        "0f19f157ec3a4cd58ad73440ce776dcf": {
+            "type": "button",
+            "id": "0f19f157ec3a4cd58ad73440ce776dcf",
+            "properties": {
+                "id": "0f19f157ec3a4cd58ad73440ce776dcf",
+                "name": "Import World",
+                "script": "on click\n\timportWorld\nend click",
+                "cssStyle": {
+                    "backgroundColor": "rgba(255, 234, 149, 1)",
+                    "opacity": 1,
+                    "border-top-style": "solid",
+                    "border-bottom-style": "solid",
+                    "border-left-style": "solid",
+                    "border-right-style": "solid",
+                    "border-top-width": "1px",
+                    "border-bottom-width": "1px",
+                    "border-left-width": "1px",
+                    "border-right-width": "1px",
+                    "border-top-color": "rgba(0, 0, 0, 1)",
+                    "border-bottom-color": "rgba(0, 0, 0, 1)",
+                    "border-left-color": "rgba(0, 0, 0, 1)",
+                    "border-right-color": "rgba(0, 0, 0, 1)",
+                    "border-left-transparency": 1,
+                    "box-shadow": "1px 1px 1px 0px rgba(238, 238, 238, 1)",
+                    "border-top-left-radius": "3px",
+                    "border-top-right-radius": "3px",
+                    "border-bottom-left-radius": "3px",
+                    "border-bottom-right-radius": "3px",
+                    "display": null,
+                    "top": "-1px",
+                    "left": "1px",
+                    "horizontal-resizing": "rigid",
+                    "vertical-resizing": "rigid",
+                    "width": "100%"
+                },
+                "cssTextStyle": {
+                    "textAlign": "left",
+                    "fontFamily": "default",
+                    "color": "rgba(0, 0, 0, 1)",
+                    "textStyle": "plain",
+                    "font-weight": "normal",
+                    "font-style": "normal",
+                    "fontSize": 15
+                },
+                "number": 8,
+                "custom-properties": {},
+                "stepping": false,
+                "width": "fill",
+                "top": -1,
+                "left": 1,
+                "pinning": ""
+            },
+            "subparts": [],
+            "ownerId": "1d1bb4781acc476ea3f5987d551c2611"
+        },
+        "4f79c68003e94ba6bedd3011b1944cbd": {
+            "type": "button",
+            "id": "4f79c68003e94ba6bedd3011b1944cbd",
+            "properties": {
+                "id": "4f79c68003e94ba6bedd3011b1944cbd",
+                "name": "Save",
+                "script": "on click\n\tsaveHTML\nend click",
+                "cssStyle": {
+                    "backgroundColor": "rgba(255, 234, 149, 1)",
+                    "opacity": 1,
+                    "border-top-style": "solid",
+                    "border-bottom-style": "solid",
+                    "border-left-style": "solid",
+                    "border-right-style": "solid",
+                    "border-top-width": "1px",
+                    "border-bottom-width": "1px",
+                    "border-left-width": "1px",
+                    "border-right-width": "1px",
+                    "border-top-color": "rgba(0, 0, 0, 1)",
+                    "border-bottom-color": "rgba(0, 0, 0, 1)",
+                    "border-left-color": "rgba(0, 0, 0, 1)",
+                    "border-right-color": "rgba(0, 0, 0, 1)",
+                    "border-left-transparency": 1,
+                    "box-shadow": "1px 1px 1px 0px rgba(238, 238, 238, 1)",
+                    "border-top-left-radius": "3px",
+                    "border-top-right-radius": "3px",
+                    "border-bottom-left-radius": "3px",
+                    "border-bottom-right-radius": "3px",
+                    "display": null,
+                    "top": "0px",
+                    "left": "0px",
+                    "horizontal-resizing": "rigid",
+                    "vertical-resizing": "rigid",
+                    "width": "100%"
+                },
+                "cssTextStyle": {
+                    "textAlign": "left",
+                    "fontFamily": "default",
+                    "color": "rgba(0, 0, 0, 1)",
+                    "textStyle": "plain",
+                    "font-weight": "normal",
+                    "font-style": "normal",
+                    "fontSize": 15
+                },
+                "number": 9,
+                "custom-properties": {},
+                "stepping": false,
+                "width": "fill",
+                "pinning": ""
+            },
+            "subparts": [],
+            "ownerId": "1d1bb4781acc476ea3f5987d551c2611"
         }
     }
 }</script>
@@ -2347,7 +5228,22 @@
 
 
 
-<st-editor class=""><editor-props-list tab-name="properties" class="show-pane"><editor-prop-item name="background-color" owner-id="d81dac2345c74105aa7264de12e71040" class="item-hidden"></editor-prop-item><editor-prop-item name="background-transparency" owner-id="d81dac2345c74105aa7264de12e71040" class="item-hidden"></editor-prop-item><editor-prop-item name="border-bottom-color" owner-id="d81dac2345c74105aa7264de12e71040" class="item-hidden"></editor-prop-item><editor-prop-item name="border-bottom-style" owner-id="d81dac2345c74105aa7264de12e71040" class="item-hidden"></editor-prop-item><editor-prop-item name="border-bottom-transparency" owner-id="d81dac2345c74105aa7264de12e71040" class="item-hidden"></editor-prop-item><editor-prop-item name="border-bottom-width" owner-id="d81dac2345c74105aa7264de12e71040" class="item-hidden"></editor-prop-item><editor-prop-item name="border-left-color" owner-id="d81dac2345c74105aa7264de12e71040" class="item-hidden"></editor-prop-item><editor-prop-item name="border-left-style" owner-id="d81dac2345c74105aa7264de12e71040" class="item-hidden"></editor-prop-item><editor-prop-item name="border-left-transparency" owner-id="d81dac2345c74105aa7264de12e71040" class="item-hidden"></editor-prop-item><editor-prop-item name="border-left-width" owner-id="d81dac2345c74105aa7264de12e71040" class="item-hidden"></editor-prop-item><editor-prop-item name="border-right-color" owner-id="d81dac2345c74105aa7264de12e71040" class="item-hidden"></editor-prop-item><editor-prop-item name="border-right-style" owner-id="d81dac2345c74105aa7264de12e71040" class="item-hidden"></editor-prop-item><editor-prop-item name="border-right-transparency" owner-id="d81dac2345c74105aa7264de12e71040" class="item-hidden"></editor-prop-item><editor-prop-item name="border-right-width" owner-id="d81dac2345c74105aa7264de12e71040" class="item-hidden"></editor-prop-item><editor-prop-item name="border-top-color" owner-id="d81dac2345c74105aa7264de12e71040" class="item-hidden"></editor-prop-item><editor-prop-item name="border-top-style" owner-id="d81dac2345c74105aa7264de12e71040" class="item-hidden"></editor-prop-item><editor-prop-item name="border-top-transparency" owner-id="d81dac2345c74105aa7264de12e71040" class="item-hidden"></editor-prop-item><editor-prop-item name="border-top-width" owner-id="d81dac2345c74105aa7264de12e71040" class="item-hidden"></editor-prop-item><editor-prop-item name="bottom-margin" owner-id="d81dac2345c74105aa7264de12e71040" class="item-hidden"></editor-prop-item><editor-prop-item name="contents" owner-id="d81dac2345c74105aa7264de12e71040" class="item-hidden"></editor-prop-item><editor-prop-item name="corner-bottom-left-round" owner-id="d81dac2345c74105aa7264de12e71040" class="item-hidden"></editor-prop-item><editor-prop-item name="corner-bottom-right-round" owner-id="d81dac2345c74105aa7264de12e71040" class="item-hidden"></editor-prop-item><editor-prop-item name="corner-top-left-round" owner-id="d81dac2345c74105aa7264de12e71040" class="item-hidden"></editor-prop-item><editor-prop-item name="corner-top-right-round" owner-id="d81dac2345c74105aa7264de12e71040" class="item-hidden"></editor-prop-item><editor-prop-item name="editable" owner-id="d81dac2345c74105aa7264de12e71040" class="item-hidden"></editor-prop-item><editor-prop-item name="editor-open" owner-id="d81dac2345c74105aa7264de12e71040" class="item-hidden"></editor-prop-item><editor-prop-item name="enabled" owner-id="d81dac2345c74105aa7264de12e71040" class="item-hidden"></editor-prop-item><editor-prop-item name="halo-open" owner-id="d81dac2345c74105aa7264de12e71040" class="item-hidden"></editor-prop-item><editor-prop-item name="height" owner-id="d81dac2345c74105aa7264de12e71040" class="item-hidden"></editor-prop-item><editor-prop-item name="hide" owner-id="d81dac2345c74105aa7264de12e71040" class="item-hidden"></editor-prop-item><editor-prop-item name="horizontal-resizing" owner-id="d81dac2345c74105aa7264de12e71040" class="item-hidden"></editor-prop-item><editor-prop-item name="innerHTML" owner-id="d81dac2345c74105aa7264de12e71040" class="item-hidden"></editor-prop-item><editor-prop-item name="left" owner-id="d81dac2345c74105aa7264de12e71040" class="item-hidden"></editor-prop-item><editor-prop-item name="left-margin" owner-id="d81dac2345c74105aa7264de12e71040" class="item-hidden"></editor-prop-item><editor-prop-item name="mode" owner-id="d81dac2345c74105aa7264de12e71040" class="item-hidden"></editor-prop-item><editor-prop-item name="number" owner-id="d81dac2345c74105aa7264de12e71040" class="item-hidden"></editor-prop-item><editor-prop-item name="pinning" owner-id="d81dac2345c74105aa7264de12e71040" class="item-hidden"></editor-prop-item><editor-prop-item name="pinning-bottom" owner-id="d81dac2345c74105aa7264de12e71040" class="item-hidden"></editor-prop-item><editor-prop-item name="pinning-left" owner-id="d81dac2345c74105aa7264de12e71040" class="item-hidden"></editor-prop-item><editor-prop-item name="pinning-right" owner-id="d81dac2345c74105aa7264de12e71040" class="item-hidden"></editor-prop-item><editor-prop-item name="pinning-top" owner-id="d81dac2345c74105aa7264de12e71040" class="item-hidden"></editor-prop-item><editor-prop-item name="rectangle" owner-id="d81dac2345c74105aa7264de12e71040" class="item-hidden"></editor-prop-item><editor-prop-item name="right-margin" owner-id="d81dac2345c74105aa7264de12e71040" class="item-hidden"></editor-prop-item><editor-prop-item name="rotate" owner-id="d81dac2345c74105aa7264de12e71040" class="item-hidden"></editor-prop-item><editor-prop-item name="shadow-blur" owner-id="d81dac2345c74105aa7264de12e71040" class="item-hidden"></editor-prop-item><editor-prop-item name="shadow-color" owner-id="d81dac2345c74105aa7264de12e71040" class="item-hidden"></editor-prop-item><editor-prop-item name="shadow-left" owner-id="d81dac2345c74105aa7264de12e71040" class="item-hidden"></editor-prop-item><editor-prop-item name="shadow-spread" owner-id="d81dac2345c74105aa7264de12e71040" class="item-hidden"></editor-prop-item><editor-prop-item name="shadow-top" owner-id="d81dac2345c74105aa7264de12e71040" class="item-hidden"></editor-prop-item><editor-prop-item name="shadow-transparency" owner-id="d81dac2345c74105aa7264de12e71040" class="item-hidden"></editor-prop-item><editor-prop-item name="stepping" owner-id="d81dac2345c74105aa7264de12e71040" class="item-hidden"></editor-prop-item><editor-prop-item name="stepTime" owner-id="d81dac2345c74105aa7264de12e71040" class="item-hidden"></editor-prop-item><editor-prop-item name="targetRangeId" owner-id="d81dac2345c74105aa7264de12e71040" class="item-hidden"></editor-prop-item><editor-prop-item name="text" owner-id="d81dac2345c74105aa7264de12e71040"></editor-prop-item><editor-prop-item name="text-align" owner-id="d81dac2345c74105aa7264de12e71040"></editor-prop-item><editor-prop-item name="text-bold" owner-id="d81dac2345c74105aa7264de12e71040"></editor-prop-item><editor-prop-item name="text-color" owner-id="d81dac2345c74105aa7264de12e71040"></editor-prop-item><editor-prop-item name="text-font" owner-id="d81dac2345c74105aa7264de12e71040"></editor-prop-item><editor-prop-item name="text-italic" owner-id="d81dac2345c74105aa7264de12e71040"></editor-prop-item><editor-prop-item name="text-size" owner-id="d81dac2345c74105aa7264de12e71040"></editor-prop-item><editor-prop-item name="text-style" owner-id="d81dac2345c74105aa7264de12e71040"></editor-prop-item><editor-prop-item name="text-transparency" owner-id="d81dac2345c74105aa7264de12e71040"></editor-prop-item><editor-prop-item name="top" owner-id="d81dac2345c74105aa7264de12e71040" class="item-hidden"></editor-prop-item><editor-prop-item name="top-margin" owner-id="d81dac2345c74105aa7264de12e71040" class="item-hidden"></editor-prop-item><editor-prop-item name="transparency" owner-id="d81dac2345c74105aa7264de12e71040" class="item-hidden"></editor-prop-item><editor-prop-item name="vertical-resizing" owner-id="d81dac2345c74105aa7264de12e71040" class="item-hidden"></editor-prop-item><editor-prop-item name="wants-move" owner-id="d81dac2345c74105aa7264de12e71040" class="item-hidden"></editor-prop-item><editor-prop-item name="width" owner-id="d81dac2345c74105aa7264de12e71040" class="item-hidden"></editor-prop-item></editor-props-list><editor-messenger tab-name="messenger"></editor-messenger><editor-custom-list tab-name="custom"></editor-custom-list><editor-subparts tab-name="subparts"><editor-location-info slot="ancestor-info" kind="stack" ref-id="feeafc546ec84090994e58968d482cae"></editor-location-info><editor-location-info slot="ancestor-info" kind="card" ref-id="cee762cfc7be45b58808931f307bb77d"></editor-location-info><editor-location-info slot="ancestor-info" kind="owner" ref-id="899b34427d1846aab9f955b02b9a224e"></editor-location-info><button slot="button" data-type="field" title="Add a field to this field" class="add-part-button">
+<st-editor class=""><editor-props-list tab-name="properties" class=""><editor-prop-item name="background-color" owner-id="0527c6967a8644d5a7d6d7fdb237ccda"></editor-prop-item><editor-prop-item name="background-transparency" owner-id="0527c6967a8644d5a7d6d7fdb237ccda"></editor-prop-item><editor-prop-item name="border-bottom-color" owner-id="0527c6967a8644d5a7d6d7fdb237ccda"></editor-prop-item><editor-prop-item name="border-bottom-style" owner-id="0527c6967a8644d5a7d6d7fdb237ccda"></editor-prop-item><editor-prop-item name="border-bottom-transparency" owner-id="0527c6967a8644d5a7d6d7fdb237ccda"></editor-prop-item><editor-prop-item name="border-bottom-width" owner-id="0527c6967a8644d5a7d6d7fdb237ccda"></editor-prop-item><editor-prop-item name="border-left-color" owner-id="0527c6967a8644d5a7d6d7fdb237ccda"></editor-prop-item><editor-prop-item name="border-left-style" owner-id="0527c6967a8644d5a7d6d7fdb237ccda"></editor-prop-item><editor-prop-item name="border-left-transparency" owner-id="0527c6967a8644d5a7d6d7fdb237ccda"></editor-prop-item><editor-prop-item name="border-left-width" owner-id="0527c6967a8644d5a7d6d7fdb237ccda"></editor-prop-item><editor-prop-item name="border-right-color" owner-id="0527c6967a8644d5a7d6d7fdb237ccda"></editor-prop-item><editor-prop-item name="border-right-style" owner-id="0527c6967a8644d5a7d6d7fdb237ccda"></editor-prop-item><editor-prop-item name="border-right-transparency" owner-id="0527c6967a8644d5a7d6d7fdb237ccda"></editor-prop-item><editor-prop-item name="border-right-width" owner-id="0527c6967a8644d5a7d6d7fdb237ccda"></editor-prop-item><editor-prop-item name="border-top-color" owner-id="0527c6967a8644d5a7d6d7fdb237ccda"></editor-prop-item><editor-prop-item name="border-top-style" owner-id="0527c6967a8644d5a7d6d7fdb237ccda"></editor-prop-item><editor-prop-item name="border-top-transparency" owner-id="0527c6967a8644d5a7d6d7fdb237ccda"></editor-prop-item><editor-prop-item name="border-top-width" owner-id="0527c6967a8644d5a7d6d7fdb237ccda"></editor-prop-item><editor-prop-item name="bottom-padding" owner-id="0527c6967a8644d5a7d6d7fdb237ccda"></editor-prop-item><editor-prop-item name="cantDelete" owner-id="0527c6967a8644d5a7d6d7fdb237ccda"></editor-prop-item><editor-prop-item name="contents" owner-id="0527c6967a8644d5a7d6d7fdb237ccda"></editor-prop-item><editor-prop-item name="corner-bottom-left-round" owner-id="0527c6967a8644d5a7d6d7fdb237ccda"></editor-prop-item><editor-prop-item name="corner-bottom-right-round" owner-id="0527c6967a8644d5a7d6d7fdb237ccda"></editor-prop-item><editor-prop-item name="corner-top-left-round" owner-id="0527c6967a8644d5a7d6d7fdb237ccda"></editor-prop-item><editor-prop-item name="corner-top-right-round" owner-id="0527c6967a8644d5a7d6d7fdb237ccda"></editor-prop-item><editor-prop-item name="dontSearch" owner-id="0527c6967a8644d5a7d6d7fdb237ccda"></editor-prop-item><editor-prop-item name="editor-open" owner-id="0527c6967a8644d5a7d6d7fdb237ccda"></editor-prop-item><editor-prop-item name="enabled" owner-id="0527c6967a8644d5a7d6d7fdb237ccda"></editor-prop-item><editor-prop-item name="layout" owner-id="0527c6967a8644d5a7d6d7fdb237ccda"></editor-prop-item><editor-prop-item name="left-padding" owner-id="0527c6967a8644d5a7d6d7fdb237ccda"></editor-prop-item><editor-prop-item name="list-alignment" owner-id="0527c6967a8644d5a7d6d7fdb237ccda"></editor-prop-item><editor-prop-item name="list-direction" owner-id="0527c6967a8644d5a7d6d7fdb237ccda"></editor-prop-item><editor-prop-item name="list-distribution" owner-id="0527c6967a8644d5a7d6d7fdb237ccda"></editor-prop-item><editor-prop-item name="list-wrapping" owner-id="0527c6967a8644d5a7d6d7fdb237ccda"></editor-prop-item><editor-prop-item name="marked" owner-id="0527c6967a8644d5a7d6d7fdb237ccda"></editor-prop-item><editor-prop-item name="number" owner-id="0527c6967a8644d5a7d6d7fdb237ccda"></editor-prop-item><editor-prop-item name="rectangle" owner-id="0527c6967a8644d5a7d6d7fdb237ccda"></editor-prop-item><editor-prop-item name="right-padding" owner-id="0527c6967a8644d5a7d6d7fdb237ccda"></editor-prop-item><editor-prop-item name="shadow-blur" owner-id="0527c6967a8644d5a7d6d7fdb237ccda"></editor-prop-item><editor-prop-item name="shadow-color" owner-id="0527c6967a8644d5a7d6d7fdb237ccda"></editor-prop-item><editor-prop-item name="shadow-left" owner-id="0527c6967a8644d5a7d6d7fdb237ccda"></editor-prop-item><editor-prop-item name="shadow-spread" owner-id="0527c6967a8644d5a7d6d7fdb237ccda"></editor-prop-item><editor-prop-item name="shadow-top" owner-id="0527c6967a8644d5a7d6d7fdb237ccda"></editor-prop-item><editor-prop-item name="shadow-transparency" owner-id="0527c6967a8644d5a7d6d7fdb237ccda"></editor-prop-item><editor-prop-item name="showPict" owner-id="0527c6967a8644d5a7d6d7fdb237ccda"></editor-prop-item><editor-prop-item name="stepping" owner-id="0527c6967a8644d5a7d6d7fdb237ccda"></editor-prop-item><editor-prop-item name="stepTime" owner-id="0527c6967a8644d5a7d6d7fdb237ccda"></editor-prop-item><editor-prop-item name="top-padding" owner-id="0527c6967a8644d5a7d6d7fdb237ccda"></editor-prop-item><editor-prop-item name="transparency" owner-id="0527c6967a8644d5a7d6d7fdb237ccda"></editor-prop-item><editor-prop-item name="wants-move" owner-id="0527c6967a8644d5a7d6d7fdb237ccda"></editor-prop-item></editor-props-list><editor-messenger tab-name="messenger"></editor-messenger><editor-custom-list tab-name="custom" class="show-pane"><editor-prop-item name="showing" owner-id="0527c6967a8644d5a7d6d7fdb237ccda"></editor-prop-item></editor-custom-list><editor-subparts tab-name="subparts"><editor-location-info slot="ancestor-info" kind="stack" ref-id="feeafc546ec84090994e58968d482cae"></editor-location-info><editor-location-info slot="ancestor-info" kind="card" class="hidden"></editor-location-info><editor-location-info slot="ancestor-info" kind="owner" ref-id="feeafc546ec84090994e58968d482cae"></editor-location-info><button slot="button" data-type="window" title="Add a window to this card" class="add-part-button">
+<svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-window" width="24" height="24" viewBox="0 0 24 24" stroke-width="1.5" stroke="#000000" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
+  <path d="M12 3c-3.866 0 -7 3.272 -7 7v10a1 1 0 0 0 1 1h12a1 1 0 0 0 1 -1v-10c0 -3.728 -3.134 -7 -7 -7z"></path>
+  <line x1="5" y1="13" x2="19" y2="13"></line>
+  <line x1="12" y1="3" x2="12" y2="21"></line>
+</svg>
+</button><button slot="button" data-type="button" title="Add a button to this card" class="add-part-button">
+<svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-hand-finger" width="44" height="44" viewBox="0 0 24 24" stroke-width="1.5" stroke="#2c3e50" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
+  <path d="M8 13v-8.5a1.5 1.5 0 0 1 3 0v7.5"></path>
+  <path d="M11 11.5v-2a1.5 1.5 0 1 1 3 0v2.5"></path>
+  <path d="M14 10.5a1.5 1.5 0 0 1 3 0v1.5"></path>
+  <path d="M17 11.5a1.5 1.5 0 0 1 3 0v4.5a6 6 0 0 1 -6 6h-2h.208a6 6 0 0 1 -5.012 -2.7a69.74 69.74 0 0 1 -.196 -.3c-.312 -.479 -1.407 -2.388 -3.286 -5.728a1.5 1.5 0 0 1 .536 -2.022a1.867 1.867 0 0 1 2.28 .28l1.47 1.47"></path>
+</svg>
+</button><button slot="button" data-type="field" title="Add a field to this card" class="add-part-button">
 <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-forms" width="24" height="24" viewBox="0 0 24 24" stroke-width="1.5" stroke="#000000" fill="none" stroke-linecap="round" stroke-linejoin="round">
   <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
   <path d="M12 3a3 3 0 0 0 -3 3v12a3 3 0 0 0 3 3"></path>
@@ -2357,4 +5253,124 @@
   <path d="M17 12h.01"></path>
   <path d="M13 12h.01"></path>
 </svg>
-</button></editor-subparts></st-editor></body></html>
+</button><button slot="button" data-type="area" title="Add a area to this card" class="add-part-button">
+<svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-shape" width="24" height="24" viewBox="0 0 24 24" stroke-width="1.5" stroke="#000000" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
+  <circle cx="5" cy="5" r="2"></circle>
+  <circle cx="19" cy="5" r="2"></circle>
+  <circle cx="5" cy="19" r="2"></circle>
+  <circle cx="19" cy="19" r="2"></circle>
+  <line x1="5" y1="7" x2="5" y2="17"></line>
+  <line x1="7" y1="5" x2="17" y2="5"></line>
+  <line x1="7" y1="19" x2="17" y2="19"></line>
+  <line x1="19" y1="7" x2="19" y2="17"></line>
+</svg>
+</button><button slot="button" data-type="drawing" title="Add a drawing to this card" class="add-part-button">
+<svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-palette" width="24" height="24" viewBox="0 0 24 24" stroke-width="1.5" stroke="#000000" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
+  <path d="M12 21a9 9 0 1 1 0 -18a9 8 0 0 1 9 8a4.5 4 0 0 1 -4.5 4h-2.5a2 2 0 0 0 -1 3.75a1.3 1.3 0 0 1 -1 2.25"></path>
+  <circle cx="7.5" cy="10.5" r=".5" fill="currentColor"></circle>
+  <circle cx="12" cy="7.5" r=".5" fill="currentColor"></circle>
+  <circle cx="16.5" cy="10.5" r=".5" fill="currentColor"></circle>
+</svg>
+</button><button slot="button" data-type="image" title="Add a image to this card" class="add-part-button">
+<svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-photo" width="24" height="24" viewBox="0 0 24 24" stroke-width="1.5" stroke="#000000" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
+  <line x1="15" y1="8" x2="15.01" y2="8"></line>
+  <rect x="4" y="4" width="16" height="16" rx="3"></rect>
+  <path d="M4 15l4 -4a3 5 0 0 1 3 0l5 5"></path>
+  <path d="M14 14l1 -1a3 5 0 0 1 3 0l2 2"></path>
+</svg>
+</button><button slot="button" data-type="audio" title="Add a audio to this card" class="add-part-button">
+<svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-puzzle" width="44" height="44" viewBox="0 0 24 24" stroke-width="1.5" stroke="#2c3e50" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
+  <path d="M4 7h3a1 1 0 0 0 1 -1v-1a2 2 0 0 1 4 0v1a1 1 0 0 0 1 1h3a1 1 0 0 1 1 1v3a1 1 0 0 0 1 1h1a2 2 0 0 1 0 4h-1a1 1 0 0 0 -1 1v3a1 1 0 0 1 -1 1h-3a1 1 0 0 1 -1 -1v-1a2 2 0 0 0 -4 0v1a1 1 0 0 1 -1 1h-3a1 1 0 0 1 -1 -1v-3a1 1 0 0 1 1 -1h1a2 2 0 0 0 0 -4h-1a1 1 0 0 1 -1 -1v-3a1 1 0 0 1 1 -1"></path>
+</svg>
+</button><button slot="button" data-type="browser" title="Add a browser to this card" class="add-part-button">
+<svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-puzzle" width="44" height="44" viewBox="0 0 24 24" stroke-width="1.5" stroke="#2c3e50" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
+  <path d="M4 7h3a1 1 0 0 0 1 -1v-1a2 2 0 0 1 4 0v1a1 1 0 0 0 1 1h3a1 1 0 0 1 1 1v3a1 1 0 0 0 1 1h1a2 2 0 0 1 0 4h-1a1 1 0 0 0 -1 1v3a1 1 0 0 1 -1 1h-3a1 1 0 0 1 -1 -1v-1a2 2 0 0 0 -4 0v1a1 1 0 0 1 -1 1h-3a1 1 0 0 1 -1 -1v-3a1 1 0 0 1 1 -1h1a2 2 0 0 0 0 -4h-1a1 1 0 0 1 -1 -1v-3a1 1 0 0 1 1 -1"></path>
+</svg>
+</button><button slot="button" data-type="resource" title="Add a resource to this card" class="add-part-button">
+<svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-puzzle" width="44" height="44" viewBox="0 0 24 24" stroke-width="1.5" stroke="#2c3e50" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
+  <path d="M4 7h3a1 1 0 0 0 1 -1v-1a2 2 0 0 1 4 0v1a1 1 0 0 0 1 1h3a1 1 0 0 1 1 1v3a1 1 0 0 0 1 1h1a2 2 0 0 1 0 4h-1a1 1 0 0 0 -1 1v3a1 1 0 0 1 -1 1h-3a1 1 0 0 1 -1 -1v-1a2 2 0 0 0 -4 0v1a1 1 0 0 1 -1 1h-3a1 1 0 0 1 -1 -1v-3a1 1 0 0 1 1 -1h1a2 2 0 0 0 0 -4h-1a1 1 0 0 1 -1 -1v-3a1 1 0 0 1 1 -1"></path>
+</svg>
+</button><li class="subpart-item" ref-id="2177df1a7a2041da990e21b7e6ba73ca"><div class="icon-display-area">
+<svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-shape" width="24" height="24" viewBox="0 0 24 24" stroke-width="1.5" stroke="#000000" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
+  <circle cx="5" cy="5" r="2"></circle>
+  <circle cx="19" cy="5" r="2"></circle>
+  <circle cx="5" cy="19" r="2"></circle>
+  <circle cx="19" cy="19" r="2"></circle>
+  <line x1="5" y1="7" x2="5" y2="17"></line>
+  <line x1="7" y1="5" x2="17" y2="5"></line>
+  <line x1="7" y1="19" x2="17" y2="19"></line>
+  <line x1="19" y1="7" x2="19" y2="17"></line>
+</svg>
+</div><h3>a Area</h3><span class="name-span">"Technics"</span><span class="id-span">(2177df1a7a2041da990e21b7e6ba73ca)</span></li><li class="subpart-item" ref-id="3ed43731ed6b470fa10d1344d3f3cfa1"><div class="icon-display-area">
+<svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-forms" width="24" height="24" viewBox="0 0 24 24" stroke-width="1.5" stroke="#000000" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
+  <path d="M12 3a3 3 0 0 0 -3 3v12a3 3 0 0 0 3 3"></path>
+  <path d="M6 3a3 3 0 0 1 3 3v12a3 3 0 0 1 -3 3"></path>
+  <path d="M13 7h7a1 1 0 0 1 1 1v8a1 1 0 0 1 -1 1h-7"></path>
+  <path d="M5 7h-1a1 1 0 0 0 -1 1v8a1 1 0 0 0 1 1h1"></path>
+  <path d="M17 12h.01"></path>
+  <path d="M13 12h.01"></path>
+</svg>
+</div><h3>a Field</h3><span class="name-span">"New field"</span><span class="id-span">(3ed43731ed6b470fa10d1344d3f3cfa1)</span></li><li class="subpart-item" ref-id="fca032bb353d4b0599209e416a378b2a"><div class="icon-display-area">
+<svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-shape" width="24" height="24" viewBox="0 0 24 24" stroke-width="1.5" stroke="#000000" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
+  <circle cx="5" cy="5" r="2"></circle>
+  <circle cx="19" cy="5" r="2"></circle>
+  <circle cx="5" cy="19" r="2"></circle>
+  <circle cx="19" cy="19" r="2"></circle>
+  <line x1="5" y1="7" x2="5" y2="17"></line>
+  <line x1="7" y1="5" x2="17" y2="5"></line>
+  <line x1="7" y1="19" x2="17" y2="19"></line>
+  <line x1="19" y1="7" x2="19" y2="17"></line>
+</svg>
+</div><h3>a Area</h3><span class="name-span">"Physics"</span><span class="id-span">(fca032bb353d4b0599209e416a378b2a)</span></li><li class="subpart-item" ref-id="30e949b86a2245f489e14304d5d2e309"><div class="icon-display-area">
+<svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-shape" width="24" height="24" viewBox="0 0 24 24" stroke-width="1.5" stroke="#000000" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
+  <circle cx="5" cy="5" r="2"></circle>
+  <circle cx="19" cy="5" r="2"></circle>
+  <circle cx="5" cy="19" r="2"></circle>
+  <circle cx="19" cy="19" r="2"></circle>
+  <line x1="5" y1="7" x2="5" y2="17"></line>
+  <line x1="7" y1="5" x2="17" y2="5"></line>
+  <line x1="7" y1="19" x2="17" y2="19"></line>
+  <line x1="19" y1="7" x2="19" y2="17"></line>
+</svg>
+</div><h3>a Area</h3><span class="name-span">"Science"</span><span class="id-span">(30e949b86a2245f489e14304d5d2e309)</span></li><li class="subpart-item" ref-id="e5a90e46ad3549e1ae85ab1845bcf3ef"><div class="icon-display-area">
+<svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-shape" width="24" height="24" viewBox="0 0 24 24" stroke-width="1.5" stroke="#000000" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
+  <circle cx="5" cy="5" r="2"></circle>
+  <circle cx="19" cy="5" r="2"></circle>
+  <circle cx="5" cy="19" r="2"></circle>
+  <circle cx="19" cy="19" r="2"></circle>
+  <line x1="5" y1="7" x2="5" y2="17"></line>
+  <line x1="7" y1="5" x2="17" y2="5"></line>
+  <line x1="7" y1="19" x2="17" y2="19"></line>
+  <line x1="19" y1="7" x2="19" y2="17"></line>
+</svg>
+</div><h3>a Area</h3><span class="name-span">"Immunization"</span><span class="id-span">(e5a90e46ad3549e1ae85ab1845bcf3ef)</span></li><li class="subpart-item" ref-id="75cf9b47f3004b35af06414329d7dc76"><div class="icon-display-area">
+<svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-shape" width="24" height="24" viewBox="0 0 24 24" stroke-width="1.5" stroke="#000000" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
+  <circle cx="5" cy="5" r="2"></circle>
+  <circle cx="19" cy="5" r="2"></circle>
+  <circle cx="5" cy="19" r="2"></circle>
+  <circle cx="19" cy="19" r="2"></circle>
+  <line x1="5" y1="7" x2="5" y2="17"></line>
+  <line x1="7" y1="5" x2="17" y2="5"></line>
+  <line x1="7" y1="19" x2="17" y2="19"></line>
+  <line x1="19" y1="7" x2="19" y2="17"></line>
+</svg>
+</div><h3>a Area</h3><span class="name-span">"Print"</span><span class="id-span">(75cf9b47f3004b35af06414329d7dc76)</span></li><li class="subpart-item" ref-id="3fd9a3c3bd0c4164b401ec6ed6455d38"><div class="icon-display-area">
+<svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-window" width="24" height="24" viewBox="0 0 24 24" stroke-width="1.5" stroke="#000000" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
+  <path d="M12 3c-3.866 0 -7 3.272 -7 7v10a1 1 0 0 0 1 1h12a1 1 0 0 0 1 -1v-10c0 -3.728 -3.134 -7 -7 -7z"></path>
+  <line x1="5" y1="13" x2="19" y2="13"></line>
+  <line x1="12" y1="3" x2="12" y2="21"></line>
+</svg>
+</div><h3>a Window</h3><span class="name-span">"New window"</span><span class="id-span">(3fd9a3c3bd0c4164b401ec6ed6455d38)</span></li></editor-subparts></st-editor><st-context-menu style="left: 1303px; top: 685px;"><st-context-menu-item class="context-menu-item">Copy</st-context-menu-item><st-context-menu-item class="context-menu-item">Paste (a Image)</st-context-menu-item><st-context-menu-item class="context-menu-item">Open Editor</st-context-menu-item><st-context-menu-item class="context-menu-item">Add a new part<st-context-menu class="context-submenu submenu-hidden" slot="submenu"><st-context-menu-item class="context-menu-item">Window</st-context-menu-item><st-context-menu-item class="context-menu-item">Button</st-context-menu-item><st-context-menu-item class="context-menu-item">Field</st-context-menu-item><st-context-menu-item class="context-menu-item">Area</st-context-menu-item><st-context-menu-item class="context-menu-item">Drawing</st-context-menu-item><st-context-menu-item class="context-menu-item">Image</st-context-menu-item><st-context-menu-item class="context-menu-item">Audio</st-context-menu-item><st-context-menu-item class="context-menu-item">Browser</st-context-menu-item><st-context-menu-item class="context-menu-item">Resource</st-context-menu-item></st-context-menu></st-context-menu-item><st-context-menu-item class="context-menu-item">Edit Script</st-context-menu-item><st-context-menu-item class="context-menu-item">Edit World Script</st-context-menu-item><st-context-menu-item class="context-menu-item">Edit Owning Stack Script</st-context-menu-item><st-context-menu-item class="context-menu-item">Move Down</st-context-menu-item><st-context-menu-item class="context-menu-item">Move to Last</st-context-menu-item><st-context-menu-item class="context-menu-item">Move Up</st-context-menu-item><st-context-menu-item class="context-menu-item">Move to First</st-context-menu-item><st-context-menu-item class="context-menu-item">Close Navigator</st-context-menu-item><st-context-menu-item class="context-menu-item">Save Snapshot...</st-context-menu-item><li class="context-menu-spacer"></li><st-context-menu-item class="context-menu-item">Hide Toolbox</st-context-menu-item></st-context-menu></body></html>
