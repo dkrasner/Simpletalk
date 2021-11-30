@@ -67,7 +67,7 @@
                 "number": 1,
                 "custom-properties": {},
                 "stepping": false,
-                "current": "d4cac799c5b5444eb31e1d5d56206f1c"
+                "current": "aa18bba0fbfd44eea52e3a8c7722ec55"
             },
             "subparts": [
                 "35557b9d4f7540f3a2ff2668b4b18fa9",
@@ -3876,15 +3876,14 @@
             "id": "aa18bba0fbfd44eea52e3a8c7722ec55",
             "properties": {
                 "id": "aa18bba0fbfd44eea52e3a8c7722ec55",
+                "script": "on openCard \n\tset \"transparency\" to 0 in area \"Future\" of area \"Main\"\n\n\tset \"transparency\" to 0 in area \"Present\" of area \"Main\"\n\tset \"transparency\" to 1 in area \"Past\" of area \"Main\"\n\n\tset \"current-last-area\" to 1 in area \"Main\"\nend openCard \n\n\non arrowKey direction\n\tif direction is \"right\" then tell area \"Main\" to showNext\n\tif direction is \"left\" then tell area \"Main\" to hidePrev\n\nend arrowKey \n",
                 "number": 14,
                 "stepping": false,
                 "background-color": "white"
             },
             "subparts": [
                 "a3a2e8b4ccb1415a97edd80a62703727",
-                "bf337c17aef9408182b49a93ba384543",
-                "61222977e288439eb011a5915a0b9b7e",
-                "324961180b9e4e20a7f2c9ca508da12d"
+                "bfee20ad80284f74b9302a68df97e7f2"
             ],
             "ownerId": "c4615c745a2d4f80b14131549a15026f"
         },
@@ -3913,12 +3912,44 @@
             "subparts": [],
             "ownerId": "aa18bba0fbfd44eea52e3a8c7722ec55"
         },
-        "bf337c17aef9408182b49a93ba384543": {
+        "bfee20ad80284f74b9302a68df97e7f2": {
             "type": "area",
-            "id": "bf337c17aef9408182b49a93ba384543",
+            "id": "bfee20ad80284f74b9302a68df97e7f2",
             "properties": {
-                "id": "bf337c17aef9408182b49a93ba384543",
+                "name": "Main",
+                "script": "on showNext\n\tput (the \"current-last-area\") into currentLast\n\tif currentLast is 3 then go to next card\n\tif currentLast is 2 then set \"transparency\" to 1 in area \"Future\"\n\tif currentLast is 1 then set \"transparency\" to 1 in area \"Present\"\n\tset \"current-last-area\" to (currentLast + 1) in this area\n\nend showNext\n\n\non hidePrev\n\tput (the \"current-last-area\") into currentLast\n\tif currentLast is 3 then set \"transparency\" to 0 in area \"Future\"\n\tif currentLast is 2 then set \"transparency\" to 0 in area \"Present\"\n\tif currentLast is 1 then go to previous card\n\tset \"current-last-area\" to (currentLast - 1) in this area\n\nend hidePrev",
                 "number": 2,
+                "stepping": false,
+                "background-color": "black",
+                "border-top-transparency": 0,
+                "border-bottom-transparency": 0,
+                "border-left-transparency": 0,
+                "border-right-transparency": 0,
+                "width": 1437,
+                "height": 433,
+                "top": 169,
+                "left": 53,
+                "horizontal-resizing": "space-fill",
+                "vertical-resizing": "shrink-wrap",
+                "pinning": "",
+                "layout": "list",
+                "list-alignment": "bottom",
+                "list-distribution": "space-between"
+            },
+            "subparts": [
+                "8f7888c1b38d4cfaab1c0c116cb13c47",
+                "ae6dae36c6094d99b9f4047538c78577",
+                "d071ad74f3114202b2016301ff70b450"
+            ],
+            "ownerId": "aa18bba0fbfd44eea52e3a8c7722ec55"
+        },
+        "8f7888c1b38d4cfaab1c0c116cb13c47": {
+            "type": "area",
+            "id": "8f7888c1b38d4cfaab1c0c116cb13c47",
+            "properties": {
+                "id": "8f7888c1b38d4cfaab1c0c116cb13c47",
+                "name": "Past",
+                "number": 1,
                 "stepping": false,
                 "border-top-transparency": 0,
                 "border-bottom-transparency": 0,
@@ -3926,8 +3957,8 @@
                 "border-right-transparency": 0,
                 "width": 591,
                 "height": 560,
-                "top": 262,
-                "left": 65,
+                "top": 10,
+                "left": 10,
                 "horizontal-resizing": "shrink-wrap",
                 "vertical-resizing": "shrink-wrap",
                 "pinning": "",
@@ -3935,16 +3966,16 @@
                 "list-direction": "column"
             },
             "subparts": [
-                "8904de897d0d4764a728fa225385d885",
-                "b8788226f17e46a1aaab4ae702c05dea"
+                "6f003cda93ce440bbea151aa9c530584",
+                "2a4b9f31f4754840b55b9015975ee235"
             ],
-            "ownerId": "aa18bba0fbfd44eea52e3a8c7722ec55"
+            "ownerId": "bfee20ad80284f74b9302a68df97e7f2"
         },
-        "8904de897d0d4764a728fa225385d885": {
+        "6f003cda93ce440bbea151aa9c530584": {
             "type": "area",
-            "id": "8904de897d0d4764a728fa225385d885",
+            "id": "6f003cda93ce440bbea151aa9c530584",
             "properties": {
-                "id": "8904de897d0d4764a728fa225385d885",
+                "id": "6f003cda93ce440bbea151aa9c530584",
                 "number": 1,
                 "stepping": false,
                 "border-top-transparency": 0,
@@ -3958,16 +3989,16 @@
                 "pinning": ""
             },
             "subparts": [
-                "24c02e50180544c0bd0be415d8cea33a",
-                "ae31012f97bd43929e01d73f3590a3c6"
+                "5f1c626678ae44d3b7ec7badd48ba165",
+                "acecc277e29e46cbb37105f8cf444e60"
             ],
-            "ownerId": "bf337c17aef9408182b49a93ba384543"
+            "ownerId": "8f7888c1b38d4cfaab1c0c116cb13c47"
         },
-        "24c02e50180544c0bd0be415d8cea33a": {
+        "5f1c626678ae44d3b7ec7badd48ba165": {
             "type": "image",
-            "id": "24c02e50180544c0bd0be415d8cea33a",
+            "id": "5f1c626678ae44d3b7ec7badd48ba165",
             "properties": {
-                "id": "24c02e50180544c0bd0be415d8cea33a",
+                "id": "5f1c626678ae44d3b7ec7badd48ba165",
                 "number": 1,
                 "stepping": false,
                 "src": "/images/teletype.png",
@@ -3979,13 +4010,13 @@
                 "pinning": ""
             },
             "subparts": [],
-            "ownerId": "8904de897d0d4764a728fa225385d885"
+            "ownerId": "6f003cda93ce440bbea151aa9c530584"
         },
-        "ae31012f97bd43929e01d73f3590a3c6": {
+        "acecc277e29e46cbb37105f8cf444e60": {
             "type": "image",
-            "id": "ae31012f97bd43929e01d73f3590a3c6",
+            "id": "acecc277e29e46cbb37105f8cf444e60",
             "properties": {
-                "id": "ae31012f97bd43929e01d73f3590a3c6",
+                "id": "acecc277e29e46cbb37105f8cf444e60",
                 "number": 2,
                 "stepping": false,
                 "src": "/images/Teletype-output.jpg",
@@ -3997,13 +4028,13 @@
                 "pinning": ""
             },
             "subparts": [],
-            "ownerId": "8904de897d0d4764a728fa225385d885"
+            "ownerId": "6f003cda93ce440bbea151aa9c530584"
         },
-        "b8788226f17e46a1aaab4ae702c05dea": {
+        "2a4b9f31f4754840b55b9015975ee235": {
             "type": "field",
-            "id": "b8788226f17e46a1aaab4ae702c05dea",
+            "id": "2a4b9f31f4754840b55b9015975ee235",
             "properties": {
-                "id": "b8788226f17e46a1aaab4ae702c05dea",
+                "id": "2a4b9f31f4754840b55b9015975ee235",
                 "number": 2,
                 "stepping": false,
                 "innerHTML": "1960s",
@@ -4024,14 +4055,15 @@
                 "text-size": 60
             },
             "subparts": [],
-            "ownerId": "bf337c17aef9408182b49a93ba384543"
+            "ownerId": "8f7888c1b38d4cfaab1c0c116cb13c47"
         },
-        "61222977e288439eb011a5915a0b9b7e": {
+        "ae6dae36c6094d99b9f4047538c78577": {
             "type": "area",
-            "id": "61222977e288439eb011a5915a0b9b7e",
+            "id": "ae6dae36c6094d99b9f4047538c78577",
             "properties": {
-                "id": "61222977e288439eb011a5915a0b9b7e",
-                "number": 3,
+                "id": "ae6dae36c6094d99b9f4047538c78577",
+                "name": "Present",
+                "number": 2,
                 "stepping": false,
                 "border-top-transparency": 0,
                 "border-bottom-transparency": 0,
@@ -4039,8 +4071,8 @@
                 "border-right-transparency": 0,
                 "width": 591,
                 "height": 560,
-                "top": 355,
-                "left": 568,
+                "top": 10,
+                "left": 10,
                 "horizontal-resizing": "shrink-wrap",
                 "vertical-resizing": "shrink-wrap",
                 "pinning": "",
@@ -4048,16 +4080,16 @@
                 "list-direction": "column"
             },
             "subparts": [
-                "aadc34cafea1462b947dc98c7df0afaf",
-                "879e3587493a438ab06490cd04f67047"
+                "4d0305ba325544bebf2f026c44ea747b",
+                "fdf4eb6875b447ff912ac3cec9f5b6f2"
             ],
-            "ownerId": "aa18bba0fbfd44eea52e3a8c7722ec55"
+            "ownerId": "bfee20ad80284f74b9302a68df97e7f2"
         },
-        "aadc34cafea1462b947dc98c7df0afaf": {
+        "4d0305ba325544bebf2f026c44ea747b": {
             "type": "image",
-            "id": "aadc34cafea1462b947dc98c7df0afaf",
+            "id": "4d0305ba325544bebf2f026c44ea747b",
             "properties": {
-                "id": "aadc34cafea1462b947dc98c7df0afaf",
+                "id": "4d0305ba325544bebf2f026c44ea747b",
                 "number": 1,
                 "stepping": false,
                 "src": "/images/Terminal-today.png",
@@ -4067,13 +4099,13 @@
                 "pinning": ""
             },
             "subparts": [],
-            "ownerId": "61222977e288439eb011a5915a0b9b7e"
+            "ownerId": "ae6dae36c6094d99b9f4047538c78577"
         },
-        "879e3587493a438ab06490cd04f67047": {
+        "fdf4eb6875b447ff912ac3cec9f5b6f2": {
             "type": "field",
-            "id": "879e3587493a438ab06490cd04f67047",
+            "id": "fdf4eb6875b447ff912ac3cec9f5b6f2",
             "properties": {
-                "id": "879e3587493a438ab06490cd04f67047",
+                "id": "fdf4eb6875b447ff912ac3cec9f5b6f2",
                 "number": 2,
                 "stepping": false,
                 "innerHTML": "Today",
@@ -4094,14 +4126,15 @@
                 "text-size": 60
             },
             "subparts": [],
-            "ownerId": "61222977e288439eb011a5915a0b9b7e"
+            "ownerId": "ae6dae36c6094d99b9f4047538c78577"
         },
-        "324961180b9e4e20a7f2c9ca508da12d": {
+        "d071ad74f3114202b2016301ff70b450": {
             "type": "area",
-            "id": "324961180b9e4e20a7f2c9ca508da12d",
+            "id": "d071ad74f3114202b2016301ff70b450",
             "properties": {
-                "id": "324961180b9e4e20a7f2c9ca508da12d",
-                "number": 4,
+                "id": "d071ad74f3114202b2016301ff70b450",
+                "name": "Future",
+                "number": 3,
                 "stepping": false,
                 "border-top-transparency": 0,
                 "border-bottom-transparency": 0,
@@ -4109,8 +4142,8 @@
                 "border-right-transparency": 0,
                 "width": 591,
                 "height": 560,
-                "top": 261,
-                "left": 986,
+                "top": 10,
+                "left": 10,
                 "horizontal-resizing": "shrink-wrap",
                 "vertical-resizing": "shrink-wrap",
                 "pinning": "",
@@ -4118,16 +4151,16 @@
                 "list-direction": "column"
             },
             "subparts": [
-                "9ca88491a69047d6abd41604bb8db5e4",
-                "67f2b995af53438abc76c20265a7936e"
+                "4c636d9d4dbd457ebec1ee359badc351",
+                "03d881660fe643ba8c6c07451be23bbb"
             ],
-            "ownerId": "aa18bba0fbfd44eea52e3a8c7722ec55"
+            "ownerId": "bfee20ad80284f74b9302a68df97e7f2"
         },
-        "9ca88491a69047d6abd41604bb8db5e4": {
+        "4c636d9d4dbd457ebec1ee359badc351": {
             "type": "area",
-            "id": "9ca88491a69047d6abd41604bb8db5e4",
+            "id": "4c636d9d4dbd457ebec1ee359badc351",
             "properties": {
-                "id": "9ca88491a69047d6abd41604bb8db5e4",
+                "id": "4c636d9d4dbd457ebec1ee359badc351",
                 "number": 1,
                 "stepping": false,
                 "border-top-transparency": 0,
@@ -4141,16 +4174,16 @@
                 "pinning": ""
             },
             "subparts": [
-                "af4e79e461a048e0a0000cfbb4d98e0e",
-                "961a2d7464ab4cbd80167ea8821bdaec"
+                "24a495c6bb67425cb9f23a75a60a9ec1",
+                "81584229cb814defa6527a55a808a001"
             ],
-            "ownerId": "324961180b9e4e20a7f2c9ca508da12d"
+            "ownerId": "d071ad74f3114202b2016301ff70b450"
         },
-        "af4e79e461a048e0a0000cfbb4d98e0e": {
+        "24a495c6bb67425cb9f23a75a60a9ec1": {
             "type": "image",
-            "id": "af4e79e461a048e0a0000cfbb4d98e0e",
+            "id": "24a495c6bb67425cb9f23a75a60a9ec1",
             "properties": {
-                "id": "af4e79e461a048e0a0000cfbb4d98e0e",
+                "id": "24a495c6bb67425cb9f23a75a60a9ec1",
                 "number": 1,
                 "stepping": false,
                 "src": "/images/vr-terminal-1.png",
@@ -4160,13 +4193,13 @@
                 "pinning": ""
             },
             "subparts": [],
-            "ownerId": "9ca88491a69047d6abd41604bb8db5e4"
+            "ownerId": "4c636d9d4dbd457ebec1ee359badc351"
         },
-        "961a2d7464ab4cbd80167ea8821bdaec": {
+        "81584229cb814defa6527a55a808a001": {
             "type": "image",
-            "id": "961a2d7464ab4cbd80167ea8821bdaec",
+            "id": "81584229cb814defa6527a55a808a001",
             "properties": {
-                "id": "961a2d7464ab4cbd80167ea8821bdaec",
+                "id": "81584229cb814defa6527a55a808a001",
                 "number": 2,
                 "stepping": false,
                 "src": "/images/vr-terminal-2.png",
@@ -4178,13 +4211,13 @@
                 "pinning": ""
             },
             "subparts": [],
-            "ownerId": "9ca88491a69047d6abd41604bb8db5e4"
+            "ownerId": "4c636d9d4dbd457ebec1ee359badc351"
         },
-        "67f2b995af53438abc76c20265a7936e": {
+        "03d881660fe643ba8c6c07451be23bbb": {
             "type": "field",
-            "id": "67f2b995af53438abc76c20265a7936e",
+            "id": "03d881660fe643ba8c6c07451be23bbb",
             "properties": {
-                "id": "67f2b995af53438abc76c20265a7936e",
+                "id": "03d881660fe643ba8c6c07451be23bbb",
                 "number": 2,
                 "stepping": false,
                 "innerHTML": "Future?",
@@ -4205,7 +4238,7 @@
                 "text-size": 60
             },
             "subparts": [],
-            "ownerId": "324961180b9e4e20a7f2c9ca508da12d"
+            "ownerId": "d071ad74f3114202b2016301ff70b450"
         },
         "708e244a1ab84e2bac452218db20c181": {
             "type": "card",
@@ -5537,16 +5570,14 @@
             "id": "3816db70b29f4c1696236017e71219ff",
             "properties": {
                 "id": "3816db70b29f4c1696236017e71219ff",
+                "script": "on openCard \n\tset \"transparency\" to 0 in area \"Ptolemy\" of area \"Main\"\n\nend openCard \n\n\non arrowKey direction\n\tif direction is \"right\" then tell first area to showNext\n\tif direction is \"left\" then tell first area to hidePrev\n\nend arrowKey \n",
                 "number": 19,
                 "stepping": false,
                 "background-color": "white"
             },
             "subparts": [
                 "557bec7c071145e18660bce84bb3c110",
-                "6048273d4cc64885a75137d047bb78bf",
-                "6e327b63caf84b6ba549e06e6d035438",
-                "5f502789313647c7acf17c9753ccea6b",
-                "d25d5625571c48f4a2ea7375833dbb81"
+                "19a7b38030fa446cafb8d11ed8934b2d"
             ],
             "ownerId": "c4615c745a2d4f80b14131549a15026f"
         },
@@ -5618,12 +5649,42 @@
             "subparts": [],
             "ownerId": "3816db70b29f4c1696236017e71219ff"
         },
-        "6048273d4cc64885a75137d047bb78bf": {
+        "19a7b38030fa446cafb8d11ed8934b2d": {
             "type": "area",
-            "id": "6048273d4cc64885a75137d047bb78bf",
+            "id": "19a7b38030fa446cafb8d11ed8934b2d",
             "properties": {
-                "id": "6048273d4cc64885a75137d047bb78bf",
+                "name": "Main",
+                "script": "on showNext\n\tput (the \"transparency\" of area \"Ptolemy\") into PTransp\n\n\tif PTransp is 1\n\tthen\n\t\tgo to next card\n\telse\n\t\tset \"transparency\" to 1 in area \"Ptolemy\"\n\tend if\n\nend showNext \n\n\n\n\non hidePrev\n\tput (the \"transparency\" of area \"Ptolemy\") into PTransp\n\n\tif PTransp < 1\n\tthen\n\t\tgo to previous card\n\telse\n\t\tset \"transparency\" to 0 in area \"Ptolemy\"\n\tend if\n\nend hidePrev \n",
                 "number": 2,
+                "stepping": false,
+                "border-top-transparency": 0,
+                "border-bottom-transparency": 0,
+                "border-left-transparency": 0,
+                "border-right-transparency": 0,
+                "width": 879,
+                "height": 747,
+                "top": 164,
+                "left": 179,
+                "horizontal-resizing": "shrink-wrap",
+                "vertical-resizing": "shrink-wrap",
+                "pinning": "",
+                "layout": "list",
+                "list-alignment": "center"
+            },
+            "subparts": [
+                "3c21326b6dc94fb4815126e5f0c82037",
+                "873e9447b56a47fdb50b2a42c76a4c9d",
+                "2bc11affeb894fa597c600c432e0345b"
+            ],
+            "ownerId": "3816db70b29f4c1696236017e71219ff"
+        },
+        "3c21326b6dc94fb4815126e5f0c82037": {
+            "type": "area",
+            "id": "3c21326b6dc94fb4815126e5f0c82037",
+            "properties": {
+                "id": "3c21326b6dc94fb4815126e5f0c82037",
+                "name": "Scholastics",
+                "number": 1,
                 "stepping": false,
                 "border-top-transparency": 0,
                 "border-bottom-transparency": 0,
@@ -5631,23 +5692,24 @@
                 "border-right-transparency": 0,
                 "width": 591,
                 "height": 485,
-                "top": 231,
-                "left": 156,
+                "top": 154,
+                "left": -321,
                 "pinning": "",
                 "layout": "list",
                 "list-direction": "column"
             },
             "subparts": [
-                "55688506f05641ec87f3e4239c563d33",
-                "b7c5763c89a1439eafbc37e7250de89d"
+                "c339a4e46c804160ae5c1c3cb04ca369",
+                "abb8f53ad1624592804e0b605a7b08e7",
+                "2c8afc11a0fa468fb3ccba9b0f69aaec"
             ],
-            "ownerId": "3816db70b29f4c1696236017e71219ff"
+            "ownerId": "19a7b38030fa446cafb8d11ed8934b2d"
         },
-        "55688506f05641ec87f3e4239c563d33": {
+        "c339a4e46c804160ae5c1c3cb04ca369": {
             "type": "area",
-            "id": "55688506f05641ec87f3e4239c563d33",
+            "id": "c339a4e46c804160ae5c1c3cb04ca369",
             "properties": {
-                "id": "55688506f05641ec87f3e4239c563d33",
+                "id": "c339a4e46c804160ae5c1c3cb04ca369",
                 "number": 1,
                 "stepping": false,
                 "border-top-width": 2,
@@ -5669,18 +5731,18 @@
                 "pinning": ""
             },
             "subparts": [
-                "d7fad9fde5984d05a7355927045c1d88",
-                "a9b8e8e3b81b4bbfbe5b2fa116864f3a",
-                "abc935da3d6b46a9939cbda463e9c2f6",
-                "27bb38fbd6e14507b894947599af7284"
+                "699dec188e9847919f1c7a7ea758b35c",
+                "3901edaaa98b4045ace925c81c8e81f8",
+                "61dca9e456284e7eb0395ba33ef8615b",
+                "d88c8e68184540e68c0c0806b9c7414e"
             ],
-            "ownerId": "6048273d4cc64885a75137d047bb78bf"
+            "ownerId": "3c21326b6dc94fb4815126e5f0c82037"
         },
-        "d7fad9fde5984d05a7355927045c1d88": {
+        "699dec188e9847919f1c7a7ea758b35c": {
             "type": "image",
-            "id": "d7fad9fde5984d05a7355927045c1d88",
+            "id": "699dec188e9847919f1c7a7ea758b35c",
             "properties": {
-                "id": "d7fad9fde5984d05a7355927045c1d88",
+                "id": "699dec188e9847919f1c7a7ea758b35c",
                 "number": 1,
                 "stepping": false,
                 "src": "/images/scholastics.jpg",
@@ -5692,13 +5754,13 @@
                 "pinning": ""
             },
             "subparts": [],
-            "ownerId": "55688506f05641ec87f3e4239c563d33"
+            "ownerId": "c339a4e46c804160ae5c1c3cb04ca369"
         },
-        "a9b8e8e3b81b4bbfbe5b2fa116864f3a": {
+        "3901edaaa98b4045ace925c81c8e81f8": {
             "type": "image",
-            "id": "a9b8e8e3b81b4bbfbe5b2fa116864f3a",
+            "id": "3901edaaa98b4045ace925c81c8e81f8",
             "properties": {
-                "id": "a9b8e8e3b81b4bbfbe5b2fa116864f3a",
+                "id": "3901edaaa98b4045ace925c81c8e81f8",
                 "number": 2,
                 "stepping": false,
                 "src": "/images/aristotle.jpg",
@@ -5710,16 +5772,16 @@
                 "pinning": ""
             },
             "subparts": [],
-            "ownerId": "55688506f05641ec87f3e4239c563d33"
+            "ownerId": "c339a4e46c804160ae5c1c3cb04ca369"
         },
-        "abc935da3d6b46a9939cbda463e9c2f6": {
+        "61dca9e456284e7eb0395ba33ef8615b": {
             "type": "drawing",
-            "id": "abc935da3d6b46a9939cbda463e9c2f6",
+            "id": "61dca9e456284e7eb0395ba33ef8615b",
             "properties": {
-                "id": "abc935da3d6b46a9939cbda463e9c2f6",
+                "id": "61dca9e456284e7eb0395ba33ef8615b",
                 "number": 3,
                 "stepping": false,
-                "image": "data:image/png;base64,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",
+                "image": "data:image/png;base64,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",
                 "mode": "viewing",
                 "border-top-transparency": 0,
                 "border-bottom-transparency": 0,
@@ -5733,13 +5795,13 @@
                 "show-border": false
             },
             "subparts": [],
-            "ownerId": "55688506f05641ec87f3e4239c563d33"
+            "ownerId": "c339a4e46c804160ae5c1c3cb04ca369"
         },
-        "27bb38fbd6e14507b894947599af7284": {
+        "d88c8e68184540e68c0c0806b9c7414e": {
             "type": "drawing",
-            "id": "27bb38fbd6e14507b894947599af7284",
+            "id": "d88c8e68184540e68c0c0806b9c7414e",
             "properties": {
-                "id": "27bb38fbd6e14507b894947599af7284",
+                "id": "d88c8e68184540e68c0c0806b9c7414e",
                 "number": 4,
                 "stepping": false,
                 "image": "data:image/png;base64,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",
@@ -5757,13 +5819,13 @@
                 "show-border": false
             },
             "subparts": [],
-            "ownerId": "55688506f05641ec87f3e4239c563d33"
+            "ownerId": "c339a4e46c804160ae5c1c3cb04ca369"
         },
-        "b7c5763c89a1439eafbc37e7250de89d": {
+        "abb8f53ad1624592804e0b605a7b08e7": {
             "type": "field",
-            "id": "b7c5763c89a1439eafbc37e7250de89d",
+            "id": "abb8f53ad1624592804e0b605a7b08e7",
             "properties": {
-                "id": "b7c5763c89a1439eafbc37e7250de89d",
+                "id": "abb8f53ad1624592804e0b605a7b08e7",
                 "number": 2,
                 "stepping": false,
                 "innerHTML": "Scholasticism",
@@ -5783,23 +5845,70 @@
                 "text-size": 26
             },
             "subparts": [],
-            "ownerId": "6048273d4cc64885a75137d047bb78bf"
+            "ownerId": "3c21326b6dc94fb4815126e5f0c82037"
         },
-        "6e327b63caf84b6ba549e06e6d035438": {
-            "type": "area",
-            "id": "6e327b63caf84b6ba549e06e6d035438",
+        "2c8afc11a0fa468fb3ccba9b0f69aaec": {
+            "type": "field",
+            "id": "2c8afc11a0fa468fb3ccba9b0f69aaec",
             "properties": {
-                "id": "6e327b63caf84b6ba549e06e6d035438",
+                "id": "2c8afc11a0fa468fb3ccba9b0f69aaec",
                 "number": 3,
                 "stepping": false,
+                "innerHTML": "\"Compilers and weavers of approved opinion\" -- St. Bonaventure",
+                "text": "\"Compilers and weavers of approved opinion\" -- St. Bonaventure",
+                "editable": false,
+                "background-transparency": 0,
+                "border-top-transparency": 0,
+                "border-bottom-transparency": 0,
+                "border-left-transparency": 0,
+                "border-right-transparency": 0,
+                "top": 10,
+                "left": 10,
+                "horizontal-resizing": "shrink-wrap",
+                "vertical-resizing": "shrink-wrap",
+                "pinning": "",
+                "text-align": "center",
+                "text-italic": true,
+                "text-size": 26
+            },
+            "subparts": [],
+            "ownerId": "3c21326b6dc94fb4815126e5f0c82037"
+        },
+        "873e9447b56a47fdb50b2a42c76a4c9d": {
+            "type": "area",
+            "id": "873e9447b56a47fdb50b2a42c76a4c9d",
+            "properties": {
+                "number": 2,
+                "stepping": false,
+                "border-top-transparency": 0,
+                "border-bottom-transparency": 0,
+                "border-left-transparency": 0,
+                "border-right-transparency": 0,
+                "width": 130,
+                "height": 59,
+                "pinning": ""
+            },
+            "subparts": [],
+            "ownerId": "19a7b38030fa446cafb8d11ed8934b2d"
+        },
+        "2bc11affeb894fa597c600c432e0345b": {
+            "type": "area",
+            "id": "2bc11affeb894fa597c600c432e0345b",
+            "properties": {
+                "id": "2bc11affeb894fa597c600c432e0345b",
+                "name": "Ptolemy",
+                "number": 3,
+                "stepping": false,
+                "background-color": "rgb(54, 172, 100)",
+                "transparency": 0,
                 "border-top-transparency": 0,
                 "border-bottom-transparency": 0,
                 "border-left-transparency": 0,
                 "border-right-transparency": 0,
                 "width": 375,
                 "height": 777,
-                "top": 139,
-                "left": 821,
+                "top": 10,
+                "left": 10,
                 "horizontal-resizing": "shrink-wrap",
                 "vertical-resizing": "shrink-wrap",
                 "pinning": "",
@@ -5808,18 +5917,18 @@
                 "list-alignment": "center"
             },
             "subparts": [
-                "3a82060e9c7044c583c56b718433f806",
-                "ab856103658a4503a11fef9187aa5682",
-                "c2aa0c6930674396bf52076823e8d92f",
-                "1d2afccc57cb4eb08f68577da7b94207"
+                "8b4f8b13cbd24e4e8659d41286fea38b",
+                "e2a3335e3c0c4894add0c8258c5f5140",
+                "79d399b314ff4d8dabd7dd7341587b63",
+                "b3a76b1fd04a41d980f0186c78ad1734"
             ],
-            "ownerId": "3816db70b29f4c1696236017e71219ff"
+            "ownerId": "19a7b38030fa446cafb8d11ed8934b2d"
         },
-        "3a82060e9c7044c583c56b718433f806": {
+        "8b4f8b13cbd24e4e8659d41286fea38b": {
             "type": "image",
-            "id": "3a82060e9c7044c583c56b718433f806",
+            "id": "8b4f8b13cbd24e4e8659d41286fea38b",
             "properties": {
-                "id": "3a82060e9c7044c583c56b718433f806",
+                "id": "8b4f8b13cbd24e4e8659d41286fea38b",
                 "number": 1,
                 "stepping": false,
                 "src": "/images/ptolemy.jpg",
@@ -5829,13 +5938,13 @@
                 "pinning": ""
             },
             "subparts": [],
-            "ownerId": "6e327b63caf84b6ba549e06e6d035438"
+            "ownerId": "2bc11affeb894fa597c600c432e0345b"
         },
-        "ab856103658a4503a11fef9187aa5682": {
+        "e2a3335e3c0c4894add0c8258c5f5140": {
             "type": "drawing",
-            "id": "ab856103658a4503a11fef9187aa5682",
+            "id": "e2a3335e3c0c4894add0c8258c5f5140",
             "properties": {
-                "id": "ab856103658a4503a11fef9187aa5682",
+                "id": "e2a3335e3c0c4894add0c8258c5f5140",
                 "number": 2,
                 "stepping": false,
                 "image": "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAMAAAADMCAYAAAAlHqx8AAADwElEQVR4nO3dwWrbShiG4W5NSQiWV4bQUtn3fyUHzu14Ef9duC2HQ8ZJGssj6Xse8KqQqEHvaCSN5C9fAAAAAO5hU/vTUMca6lC7OtZQx9rU/tR7u+Aufu/4//0Mdaje2wV38f+dXwBEeS2AXR0FQAYBEE0ARBMA0QRANAEQTQDEeqzx7D4Asbav3AUWADFeWwaxq2NtBUCCVgCPNZ57bxtMzgkw0QRANAEQTQBEEwDRBEA0ARBNAEQTANEEQDQBEK0VgLVARNg1V4M6ChBgqLHxPMAoANZv25gC7TwPQILWI5FOhIkhAKIJgGgCIJoAiCYAogmAaAIgmgCIJgCieTsc0bwflGjeEE003xFAPCfCRBMA0QRANAEQrRXApvan3tsGk3MvgGitAAbTIBK0Xo9yicArUgjQPgqYBhHAkgiibWp/cjmUaAIgmgCIJgCiCYBoAiCaAIgmAKIJgGgCIJoAiNZ+LuCHCFi/KytCvSWO9Wt9a6QVoUSwIpR4AiCaAIgmAKIJgGgCIJoAiCYAogmAaAIgmgCIJgCiCYBoAiCaAIgmAKIJgGgCIJoAiCYAogmAaAIgmgCIJgCiCYBoAiCaAIgmAKIJgGgCIJoAiCYAogmAaL4njGhDHc6vBeB7wojge8KI5nvCiCcAogmAaAIgmgCIJgCiCYBoAiCaAIgmAKIJgGgCIJoAiCYAorUCeKjnl97bBpNrPRXmoRgiXHkqzDSI9Xuo5xfnAUQTANEEQDQBEE0ARBMAq/ZU35+u/bsAWJ1N7U9DjefWja45fIY6nje1P/X+W7EyQ401zGAHf18E7jjzFy4j/HHWI/w7AzDV4uNaSxiW+On9t2SBeu+0AqCbr/Xt39477a0+pkB8WK/pz++ddajxZr/fSTAf1nO0Hmq85c9zGZSP6z1t+dzn4GkzPmepV4CM+NzE1/r2z1CHxdwDMM9nEk/1/WnuEbjKw6RueUXG6M8izfUoYM7PXczxKGDk524u5wLtCC7X729zlHjvz3Gpk7vbNnfO297AMvozS4/XjwJ3myYZ/eliDpdFhxqN/vTT84R4qPH81vPHMDkjP9F6rBXq/X+GPza1P9139LfcgZm551HAZU9m5/LWiOlXjFruwOxNdTQw8rMYuxseCX49GumSJ8vx60Van975t/XDCS/L9FDPL585J3Ctn8X720Vx5vusRnvVqPk+Icz1ifZWAL23Dyb11rSn9/bBpK7dHHPCy+q1lkpY2gAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAACzFT2OM88DUbkDGAAAAAElFTkSuQmCC",
@@ -5853,13 +5962,13 @@
                 "show-border": false
             },
             "subparts": [],
-            "ownerId": "6e327b63caf84b6ba549e06e6d035438"
+            "ownerId": "2bc11affeb894fa597c600c432e0345b"
         },
-        "c2aa0c6930674396bf52076823e8d92f": {
+        "79d399b314ff4d8dabd7dd7341587b63": {
             "type": "image",
-            "id": "c2aa0c6930674396bf52076823e8d92f",
+            "id": "79d399b314ff4d8dabd7dd7341587b63",
             "properties": {
-                "id": "c2aa0c6930674396bf52076823e8d92f",
+                "id": "79d399b314ff4d8dabd7dd7341587b63",
                 "number": 3,
                 "stepping": false,
                 "src": "/images/galileo.jpg",
@@ -5871,13 +5980,13 @@
                 "pinning": ""
             },
             "subparts": [],
-            "ownerId": "6e327b63caf84b6ba549e06e6d035438"
+            "ownerId": "2bc11affeb894fa597c600c432e0345b"
         },
-        "1d2afccc57cb4eb08f68577da7b94207": {
+        "b3a76b1fd04a41d980f0186c78ad1734": {
             "type": "field",
-            "id": "1d2afccc57cb4eb08f68577da7b94207",
+            "id": "b3a76b1fd04a41d980f0186c78ad1734",
             "properties": {
-                "id": "1d2afccc57cb4eb08f68577da7b94207",
+                "id": "b3a76b1fd04a41d980f0186c78ad1734",
                 "number": 4,
                 "stepping": false,
                 "innerHTML": "Ptolemaic Model vs. Galileo",
@@ -5895,49 +6004,7 @@
                 "text-size": 26
             },
             "subparts": [],
-            "ownerId": "6e327b63caf84b6ba549e06e6d035438"
-        },
-        "5f502789313647c7acf17c9753ccea6b": {
-            "type": "field",
-            "id": "5f502789313647c7acf17c9753ccea6b",
-            "properties": {
-                "id": "5f502789313647c7acf17c9753ccea6b",
-                "number": 4,
-                "stepping": false,
-                "innerHTML": "Do we want transitions here? If so NEED TO ADD",
-                "text": "Do we want transitions here? If so NEED TO ADD",
-                "top": 636,
-                "left": 1056,
-                "pinning": ""
-            },
-            "subparts": [],
-            "ownerId": "3816db70b29f4c1696236017e71219ff"
-        },
-        "d25d5625571c48f4a2ea7375833dbb81": {
-            "type": "field",
-            "id": "d25d5625571c48f4a2ea7375833dbb81",
-            "properties": {
-                "number": 5,
-                "stepping": false,
-                "innerHTML": "\"Compilers and weavers of approved opinion\" -- St. Bonaventure",
-                "text": "\"Compilers and weavers of approved opinion\" -- St. Bonaventure",
-                "editable": false,
-                "background-transparency": 0,
-                "border-top-transparency": 0,
-                "border-bottom-transparency": 0,
-                "border-left-transparency": 0,
-                "border-right-transparency": 0,
-                "top": 718,
-                "left": 133,
-                "horizontal-resizing": "shrink-wrap",
-                "vertical-resizing": "shrink-wrap",
-                "pinning": "",
-                "text-align": "center",
-                "text-italic": true,
-                "text-size": 26
-            },
-            "subparts": [],
-            "ownerId": "3816db70b29f4c1696236017e71219ff"
+            "ownerId": "2bc11affeb894fa597c600c432e0345b"
         },
         "93386dad00564c92a833c449d5295d61": {
             "type": "card",
@@ -6460,8 +6527,8 @@
                 "border-right-transparency": 0,
                 "width": 880,
                 "height": 677,
-                "top": 212,
-                "left": 477,
+                "top": 185,
+                "left": 382,
                 "horizontal-resizing": "shrink-wrap",
                 "pinning": "",
                 "layout": "list",
@@ -6818,8 +6885,8 @@
                     "border-bottom-left-radius": "0px",
                     "border-bottom-right-radius": "0px",
                     "display": null,
-                    "top": "83px",
-                    "left": "1336px",
+                    "top": "705px",
+                    "left": "1334px",
                     "horizontal-resizing": "rigid",
                     "vertical-resizing": "rigid",
                     "width": "185px",
@@ -6832,8 +6899,8 @@
                 "title": "Toolbox",
                 "width": 185,
                 "height": 288,
-                "top": 83,
-                "left": 1336,
+                "top": 705,
+                "left": 1334,
                 "pinning": ""
             },
             "subparts": [
@@ -33241,7 +33308,7 @@
 
 
 
-<st-editor class=""><editor-props-list tab-name="properties" class="show-pane"><editor-prop-item name="allow-scrolling" owner-id="482727c56dde49afb7beb902d50cb9d7"></editor-prop-item><editor-prop-item name="background-color" owner-id="482727c56dde49afb7beb902d50cb9d7"></editor-prop-item><editor-prop-item name="background-transparency" owner-id="482727c56dde49afb7beb902d50cb9d7"></editor-prop-item><editor-prop-item name="border-bottom-color" owner-id="482727c56dde49afb7beb902d50cb9d7"></editor-prop-item><editor-prop-item name="border-bottom-style" owner-id="482727c56dde49afb7beb902d50cb9d7"></editor-prop-item><editor-prop-item name="border-bottom-transparency" owner-id="482727c56dde49afb7beb902d50cb9d7"></editor-prop-item><editor-prop-item name="border-bottom-width" owner-id="482727c56dde49afb7beb902d50cb9d7"></editor-prop-item><editor-prop-item name="border-left-color" owner-id="482727c56dde49afb7beb902d50cb9d7"></editor-prop-item><editor-prop-item name="border-left-style" owner-id="482727c56dde49afb7beb902d50cb9d7"></editor-prop-item><editor-prop-item name="border-left-transparency" owner-id="482727c56dde49afb7beb902d50cb9d7"></editor-prop-item><editor-prop-item name="border-left-width" owner-id="482727c56dde49afb7beb902d50cb9d7"></editor-prop-item><editor-prop-item name="border-right-color" owner-id="482727c56dde49afb7beb902d50cb9d7"></editor-prop-item><editor-prop-item name="border-right-style" owner-id="482727c56dde49afb7beb902d50cb9d7"></editor-prop-item><editor-prop-item name="border-right-transparency" owner-id="482727c56dde49afb7beb902d50cb9d7"></editor-prop-item><editor-prop-item name="border-right-width" owner-id="482727c56dde49afb7beb902d50cb9d7"></editor-prop-item><editor-prop-item name="border-top-color" owner-id="482727c56dde49afb7beb902d50cb9d7"></editor-prop-item><editor-prop-item name="border-top-style" owner-id="482727c56dde49afb7beb902d50cb9d7"></editor-prop-item><editor-prop-item name="border-top-transparency" owner-id="482727c56dde49afb7beb902d50cb9d7"></editor-prop-item><editor-prop-item name="border-top-width" owner-id="482727c56dde49afb7beb902d50cb9d7"></editor-prop-item><editor-prop-item name="bottom-margin" owner-id="482727c56dde49afb7beb902d50cb9d7"></editor-prop-item><editor-prop-item name="bottom-padding" owner-id="482727c56dde49afb7beb902d50cb9d7"></editor-prop-item><editor-prop-item name="clipping" owner-id="482727c56dde49afb7beb902d50cb9d7"></editor-prop-item><editor-prop-item name="contents" owner-id="482727c56dde49afb7beb902d50cb9d7"></editor-prop-item><editor-prop-item name="corner-bottom-left-round" owner-id="482727c56dde49afb7beb902d50cb9d7"></editor-prop-item><editor-prop-item name="corner-bottom-right-round" owner-id="482727c56dde49afb7beb902d50cb9d7"></editor-prop-item><editor-prop-item name="corner-top-left-round" owner-id="482727c56dde49afb7beb902d50cb9d7"></editor-prop-item><editor-prop-item name="corner-top-right-round" owner-id="482727c56dde49afb7beb902d50cb9d7"></editor-prop-item><editor-prop-item name="editor-open" owner-id="482727c56dde49afb7beb902d50cb9d7"></editor-prop-item><editor-prop-item name="enabled" owner-id="482727c56dde49afb7beb902d50cb9d7"></editor-prop-item><editor-prop-item name="halo-open" owner-id="482727c56dde49afb7beb902d50cb9d7"></editor-prop-item><editor-prop-item name="height" owner-id="482727c56dde49afb7beb902d50cb9d7"></editor-prop-item><editor-prop-item name="hide" owner-id="482727c56dde49afb7beb902d50cb9d7"></editor-prop-item><editor-prop-item name="horizontal-resizing" owner-id="482727c56dde49afb7beb902d50cb9d7"></editor-prop-item><editor-prop-item name="layout" owner-id="482727c56dde49afb7beb902d50cb9d7"></editor-prop-item><editor-prop-item name="left" owner-id="482727c56dde49afb7beb902d50cb9d7"></editor-prop-item><editor-prop-item name="left-margin" owner-id="482727c56dde49afb7beb902d50cb9d7"></editor-prop-item><editor-prop-item name="left-padding" owner-id="482727c56dde49afb7beb902d50cb9d7"></editor-prop-item><editor-prop-item name="list-alignment" owner-id="482727c56dde49afb7beb902d50cb9d7"></editor-prop-item><editor-prop-item name="list-direction" owner-id="482727c56dde49afb7beb902d50cb9d7"></editor-prop-item><editor-prop-item name="list-distribution" owner-id="482727c56dde49afb7beb902d50cb9d7"></editor-prop-item><editor-prop-item name="list-wrapping" owner-id="482727c56dde49afb7beb902d50cb9d7"></editor-prop-item><editor-prop-item name="number" owner-id="482727c56dde49afb7beb902d50cb9d7"></editor-prop-item><editor-prop-item name="pinning" owner-id="482727c56dde49afb7beb902d50cb9d7"></editor-prop-item><editor-prop-item name="pinning-bottom" owner-id="482727c56dde49afb7beb902d50cb9d7"></editor-prop-item><editor-prop-item name="pinning-left" owner-id="482727c56dde49afb7beb902d50cb9d7"></editor-prop-item><editor-prop-item name="pinning-right" owner-id="482727c56dde49afb7beb902d50cb9d7"></editor-prop-item><editor-prop-item name="pinning-top" owner-id="482727c56dde49afb7beb902d50cb9d7"></editor-prop-item><editor-prop-item name="rectangle" owner-id="482727c56dde49afb7beb902d50cb9d7"></editor-prop-item><editor-prop-item name="right-margin" owner-id="482727c56dde49afb7beb902d50cb9d7"></editor-prop-item><editor-prop-item name="right-padding" owner-id="482727c56dde49afb7beb902d50cb9d7"></editor-prop-item><editor-prop-item name="rotate" owner-id="482727c56dde49afb7beb902d50cb9d7"></editor-prop-item><editor-prop-item name="shadow-blur" owner-id="482727c56dde49afb7beb902d50cb9d7"></editor-prop-item><editor-prop-item name="shadow-color" owner-id="482727c56dde49afb7beb902d50cb9d7"></editor-prop-item><editor-prop-item name="shadow-left" owner-id="482727c56dde49afb7beb902d50cb9d7"></editor-prop-item><editor-prop-item name="shadow-spread" owner-id="482727c56dde49afb7beb902d50cb9d7"></editor-prop-item><editor-prop-item name="shadow-top" owner-id="482727c56dde49afb7beb902d50cb9d7"></editor-prop-item><editor-prop-item name="shadow-transparency" owner-id="482727c56dde49afb7beb902d50cb9d7"></editor-prop-item><editor-prop-item name="stepping" owner-id="482727c56dde49afb7beb902d50cb9d7"></editor-prop-item><editor-prop-item name="stepTime" owner-id="482727c56dde49afb7beb902d50cb9d7"></editor-prop-item><editor-prop-item name="top" owner-id="482727c56dde49afb7beb902d50cb9d7"></editor-prop-item><editor-prop-item name="top-margin" owner-id="482727c56dde49afb7beb902d50cb9d7"></editor-prop-item><editor-prop-item name="top-padding" owner-id="482727c56dde49afb7beb902d50cb9d7"></editor-prop-item><editor-prop-item name="transparency" owner-id="482727c56dde49afb7beb902d50cb9d7"></editor-prop-item><editor-prop-item name="vertical-resizing" owner-id="482727c56dde49afb7beb902d50cb9d7"></editor-prop-item><editor-prop-item name="wants-move" owner-id="482727c56dde49afb7beb902d50cb9d7"></editor-prop-item><editor-prop-item name="width" owner-id="482727c56dde49afb7beb902d50cb9d7"></editor-prop-item></editor-props-list><editor-messenger tab-name="messenger"></editor-messenger><editor-custom-list tab-name="custom"></editor-custom-list><editor-subparts tab-name="subparts"><editor-location-info slot="ancestor-info" kind="stack" ref-id="c4615c745a2d4f80b14131549a15026f"></editor-location-info><editor-location-info slot="ancestor-info" kind="card" ref-id="d4cac799c5b5444eb31e1d5d56206f1c"></editor-location-info><editor-location-info slot="ancestor-info" kind="owner" ref-id="5c67ffab32004af092c0ea3e21679fba"></editor-location-info><button slot="button" data-type="area" title="Add a area to this area" class="add-part-button">
+<st-editor class=""><editor-props-list tab-name="properties" class="show-pane"><editor-prop-item name="allow-scrolling" owner-id="bfee20ad80284f74b9302a68df97e7f2"></editor-prop-item><editor-prop-item name="background-color" owner-id="bfee20ad80284f74b9302a68df97e7f2"></editor-prop-item><editor-prop-item name="background-transparency" owner-id="bfee20ad80284f74b9302a68df97e7f2"></editor-prop-item><editor-prop-item name="border-bottom-color" owner-id="bfee20ad80284f74b9302a68df97e7f2"></editor-prop-item><editor-prop-item name="border-bottom-style" owner-id="bfee20ad80284f74b9302a68df97e7f2"></editor-prop-item><editor-prop-item name="border-bottom-transparency" owner-id="bfee20ad80284f74b9302a68df97e7f2"></editor-prop-item><editor-prop-item name="border-bottom-width" owner-id="bfee20ad80284f74b9302a68df97e7f2"></editor-prop-item><editor-prop-item name="border-left-color" owner-id="bfee20ad80284f74b9302a68df97e7f2"></editor-prop-item><editor-prop-item name="border-left-style" owner-id="bfee20ad80284f74b9302a68df97e7f2"></editor-prop-item><editor-prop-item name="border-left-transparency" owner-id="bfee20ad80284f74b9302a68df97e7f2"></editor-prop-item><editor-prop-item name="border-left-width" owner-id="bfee20ad80284f74b9302a68df97e7f2"></editor-prop-item><editor-prop-item name="border-right-color" owner-id="bfee20ad80284f74b9302a68df97e7f2"></editor-prop-item><editor-prop-item name="border-right-style" owner-id="bfee20ad80284f74b9302a68df97e7f2"></editor-prop-item><editor-prop-item name="border-right-transparency" owner-id="bfee20ad80284f74b9302a68df97e7f2"></editor-prop-item><editor-prop-item name="border-right-width" owner-id="bfee20ad80284f74b9302a68df97e7f2"></editor-prop-item><editor-prop-item name="border-top-color" owner-id="bfee20ad80284f74b9302a68df97e7f2"></editor-prop-item><editor-prop-item name="border-top-style" owner-id="bfee20ad80284f74b9302a68df97e7f2"></editor-prop-item><editor-prop-item name="border-top-transparency" owner-id="bfee20ad80284f74b9302a68df97e7f2"></editor-prop-item><editor-prop-item name="border-top-width" owner-id="bfee20ad80284f74b9302a68df97e7f2"></editor-prop-item><editor-prop-item name="bottom-margin" owner-id="bfee20ad80284f74b9302a68df97e7f2"></editor-prop-item><editor-prop-item name="bottom-padding" owner-id="bfee20ad80284f74b9302a68df97e7f2"></editor-prop-item><editor-prop-item name="clipping" owner-id="bfee20ad80284f74b9302a68df97e7f2"></editor-prop-item><editor-prop-item name="contents" owner-id="bfee20ad80284f74b9302a68df97e7f2"></editor-prop-item><editor-prop-item name="corner-bottom-left-round" owner-id="bfee20ad80284f74b9302a68df97e7f2"></editor-prop-item><editor-prop-item name="corner-bottom-right-round" owner-id="bfee20ad80284f74b9302a68df97e7f2"></editor-prop-item><editor-prop-item name="corner-top-left-round" owner-id="bfee20ad80284f74b9302a68df97e7f2"></editor-prop-item><editor-prop-item name="corner-top-right-round" owner-id="bfee20ad80284f74b9302a68df97e7f2"></editor-prop-item><editor-prop-item name="editor-open" owner-id="bfee20ad80284f74b9302a68df97e7f2"></editor-prop-item><editor-prop-item name="enabled" owner-id="bfee20ad80284f74b9302a68df97e7f2"></editor-prop-item><editor-prop-item name="halo-open" owner-id="bfee20ad80284f74b9302a68df97e7f2"></editor-prop-item><editor-prop-item name="height" owner-id="bfee20ad80284f74b9302a68df97e7f2"></editor-prop-item><editor-prop-item name="hide" owner-id="bfee20ad80284f74b9302a68df97e7f2"></editor-prop-item><editor-prop-item name="horizontal-resizing" owner-id="bfee20ad80284f74b9302a68df97e7f2"></editor-prop-item><editor-prop-item name="layout" owner-id="bfee20ad80284f74b9302a68df97e7f2"></editor-prop-item><editor-prop-item name="left" owner-id="bfee20ad80284f74b9302a68df97e7f2"></editor-prop-item><editor-prop-item name="left-margin" owner-id="bfee20ad80284f74b9302a68df97e7f2"></editor-prop-item><editor-prop-item name="left-padding" owner-id="bfee20ad80284f74b9302a68df97e7f2"></editor-prop-item><editor-prop-item name="list-alignment" owner-id="bfee20ad80284f74b9302a68df97e7f2"></editor-prop-item><editor-prop-item name="list-direction" owner-id="bfee20ad80284f74b9302a68df97e7f2"></editor-prop-item><editor-prop-item name="list-distribution" owner-id="bfee20ad80284f74b9302a68df97e7f2"></editor-prop-item><editor-prop-item name="list-wrapping" owner-id="bfee20ad80284f74b9302a68df97e7f2"></editor-prop-item><editor-prop-item name="number" owner-id="bfee20ad80284f74b9302a68df97e7f2"></editor-prop-item><editor-prop-item name="pinning" owner-id="bfee20ad80284f74b9302a68df97e7f2"></editor-prop-item><editor-prop-item name="pinning-bottom" owner-id="bfee20ad80284f74b9302a68df97e7f2"></editor-prop-item><editor-prop-item name="pinning-left" owner-id="bfee20ad80284f74b9302a68df97e7f2"></editor-prop-item><editor-prop-item name="pinning-right" owner-id="bfee20ad80284f74b9302a68df97e7f2"></editor-prop-item><editor-prop-item name="pinning-top" owner-id="bfee20ad80284f74b9302a68df97e7f2"></editor-prop-item><editor-prop-item name="rectangle" owner-id="bfee20ad80284f74b9302a68df97e7f2"></editor-prop-item><editor-prop-item name="right-margin" owner-id="bfee20ad80284f74b9302a68df97e7f2"></editor-prop-item><editor-prop-item name="right-padding" owner-id="bfee20ad80284f74b9302a68df97e7f2"></editor-prop-item><editor-prop-item name="rotate" owner-id="bfee20ad80284f74b9302a68df97e7f2"></editor-prop-item><editor-prop-item name="shadow-blur" owner-id="bfee20ad80284f74b9302a68df97e7f2"></editor-prop-item><editor-prop-item name="shadow-color" owner-id="bfee20ad80284f74b9302a68df97e7f2"></editor-prop-item><editor-prop-item name="shadow-left" owner-id="bfee20ad80284f74b9302a68df97e7f2"></editor-prop-item><editor-prop-item name="shadow-spread" owner-id="bfee20ad80284f74b9302a68df97e7f2"></editor-prop-item><editor-prop-item name="shadow-top" owner-id="bfee20ad80284f74b9302a68df97e7f2"></editor-prop-item><editor-prop-item name="shadow-transparency" owner-id="bfee20ad80284f74b9302a68df97e7f2"></editor-prop-item><editor-prop-item name="stepping" owner-id="bfee20ad80284f74b9302a68df97e7f2"></editor-prop-item><editor-prop-item name="stepTime" owner-id="bfee20ad80284f74b9302a68df97e7f2"></editor-prop-item><editor-prop-item name="top" owner-id="bfee20ad80284f74b9302a68df97e7f2"></editor-prop-item><editor-prop-item name="top-margin" owner-id="bfee20ad80284f74b9302a68df97e7f2"></editor-prop-item><editor-prop-item name="top-padding" owner-id="bfee20ad80284f74b9302a68df97e7f2"></editor-prop-item><editor-prop-item name="transparency" owner-id="bfee20ad80284f74b9302a68df97e7f2"></editor-prop-item><editor-prop-item name="vertical-resizing" owner-id="bfee20ad80284f74b9302a68df97e7f2"></editor-prop-item><editor-prop-item name="wants-move" owner-id="bfee20ad80284f74b9302a68df97e7f2"></editor-prop-item><editor-prop-item name="width" owner-id="bfee20ad80284f74b9302a68df97e7f2"></editor-prop-item></editor-props-list><editor-messenger tab-name="messenger"></editor-messenger><editor-custom-list tab-name="custom"><editor-prop-item name="current-last-area" owner-id="bfee20ad80284f74b9302a68df97e7f2"></editor-prop-item></editor-custom-list><editor-subparts tab-name="subparts"><editor-location-info slot="ancestor-info" kind="stack" ref-id="c4615c745a2d4f80b14131549a15026f"></editor-location-info><editor-location-info slot="ancestor-info" kind="card" ref-id="aa18bba0fbfd44eea52e3a8c7722ec55"></editor-location-info><editor-location-info slot="ancestor-info" kind="owner" ref-id="aa18bba0fbfd44eea52e3a8c7722ec55"></editor-location-info><button slot="button" data-type="area" title="Add a area to this area" class="add-part-button">
 <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-shape" width="24" height="24" viewBox="0 0 24 24" stroke-width="1.5" stroke="#000000" fill="none" stroke-linecap="round" stroke-linejoin="round">
   <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
   <circle cx="5" cy="5" r="2"></circle>
@@ -33309,15 +33376,7 @@
   <line x1="5" y1="13" x2="19" y2="13"></line>
   <line x1="12" y1="3" x2="12" y2="21"></line>
 </svg>
-</button><li class="subpart-item" ref-id="52ae7ed0d61041069089d1aaeb6dfbe1"><div class="icon-display-area">
-<svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-photo" width="24" height="24" viewBox="0 0 24 24" stroke-width="1.5" stroke="#000000" fill="none" stroke-linecap="round" stroke-linejoin="round">
-  <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
-  <line x1="15" y1="8" x2="15.01" y2="8"></line>
-  <rect x="4" y="4" width="16" height="16" rx="3"></rect>
-  <path d="M4 15l4 -4a3 5 0 0 1 3 0l5 5"></path>
-  <path d="M14 14l1 -1a3 5 0 0 1 3 0l2 2"></path>
-</svg>
-</div><h3>a Image</h3><span class="name-span">"New image"</span><span class="id-span">(52ae7ed0d61041069089d1aaeb6dfbe1)</span></li><li class="subpart-item" ref-id="9a530b451ca341c1b7823f08d8c955ba"><div class="icon-display-area">
+</button><li class="subpart-item" ref-id="8f7888c1b38d4cfaab1c0c116cb13c47"><div class="icon-display-area">
 <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-shape" width="24" height="24" viewBox="0 0 24 24" stroke-width="1.5" stroke="#000000" fill="none" stroke-linecap="round" stroke-linejoin="round">
   <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
   <circle cx="5" cy="5" r="2"></circle>
@@ -33329,14 +33388,28 @@
   <line x1="7" y1="19" x2="17" y2="19"></line>
   <line x1="19" y1="7" x2="19" y2="17"></line>
 </svg>
-</div><h3>a Area</h3><span class="name-span">"New area"</span><span class="id-span">(9a530b451ca341c1b7823f08d8c955ba)</span></li><li class="subpart-item" ref-id="acc10c3796de453e958275c475c68a61"><div class="icon-display-area">
-<svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-forms" width="24" height="24" viewBox="0 0 24 24" stroke-width="1.5" stroke="#000000" fill="none" stroke-linecap="round" stroke-linejoin="round">
+</div><h3>a Area</h3><span class="name-span">"Past"</span><span class="id-span">(8f7888c1b38d4cfaab1c0c116cb13c47)</span></li><li class="subpart-item" ref-id="ae6dae36c6094d99b9f4047538c78577"><div class="icon-display-area">
+<svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-shape" width="24" height="24" viewBox="0 0 24 24" stroke-width="1.5" stroke="#000000" fill="none" stroke-linecap="round" stroke-linejoin="round">
   <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
-  <path d="M12 3a3 3 0 0 0 -3 3v12a3 3 0 0 0 3 3"></path>
-  <path d="M6 3a3 3 0 0 1 3 3v12a3 3 0 0 1 -3 3"></path>
-  <path d="M13 7h7a1 1 0 0 1 1 1v8a1 1 0 0 1 -1 1h-7"></path>
-  <path d="M5 7h-1a1 1 0 0 0 -1 1v8a1 1 0 0 0 1 1h1"></path>
-  <path d="M17 12h.01"></path>
-  <path d="M13 12h.01"></path>
+  <circle cx="5" cy="5" r="2"></circle>
+  <circle cx="19" cy="5" r="2"></circle>
+  <circle cx="5" cy="19" r="2"></circle>
+  <circle cx="19" cy="19" r="2"></circle>
+  <line x1="5" y1="7" x2="5" y2="17"></line>
+  <line x1="7" y1="5" x2="17" y2="5"></line>
+  <line x1="7" y1="19" x2="17" y2="19"></line>
+  <line x1="19" y1="7" x2="19" y2="17"></line>
 </svg>
-</div><h3>a Field</h3><span class="name-span">"New field"</span><span class="id-span">(acc10c3796de453e958275c475c68a61)</span></li></editor-subparts></st-editor></body></html>
+</div><h3>a Area</h3><span class="name-span">"Present"</span><span class="id-span">(ae6dae36c6094d99b9f4047538c78577)</span></li><li class="subpart-item" ref-id="d071ad74f3114202b2016301ff70b450"><div class="icon-display-area">
+<svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-shape" width="24" height="24" viewBox="0 0 24 24" stroke-width="1.5" stroke="#000000" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
+  <circle cx="5" cy="5" r="2"></circle>
+  <circle cx="19" cy="5" r="2"></circle>
+  <circle cx="5" cy="19" r="2"></circle>
+  <circle cx="19" cy="19" r="2"></circle>
+  <line x1="5" y1="7" x2="5" y2="17"></line>
+  <line x1="7" y1="5" x2="17" y2="5"></line>
+  <line x1="7" y1="19" x2="17" y2="19"></line>
+  <line x1="19" y1="7" x2="19" y2="17"></line>
+</svg>
+</div><h3>a Area</h3><span class="name-span">"Future"</span><span class="id-span">(d071ad74f3114202b2016301ff70b450)</span></li></editor-subparts></st-editor></body></html>
