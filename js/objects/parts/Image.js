@@ -137,7 +137,8 @@ class Image extends Part {
             'imageData'
         );
         this.partProperties._properties.filter(prop => {
-            return prop.getValue(this) !== prop.default;
+            let isCustomProp = prop.name == 'custom-properties';
+            return (prop.getValue(this) !== prop.default || isCustomProp);
         }).forEach(prop => {
             let name = prop.name;
             let value = prop.getValue(this);
