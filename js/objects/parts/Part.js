@@ -717,7 +717,9 @@ class Part {
             ownerId: ownerId
         };
         this.partProperties._properties.filter(prop => {
-            return prop.getValue(this) !== prop.default;
+            // we make sure to only serialize those properties which have non-default values
+            // with the exception of the "custom-properties" prop which we always serialize
+            return (prop.name == "custom-properties" || prop.getValue(this) !== prop.default);
         }).forEach(prop => {
             let name = prop.name;
             // due to race-conditions incurred if the editor is
