@@ -7,16 +7,17 @@ A project inspired by the ideas from [HyperCard](https://en.wikipedia.org/wiki/H
 
 No official release at the moment but you can find an early draft of the documentation [here](https://simpletalk.systems/). The documentation lives in the environment and the environment documents itself - it's a computer after all. (**Note**: this is not a product so we didn't go down the cross-browser support rabbit hole; please use Firefox - otherwise we can't guarantee how things will work or look - and plenty of screen-space will make the experience more enjoyable.) 
 
-## Installation
+## Installation and Building
 
 Create a node environment like so `nodeenv --node=14.5.0 --prebuilt  .nenv` (replace 14.5.0 with whatever current version you want, and .nenv with the directory you prefer), and source `source .nenv/bin/activate`. Then run `npm install`.
-  
+
+To build run `npm run build-dev` which will create a webpack bundle used by the examples.
+
 ## Running Examples
   
 Serialized collections of Simpletalk Stacks are called "snapshots" and are just plain HTML documents. There are [several examples available in this repository](https://github.com/dkrasner/Simpletalk/tree/master/js/objects/examples). The "bootstrap.html" example is what we normally use to start building new stacks.
   
 In order to properly load them you will have to host them rather than opening a local file. Using Python 3, for example, you can run `python -m http.server` at the root of this repository and the files will be available on `localhost:8000`.
-
 
 ## Tests
 
