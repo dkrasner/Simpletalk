@@ -1179,6 +1179,53 @@ System._commandHandlers['saveHTML'] = function(senders){
     }
 };
 
+System._commandHandlers['uploadHTML'] = function(senders, filename){
+    // Stop hand recognition if it's running.
+    let handRecognitionOriginallyRunning = handInterface.handDetectionRunning;
+    if (handRecognitionOriginallyRunning) {
+        handInterface.stop();
+    }
+    this.serialize();
+
+    let content = this.getFullHTMLString();
+    var formData = new FormData();
+    var blob = new Blob([content], {type: "data:text/plain;charset=utf-8"});
+    formData.append("filename", blob, filename);
+    fetch("/_storage/upload", {body: formData, method: "POST"})
+        .then(resp => {
+            if (resp.status != 200) {
+                resp.json().then(json => {
+                    alert("Error: " + json.error);
+                }).catch(error => {
+                    console.log(error);
+                    alert("Error: server error");
+                });
+            }
+        })
+
+    // Start hand recognition if it was running.
+    if (handRecognitionOriginallyRunning) {
+        handInterface.start();
+    }
+};
+
+System._commandHandlers['login'] = function(senders, username, password) {
+    let formData = new FormData();
+    formData.append("username", username);
+    formData.append("password", password);
+    fetch("/_storage/_auth/login", {body: formData, method: "POST"})
+        .then(resp => {
+            if (resp.status != 200) {
+                resp.json().then(json => {
+                    alert("Error: " + json.error);
+                }).catch(error => {
+                    console.log(error);
+                    alert("Error: server error");
+                });
+            }
+        })
+};
+
 System._commandHandlers['tell'] = (senders, targetId, deferredMessage) => {
     let targetPart = System.partsById[targetId];
     if(!targetPart){

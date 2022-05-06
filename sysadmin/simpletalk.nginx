@@ -1,0 +1,19 @@
+server {
+    listen [::]:5000;
+    listen 5000;
+
+    server_name simpletalk.systems www.simpletalk.systems;
+
+    client_max_body_size 10m;
+
+    location /_storage {
+        include uwsgi_params;
+        uwsgi_pass unix:/opt/simpletalk/simplestorage.sock;
+        #proxy_pass http://localhost:5000;
+    }
+
+    location / {
+        root /opt/simpletalk/serve;
+        autoindex on;
+    }
+}
