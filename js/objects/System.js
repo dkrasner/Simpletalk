@@ -783,6 +783,21 @@ System._commandHandlers['ask'] = function(senders, question){
     return prompt(question);
 };
 
+System._commandHandlers['getBrowserName'] = function(senders){
+    // Parse the navigator.userAgent object and try to detect the browser
+    // as described here:
+    // https://developer.mozilla.org/en-US/docs/Web/HTTP/Browser_detection_using_the_user_agent
+    // and return its value.
+    // By returning here, we expect the implicit variable
+    // "it" to be set inside any calling script
+    const browserRegex = /(Firefox|Chrome)\/([\d.]*)/;
+    const match = navigator.userAgent.match(browserRegex);
+    if (match) {
+        return match[1];
+    }
+    return "unkown";
+};
+
 System._commandHandlers['putInto'] = function(senders, value, variableName, global){
     if(global){
         System.executionStack.setGlobal(variableName, value);
