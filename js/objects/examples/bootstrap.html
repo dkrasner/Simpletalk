@@ -42,42 +42,42 @@
                 "number": 1,
                 "custom-properties": {},
                 "stepping": false,
-                "current": "6d839c1127744425bbf8def21069fa25"
+                "current": "5a4c8fd58dc3463e883512704228814a"
             },
             "subparts": [
-                "6d839c1127744425bbf8def21069fa25"
+                "5a4c8fd58dc3463e883512704228814a"
             ],
             "ownerId": null,
             "loadedStacks": [
-                "6d839c1127744425bbf8def21069fa25"
+                "5a4c8fd58dc3463e883512704228814a"
             ]
         },
-        "6d839c1127744425bbf8def21069fa25": {
+        "5a4c8fd58dc3463e883512704228814a": {
             "type": "stack",
-            "id": "6d839c1127744425bbf8def21069fa25",
+            "id": "5a4c8fd58dc3463e883512704228814a",
             "properties": {
-                "id": "6d839c1127744425bbf8def21069fa25",
+                "id": "5a4c8fd58dc3463e883512704228814a",
                 "name": "",
                 "cssStyle": {},
                 "cssTextStyle": {},
                 "number": 1,
                 "custom-properties": {},
                 "stepping": false,
-                "current": "ab351821f153404d9fb1f82777db9bf1"
+                "current": "d2292d7fb9a34ad284b85f07a4bbb26b"
             },
             "subparts": [
-                "ab351821f153404d9fb1f82777db9bf1",
-                "a6845b71026f4994a1db5f861ff149b2"
+                "d2292d7fb9a34ad284b85f07a4bbb26b",
+                "bb7dc824aa0040d195c625c03eecc863"
             ],
             "ownerId": "world"
         },
-        "ab351821f153404d9fb1f82777db9bf1": {
+        "d2292d7fb9a34ad284b85f07a4bbb26b": {
             "type": "card",
-            "id": "ab351821f153404d9fb1f82777db9bf1",
+            "id": "d2292d7fb9a34ad284b85f07a4bbb26b",
             "properties": {
-                "id": "ab351821f153404d9fb1f82777db9bf1",
+                "id": "d2292d7fb9a34ad284b85f07a4bbb26b",
                 "name": "",
-                "script": "on openCard \n\tgetBrowserName\n\n\tif it != \"Firefox\"\n\tthen \n\t\tsendWarning\n\n\telse\n\t\tdeleteWarning\n\tend if\n\nend openCard \n\n\non sendWarning \n\ttell area \"Browser Warning\" of current card to set \"hide\" to false\n\nend sendWarning \n\n\n\non deleteWarning\n\tdelete area \"Browser Warning\" of current card\nend deleteWarning\n",
+                "script": "on openCard \n\tgetBrowserName\n\n\tif it != \"Firefox\"\n\tthen \n\t\tsendWarning\n\tend if\n\nend openCard \n\n\non sendWarning \n\tanswer \"I am an experimental system, please try me in Firefox\"\n\nend sendWarning ",
                 "cssStyle": {
                     "layout": "strict",
                     "opacity": 1,
@@ -108,132 +108,14 @@
                 "custom-properties": {},
                 "stepping": false
             },
-            "subparts": [
-                "45add5eabfe9471f8a8f2c3a0d936357"
-            ],
-            "ownerId": "6d839c1127744425bbf8def21069fa25"
-        },
-        "45add5eabfe9471f8a8f2c3a0d936357": {
-            "type": "area",
-            "id": "45add5eabfe9471f8a8f2c3a0d936357",
-            "properties": {
-                "id": "45add5eabfe9471f8a8f2c3a0d936357",
-                "name": "Browser Warning",
-                "number": 1,
-                "custom-properties": {},
-                "stepping": false,
-                "border-top-width": 0,
-                "border-top-color": "red",
-                "border-bottom-color": "red",
-                "border-left-color": "red",
-                "border-right-color": "red",
-                "border-bottom-transparency": 0.45,
-                "border-left-transparency": 0.45,
-                "hide": true,
-                "width": 442,
-                "height": 203,
-                "top": 45,
-                "left": 41,
-                "pinning": "",
-                "layout": "list",
-                "list-direction": "column"
-            },
-            "subparts": [
-                "b028a716d2e74f29aa95a7caa24c2f55",
-                "c9d3d1e01d32424eb4944cac51d76168"
-            ],
-            "ownerId": "ab351821f153404d9fb1f82777db9bf1"
-        },
-        "b028a716d2e74f29aa95a7caa24c2f55": {
-            "type": "field",
-            "id": "b028a716d2e74f29aa95a7caa24c2f55",
-            "properties": {
-                "id": "b028a716d2e74f29aa95a7caa24c2f55",
-                "number": 1,
-                "custom-properties": {},
-                "stepping": false,
-                "innerHTML": "<div>Looks like you are not using Firefox</div><div><br></div><div>I am an experimental system and things probably won't work as expected</div><div><br></div><div>For best results do switch to Firefox please!</div><div><br></div>",
-                "text": "Looks like you are not using Firefox\n\n\nI am an experimental system and things probably won't work as expected\n\n\nFor best results do switch to Firefox please!\n\n",
-                "background-transparency": 0.75,
-                "background-color": "white",
-                "border-top-width": "0",
-                "border-bottom-width": "0",
-                "border-left-width": "0",
-                "border-right-width": "0",
-                "border-top-transparency": 0,
-                "border-bottom-transparency": 0,
-                "border-left-transparency": 0,
-                "border-right-transparency": 0,
-                "width": 440,
-                "height": 168,
-                "top": 168,
-                "left": -103,
-                "pinning": "",
-                "text-align": "center",
-                "text-color": "black",
-                "text-size": 21
-            },
             "subparts": [],
-            "ownerId": "45add5eabfe9471f8a8f2c3a0d936357"
+            "ownerId": "5a4c8fd58dc3463e883512704228814a"
         },
-        "c9d3d1e01d32424eb4944cac51d76168": {
-            "type": "area",
-            "id": "c9d3d1e01d32424eb4944cac51d76168",
-            "properties": {
-                "id": "c9d3d1e01d32424eb4944cac51d76168",
-                "number": 2,
-                "custom-properties": {},
-                "stepping": false,
-                "border-top-width": 0,
-                "border-bottom-width": 0,
-                "border-left-width": 0,
-                "border-right-width": 0,
-                "width": "440",
-                "pinning": "",
-                "layout": "list",
-                "list-direction": "column",
-                "list-alignment": "center"
-            },
-            "subparts": [
-                "dd4dac1ccc4647b69e3d03cf1cd05638"
-            ],
-            "ownerId": "45add5eabfe9471f8a8f2c3a0d936357"
-        },
-        "dd4dac1ccc4647b69e3d03cf1cd05638": {
-            "type": "button",
-            "id": "dd4dac1ccc4647b69e3d03cf1cd05638",
-            "properties": {
-                "id": "dd4dac1ccc4647b69e3d03cf1cd05638",
-                "name": "Close",
-                "script": "on click \n\tdelete area \"Browser Warning\" of current card\nend click \n",
-                "number": 1,
-                "custom-properties": {},
-                "stepping": false,
-                "background-transparency": 0,
-                "background-color": "",
-                "border-top-width": 0,
-                "border-bottom-width": 0,
-                "border-left-width": 0,
-                "border-right-width": 0,
-                "border-top-transparency": 0,
-                "border-bottom-transparency": 0,
-                "border-left-transparency": 0,
-                "border-right-transparency": 0,
-                "shadow-transparency": 0,
-                "left": 2,
-                "pinning": "",
-                "text-align": "center",
-                "text-color": "red",
-                "text-size": 19
-            },
-            "subparts": [],
-            "ownerId": "c9d3d1e01d32424eb4944cac51d76168"
-        },
-        "a6845b71026f4994a1db5f861ff149b2": {
+        "bb7dc824aa0040d195c625c03eecc863": {
             "type": "window",
-            "id": "a6845b71026f4994a1db5f861ff149b2",
+            "id": "bb7dc824aa0040d195c625c03eecc863",
             "properties": {
-                "id": "a6845b71026f4994a1db5f861ff149b2",
+                "id": "bb7dc824aa0040d195c625c03eecc863",
                 "name": "Toolbox",
                 "cssStyle": {
                     "backgroundColor": "rgba(255, 255, 255, 0)",
@@ -276,15 +158,15 @@
                 "pinning": ""
             },
             "subparts": [
-                "f832fc1247bc4c41ad3ce52180aa8426"
+                "f803fb43aeb64b8ca85a95c14c1c8029"
             ],
-            "ownerId": "6d839c1127744425bbf8def21069fa25"
+            "ownerId": "5a4c8fd58dc3463e883512704228814a"
         },
-        "f832fc1247bc4c41ad3ce52180aa8426": {
+        "f803fb43aeb64b8ca85a95c14c1c8029": {
             "type": "area",
-            "id": "f832fc1247bc4c41ad3ce52180aa8426",
+            "id": "f803fb43aeb64b8ca85a95c14c1c8029",
             "properties": {
-                "id": "f832fc1247bc4c41ad3ce52180aa8426",
+                "id": "f803fb43aeb64b8ca85a95c14c1c8029",
                 "name": "",
                 "cssStyle": {
                     "width": "187px",
@@ -331,23 +213,24 @@
                 "list-alignment": "center"
             },
             "subparts": [
-                "1cbe272eb5a04b0090c580cfce52e1b7",
-                "717b9c3a6aee47499e39d803fc51d43f",
-                "8e111a4d6dff45f4ae5d9dbad781fe90",
-                "e11b618bded54c9e945f20e0d1c3fc02",
-                "0b082b3b6ad04ce0b43ca5c06de65507",
-                "bdf3c11c208d47ddba0fc30908e316c3",
-                "c6443be34e0a4295b93b5b327689c855",
-                "8bf83ac24773460a9d1a413f7fb7669f",
-                "feeab17ee0e541b99f292d62549eac1e"
+                "ebedae591e7442888b7c1c706874c17a",
+                "e668abadad874daa9f63202ec35cc43a",
+                "c9f8a0a4b3d74671ba3084e15b2cb720",
+                "bf94046b899a4a33995481d125b40eb6",
+                "a8a3f7f9a3a64bf1ad97e966222a347b",
+                "a8c5e4e75aa64b71abb5c9739c9adde8",
+                "2a1a6bb7f06b4326a7a65289521f8994",
+                "64801040b745411fa69aa2f5cc68c645",
+                "70b13293eba2461682d42d22293ce1fd",
+                "db550351d83542b7a62ef68f38e637b8"
             ],
-            "ownerId": "a6845b71026f4994a1db5f861ff149b2"
+            "ownerId": "bb7dc824aa0040d195c625c03eecc863"
         },
-        "1cbe272eb5a04b0090c580cfce52e1b7": {
+        "ebedae591e7442888b7c1c706874c17a": {
             "type": "button",
-            "id": "1cbe272eb5a04b0090c580cfce52e1b7",
+            "id": "ebedae591e7442888b7c1c706874c17a",
             "properties": {
-                "id": "1cbe272eb5a04b0090c580cfce52e1b7",
+                "id": "ebedae591e7442888b7c1c706874c17a",
                 "name": "Add Button",
                 "script": "on click\n\tadd button to current card\nend click\n",
                 "cssStyle": {
@@ -394,13 +277,13 @@
                 "pinning": ""
             },
             "subparts": [],
-            "ownerId": "f832fc1247bc4c41ad3ce52180aa8426"
+            "ownerId": "f803fb43aeb64b8ca85a95c14c1c8029"
         },
-        "717b9c3a6aee47499e39d803fc51d43f": {
+        "e668abadad874daa9f63202ec35cc43a": {
             "type": "button",
-            "id": "717b9c3a6aee47499e39d803fc51d43f",
+            "id": "e668abadad874daa9f63202ec35cc43a",
             "properties": {
-                "id": "717b9c3a6aee47499e39d803fc51d43f",
+                "id": "e668abadad874daa9f63202ec35cc43a",
                 "name": "Add Image",
                 "script": "on click\n\tadd image to current card\nend click",
                 "cssStyle": {
@@ -449,13 +332,13 @@
                 "pinning": ""
             },
             "subparts": [],
-            "ownerId": "f832fc1247bc4c41ad3ce52180aa8426"
+            "ownerId": "f803fb43aeb64b8ca85a95c14c1c8029"
         },
-        "8e111a4d6dff45f4ae5d9dbad781fe90": {
+        "c9f8a0a4b3d74671ba3084e15b2cb720": {
             "type": "button",
-            "id": "8e111a4d6dff45f4ae5d9dbad781fe90",
+            "id": "c9f8a0a4b3d74671ba3084e15b2cb720",
             "properties": {
-                "id": "8e111a4d6dff45f4ae5d9dbad781fe90",
+                "id": "c9f8a0a4b3d74671ba3084e15b2cb720",
                 "name": "Add Drawing",
                 "script": "on click\n\tadd drawing to current card\nend click",
                 "cssStyle": {
@@ -504,13 +387,13 @@
                 "pinning": ""
             },
             "subparts": [],
-            "ownerId": "f832fc1247bc4c41ad3ce52180aa8426"
+            "ownerId": "f803fb43aeb64b8ca85a95c14c1c8029"
         },
-        "e11b618bded54c9e945f20e0d1c3fc02": {
+        "bf94046b899a4a33995481d125b40eb6": {
             "type": "button",
-            "id": "e11b618bded54c9e945f20e0d1c3fc02",
+            "id": "bf94046b899a4a33995481d125b40eb6",
             "properties": {
-                "id": "e11b618bded54c9e945f20e0d1c3fc02",
+                "id": "bf94046b899a4a33995481d125b40eb6",
                 "name": "Add Area",
                 "script": "on click\n\tadd area to current card\nend click",
                 "cssStyle": {
@@ -559,13 +442,13 @@
                 "pinning": ""
             },
             "subparts": [],
-            "ownerId": "f832fc1247bc4c41ad3ce52180aa8426"
+            "ownerId": "f803fb43aeb64b8ca85a95c14c1c8029"
         },
-        "0b082b3b6ad04ce0b43ca5c06de65507": {
+        "a8a3f7f9a3a64bf1ad97e966222a347b": {
             "type": "button",
-            "id": "0b082b3b6ad04ce0b43ca5c06de65507",
+            "id": "a8a3f7f9a3a64bf1ad97e966222a347b",
             "properties": {
-                "id": "0b082b3b6ad04ce0b43ca5c06de65507",
+                "id": "a8a3f7f9a3a64bf1ad97e966222a347b",
                 "name": "Add Field",
                 "script": "on click\n\tadd field to current card\nend click",
                 "cssStyle": {
@@ -614,13 +497,13 @@
                 "pinning": ""
             },
             "subparts": [],
-            "ownerId": "f832fc1247bc4c41ad3ce52180aa8426"
+            "ownerId": "f803fb43aeb64b8ca85a95c14c1c8029"
         },
-        "bdf3c11c208d47ddba0fc30908e316c3": {
+        "a8c5e4e75aa64b71abb5c9739c9adde8": {
             "type": "button",
-            "id": "bdf3c11c208d47ddba0fc30908e316c3",
+            "id": "a8c5e4e75aa64b71abb5c9739c9adde8",
             "properties": {
-                "id": "bdf3c11c208d47ddba0fc30908e316c3",
+                "id": "a8c5e4e75aa64b71abb5c9739c9adde8",
                 "name": "Add Card",
                 "script": "on click\n\tadd card\nend click",
                 "cssStyle": {
@@ -669,13 +552,13 @@
                 "pinning": ""
             },
             "subparts": [],
-            "ownerId": "f832fc1247bc4c41ad3ce52180aa8426"
+            "ownerId": "f803fb43aeb64b8ca85a95c14c1c8029"
         },
-        "c6443be34e0a4295b93b5b327689c855": {
+        "2a1a6bb7f06b4326a7a65289521f8994": {
             "type": "button",
-            "id": "c6443be34e0a4295b93b5b327689c855",
+            "id": "2a1a6bb7f06b4326a7a65289521f8994",
             "properties": {
-                "id": "c6443be34e0a4295b93b5b327689c855",
+                "id": "2a1a6bb7f06b4326a7a65289521f8994",
                 "name": "Add Toolbox Button",
                 "script": "on click\n\tadd button\n\ttell last button to set \"width\" to \"fill\"\nend click",
                 "cssStyle": {
@@ -723,13 +606,13 @@
                 "pinning": ""
             },
             "subparts": [],
-            "ownerId": "f832fc1247bc4c41ad3ce52180aa8426"
+            "ownerId": "f803fb43aeb64b8ca85a95c14c1c8029"
         },
-        "8bf83ac24773460a9d1a413f7fb7669f": {
+        "64801040b745411fa69aa2f5cc68c645": {
             "type": "button",
-            "id": "8bf83ac24773460a9d1a413f7fb7669f",
+            "id": "64801040b745411fa69aa2f5cc68c645",
             "properties": {
-                "id": "8bf83ac24773460a9d1a413f7fb7669f",
+                "id": "64801040b745411fa69aa2f5cc68c645",
                 "name": "Import World",
                 "script": "on click\n\timportWorld\nend click",
                 "cssStyle": {
@@ -778,13 +661,68 @@
                 "pinning": ""
             },
             "subparts": [],
-            "ownerId": "f832fc1247bc4c41ad3ce52180aa8426"
+            "ownerId": "f803fb43aeb64b8ca85a95c14c1c8029"
         },
-        "feeab17ee0e541b99f292d62549eac1e": {
+        "70b13293eba2461682d42d22293ce1fd": {
             "type": "button",
-            "id": "feeab17ee0e541b99f292d62549eac1e",
+            "id": "70b13293eba2461682d42d22293ce1fd",
             "properties": {
-                "id": "feeab17ee0e541b99f292d62549eac1e",
+                "id": "70b13293eba2461682d42d22293ce1fd",
+                "name": "Import Local World",
+                "script": "on click \n\timportLocalWorld\nend click ",
+                "cssStyle": {
+                    "backgroundColor": "rgba(255, 234, 149, 1)",
+                    "opacity": 1,
+                    "border-top-style": "solid",
+                    "border-bottom-style": "solid",
+                    "border-left-style": "solid",
+                    "border-right-style": "solid",
+                    "border-top-width": "1px",
+                    "border-bottom-width": "1px",
+                    "border-left-width": "1px",
+                    "border-right-width": "1px",
+                    "border-top-color": "rgba(0, 0, 0, 1)",
+                    "border-bottom-color": "rgba(0, 0, 0, 1)",
+                    "border-left-color": "rgba(0, 0, 0, 1)",
+                    "border-right-color": "rgba(0, 0, 0, 1)",
+                    "border-left-transparency": 1,
+                    "box-shadow": "1px 1px 1px 0px rgba(238, 238, 238, 1)",
+                    "border-top-left-radius": "3px",
+                    "border-top-right-radius": "3px",
+                    "border-bottom-left-radius": "3px",
+                    "border-bottom-right-radius": "3px",
+                    "display": null,
+                    "top": "10px",
+                    "left": "10px",
+                    "horizontal-resizing": "rigid",
+                    "vertical-resizing": "rigid",
+                    "width": "100%"
+                },
+                "cssTextStyle": {
+                    "textAlign": "left",
+                    "fontFamily": "default",
+                    "color": "rgba(0, 0, 0, 1)",
+                    "textStyle": "plain",
+                    "font-weight": "normal",
+                    "font-style": "normal",
+                    "fontSize": 15
+                },
+                "number": 9,
+                "custom-properties": {},
+                "stepping": false,
+                "width": "fill",
+                "top": 10,
+                "left": 10,
+                "pinning": ""
+            },
+            "subparts": [],
+            "ownerId": "f803fb43aeb64b8ca85a95c14c1c8029"
+        },
+        "db550351d83542b7a62ef68f38e637b8": {
+            "type": "button",
+            "id": "db550351d83542b7a62ef68f38e637b8",
+            "properties": {
+                "id": "db550351d83542b7a62ef68f38e637b8",
                 "name": "Save",
                 "script": "on click\n\tsaveHTML\nend click",
                 "cssStyle": {
@@ -824,14 +762,14 @@
                     "font-style": "normal",
                     "fontSize": 15
                 },
-                "number": 9,
+                "number": 10,
                 "custom-properties": {},
                 "stepping": false,
                 "width": "fill",
                 "pinning": ""
             },
             "subparts": [],
-            "ownerId": "f832fc1247bc4c41ad3ce52180aa8426"
+            "ownerId": "f803fb43aeb64b8ca85a95c14c1c8029"
         }
     }
 }</script>
@@ -839,7 +777,27 @@
 
 
 
-<st-editor class=""><editor-props-list tab-name="properties" class="show-pane"><editor-prop-item name="background-color" owner-id="b028a716d2e74f29aa95a7caa24c2f55"></editor-prop-item><editor-prop-item name="background-transparency" owner-id="b028a716d2e74f29aa95a7caa24c2f55" class=""></editor-prop-item><editor-prop-item name="border-bottom-color" owner-id="b028a716d2e74f29aa95a7caa24c2f55" class="item-hidden"></editor-prop-item><editor-prop-item name="border-bottom-style" owner-id="b028a716d2e74f29aa95a7caa24c2f55" class="item-hidden"></editor-prop-item><editor-prop-item name="border-bottom-transparency" owner-id="b028a716d2e74f29aa95a7caa24c2f55" class="item-hidden"></editor-prop-item><editor-prop-item name="border-bottom-width" owner-id="b028a716d2e74f29aa95a7caa24c2f55" class="item-hidden"></editor-prop-item><editor-prop-item name="border-left-color" owner-id="b028a716d2e74f29aa95a7caa24c2f55" class="item-hidden"></editor-prop-item><editor-prop-item name="border-left-style" owner-id="b028a716d2e74f29aa95a7caa24c2f55" class="item-hidden"></editor-prop-item><editor-prop-item name="border-left-transparency" owner-id="b028a716d2e74f29aa95a7caa24c2f55" class="item-hidden"></editor-prop-item><editor-prop-item name="border-left-width" owner-id="b028a716d2e74f29aa95a7caa24c2f55" class="item-hidden"></editor-prop-item><editor-prop-item name="border-right-color" owner-id="b028a716d2e74f29aa95a7caa24c2f55" class="item-hidden"></editor-prop-item><editor-prop-item name="border-right-style" owner-id="b028a716d2e74f29aa95a7caa24c2f55" class="item-hidden"></editor-prop-item><editor-prop-item name="border-right-transparency" owner-id="b028a716d2e74f29aa95a7caa24c2f55" class="item-hidden"></editor-prop-item><editor-prop-item name="border-right-width" owner-id="b028a716d2e74f29aa95a7caa24c2f55" class="item-hidden"></editor-prop-item><editor-prop-item name="border-top-color" owner-id="b028a716d2e74f29aa95a7caa24c2f55" class="item-hidden"></editor-prop-item><editor-prop-item name="border-top-style" owner-id="b028a716d2e74f29aa95a7caa24c2f55" class="item-hidden"></editor-prop-item><editor-prop-item name="border-top-transparency" owner-id="b028a716d2e74f29aa95a7caa24c2f55" class="item-hidden"></editor-prop-item><editor-prop-item name="border-top-width" owner-id="b028a716d2e74f29aa95a7caa24c2f55" class="item-hidden"></editor-prop-item><editor-prop-item name="bottom-margin" owner-id="b028a716d2e74f29aa95a7caa24c2f55" class="item-hidden"></editor-prop-item><editor-prop-item name="contents" owner-id="b028a716d2e74f29aa95a7caa24c2f55" class="item-hidden"></editor-prop-item><editor-prop-item name="corner-bottom-left-round" owner-id="b028a716d2e74f29aa95a7caa24c2f55" class="item-hidden"></editor-prop-item><editor-prop-item name="corner-bottom-right-round" owner-id="b028a716d2e74f29aa95a7caa24c2f55" class="item-hidden"></editor-prop-item><editor-prop-item name="corner-top-left-round" owner-id="b028a716d2e74f29aa95a7caa24c2f55" class="item-hidden"></editor-prop-item><editor-prop-item name="corner-top-right-round" owner-id="b028a716d2e74f29aa95a7caa24c2f55" class="item-hidden"></editor-prop-item><editor-prop-item name="editable" owner-id="b028a716d2e74f29aa95a7caa24c2f55" class="item-hidden"></editor-prop-item><editor-prop-item name="editor-open" owner-id="b028a716d2e74f29aa95a7caa24c2f55" class="item-hidden"></editor-prop-item><editor-prop-item name="enabled" owner-id="b028a716d2e74f29aa95a7caa24c2f55" class="item-hidden"></editor-prop-item><editor-prop-item name="halo-open" owner-id="b028a716d2e74f29aa95a7caa24c2f55" class="item-hidden"></editor-prop-item><editor-prop-item name="height" owner-id="b028a716d2e74f29aa95a7caa24c2f55" class="item-hidden"></editor-prop-item><editor-prop-item name="hide" owner-id="b028a716d2e74f29aa95a7caa24c2f55" class="item-hidden"></editor-prop-item><editor-prop-item name="horizontal-resizing" owner-id="b028a716d2e74f29aa95a7caa24c2f55" class="item-hidden"></editor-prop-item><editor-prop-item name="innerHTML" owner-id="b028a716d2e74f29aa95a7caa24c2f55" class="item-hidden"></editor-prop-item><editor-prop-item name="left" owner-id="b028a716d2e74f29aa95a7caa24c2f55" class="item-hidden"></editor-prop-item><editor-prop-item name="left-margin" owner-id="b028a716d2e74f29aa95a7caa24c2f55" class="item-hidden"></editor-prop-item><editor-prop-item name="mode" owner-id="b028a716d2e74f29aa95a7caa24c2f55" class="item-hidden"></editor-prop-item><editor-prop-item name="number" owner-id="b028a716d2e74f29aa95a7caa24c2f55" class="item-hidden"></editor-prop-item><editor-prop-item name="pinning" owner-id="b028a716d2e74f29aa95a7caa24c2f55" class="item-hidden"></editor-prop-item><editor-prop-item name="pinning-bottom" owner-id="b028a716d2e74f29aa95a7caa24c2f55" class="item-hidden"></editor-prop-item><editor-prop-item name="pinning-left" owner-id="b028a716d2e74f29aa95a7caa24c2f55" class="item-hidden"></editor-prop-item><editor-prop-item name="pinning-right" owner-id="b028a716d2e74f29aa95a7caa24c2f55" class="item-hidden"></editor-prop-item><editor-prop-item name="pinning-top" owner-id="b028a716d2e74f29aa95a7caa24c2f55" class="item-hidden"></editor-prop-item><editor-prop-item name="rectangle" owner-id="b028a716d2e74f29aa95a7caa24c2f55" class="item-hidden"></editor-prop-item><editor-prop-item name="right-margin" owner-id="b028a716d2e74f29aa95a7caa24c2f55" class="item-hidden"></editor-prop-item><editor-prop-item name="rotate" owner-id="b028a716d2e74f29aa95a7caa24c2f55" class="item-hidden"></editor-prop-item><editor-prop-item name="shadow-blur" owner-id="b028a716d2e74f29aa95a7caa24c2f55" class="item-hidden"></editor-prop-item><editor-prop-item name="shadow-color" owner-id="b028a716d2e74f29aa95a7caa24c2f55" class="item-hidden"></editor-prop-item><editor-prop-item name="shadow-left" owner-id="b028a716d2e74f29aa95a7caa24c2f55" class="item-hidden"></editor-prop-item><editor-prop-item name="shadow-spread" owner-id="b028a716d2e74f29aa95a7caa24c2f55" class="item-hidden"></editor-prop-item><editor-prop-item name="shadow-top" owner-id="b028a716d2e74f29aa95a7caa24c2f55" class="item-hidden"></editor-prop-item><editor-prop-item name="shadow-transparency" owner-id="b028a716d2e74f29aa95a7caa24c2f55" class="item-hidden"></editor-prop-item><editor-prop-item name="stepping" owner-id="b028a716d2e74f29aa95a7caa24c2f55" class="item-hidden"></editor-prop-item><editor-prop-item name="stepTime" owner-id="b028a716d2e74f29aa95a7caa24c2f55" class="item-hidden"></editor-prop-item><editor-prop-item name="targetRangeId" owner-id="b028a716d2e74f29aa95a7caa24c2f55" class="item-hidden"></editor-prop-item><editor-prop-item name="text" owner-id="b028a716d2e74f29aa95a7caa24c2f55" class="item-hidden"></editor-prop-item><editor-prop-item name="text-align" owner-id="b028a716d2e74f29aa95a7caa24c2f55" class="item-hidden"></editor-prop-item><editor-prop-item name="text-bold" owner-id="b028a716d2e74f29aa95a7caa24c2f55" class="item-hidden"></editor-prop-item><editor-prop-item name="text-color" owner-id="b028a716d2e74f29aa95a7caa24c2f55" class="item-hidden"></editor-prop-item><editor-prop-item name="text-font" owner-id="b028a716d2e74f29aa95a7caa24c2f55" class="item-hidden"></editor-prop-item><editor-prop-item name="text-italic" owner-id="b028a716d2e74f29aa95a7caa24c2f55" class="item-hidden"></editor-prop-item><editor-prop-item name="text-size" owner-id="b028a716d2e74f29aa95a7caa24c2f55" class="item-hidden"></editor-prop-item><editor-prop-item name="text-style" owner-id="b028a716d2e74f29aa95a7caa24c2f55" class="item-hidden"></editor-prop-item><editor-prop-item name="text-transparency" owner-id="b028a716d2e74f29aa95a7caa24c2f55" class="item-hidden"></editor-prop-item><editor-prop-item name="top" owner-id="b028a716d2e74f29aa95a7caa24c2f55" class="item-hidden"></editor-prop-item><editor-prop-item name="top-margin" owner-id="b028a716d2e74f29aa95a7caa24c2f55" class="item-hidden"></editor-prop-item><editor-prop-item name="transparency" owner-id="b028a716d2e74f29aa95a7caa24c2f55" class="item-hidden"></editor-prop-item><editor-prop-item name="vertical-resizing" owner-id="b028a716d2e74f29aa95a7caa24c2f55" class="item-hidden"></editor-prop-item><editor-prop-item name="wants-move" owner-id="b028a716d2e74f29aa95a7caa24c2f55" class="item-hidden"></editor-prop-item><editor-prop-item name="width" owner-id="b028a716d2e74f29aa95a7caa24c2f55" class="item-hidden"></editor-prop-item></editor-props-list><editor-messenger tab-name="messenger"></editor-messenger><editor-custom-list tab-name="custom"></editor-custom-list><editor-subparts tab-name="subparts"><editor-location-info slot="ancestor-info" kind="stack" ref-id="6d839c1127744425bbf8def21069fa25"></editor-location-info><editor-location-info slot="ancestor-info" kind="card" ref-id="ab351821f153404d9fb1f82777db9bf1"></editor-location-info><editor-location-info slot="ancestor-info" kind="owner" ref-id="45add5eabfe9471f8a8f2c3a0d936357"></editor-location-info><button slot="button" data-type="field" title="Add a field to this field" class="add-part-button">
+<st-editor class=""><editor-props-list tab-name="properties"><editor-prop-item name="allow-scrolling" owner-id="c28d91e1face4a10b6430f084e40ea3c"></editor-prop-item><editor-prop-item name="background-color" owner-id="c28d91e1face4a10b6430f084e40ea3c"></editor-prop-item><editor-prop-item name="background-transparency" owner-id="c28d91e1face4a10b6430f084e40ea3c"></editor-prop-item><editor-prop-item name="border-bottom-color" owner-id="c28d91e1face4a10b6430f084e40ea3c"></editor-prop-item><editor-prop-item name="border-bottom-style" owner-id="c28d91e1face4a10b6430f084e40ea3c"></editor-prop-item><editor-prop-item name="border-bottom-transparency" owner-id="c28d91e1face4a10b6430f084e40ea3c"></editor-prop-item><editor-prop-item name="border-bottom-width" owner-id="c28d91e1face4a10b6430f084e40ea3c"></editor-prop-item><editor-prop-item name="border-left-color" owner-id="c28d91e1face4a10b6430f084e40ea3c"></editor-prop-item><editor-prop-item name="border-left-style" owner-id="c28d91e1face4a10b6430f084e40ea3c"></editor-prop-item><editor-prop-item name="border-left-transparency" owner-id="c28d91e1face4a10b6430f084e40ea3c"></editor-prop-item><editor-prop-item name="border-left-width" owner-id="c28d91e1face4a10b6430f084e40ea3c"></editor-prop-item><editor-prop-item name="border-right-color" owner-id="c28d91e1face4a10b6430f084e40ea3c"></editor-prop-item><editor-prop-item name="border-right-style" owner-id="c28d91e1face4a10b6430f084e40ea3c"></editor-prop-item><editor-prop-item name="border-right-transparency" owner-id="c28d91e1face4a10b6430f084e40ea3c"></editor-prop-item><editor-prop-item name="border-right-width" owner-id="c28d91e1face4a10b6430f084e40ea3c"></editor-prop-item><editor-prop-item name="border-top-color" owner-id="c28d91e1face4a10b6430f084e40ea3c"></editor-prop-item><editor-prop-item name="border-top-style" owner-id="c28d91e1face4a10b6430f084e40ea3c"></editor-prop-item><editor-prop-item name="border-top-transparency" owner-id="c28d91e1face4a10b6430f084e40ea3c"></editor-prop-item><editor-prop-item name="border-top-width" owner-id="c28d91e1face4a10b6430f084e40ea3c"></editor-prop-item><editor-prop-item name="bottom-margin" owner-id="c28d91e1face4a10b6430f084e40ea3c"></editor-prop-item><editor-prop-item name="bottom-padding" owner-id="c28d91e1face4a10b6430f084e40ea3c"></editor-prop-item><editor-prop-item name="clipping" owner-id="c28d91e1face4a10b6430f084e40ea3c"></editor-prop-item><editor-prop-item name="contents" owner-id="c28d91e1face4a10b6430f084e40ea3c"></editor-prop-item><editor-prop-item name="corner-bottom-left-round" owner-id="c28d91e1face4a10b6430f084e40ea3c"></editor-prop-item><editor-prop-item name="corner-bottom-right-round" owner-id="c28d91e1face4a10b6430f084e40ea3c"></editor-prop-item><editor-prop-item name="corner-top-left-round" owner-id="c28d91e1face4a10b6430f084e40ea3c"></editor-prop-item><editor-prop-item name="corner-top-right-round" owner-id="c28d91e1face4a10b6430f084e40ea3c"></editor-prop-item><editor-prop-item name="editor-open" owner-id="c28d91e1face4a10b6430f084e40ea3c"></editor-prop-item><editor-prop-item name="enabled" owner-id="c28d91e1face4a10b6430f084e40ea3c"></editor-prop-item><editor-prop-item name="halo-open" owner-id="c28d91e1face4a10b6430f084e40ea3c"></editor-prop-item><editor-prop-item name="height" owner-id="c28d91e1face4a10b6430f084e40ea3c"></editor-prop-item><editor-prop-item name="hide" owner-id="c28d91e1face4a10b6430f084e40ea3c"></editor-prop-item><editor-prop-item name="horizontal-resizing" owner-id="c28d91e1face4a10b6430f084e40ea3c"></editor-prop-item><editor-prop-item name="layout" owner-id="c28d91e1face4a10b6430f084e40ea3c"></editor-prop-item><editor-prop-item name="left" owner-id="c28d91e1face4a10b6430f084e40ea3c"></editor-prop-item><editor-prop-item name="left-margin" owner-id="c28d91e1face4a10b6430f084e40ea3c"></editor-prop-item><editor-prop-item name="left-padding" owner-id="c28d91e1face4a10b6430f084e40ea3c"></editor-prop-item><editor-prop-item name="list-alignment" owner-id="c28d91e1face4a10b6430f084e40ea3c"></editor-prop-item><editor-prop-item name="list-direction" owner-id="c28d91e1face4a10b6430f084e40ea3c"></editor-prop-item><editor-prop-item name="list-distribution" owner-id="c28d91e1face4a10b6430f084e40ea3c"></editor-prop-item><editor-prop-item name="list-wrapping" owner-id="c28d91e1face4a10b6430f084e40ea3c"></editor-prop-item><editor-prop-item name="number" owner-id="c28d91e1face4a10b6430f084e40ea3c"></editor-prop-item><editor-prop-item name="pinning" owner-id="c28d91e1face4a10b6430f084e40ea3c"></editor-prop-item><editor-prop-item name="pinning-bottom" owner-id="c28d91e1face4a10b6430f084e40ea3c"></editor-prop-item><editor-prop-item name="pinning-left" owner-id="c28d91e1face4a10b6430f084e40ea3c"></editor-prop-item><editor-prop-item name="pinning-right" owner-id="c28d91e1face4a10b6430f084e40ea3c"></editor-prop-item><editor-prop-item name="pinning-top" owner-id="c28d91e1face4a10b6430f084e40ea3c"></editor-prop-item><editor-prop-item name="rectangle" owner-id="c28d91e1face4a10b6430f084e40ea3c"></editor-prop-item><editor-prop-item name="right-margin" owner-id="c28d91e1face4a10b6430f084e40ea3c"></editor-prop-item><editor-prop-item name="right-padding" owner-id="c28d91e1face4a10b6430f084e40ea3c"></editor-prop-item><editor-prop-item name="rotate" owner-id="c28d91e1face4a10b6430f084e40ea3c"></editor-prop-item><editor-prop-item name="shadow-blur" owner-id="c28d91e1face4a10b6430f084e40ea3c"></editor-prop-item><editor-prop-item name="shadow-color" owner-id="c28d91e1face4a10b6430f084e40ea3c"></editor-prop-item><editor-prop-item name="shadow-left" owner-id="c28d91e1face4a10b6430f084e40ea3c"></editor-prop-item><editor-prop-item name="shadow-spread" owner-id="c28d91e1face4a10b6430f084e40ea3c"></editor-prop-item><editor-prop-item name="shadow-top" owner-id="c28d91e1face4a10b6430f084e40ea3c"></editor-prop-item><editor-prop-item name="shadow-transparency" owner-id="c28d91e1face4a10b6430f084e40ea3c"></editor-prop-item><editor-prop-item name="stepping" owner-id="c28d91e1face4a10b6430f084e40ea3c"></editor-prop-item><editor-prop-item name="stepTime" owner-id="c28d91e1face4a10b6430f084e40ea3c"></editor-prop-item><editor-prop-item name="top" owner-id="c28d91e1face4a10b6430f084e40ea3c"></editor-prop-item><editor-prop-item name="top-margin" owner-id="c28d91e1face4a10b6430f084e40ea3c"></editor-prop-item><editor-prop-item name="top-padding" owner-id="c28d91e1face4a10b6430f084e40ea3c"></editor-prop-item><editor-prop-item name="transparency" owner-id="c28d91e1face4a10b6430f084e40ea3c"></editor-prop-item><editor-prop-item name="vertical-resizing" owner-id="c28d91e1face4a10b6430f084e40ea3c"></editor-prop-item><editor-prop-item name="wants-move" owner-id="c28d91e1face4a10b6430f084e40ea3c"></editor-prop-item><editor-prop-item name="width" owner-id="c28d91e1face4a10b6430f084e40ea3c"></editor-prop-item></editor-props-list><editor-messenger tab-name="messenger"></editor-messenger><editor-custom-list tab-name="custom"></editor-custom-list><editor-subparts tab-name="subparts" class="show-pane"><editor-location-info slot="ancestor-info" kind="stack" ref-id="5a4c8fd58dc3463e883512704228814a"></editor-location-info><editor-location-info slot="ancestor-info" kind="card" ref-id="d2292d7fb9a34ad284b85f07a4bbb26b"></editor-location-info><editor-location-info slot="ancestor-info" kind="owner" ref-id="08d6ef54e8f4467892504bf0d35ed27c"></editor-location-info><button slot="button" data-type="area" title="Add a area to this area" class="add-part-button">
+<svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-shape" width="24" height="24" viewBox="0 0 24 24" stroke-width="1.5" stroke="#000000" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
+  <circle cx="5" cy="5" r="2"></circle>
+  <circle cx="19" cy="5" r="2"></circle>
+  <circle cx="5" cy="19" r="2"></circle>
+  <circle cx="19" cy="19" r="2"></circle>
+  <line x1="5" y1="7" x2="5" y2="17"></line>
+  <line x1="7" y1="5" x2="17" y2="5"></line>
+  <line x1="7" y1="19" x2="17" y2="19"></line>
+  <line x1="19" y1="7" x2="19" y2="17"></line>
+</svg>
+</button><button slot="button" data-type="button" title="Add a button to this area" class="add-part-button">
+<svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-hand-finger" width="44" height="44" viewBox="0 0 24 24" stroke-width="1.5" stroke="#2c3e50" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
+  <path d="M8 13v-8.5a1.5 1.5 0 0 1 3 0v7.5"></path>
+  <path d="M11 11.5v-2a1.5 1.5 0 1 1 3 0v2.5"></path>
+  <path d="M14 10.5a1.5 1.5 0 0 1 3 0v1.5"></path>
+  <path d="M17 11.5a1.5 1.5 0 0 1 3 0v4.5a6 6 0 0 1 -6 6h-2h.208a6 6 0 0 1 -5.012 -2.7a69.74 69.74 0 0 1 -.196 -.3c-.312 -.479 -1.407 -2.388 -3.286 -5.728a1.5 1.5 0 0 1 .536 -2.022a1.867 1.867 0 0 1 2.28 .28l1.47 1.47"></path>
+</svg>
+</button><button slot="button" data-type="field" title="Add a field to this area" class="add-part-button">
 <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-forms" width="24" height="24" viewBox="0 0 24 24" stroke-width="1.5" stroke="#000000" fill="none" stroke-linecap="round" stroke-linejoin="round">
   <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
   <path d="M12 3a3 3 0 0 0 -3 3v12a3 3 0 0 0 3 3"></path>
@@ -849,4 +807,60 @@
   <path d="M17 12h.01"></path>
   <path d="M13 12h.01"></path>
 </svg>
-</button></editor-subparts></st-editor></body></html>
+</button><button slot="button" data-type="image" title="Add a image to this area" class="add-part-button">
+<svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-photo" width="24" height="24" viewBox="0 0 24 24" stroke-width="1.5" stroke="#000000" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
+  <line x1="15" y1="8" x2="15.01" y2="8"></line>
+  <rect x="4" y="4" width="16" height="16" rx="3"></rect>
+  <path d="M4 15l4 -4a3 5 0 0 1 3 0l5 5"></path>
+  <path d="M14 14l1 -1a3 5 0 0 1 3 0l2 2"></path>
+</svg>
+</button><button slot="button" data-type="audio" title="Add a audio to this area" class="add-part-button">
+<svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-puzzle" width="44" height="44" viewBox="0 0 24 24" stroke-width="1.5" stroke="#2c3e50" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
+  <path d="M4 7h3a1 1 0 0 0 1 -1v-1a2 2 0 0 1 4 0v1a1 1 0 0 0 1 1h3a1 1 0 0 1 1 1v3a1 1 0 0 0 1 1h1a2 2 0 0 1 0 4h-1a1 1 0 0 0 -1 1v3a1 1 0 0 1 -1 1h-3a1 1 0 0 1 -1 -1v-1a2 2 0 0 0 -4 0v1a1 1 0 0 1 -1 1h-3a1 1 0 0 1 -1 -1v-3a1 1 0 0 1 1 -1h1a2 2 0 0 0 0 -4h-1a1 1 0 0 1 -1 -1v-3a1 1 0 0 1 1 -1"></path>
+</svg>
+</button><button slot="button" data-type="resource" title="Add a resource to this area" class="add-part-button">
+<svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-puzzle" width="44" height="44" viewBox="0 0 24 24" stroke-width="1.5" stroke="#2c3e50" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
+  <path d="M4 7h3a1 1 0 0 0 1 -1v-1a2 2 0 0 1 4 0v1a1 1 0 0 0 1 1h3a1 1 0 0 1 1 1v3a1 1 0 0 0 1 1h1a2 2 0 0 1 0 4h-1a1 1 0 0 0 -1 1v3a1 1 0 0 1 -1 1h-3a1 1 0 0 1 -1 -1v-1a2 2 0 0 0 -4 0v1a1 1 0 0 1 -1 1h-3a1 1 0 0 1 -1 -1v-3a1 1 0 0 1 1 -1h1a2 2 0 0 0 0 -4h-1a1 1 0 0 1 -1 -1v-3a1 1 0 0 1 1 -1"></path>
+</svg>
+</button><button slot="button" data-type="drawing" title="Add a drawing to this area" class="add-part-button">
+<svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-palette" width="24" height="24" viewBox="0 0 24 24" stroke-width="1.5" stroke="#000000" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
+  <path d="M12 21a9 9 0 1 1 0 -18a9 8 0 0 1 9 8a4.5 4 0 0 1 -4.5 4h-2.5a2 2 0 0 0 -1 3.75a1.3 1.3 0 0 1 -1 2.25"></path>
+  <circle cx="7.5" cy="10.5" r=".5" fill="currentColor"></circle>
+  <circle cx="12" cy="7.5" r=".5" fill="currentColor"></circle>
+  <circle cx="16.5" cy="10.5" r=".5" fill="currentColor"></circle>
+</svg>
+</button><button slot="button" data-type="browser" title="Add a browser to this area" class="add-part-button">
+<svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-puzzle" width="44" height="44" viewBox="0 0 24 24" stroke-width="1.5" stroke="#2c3e50" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
+  <path d="M4 7h3a1 1 0 0 0 1 -1v-1a2 2 0 0 1 4 0v1a1 1 0 0 0 1 1h3a1 1 0 0 1 1 1v3a1 1 0 0 0 1 1h1a2 2 0 0 1 0 4h-1a1 1 0 0 0 -1 1v3a1 1 0 0 1 -1 1h-3a1 1 0 0 1 -1 -1v-1a2 2 0 0 0 -4 0v1a1 1 0 0 1 -1 1h-3a1 1 0 0 1 -1 -1v-3a1 1 0 0 1 1 -1h1a2 2 0 0 0 0 -4h-1a1 1 0 0 1 -1 -1v-3a1 1 0 0 1 1 -1"></path>
+</svg>
+</button><button slot="button" data-type="window" title="Add a window to this area" class="add-part-button">
+<svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-window" width="24" height="24" viewBox="0 0 24 24" stroke-width="1.5" stroke="#000000" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
+  <path d="M12 3c-3.866 0 -7 3.272 -7 7v10a1 1 0 0 0 1 1h12a1 1 0 0 0 1 -1v-10c0 -3.728 -3.134 -7 -7 -7z"></path>
+  <line x1="5" y1="13" x2="19" y2="13"></line>
+  <line x1="12" y1="3" x2="12" y2="21"></line>
+</svg>
+</button><li class="subpart-item" ref-id="cde5d6520ec34c008bfd724f8fa20cea"><div class="icon-display-area">
+<svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-forms" width="24" height="24" viewBox="0 0 24 24" stroke-width="1.5" stroke="#000000" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
+  <path d="M12 3a3 3 0 0 0 -3 3v12a3 3 0 0 0 3 3"></path>
+  <path d="M6 3a3 3 0 0 1 3 3v12a3 3 0 0 1 -3 3"></path>
+  <path d="M13 7h7a1 1 0 0 1 1 1v8a1 1 0 0 1 -1 1h-7"></path>
+  <path d="M5 7h-1a1 1 0 0 0 -1 1v8a1 1 0 0 0 1 1h1"></path>
+  <path d="M17 12h.01"></path>
+  <path d="M13 12h.01"></path>
+</svg>
+</div><h3>a Field</h3><span class="name-span">"New field"</span><span class="id-span">(cde5d6520ec34c008bfd724f8fa20cea)</span></li><li class="subpart-item" ref-id="cd04f4f3b85342ca9f475335a6ddce08"><div class="icon-display-area">
+<svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-hand-finger" width="44" height="44" viewBox="0 0 24 24" stroke-width="1.5" stroke="#2c3e50" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
+  <path d="M8 13v-8.5a1.5 1.5 0 0 1 3 0v7.5"></path>
+  <path d="M11 11.5v-2a1.5 1.5 0 1 1 3 0v2.5"></path>
+  <path d="M14 10.5a1.5 1.5 0 0 1 3 0v1.5"></path>
+  <path d="M17 11.5a1.5 1.5 0 0 1 3 0v4.5a6 6 0 0 1 -6 6h-2h.208a6 6 0 0 1 -5.012 -2.7a69.74 69.74 0 0 1 -.196 -.3c-.312 -.479 -1.407 -2.388 -3.286 -5.728a1.5 1.5 0 0 1 .536 -2.022a1.867 1.867 0 0 1 2.28 .28l1.47 1.47"></path>
+</svg>
+</div><h3>a Button</h3><span class="name-span">"Save Script"</span><span class="id-span">(cd04f4f3b85342ca9f475335a6ddce08)</span></li></editor-subparts></st-editor></body></html>

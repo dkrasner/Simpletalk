@@ -931,6 +931,45 @@ System._commandHandlers['importWorld'] = function(sender, sourceUrl){
         });
 };
 
+System._commandHandlers['importLocalWorld'] = function(sender){
+    const readFile = (event) => {
+        const file = event.target.files[0]; // only the first one!
+        const reader = new FileReader();
+        reader.readAsText(file);
+        reader.onloadend = () => {
+            const parsedDocument = DOMparser.parseFromString(reader.result, "text/html");
+            // there is no .getElementById() for a node HTML parsed document!
+            const serializationEl = parsedDocument.querySelector('#serialization');
+            if(!serializationEl){
+                console.log(`No serialization found for ${sourceUrl}`);
+                alert(`World "${sourceUrl}" not found`);
+                return;
+            }
+            this._deserializer = new STDeserializer(this);
+            this._deserializer.targetId = 'world'; // We will insert the stacks into the world
+            return this._deserializer.importFromSerialization(
+                serializationEl.textContent,
+                (part) => {
+                    // Return only Stacks that are direct subparts
+                    // of the world.
+                    const isStack = part.type == 'stack';
+                    const isWorldSubpart = part._owner && part._owner.type == 'world';
+                    return isStack && isWorldSubpart;
+                }
+            );
+        };
+        reader.onerror = () => {
+            alert("Could not load world");
+            console.error(err);
+        }
+    }
+    const input = document.createElement("input");
+    input.setAttribute("type", "file");
+    input.setAttribute("accept", ".html");
+    input.addEventListener("change", readFile);
+    input.click();
+};
+
 System._commandHandlers['openScriptEditor'] = function(senders, targetId){
     let target = this.partsById[targetId];
     let targetName = target.partProperties.getPropertyNamed(target, "name");
