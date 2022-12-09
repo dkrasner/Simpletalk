@@ -1177,24 +1177,28 @@ System._commandHandlers['openGrammar'] = function(senders, partId, ruleName){
     );
 };
 
-System._commandHandlers['saveHTML'] = function(senders){
+System._commandHandlers['saveHTML'] = function(senders, fileName){
+    if(!fileName){
+        // use the world name
+        const world = this.partsById['world'];
+        fileName = world.partProperties.getPropertyNamed(world, "name");
+    }
     // Stop hand recognition if it's running.
-    let handRecognitionOriginallyRunning = handInterface.handDetectionRunning;
+    const handRecognitionOriginallyRunning = handInterface.handDetectionRunning;
     if (handRecognitionOriginallyRunning) {
         handInterface.stop();
     }
     this.serialize();
 
-    let stamp = Date.now().toString();
-    let serializedPage = this.getFullHTMLString();
-    let typeInfo = "data:text/plain;charset=utf-8";
-    let url = `${typeInfo},${encodeURIComponent(serializedPage)}`;
+    const serializedPage = this.getFullHTMLString();
+    const typeInfo = "data:text/plain;charset=utf-8";
+    const url = `${typeInfo},${encodeURIComponent(serializedPage)}`;
 
-    let anchor = document.createElement('a');
+    const anchor = document.createElement('a');
     anchor.style.display = "none";
     document.body.append(anchor);
     anchor.href = url;
-    anchor.download = `SimpleTalkSnapshot_${stamp}.html`;
+    anchor.download = `${fileName}.html`;
     anchor.click();
     window.URL.revokeObjectURL(url);
     anchor.parentElement.removeChild(anchor);
