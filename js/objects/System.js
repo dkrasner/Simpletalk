@@ -955,11 +955,11 @@ System._commandHandlers['openScriptEditor'] = function(senders, targetId){
         return;
     }
 
-    let currentCard = this.getCurrentCardModel();
-    let window = this.newModel('window', currentCard.id);
-    let area = this.newModel('area', window.id);
-    let scriptField = this.newModel('field', area.id);
-    let saveButton = this.newModel('button', area.id);
+    const currentCard = this.getCurrentCardModel();
+    const window = this.newModel('window', currentCard.id);
+    const area = this.newModel('area', window.id);
+    const scriptField = this.newModel('field', area.id);
+    const saveButton = this.newModel('button', area.id);
 
 
     // setup the window and stack properties
@@ -976,7 +976,7 @@ System._commandHandlers['openScriptEditor'] = function(senders, targetId){
     area.partProperties.setPropertyNamed(area, "height", "fill");
 
     // script field
-    let targetScript = target.partProperties.getPropertyNamed(target, "script"); 
+    const targetScript = target.partProperties.getPropertyNamed(target, "script");
     scriptField.partProperties.setPropertyNamed(scriptField, "text", targetScript);
     scriptField.partProperties.setPropertyNamed(scriptField, "height", "fill");
     scriptField.partProperties.setPropertyNamed(scriptField, "width", "fill");
@@ -996,7 +996,7 @@ System._commandHandlers['openScriptEditor'] = function(senders, targetId){
     saveButton.partProperties.setPropertyNamed(saveButton, "target", `part id ${target.id}`);
 
     saveButton.partProperties.setPropertyNamed(saveButton, "target", `part id ${target.id}`);
-    let saveScript = `on click\n\ttell target to set "script" to the "text" of first field\nend click`; 
+    const saveScript = `on click\n\ttell target to set "script" to the "text" of first field\nend click`;
     saveButton.partProperties.setPropertyNamed(saveButton, "script", saveScript);
 };
 
