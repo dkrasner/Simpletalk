@@ -380,14 +380,17 @@ class FieldView extends PartView {
 
     onKeydown(event){
         // prevent the default tab key to leave focus on the field
-        if(event.key==="Tab"){
+        if(event.key==="Tab" || event.key === "Enter"){
+            let tabNodeValue = '\t';
+            if (event.key === "Enter") {
+                tabNodeValue = '\n';
+            }
             event.preventDefault();
             //document.execCommand('insertHTML', false, '&#x9');
-            let sel = document.getSelection();
-            let range = sel.getRangeAt(0);
+            const sel = document.getSelection();
+            const range = sel.getRangeAt(0);
 
-            let tabNodeValue = '\t';
-            let tabNode = document.createTextNode(tabNodeValue);
+            const tabNode = document.createTextNode(tabNodeValue);
 
             range.insertNode(tabNode);
 
