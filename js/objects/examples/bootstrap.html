@@ -42,42 +42,42 @@
                 "number": 1,
                 "custom-properties": {},
                 "stepping": false,
-                "current": "6d839c1127744425bbf8def21069fa25"
+                "current": "00b243c3604b43eaba55061f6f6409a9"
             },
             "subparts": [
-                "6d839c1127744425bbf8def21069fa25"
+                "00b243c3604b43eaba55061f6f6409a9"
             ],
             "ownerId": null,
             "loadedStacks": [
-                "6d839c1127744425bbf8def21069fa25"
+                "00b243c3604b43eaba55061f6f6409a9"
             ]
         },
-        "6d839c1127744425bbf8def21069fa25": {
+        "00b243c3604b43eaba55061f6f6409a9": {
             "type": "stack",
-            "id": "6d839c1127744425bbf8def21069fa25",
+            "id": "00b243c3604b43eaba55061f6f6409a9",
             "properties": {
-                "id": "6d839c1127744425bbf8def21069fa25",
+                "id": "00b243c3604b43eaba55061f6f6409a9",
                 "name": "",
                 "cssStyle": {},
                 "cssTextStyle": {},
                 "number": 1,
                 "custom-properties": {},
                 "stepping": false,
-                "current": "ab351821f153404d9fb1f82777db9bf1"
+                "current": "066b365b887341e880598f302e939a16"
             },
             "subparts": [
-                "ab351821f153404d9fb1f82777db9bf1",
-                "a6845b71026f4994a1db5f861ff149b2"
+                "066b365b887341e880598f302e939a16",
+                "625ea130158f452f831371550e4f1944"
             ],
             "ownerId": "world"
         },
-        "ab351821f153404d9fb1f82777db9bf1": {
+        "066b365b887341e880598f302e939a16": {
             "type": "card",
-            "id": "ab351821f153404d9fb1f82777db9bf1",
+            "id": "066b365b887341e880598f302e939a16",
             "properties": {
-                "id": "ab351821f153404d9fb1f82777db9bf1",
+                "id": "066b365b887341e880598f302e939a16",
                 "name": "",
-                "script": "on openCard \n\tgetBrowserName\n\n\tif it != \"Firefox\"\n\tthen \n\t\tsendWarning\n\n\telse\n\t\tdeleteWarning\n\tend if\n\nend openCard \n\n\non sendWarning \n\ttell area \"Browser Warning\" of current card to set \"hide\" to false\n\nend sendWarning \n\n\n\non deleteWarning\n\tdelete area \"Browser Warning\" of current card\nend deleteWarning\n",
+                "script": "on openCard \n\tgetBrowserName\n\n\tif it != \"Firefox\"\n\tthen \n\t\tsendWarning\n\tend if\n\nend openCard \n\n\non sendWarning \n\tanswer \"I am an experimental system, please try me in Firefox\"\n\nend sendWarning ",
                 "cssStyle": {
                     "layout": "strict",
                     "opacity": 1,
@@ -108,132 +108,14 @@
                 "custom-properties": {},
                 "stepping": false
             },
-            "subparts": [
-                "45add5eabfe9471f8a8f2c3a0d936357"
-            ],
-            "ownerId": "6d839c1127744425bbf8def21069fa25"
-        },
-        "45add5eabfe9471f8a8f2c3a0d936357": {
-            "type": "area",
-            "id": "45add5eabfe9471f8a8f2c3a0d936357",
-            "properties": {
-                "id": "45add5eabfe9471f8a8f2c3a0d936357",
-                "name": "Browser Warning",
-                "number": 1,
-                "custom-properties": {},
-                "stepping": false,
-                "border-top-width": 0,
-                "border-top-color": "red",
-                "border-bottom-color": "red",
-                "border-left-color": "red",
-                "border-right-color": "red",
-                "border-bottom-transparency": 0.45,
-                "border-left-transparency": 0.45,
-                "hide": true,
-                "width": 442,
-                "height": 203,
-                "top": 45,
-                "left": 41,
-                "pinning": "",
-                "layout": "list",
-                "list-direction": "column"
-            },
-            "subparts": [
-                "b028a716d2e74f29aa95a7caa24c2f55",
-                "c9d3d1e01d32424eb4944cac51d76168"
-            ],
-            "ownerId": "ab351821f153404d9fb1f82777db9bf1"
-        },
-        "b028a716d2e74f29aa95a7caa24c2f55": {
-            "type": "field",
-            "id": "b028a716d2e74f29aa95a7caa24c2f55",
-            "properties": {
-                "id": "b028a716d2e74f29aa95a7caa24c2f55",
-                "number": 1,
-                "custom-properties": {},
-                "stepping": false,
-                "innerHTML": "<div>Looks like you are not using Firefox</div><div><br></div><div>I am an experimental system and things probably won't work as expected</div><div><br></div><div>For best results do switch to Firefox please!</div><div><br></div>",
-                "text": "Looks like you are not using Firefox\n\n\nI am an experimental system and things probably won't work as expected\n\n\nFor best results do switch to Firefox please!\n\n",
-                "background-transparency": 0.75,
-                "background-color": "white",
-                "border-top-width": "0",
-                "border-bottom-width": "0",
-                "border-left-width": "0",
-                "border-right-width": "0",
-                "border-top-transparency": 0,
-                "border-bottom-transparency": 0,
-                "border-left-transparency": 0,
-                "border-right-transparency": 0,
-                "width": 440,
-                "height": 168,
-                "top": 168,
-                "left": -103,
-                "pinning": "",
-                "text-align": "center",
-                "text-color": "black",
-                "text-size": 21
-            },
             "subparts": [],
-            "ownerId": "45add5eabfe9471f8a8f2c3a0d936357"
+            "ownerId": "00b243c3604b43eaba55061f6f6409a9"
         },
-        "c9d3d1e01d32424eb4944cac51d76168": {
-            "type": "area",
-            "id": "c9d3d1e01d32424eb4944cac51d76168",
-            "properties": {
-                "id": "c9d3d1e01d32424eb4944cac51d76168",
-                "number": 2,
-                "custom-properties": {},
-                "stepping": false,
-                "border-top-width": 0,
-                "border-bottom-width": 0,
-                "border-left-width": 0,
-                "border-right-width": 0,
-                "width": "440",
-                "pinning": "",
-                "layout": "list",
-                "list-direction": "column",
-                "list-alignment": "center"
-            },
-            "subparts": [
-                "dd4dac1ccc4647b69e3d03cf1cd05638"
-            ],
-            "ownerId": "45add5eabfe9471f8a8f2c3a0d936357"
-        },
-        "dd4dac1ccc4647b69e3d03cf1cd05638": {
-            "type": "button",
-            "id": "dd4dac1ccc4647b69e3d03cf1cd05638",
-            "properties": {
-                "id": "dd4dac1ccc4647b69e3d03cf1cd05638",
-                "name": "Close",
-                "script": "on click \n\tdelete area \"Browser Warning\" of current card\nend click \n",
-                "number": 1,
-                "custom-properties": {},
-                "stepping": false,
-                "background-transparency": 0,
-                "background-color": "",
-                "border-top-width": 0,
-                "border-bottom-width": 0,
-                "border-left-width": 0,
-                "border-right-width": 0,
-                "border-top-transparency": 0,
-                "border-bottom-transparency": 0,
-                "border-left-transparency": 0,
-                "border-right-transparency": 0,
-                "shadow-transparency": 0,
-                "left": 2,
-                "pinning": "",
-                "text-align": "center",
-                "text-color": "red",
-                "text-size": 19
-            },
-            "subparts": [],
-            "ownerId": "c9d3d1e01d32424eb4944cac51d76168"
-        },
-        "a6845b71026f4994a1db5f861ff149b2": {
+        "625ea130158f452f831371550e4f1944": {
             "type": "window",
-            "id": "a6845b71026f4994a1db5f861ff149b2",
+            "id": "625ea130158f452f831371550e4f1944",
             "properties": {
-                "id": "a6845b71026f4994a1db5f861ff149b2",
+                "id": "625ea130158f452f831371550e4f1944",
                 "name": "Toolbox",
                 "cssStyle": {
                     "backgroundColor": "rgba(255, 255, 255, 0)",
@@ -257,8 +139,8 @@
                     "border-bottom-left-radius": "0px",
                     "border-bottom-right-radius": "0px",
                     "display": null,
-                    "top": "516px",
-                    "left": "1482px",
+                    "top": "209px",
+                    "left": "1554px",
                     "horizontal-resizing": "rigid",
                     "vertical-resizing": "rigid",
                     "width": "185px",
@@ -271,20 +153,20 @@
                 "title": "Toolbox",
                 "width": 185,
                 "height": 288,
-                "top": 516,
-                "left": 1482,
+                "top": 209,
+                "left": 1554,
                 "pinning": ""
             },
             "subparts": [
-                "f832fc1247bc4c41ad3ce52180aa8426"
+                "4ebe8f44bb8447078995f98ba8d286c3"
             ],
-            "ownerId": "6d839c1127744425bbf8def21069fa25"
+            "ownerId": "00b243c3604b43eaba55061f6f6409a9"
         },
-        "f832fc1247bc4c41ad3ce52180aa8426": {
+        "4ebe8f44bb8447078995f98ba8d286c3": {
             "type": "area",
-            "id": "f832fc1247bc4c41ad3ce52180aa8426",
+            "id": "4ebe8f44bb8447078995f98ba8d286c3",
             "properties": {
-                "id": "f832fc1247bc4c41ad3ce52180aa8426",
+                "id": "4ebe8f44bb8447078995f98ba8d286c3",
                 "name": "",
                 "cssStyle": {
                     "width": "187px",
@@ -331,23 +213,25 @@
                 "list-alignment": "center"
             },
             "subparts": [
-                "1cbe272eb5a04b0090c580cfce52e1b7",
-                "717b9c3a6aee47499e39d803fc51d43f",
-                "8e111a4d6dff45f4ae5d9dbad781fe90",
-                "e11b618bded54c9e945f20e0d1c3fc02",
-                "0b082b3b6ad04ce0b43ca5c06de65507",
-                "bdf3c11c208d47ddba0fc30908e316c3",
-                "c6443be34e0a4295b93b5b327689c855",
-                "8bf83ac24773460a9d1a413f7fb7669f",
-                "feeab17ee0e541b99f292d62549eac1e"
+                "c21cce76bf144e549b12fba4b69b8446",
+                "2bbbce7cc29a4949ac54de61bcc8ef8d",
+                "c28da7bd95584e21acae7f9108976998",
+                "d0f1de93bac943788de4efd69d85ded1",
+                "78c591a426074ebab793ac6391d4c50f",
+                "1f2263f6302640fb942f7afff1b55b88",
+                "2a66916da9134014947fc368aff50fd4",
+                "de1fad20401a47deb7e0b73022c50b46",
+                "1c3c23e0bd1f4e2c88bbc7ca9a5a2a39",
+                "3234c470c25e4fb28edb83453b89dcd1",
+                "1bb121a01abc476fa9b5bb7adc559c8e"
             ],
-            "ownerId": "a6845b71026f4994a1db5f861ff149b2"
+            "ownerId": "625ea130158f452f831371550e4f1944"
         },
-        "1cbe272eb5a04b0090c580cfce52e1b7": {
+        "c21cce76bf144e549b12fba4b69b8446": {
             "type": "button",
-            "id": "1cbe272eb5a04b0090c580cfce52e1b7",
+            "id": "c21cce76bf144e549b12fba4b69b8446",
             "properties": {
-                "id": "1cbe272eb5a04b0090c580cfce52e1b7",
+                "id": "c21cce76bf144e549b12fba4b69b8446",
                 "name": "Add Button",
                 "script": "on click\n\tadd button to current card\nend click\n",
                 "cssStyle": {
@@ -394,13 +278,13 @@
                 "pinning": ""
             },
             "subparts": [],
-            "ownerId": "f832fc1247bc4c41ad3ce52180aa8426"
+            "ownerId": "4ebe8f44bb8447078995f98ba8d286c3"
         },
-        "717b9c3a6aee47499e39d803fc51d43f": {
+        "2bbbce7cc29a4949ac54de61bcc8ef8d": {
             "type": "button",
-            "id": "717b9c3a6aee47499e39d803fc51d43f",
+            "id": "2bbbce7cc29a4949ac54de61bcc8ef8d",
             "properties": {
-                "id": "717b9c3a6aee47499e39d803fc51d43f",
+                "id": "2bbbce7cc29a4949ac54de61bcc8ef8d",
                 "name": "Add Image",
                 "script": "on click\n\tadd image to current card\nend click",
                 "cssStyle": {
@@ -449,13 +333,13 @@
                 "pinning": ""
             },
             "subparts": [],
-            "ownerId": "f832fc1247bc4c41ad3ce52180aa8426"
+            "ownerId": "4ebe8f44bb8447078995f98ba8d286c3"
         },
-        "8e111a4d6dff45f4ae5d9dbad781fe90": {
+        "c28da7bd95584e21acae7f9108976998": {
             "type": "button",
-            "id": "8e111a4d6dff45f4ae5d9dbad781fe90",
+            "id": "c28da7bd95584e21acae7f9108976998",
             "properties": {
-                "id": "8e111a4d6dff45f4ae5d9dbad781fe90",
+                "id": "c28da7bd95584e21acae7f9108976998",
                 "name": "Add Drawing",
                 "script": "on click\n\tadd drawing to current card\nend click",
                 "cssStyle": {
@@ -504,13 +388,13 @@
                 "pinning": ""
             },
             "subparts": [],
-            "ownerId": "f832fc1247bc4c41ad3ce52180aa8426"
+            "ownerId": "4ebe8f44bb8447078995f98ba8d286c3"
         },
-        "e11b618bded54c9e945f20e0d1c3fc02": {
+        "d0f1de93bac943788de4efd69d85ded1": {
             "type": "button",
-            "id": "e11b618bded54c9e945f20e0d1c3fc02",
+            "id": "d0f1de93bac943788de4efd69d85ded1",
             "properties": {
-                "id": "e11b618bded54c9e945f20e0d1c3fc02",
+                "id": "d0f1de93bac943788de4efd69d85ded1",
                 "name": "Add Area",
                 "script": "on click\n\tadd area to current card\nend click",
                 "cssStyle": {
@@ -559,13 +443,13 @@
                 "pinning": ""
             },
             "subparts": [],
-            "ownerId": "f832fc1247bc4c41ad3ce52180aa8426"
+            "ownerId": "4ebe8f44bb8447078995f98ba8d286c3"
         },
-        "0b082b3b6ad04ce0b43ca5c06de65507": {
+        "78c591a426074ebab793ac6391d4c50f": {
             "type": "button",
-            "id": "0b082b3b6ad04ce0b43ca5c06de65507",
+            "id": "78c591a426074ebab793ac6391d4c50f",
             "properties": {
-                "id": "0b082b3b6ad04ce0b43ca5c06de65507",
+                "id": "78c591a426074ebab793ac6391d4c50f",
                 "name": "Add Field",
                 "script": "on click\n\tadd field to current card\nend click",
                 "cssStyle": {
@@ -614,13 +498,13 @@
                 "pinning": ""
             },
             "subparts": [],
-            "ownerId": "f832fc1247bc4c41ad3ce52180aa8426"
+            "ownerId": "4ebe8f44bb8447078995f98ba8d286c3"
         },
-        "bdf3c11c208d47ddba0fc30908e316c3": {
+        "1f2263f6302640fb942f7afff1b55b88": {
             "type": "button",
-            "id": "bdf3c11c208d47ddba0fc30908e316c3",
+            "id": "1f2263f6302640fb942f7afff1b55b88",
             "properties": {
-                "id": "bdf3c11c208d47ddba0fc30908e316c3",
+                "id": "1f2263f6302640fb942f7afff1b55b88",
                 "name": "Add Card",
                 "script": "on click\n\tadd card\nend click",
                 "cssStyle": {
@@ -669,13 +553,13 @@
                 "pinning": ""
             },
             "subparts": [],
-            "ownerId": "f832fc1247bc4c41ad3ce52180aa8426"
+            "ownerId": "4ebe8f44bb8447078995f98ba8d286c3"
         },
-        "c6443be34e0a4295b93b5b327689c855": {
+        "2a66916da9134014947fc368aff50fd4": {
             "type": "button",
-            "id": "c6443be34e0a4295b93b5b327689c855",
+            "id": "2a66916da9134014947fc368aff50fd4",
             "properties": {
-                "id": "c6443be34e0a4295b93b5b327689c855",
+                "id": "2a66916da9134014947fc368aff50fd4",
                 "name": "Add Toolbox Button",
                 "script": "on click\n\tadd button\n\ttell last button to set \"width\" to \"fill\"\nend click",
                 "cssStyle": {
@@ -723,13 +607,13 @@
                 "pinning": ""
             },
             "subparts": [],
-            "ownerId": "f832fc1247bc4c41ad3ce52180aa8426"
+            "ownerId": "4ebe8f44bb8447078995f98ba8d286c3"
         },
-        "8bf83ac24773460a9d1a413f7fb7669f": {
+        "de1fad20401a47deb7e0b73022c50b46": {
             "type": "button",
-            "id": "8bf83ac24773460a9d1a413f7fb7669f",
+            "id": "de1fad20401a47deb7e0b73022c50b46",
             "properties": {
-                "id": "8bf83ac24773460a9d1a413f7fb7669f",
+                "id": "de1fad20401a47deb7e0b73022c50b46",
                 "name": "Import World",
                 "script": "on click\n\timportWorld\nend click",
                 "cssStyle": {
@@ -778,15 +662,70 @@
                 "pinning": ""
             },
             "subparts": [],
-            "ownerId": "f832fc1247bc4c41ad3ce52180aa8426"
+            "ownerId": "4ebe8f44bb8447078995f98ba8d286c3"
         },
-        "feeab17ee0e541b99f292d62549eac1e": {
+        "1c3c23e0bd1f4e2c88bbc7ca9a5a2a39": {
             "type": "button",
-            "id": "feeab17ee0e541b99f292d62549eac1e",
+            "id": "1c3c23e0bd1f4e2c88bbc7ca9a5a2a39",
             "properties": {
-                "id": "feeab17ee0e541b99f292d62549eac1e",
+                "id": "1c3c23e0bd1f4e2c88bbc7ca9a5a2a39",
+                "name": "Import Local World",
+                "script": "on click \n\timportLocalWorld\nend click ",
+                "cssStyle": {
+                    "backgroundColor": "rgba(255, 234, 149, 1)",
+                    "opacity": 1,
+                    "border-top-style": "solid",
+                    "border-bottom-style": "solid",
+                    "border-left-style": "solid",
+                    "border-right-style": "solid",
+                    "border-top-width": "1px",
+                    "border-bottom-width": "1px",
+                    "border-left-width": "1px",
+                    "border-right-width": "1px",
+                    "border-top-color": "rgba(0, 0, 0, 1)",
+                    "border-bottom-color": "rgba(0, 0, 0, 1)",
+                    "border-left-color": "rgba(0, 0, 0, 1)",
+                    "border-right-color": "rgba(0, 0, 0, 1)",
+                    "border-left-transparency": 1,
+                    "box-shadow": "1px 1px 1px 0px rgba(238, 238, 238, 1)",
+                    "border-top-left-radius": "3px",
+                    "border-top-right-radius": "3px",
+                    "border-bottom-left-radius": "3px",
+                    "border-bottom-right-radius": "3px",
+                    "display": null,
+                    "top": "10px",
+                    "left": "10px",
+                    "horizontal-resizing": "rigid",
+                    "vertical-resizing": "rigid",
+                    "width": "100%"
+                },
+                "cssTextStyle": {
+                    "textAlign": "left",
+                    "fontFamily": "default",
+                    "color": "rgba(0, 0, 0, 1)",
+                    "textStyle": "plain",
+                    "font-weight": "normal",
+                    "font-style": "normal",
+                    "fontSize": 15
+                },
+                "number": 9,
+                "custom-properties": {},
+                "stepping": false,
+                "width": "fill",
+                "top": 10,
+                "left": 10,
+                "pinning": ""
+            },
+            "subparts": [],
+            "ownerId": "4ebe8f44bb8447078995f98ba8d286c3"
+        },
+        "3234c470c25e4fb28edb83453b89dcd1": {
+            "type": "button",
+            "id": "3234c470c25e4fb28edb83453b89dcd1",
+            "properties": {
+                "id": "3234c470c25e4fb28edb83453b89dcd1",
                 "name": "Save",
-                "script": "on click\n\tsaveHTML\nend click",
+                "script": "on click\n\tif the \"name\" of this world == \"\"\n\tthen\n\t\task \"Please name me first\"\n\t\tput it into name\n\t\ttell this world to set \"name\" to name\n\t\tsaveHTML name\n\telse\n\t\tsaveHTML\n\tend if\n\nend click\n",
                 "cssStyle": {
                     "backgroundColor": "rgba(255, 234, 149, 1)",
                     "opacity": 1,
@@ -810,7 +749,7 @@
                     "border-bottom-right-radius": "3px",
                     "display": null,
                     "top": "0px",
-                    "left": "0px",
+                    "left": "1px",
                     "horizontal-resizing": "rigid",
                     "vertical-resizing": "rigid",
                     "width": "100%"
@@ -824,14 +763,70 @@
                     "font-style": "normal",
                     "fontSize": 15
                 },
-                "number": 9,
+                "number": 10,
                 "custom-properties": {},
                 "stepping": false,
                 "width": "fill",
+                "left": 1,
                 "pinning": ""
             },
             "subparts": [],
-            "ownerId": "f832fc1247bc4c41ad3ce52180aa8426"
+            "ownerId": "4ebe8f44bb8447078995f98ba8d286c3"
+        },
+        "1bb121a01abc476fa9b5bb7adc559c8e": {
+            "type": "button",
+            "id": "1bb121a01abc476fa9b5bb7adc559c8e",
+            "properties": {
+                "id": "1bb121a01abc476fa9b5bb7adc559c8e",
+                "name": "Save As",
+                "script": "on click \n\task \"What is my Name\"\n\tsaveHTML it\nend click ",
+                "cssStyle": {
+                    "backgroundColor": "rgba(255, 234, 149, 1)",
+                    "opacity": 1,
+                    "border-top-style": "solid",
+                    "border-bottom-style": "solid",
+                    "border-left-style": "solid",
+                    "border-right-style": "solid",
+                    "border-top-width": "1px",
+                    "border-bottom-width": "1px",
+                    "border-left-width": "1px",
+                    "border-right-width": "1px",
+                    "border-top-color": "rgba(0, 0, 0, 1)",
+                    "border-bottom-color": "rgba(0, 0, 0, 1)",
+                    "border-left-color": "rgba(0, 0, 0, 1)",
+                    "border-right-color": "rgba(0, 0, 0, 1)",
+                    "border-left-transparency": 1,
+                    "box-shadow": "1px 1px 1px 0px rgba(238, 238, 238, 1)",
+                    "border-top-left-radius": "3px",
+                    "border-top-right-radius": "3px",
+                    "border-bottom-left-radius": "3px",
+                    "border-bottom-right-radius": "3px",
+                    "display": null,
+                    "top": "10px",
+                    "left": "10px",
+                    "horizontal-resizing": "rigid",
+                    "vertical-resizing": "rigid",
+                    "width": "100%"
+                },
+                "cssTextStyle": {
+                    "textAlign": "left",
+                    "fontFamily": "default",
+                    "color": "rgba(0, 0, 0, 1)",
+                    "textStyle": "plain",
+                    "font-weight": "normal",
+                    "font-style": "normal",
+                    "fontSize": 15
+                },
+                "number": 11,
+                "custom-properties": {},
+                "stepping": false,
+                "width": "fill",
+                "top": 10,
+                "left": 10,
+                "pinning": ""
+            },
+            "subparts": [],
+            "ownerId": "4ebe8f44bb8447078995f98ba8d286c3"
         }
     }
 }</script>
@@ -839,14 +834,26 @@
 
 
 
-<st-editor class=""><editor-props-list tab-name="properties" class="show-pane"><editor-prop-item name="background-color" owner-id="b028a716d2e74f29aa95a7caa24c2f55"></editor-prop-item><editor-prop-item name="background-transparency" owner-id="b028a716d2e74f29aa95a7caa24c2f55" class=""></editor-prop-item><editor-prop-item name="border-bottom-color" owner-id="b028a716d2e74f29aa95a7caa24c2f55" class="item-hidden"></editor-prop-item><editor-prop-item name="border-bottom-style" owner-id="b028a716d2e74f29aa95a7caa24c2f55" class="item-hidden"></editor-prop-item><editor-prop-item name="border-bottom-transparency" owner-id="b028a716d2e74f29aa95a7caa24c2f55" class="item-hidden"></editor-prop-item><editor-prop-item name="border-bottom-width" owner-id="b028a716d2e74f29aa95a7caa24c2f55" class="item-hidden"></editor-prop-item><editor-prop-item name="border-left-color" owner-id="b028a716d2e74f29aa95a7caa24c2f55" class="item-hidden"></editor-prop-item><editor-prop-item name="border-left-style" owner-id="b028a716d2e74f29aa95a7caa24c2f55" class="item-hidden"></editor-prop-item><editor-prop-item name="border-left-transparency" owner-id="b028a716d2e74f29aa95a7caa24c2f55" class="item-hidden"></editor-prop-item><editor-prop-item name="border-left-width" owner-id="b028a716d2e74f29aa95a7caa24c2f55" class="item-hidden"></editor-prop-item><editor-prop-item name="border-right-color" owner-id="b028a716d2e74f29aa95a7caa24c2f55" class="item-hidden"></editor-prop-item><editor-prop-item name="border-right-style" owner-id="b028a716d2e74f29aa95a7caa24c2f55" class="item-hidden"></editor-prop-item><editor-prop-item name="border-right-transparency" owner-id="b028a716d2e74f29aa95a7caa24c2f55" class="item-hidden"></editor-prop-item><editor-prop-item name="border-right-width" owner-id="b028a716d2e74f29aa95a7caa24c2f55" class="item-hidden"></editor-prop-item><editor-prop-item name="border-top-color" owner-id="b028a716d2e74f29aa95a7caa24c2f55" class="item-hidden"></editor-prop-item><editor-prop-item name="border-top-style" owner-id="b028a716d2e74f29aa95a7caa24c2f55" class="item-hidden"></editor-prop-item><editor-prop-item name="border-top-transparency" owner-id="b028a716d2e74f29aa95a7caa24c2f55" class="item-hidden"></editor-prop-item><editor-prop-item name="border-top-width" owner-id="b028a716d2e74f29aa95a7caa24c2f55" class="item-hidden"></editor-prop-item><editor-prop-item name="bottom-margin" owner-id="b028a716d2e74f29aa95a7caa24c2f55" class="item-hidden"></editor-prop-item><editor-prop-item name="contents" owner-id="b028a716d2e74f29aa95a7caa24c2f55" class="item-hidden"></editor-prop-item><editor-prop-item name="corner-bottom-left-round" owner-id="b028a716d2e74f29aa95a7caa24c2f55" class="item-hidden"></editor-prop-item><editor-prop-item name="corner-bottom-right-round" owner-id="b028a716d2e74f29aa95a7caa24c2f55" class="item-hidden"></editor-prop-item><editor-prop-item name="corner-top-left-round" owner-id="b028a716d2e74f29aa95a7caa24c2f55" class="item-hidden"></editor-prop-item><editor-prop-item name="corner-top-right-round" owner-id="b028a716d2e74f29aa95a7caa24c2f55" class="item-hidden"></editor-prop-item><editor-prop-item name="editable" owner-id="b028a716d2e74f29aa95a7caa24c2f55" class="item-hidden"></editor-prop-item><editor-prop-item name="editor-open" owner-id="b028a716d2e74f29aa95a7caa24c2f55" class="item-hidden"></editor-prop-item><editor-prop-item name="enabled" owner-id="b028a716d2e74f29aa95a7caa24c2f55" class="item-hidden"></editor-prop-item><editor-prop-item name="halo-open" owner-id="b028a716d2e74f29aa95a7caa24c2f55" class="item-hidden"></editor-prop-item><editor-prop-item name="height" owner-id="b028a716d2e74f29aa95a7caa24c2f55" class="item-hidden"></editor-prop-item><editor-prop-item name="hide" owner-id="b028a716d2e74f29aa95a7caa24c2f55" class="item-hidden"></editor-prop-item><editor-prop-item name="horizontal-resizing" owner-id="b028a716d2e74f29aa95a7caa24c2f55" class="item-hidden"></editor-prop-item><editor-prop-item name="innerHTML" owner-id="b028a716d2e74f29aa95a7caa24c2f55" class="item-hidden"></editor-prop-item><editor-prop-item name="left" owner-id="b028a716d2e74f29aa95a7caa24c2f55" class="item-hidden"></editor-prop-item><editor-prop-item name="left-margin" owner-id="b028a716d2e74f29aa95a7caa24c2f55" class="item-hidden"></editor-prop-item><editor-prop-item name="mode" owner-id="b028a716d2e74f29aa95a7caa24c2f55" class="item-hidden"></editor-prop-item><editor-prop-item name="number" owner-id="b028a716d2e74f29aa95a7caa24c2f55" class="item-hidden"></editor-prop-item><editor-prop-item name="pinning" owner-id="b028a716d2e74f29aa95a7caa24c2f55" class="item-hidden"></editor-prop-item><editor-prop-item name="pinning-bottom" owner-id="b028a716d2e74f29aa95a7caa24c2f55" class="item-hidden"></editor-prop-item><editor-prop-item name="pinning-left" owner-id="b028a716d2e74f29aa95a7caa24c2f55" class="item-hidden"></editor-prop-item><editor-prop-item name="pinning-right" owner-id="b028a716d2e74f29aa95a7caa24c2f55" class="item-hidden"></editor-prop-item><editor-prop-item name="pinning-top" owner-id="b028a716d2e74f29aa95a7caa24c2f55" class="item-hidden"></editor-prop-item><editor-prop-item name="rectangle" owner-id="b028a716d2e74f29aa95a7caa24c2f55" class="item-hidden"></editor-prop-item><editor-prop-item name="right-margin" owner-id="b028a716d2e74f29aa95a7caa24c2f55" class="item-hidden"></editor-prop-item><editor-prop-item name="rotate" owner-id="b028a716d2e74f29aa95a7caa24c2f55" class="item-hidden"></editor-prop-item><editor-prop-item name="shadow-blur" owner-id="b028a716d2e74f29aa95a7caa24c2f55" class="item-hidden"></editor-prop-item><editor-prop-item name="shadow-color" owner-id="b028a716d2e74f29aa95a7caa24c2f55" class="item-hidden"></editor-prop-item><editor-prop-item name="shadow-left" owner-id="b028a716d2e74f29aa95a7caa24c2f55" class="item-hidden"></editor-prop-item><editor-prop-item name="shadow-spread" owner-id="b028a716d2e74f29aa95a7caa24c2f55" class="item-hidden"></editor-prop-item><editor-prop-item name="shadow-top" owner-id="b028a716d2e74f29aa95a7caa24c2f55" class="item-hidden"></editor-prop-item><editor-prop-item name="shadow-transparency" owner-id="b028a716d2e74f29aa95a7caa24c2f55" class="item-hidden"></editor-prop-item><editor-prop-item name="stepping" owner-id="b028a716d2e74f29aa95a7caa24c2f55" class="item-hidden"></editor-prop-item><editor-prop-item name="stepTime" owner-id="b028a716d2e74f29aa95a7caa24c2f55" class="item-hidden"></editor-prop-item><editor-prop-item name="targetRangeId" owner-id="b028a716d2e74f29aa95a7caa24c2f55" class="item-hidden"></editor-prop-item><editor-prop-item name="text" owner-id="b028a716d2e74f29aa95a7caa24c2f55" class="item-hidden"></editor-prop-item><editor-prop-item name="text-align" owner-id="b028a716d2e74f29aa95a7caa24c2f55" class="item-hidden"></editor-prop-item><editor-prop-item name="text-bold" owner-id="b028a716d2e74f29aa95a7caa24c2f55" class="item-hidden"></editor-prop-item><editor-prop-item name="text-color" owner-id="b028a716d2e74f29aa95a7caa24c2f55" class="item-hidden"></editor-prop-item><editor-prop-item name="text-font" owner-id="b028a716d2e74f29aa95a7caa24c2f55" class="item-hidden"></editor-prop-item><editor-prop-item name="text-italic" owner-id="b028a716d2e74f29aa95a7caa24c2f55" class="item-hidden"></editor-prop-item><editor-prop-item name="text-size" owner-id="b028a716d2e74f29aa95a7caa24c2f55" class="item-hidden"></editor-prop-item><editor-prop-item name="text-style" owner-id="b028a716d2e74f29aa95a7caa24c2f55" class="item-hidden"></editor-prop-item><editor-prop-item name="text-transparency" owner-id="b028a716d2e74f29aa95a7caa24c2f55" class="item-hidden"></editor-prop-item><editor-prop-item name="top" owner-id="b028a716d2e74f29aa95a7caa24c2f55" class="item-hidden"></editor-prop-item><editor-prop-item name="top-margin" owner-id="b028a716d2e74f29aa95a7caa24c2f55" class="item-hidden"></editor-prop-item><editor-prop-item name="transparency" owner-id="b028a716d2e74f29aa95a7caa24c2f55" class="item-hidden"></editor-prop-item><editor-prop-item name="vertical-resizing" owner-id="b028a716d2e74f29aa95a7caa24c2f55" class="item-hidden"></editor-prop-item><editor-prop-item name="wants-move" owner-id="b028a716d2e74f29aa95a7caa24c2f55" class="item-hidden"></editor-prop-item><editor-prop-item name="width" owner-id="b028a716d2e74f29aa95a7caa24c2f55" class="item-hidden"></editor-prop-item></editor-props-list><editor-messenger tab-name="messenger"></editor-messenger><editor-custom-list tab-name="custom"></editor-custom-list><editor-subparts tab-name="subparts"><editor-location-info slot="ancestor-info" kind="stack" ref-id="6d839c1127744425bbf8def21069fa25"></editor-location-info><editor-location-info slot="ancestor-info" kind="card" ref-id="ab351821f153404d9fb1f82777db9bf1"></editor-location-info><editor-location-info slot="ancestor-info" kind="owner" ref-id="45add5eabfe9471f8a8f2c3a0d936357"></editor-location-info><button slot="button" data-type="field" title="Add a field to this field" class="add-part-button">
-<svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-forms" width="24" height="24" viewBox="0 0 24 24" stroke-width="1.5" stroke="#000000" fill="none" stroke-linecap="round" stroke-linejoin="round">
+<st-editor class=""><editor-props-list tab-name="properties"><editor-prop-item name="contents" owner-id="world"></editor-prop-item><editor-prop-item name="editor-open" owner-id="world"></editor-prop-item><editor-prop-item name="enabled" owner-id="world"></editor-prop-item><editor-prop-item name="navigator-open" owner-id="world"></editor-prop-item><editor-prop-item name="number" owner-id="world"></editor-prop-item><editor-prop-item name="rectangle" owner-id="world"></editor-prop-item><editor-prop-item name="stepping" owner-id="world"></editor-prop-item><editor-prop-item name="stepTime" owner-id="world"></editor-prop-item><editor-prop-item name="wants-move" owner-id="world"></editor-prop-item></editor-props-list><editor-messenger tab-name="messenger"></editor-messenger><editor-custom-list tab-name="custom"></editor-custom-list><editor-subparts tab-name="subparts" class="show-pane"><button slot="button" data-type="stack" title="Add a stack to this world" class="add-part-button">
+<svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-stack" width="24" height="24" viewBox="0 0 24 24" stroke-width="1.5" stroke="#2c3e50" fill="none" stroke-linecap="round" stroke-linejoin="round">
   <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
-  <path d="M12 3a3 3 0 0 0 -3 3v12a3 3 0 0 0 3 3"></path>
-  <path d="M6 3a3 3 0 0 1 3 3v12a3 3 0 0 1 -3 3"></path>
-  <path d="M13 7h7a1 1 0 0 1 1 1v8a1 1 0 0 1 -1 1h-7"></path>
-  <path d="M5 7h-1a1 1 0 0 0 -1 1v8a1 1 0 0 0 1 1h1"></path>
-  <path d="M17 12h.01"></path>
-  <path d="M13 12h.01"></path>
+  <polyline points="12 4 4 8 12 12 20 8 12 4"></polyline>
+  <polyline points="4 12 12 16 20 12"></polyline>
+  <polyline points="4 16 12 20 20 16"></polyline>
 </svg>
-</button></editor-subparts></st-editor></body></html>
+</button><button slot="button" data-type="image" title="Add a image to this world" class="add-part-button">
+<svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-photo" width="24" height="24" viewBox="0 0 24 24" stroke-width="1.5" stroke="#000000" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
+  <line x1="15" y1="8" x2="15.01" y2="8"></line>
+  <rect x="4" y="4" width="16" height="16" rx="3"></rect>
+  <path d="M4 15l4 -4a3 5 0 0 1 3 0l5 5"></path>
+  <path d="M14 14l1 -1a3 5 0 0 1 3 0l2 2"></path>
+</svg>
+</button><li class="subpart-item" ref-id="00b243c3604b43eaba55061f6f6409a9"><div class="icon-display-area">
+<svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-stack" width="24" height="24" viewBox="0 0 24 24" stroke-width="1.5" stroke="#2c3e50" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
+  <polyline points="12 4 4 8 12 12 20 8 12 4"></polyline>
+  <polyline points="4 12 12 16 20 12"></polyline>
+  <polyline points="4 16 12 20 20 16"></polyline>
+</svg>
+</div><h3>a Stack</h3><span class="id-span">(00b243c3604b43eaba55061f6f6409a9)</span></li></editor-subparts></st-editor></body></html>
