@@ -279,10 +279,10 @@ const createInterpreterSemantics = (partContext, systemContext) => {
             return msg;
         },
 
-        Command_setProperty: function(setLiteral, propNameAsLiteral, toLiteral, literalOrVarName, optionalInClause){
+        Command_setProperty: function(setLiteral, propNameAsLiteralOrVar, toLiteral, literalOrVarName, optionalInClause){
             let specifiedObjectId = optionalInClause.interpret()[0] || null;
             let args = [
-                propNameAsLiteral.interpret(), // The property name
+                propNameAsLiteralOrVar.interpret(), // The property name
                 literalOrVarName.interpret(), // The value or a var representing the value
                 specifiedObjectId
             ];
