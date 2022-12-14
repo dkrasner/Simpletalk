@@ -168,6 +168,14 @@ describe("Core commands", () => {
             semanticMatchTest(s, "Command_setProperty");
             semanticMatchTest(s, "Statement");
         });
+        it("Set variable prop name to some value this", () => {
+            objects.forEach((d) => {
+                const s = `set aVar to "some value" in this ${d}`;
+                semanticMatchTest(s, "Command");
+                semanticMatchTest(s, "Command_setProperty");
+                semanticMatchTest(s, "Statement");
+            });
+        });
         it("Set target (objectSpecifier, in context)", () => {
             objects.forEach((d) => {
                 const s = `set "target" to first ${d} of current card`;
