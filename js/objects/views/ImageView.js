@@ -1,5 +1,14 @@
 import PartView from './PartView.js';
 
+const fileIcon = `
+<svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-file-upload" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+   <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
+   <path d="M14 3v4a1 1 0 0 0 1 1h4"></path>
+   <path d="M17 21h-10a2 2 0 0 1 -2 -2v-14a2 2 0 0 1 2 -2h7l5 5v11a2 2 0 0 1 -2 2z"></path>
+   <path d="M12 11v6"></path>
+   <path d="M9.5 13.5l2.5 -2.5l2.5 2.5"></path>
+</svg>`;
+
 const linkIcon = `
 <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-link" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
   <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
@@ -50,6 +59,8 @@ class ImageView extends PartView {
     constructor(){
         super();
 
+        this.customHaloButtons = [];
+
         // Setup template and shadow dom
         this.template = document.createElement('template');
         this.template.innerHTML = templateString;
@@ -63,7 +74,7 @@ class ImageView extends PartView {
         this.setDefaultImage = this.setDefaultImage.bind(this);
         this.onClick = this.onClick.bind(this);
         this.loadImageFromSource = this.loadImageFromSource.bind(this);
-        this.initCustomHaloButton = this.initCustomHaloButton.bind(this);
+        this.initCustomHaloButtons = this.initCustomHaloButtons.bind(this);
         this.updateImageLink = this.updateImageLink.bind(this);
         this.updateSizingForViewport = this.updateSizingForViewport.bind(this);
     }
@@ -141,8 +152,8 @@ class ImageView extends PartView {
     }
 
     afterConnected(){
-        if(!this.haloButton){
-            this.initCustomHaloButton();
+        if(!this.customHaloButtons.length){
+            this.initCustomHaloButtons();
         }
     }
 
@@ -321,7 +332,9 @@ class ImageView extends PartView {
             foundHalo = document.createElement('st-halo');
             this.shadowRoot.appendChild(foundHalo);
         }
-        foundHalo.append(this.haloButton);
+        this.customHaloButtons.forEach((b) => {
+            foundHalo.append(b);
+        })
     }
 
     onHaloResize(movementX, movementY){
@@ -368,15 +381,25 @@ class ImageView extends PartView {
         }
     }
 
-    initCustomHaloButton(){
-        this.haloButton = document.createElement('div');
-        this.haloButton.id = 'halo-image-link';
-        this.haloButton.classList.add('halo-button');
-        this.haloButton.innerHTML = linkIcon;
-        this.haloButton.style.marginTop = "6px";
-        this.haloButton.setAttribute('slot', 'right-column');
-        this.haloButton.setAttribute('title', 'Edit link for image file');
-        this.haloButton.addEventListener('click', this.updateImageLink);
+    initCustomHaloButtons(){
+        const linkButton = document.createElement('div');
+        linkButton.id = 'halo-image-link';
+        linkButton.classList.add('halo-button');
+        linkButton.innerHTML = linkIcon;
+        linkButton.style.marginTop = "6px";
+        linkButton.setAttribute('slot', 'right-column');
+        linkButton.setAttribute('title', 'Edit image uri');
+        linkButton.addEventListener('click', this.updateImageLink);
+        const fileButton = document.createElement('div');
+        fileButton.id = 'halo-image-file';
+        fileButton.classList.add('halo-button');
+        fileButton.innerHTML = fileIcon;
+        fileButton.style.marginTop = "6px";
+        fileButton.setAttribute('slot', 'right-column');
+        fileButton.setAttribute('title', 'Import image file');
+        fileButton.addEventListener('click', this.model.loadImageFromFile);
+        this.customHaloButtons.push(linkButton);
+        this.customHaloButtons.push(fileButton);
     }
 
     addContextMenuItems(contextMenu){
