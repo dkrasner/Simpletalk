@@ -1,0 +1,859 @@
+<html xmlns="http://www.w3.org/1999/xhtml"><head>
+    <meta charset="utf-8">
+    <title>System Object Example</title>
+    <link rel="preconnect" href="https://fonts.gstatic.com">
+<link href="https://fonts.googleapis.com/css2?family=Crimson+Pro:ital,wght@0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&amp;display=swap" rel="stylesheet"> 
+    <link rel="stylesheet" href="./css/core.css">
+    <script src="./js/ohm/simpletalk.ohm" type="text/ohm-js"></script>
+    <script src="./js/objects/build/devSystem.bundle.js"></script>
+		<!--<script type="text/javascript" src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs@0.13.5/dist/tf.js"></script>>-->
+	</head>
+
+<body>
+    <style>
+        body {
+            display: block;
+            width: 100vw;
+            height: 100vh;
+            padding: 0;
+            margin: 0;
+        }
+    </style>
+    <div id="template-area">
+    </div>
+
+
+
+<script id="serialization" type="application/json">{
+    "version": "0.0.2",
+    "rootId": "world",
+    "type": "world",
+    "id": "world",
+    "parts": {
+        "world": {
+            "type": "world",
+            "id": "world",
+            "properties": {
+                "id": "world",
+                "name": "",
+                "script": "",
+                "cssStyle": {},
+                "cssTextStyle": {},
+                "number": 1,
+                "custom-properties": {},
+                "stepping": false,
+                "current": "00b243c3604b43eaba55061f6f6409a9"
+            },
+            "subparts": [
+                "00b243c3604b43eaba55061f6f6409a9"
+            ],
+            "ownerId": null,
+            "loadedStacks": [
+                "00b243c3604b43eaba55061f6f6409a9"
+            ]
+        },
+        "00b243c3604b43eaba55061f6f6409a9": {
+            "type": "stack",
+            "id": "00b243c3604b43eaba55061f6f6409a9",
+            "properties": {
+                "id": "00b243c3604b43eaba55061f6f6409a9",
+                "name": "",
+                "cssStyle": {},
+                "cssTextStyle": {},
+                "number": 1,
+                "custom-properties": {},
+                "stepping": false,
+                "current": "066b365b887341e880598f302e939a16"
+            },
+            "subparts": [
+                "066b365b887341e880598f302e939a16",
+                "625ea130158f452f831371550e4f1944"
+            ],
+            "ownerId": "world"
+        },
+        "066b365b887341e880598f302e939a16": {
+            "type": "card",
+            "id": "066b365b887341e880598f302e939a16",
+            "properties": {
+                "id": "066b365b887341e880598f302e939a16",
+                "name": "",
+                "script": "on openCard \n\tgetBrowserName\n\n\tif it != \"Firefox\"\n\tthen \n\t\tsendWarning\n\tend if\n\nend openCard \n\n\non sendWarning \n\tanswer \"I am an experimental system, please try me in Firefox\"\n\nend sendWarning ",
+                "cssStyle": {
+                    "layout": "strict",
+                    "opacity": 1,
+                    "list-direction": "row",
+                    "border-style": "solid",
+                    "border-top-style": "solid",
+                    "border-bottom-style": "solid",
+                    "border-left-style": "solid",
+                    "border-right-style": "solid",
+                    "border-top-width": "0px",
+                    "border-bottom-width": "0px",
+                    "border-left-width": "0px",
+                    "border-right-width": "0px",
+                    "border-top-color": "rgba(0, 0, 0, 1)",
+                    "border-bottom-color": "rgba(0, 0, 0, 1)",
+                    "border-left-color": "rgba(0, 0, 0, 1)",
+                    "border-right-color": "rgba(0, 0, 0, 1)",
+                    "box-shadow": "0px 0px 0px 0px rgba(238, 238, 238, 1)",
+                    "border-top-left-radius": "0px",
+                    "border-left-transparency": 1,
+                    "border-top-right-radius": "0px",
+                    "border-bottom-left-radius": "0px",
+                    "border-bottom-right-radius": "0px",
+                    "backgroundColor": "rgba(0, 75, 103, 1)"
+                },
+                "cssTextStyle": {},
+                "number": 1,
+                "custom-properties": {},
+                "stepping": false
+            },
+            "subparts": [],
+            "ownerId": "00b243c3604b43eaba55061f6f6409a9"
+        },
+        "625ea130158f452f831371550e4f1944": {
+            "type": "window",
+            "id": "625ea130158f452f831371550e4f1944",
+            "properties": {
+                "id": "625ea130158f452f831371550e4f1944",
+                "name": "Toolbox",
+                "cssStyle": {
+                    "backgroundColor": "rgba(255, 255, 255, 0)",
+                    "opacity": 1,
+                    "border-top-style": "solid",
+                    "border-bottom-style": "solid",
+                    "border-left-style": "solid",
+                    "border-right-style": "solid",
+                    "border-top-width": "0px",
+                    "border-bottom-width": "0px",
+                    "border-left-width": "0px",
+                    "border-right-width": "0px",
+                    "border-top-color": "rgba(0, 0, 0, 1)",
+                    "border-bottom-color": "rgba(0, 0, 0, 1)",
+                    "border-left-color": "rgba(0, 0, 0, 1)",
+                    "border-right-color": "rgba(0, 0, 0, 1)",
+                    "border-left-transparency": 1,
+                    "box-shadow": "0px 0px 0px 0px rgba(238, 238, 238, 1)",
+                    "border-top-left-radius": "0px",
+                    "border-top-right-radius": "0px",
+                    "border-bottom-left-radius": "0px",
+                    "border-bottom-right-radius": "0px",
+                    "display": null,
+                    "top": "209px",
+                    "left": "1554px",
+                    "horizontal-resizing": "rigid",
+                    "vertical-resizing": "rigid",
+                    "width": "185px",
+                    "height": "288px"
+                },
+                "cssTextStyle": {},
+                "number": 2,
+                "custom-properties": {},
+                "stepping": false,
+                "title": "Toolbox",
+                "width": 185,
+                "height": 288,
+                "top": 209,
+                "left": 1554,
+                "pinning": ""
+            },
+            "subparts": [
+                "4ebe8f44bb8447078995f98ba8d286c3"
+            ],
+            "ownerId": "00b243c3604b43eaba55061f6f6409a9"
+        },
+        "4ebe8f44bb8447078995f98ba8d286c3": {
+            "type": "area",
+            "id": "4ebe8f44bb8447078995f98ba8d286c3",
+            "properties": {
+                "id": "4ebe8f44bb8447078995f98ba8d286c3",
+                "name": "",
+                "cssStyle": {
+                    "width": "187px",
+                    "height": "274px",
+                    "backgroundColor": "rgba(255, 255, 255, 0)",
+                    "opacity": 1,
+                    "border-top-style": "solid",
+                    "border-bottom-style": "solid",
+                    "border-left-style": "solid",
+                    "border-right-style": "solid",
+                    "border-top-width": "1px",
+                    "border-bottom-width": "1px",
+                    "border-left-width": "1px",
+                    "border-right-width": "1px",
+                    "border-top-color": "rgba(238, 238, 238, 0.5)",
+                    "border-bottom-color": "rgba(238, 238, 238, 0.5)",
+                    "border-left-color": "rgba(238, 238, 238, 0.5)",
+                    "border-right-color": "rgba(238, 238, 238, 0.5)",
+                    "border-left-transparency": 0.5,
+                    "box-shadow": "0px 0px 0px 0px rgba(238, 238, 238, 1)",
+                    "border-top-left-radius": "0px",
+                    "border-top-right-radius": "0px",
+                    "border-bottom-left-radius": "0px",
+                    "border-bottom-right-radius": "0px",
+                    "display": null,
+                    "top": "0px",
+                    "left": "0px",
+                    "horizontal-resizing": "space-fill",
+                    "vertical-resizing": "rigid",
+                    "right-padding": "2",
+                    "paddingRight": "2px"
+                },
+                "cssTextStyle": {},
+                "number": 1,
+                "custom-properties": {},
+                "stepping": false,
+                "width": 187,
+                "height": 274,
+                "horizontal-resizing": "space-fill",
+                "pinning": "",
+                "layout": "list",
+                "list-direction": "column",
+                "right-padding": "2",
+                "list-alignment": "center"
+            },
+            "subparts": [
+                "c21cce76bf144e549b12fba4b69b8446",
+                "2bbbce7cc29a4949ac54de61bcc8ef8d",
+                "c28da7bd95584e21acae7f9108976998",
+                "d0f1de93bac943788de4efd69d85ded1",
+                "78c591a426074ebab793ac6391d4c50f",
+                "1f2263f6302640fb942f7afff1b55b88",
+                "2a66916da9134014947fc368aff50fd4",
+                "de1fad20401a47deb7e0b73022c50b46",
+                "1c3c23e0bd1f4e2c88bbc7ca9a5a2a39",
+                "3234c470c25e4fb28edb83453b89dcd1",
+                "1bb121a01abc476fa9b5bb7adc559c8e"
+            ],
+            "ownerId": "625ea130158f452f831371550e4f1944"
+        },
+        "c21cce76bf144e549b12fba4b69b8446": {
+            "type": "button",
+            "id": "c21cce76bf144e549b12fba4b69b8446",
+            "properties": {
+                "id": "c21cce76bf144e549b12fba4b69b8446",
+                "name": "Add Button",
+                "script": "on click\n\tadd button to current card\nend click\n",
+                "cssStyle": {
+                    "backgroundColor": "rgba(255, 234, 149, 1)",
+                    "opacity": 1,
+                    "border-top-style": "solid",
+                    "border-bottom-style": "solid",
+                    "border-left-style": "solid",
+                    "border-right-style": "solid",
+                    "border-top-width": "1px",
+                    "border-bottom-width": "1px",
+                    "border-left-width": "1px",
+                    "border-right-width": "1px",
+                    "border-top-color": "rgba(0, 0, 0, 1)",
+                    "border-bottom-color": "rgba(0, 0, 0, 1)",
+                    "border-left-color": "rgba(0, 0, 0, 1)",
+                    "border-right-color": "rgba(0, 0, 0, 1)",
+                    "border-left-transparency": 1,
+                    "box-shadow": "1px 1px 1px 0px rgba(238, 238, 238, 1)",
+                    "border-top-left-radius": "3px",
+                    "border-top-right-radius": "3px",
+                    "border-bottom-left-radius": "3px",
+                    "border-bottom-right-radius": "3px",
+                    "display": null,
+                    "top": "0px",
+                    "left": "0px",
+                    "horizontal-resizing": "rigid",
+                    "vertical-resizing": "rigid",
+                    "width": "100%"
+                },
+                "cssTextStyle": {
+                    "textAlign": "left",
+                    "fontFamily": "default",
+                    "color": "rgba(0, 0, 0, 1)",
+                    "textStyle": "plain",
+                    "font-weight": "normal",
+                    "font-style": "normal",
+                    "fontSize": 15
+                },
+                "number": 1,
+                "custom-properties": {},
+                "stepping": false,
+                "width": "fill",
+                "pinning": ""
+            },
+            "subparts": [],
+            "ownerId": "4ebe8f44bb8447078995f98ba8d286c3"
+        },
+        "2bbbce7cc29a4949ac54de61bcc8ef8d": {
+            "type": "button",
+            "id": "2bbbce7cc29a4949ac54de61bcc8ef8d",
+            "properties": {
+                "id": "2bbbce7cc29a4949ac54de61bcc8ef8d",
+                "name": "Add Image",
+                "script": "on click\n\tadd image to current card\nend click",
+                "cssStyle": {
+                    "backgroundColor": "rgba(255, 234, 149, 1)",
+                    "opacity": 1,
+                    "border-top-style": "solid",
+                    "border-bottom-style": "solid",
+                    "border-left-style": "solid",
+                    "border-right-style": "solid",
+                    "border-top-width": "1px",
+                    "border-bottom-width": "1px",
+                    "border-left-width": "1px",
+                    "border-right-width": "1px",
+                    "border-top-color": "rgba(0, 0, 0, 1)",
+                    "border-bottom-color": "rgba(0, 0, 0, 1)",
+                    "border-left-color": "rgba(0, 0, 0, 1)",
+                    "border-right-color": "rgba(0, 0, 0, 1)",
+                    "border-left-transparency": 1,
+                    "box-shadow": "1px 1px 1px 0px rgba(238, 238, 238, 1)",
+                    "border-top-left-radius": "3px",
+                    "border-top-right-radius": "3px",
+                    "border-bottom-left-radius": "3px",
+                    "border-bottom-right-radius": "3px",
+                    "display": null,
+                    "top": "31px",
+                    "left": "-1px",
+                    "horizontal-resizing": "rigid",
+                    "vertical-resizing": "rigid",
+                    "width": "100%"
+                },
+                "cssTextStyle": {
+                    "textAlign": "left",
+                    "fontFamily": "default",
+                    "color": "rgba(0, 0, 0, 1)",
+                    "textStyle": "plain",
+                    "font-weight": "normal",
+                    "font-style": "normal",
+                    "fontSize": 15
+                },
+                "number": 2,
+                "custom-properties": {},
+                "stepping": false,
+                "width": "fill",
+                "top": 31,
+                "left": -1,
+                "pinning": ""
+            },
+            "subparts": [],
+            "ownerId": "4ebe8f44bb8447078995f98ba8d286c3"
+        },
+        "c28da7bd95584e21acae7f9108976998": {
+            "type": "button",
+            "id": "c28da7bd95584e21acae7f9108976998",
+            "properties": {
+                "id": "c28da7bd95584e21acae7f9108976998",
+                "name": "Add Drawing",
+                "script": "on click\n\tadd drawing to current card\nend click",
+                "cssStyle": {
+                    "backgroundColor": "rgba(255, 234, 149, 1)",
+                    "opacity": 1,
+                    "border-top-style": "solid",
+                    "border-bottom-style": "solid",
+                    "border-left-style": "solid",
+                    "border-right-style": "solid",
+                    "border-top-width": "1px",
+                    "border-bottom-width": "1px",
+                    "border-left-width": "1px",
+                    "border-right-width": "1px",
+                    "border-top-color": "rgba(0, 0, 0, 1)",
+                    "border-bottom-color": "rgba(0, 0, 0, 1)",
+                    "border-left-color": "rgba(0, 0, 0, 1)",
+                    "border-right-color": "rgba(0, 0, 0, 1)",
+                    "border-left-transparency": 1,
+                    "box-shadow": "1px 1px 1px 0px rgba(238, 238, 238, 1)",
+                    "border-top-left-radius": "3px",
+                    "border-top-right-radius": "3px",
+                    "border-bottom-left-radius": "3px",
+                    "border-bottom-right-radius": "3px",
+                    "display": null,
+                    "top": "10px",
+                    "left": "10px",
+                    "horizontal-resizing": "rigid",
+                    "vertical-resizing": "rigid",
+                    "width": "100%"
+                },
+                "cssTextStyle": {
+                    "textAlign": "left",
+                    "fontFamily": "default",
+                    "color": "rgba(0, 0, 0, 1)",
+                    "textStyle": "plain",
+                    "font-weight": "normal",
+                    "font-style": "normal",
+                    "fontSize": 15
+                },
+                "number": 3,
+                "custom-properties": {},
+                "stepping": false,
+                "width": "fill",
+                "top": 10,
+                "left": 10,
+                "pinning": ""
+            },
+            "subparts": [],
+            "ownerId": "4ebe8f44bb8447078995f98ba8d286c3"
+        },
+        "d0f1de93bac943788de4efd69d85ded1": {
+            "type": "button",
+            "id": "d0f1de93bac943788de4efd69d85ded1",
+            "properties": {
+                "id": "d0f1de93bac943788de4efd69d85ded1",
+                "name": "Add Area",
+                "script": "on click\n\tadd area to current card\nend click",
+                "cssStyle": {
+                    "backgroundColor": "rgba(255, 234, 149, 1)",
+                    "opacity": 1,
+                    "border-top-style": "solid",
+                    "border-bottom-style": "solid",
+                    "border-left-style": "solid",
+                    "border-right-style": "solid",
+                    "border-top-width": "1px",
+                    "border-bottom-width": "1px",
+                    "border-left-width": "1px",
+                    "border-right-width": "1px",
+                    "border-top-color": "rgba(0, 0, 0, 1)",
+                    "border-bottom-color": "rgba(0, 0, 0, 1)",
+                    "border-left-color": "rgba(0, 0, 0, 1)",
+                    "border-right-color": "rgba(0, 0, 0, 1)",
+                    "border-left-transparency": 1,
+                    "box-shadow": "1px 1px 1px 0px rgba(238, 238, 238, 1)",
+                    "border-top-left-radius": "3px",
+                    "border-top-right-radius": "3px",
+                    "border-bottom-left-radius": "3px",
+                    "border-bottom-right-radius": "3px",
+                    "display": null,
+                    "top": "9px",
+                    "left": "10px",
+                    "horizontal-resizing": "rigid",
+                    "vertical-resizing": "rigid",
+                    "width": "100%"
+                },
+                "cssTextStyle": {
+                    "textAlign": "left",
+                    "fontFamily": "default",
+                    "color": "rgba(0, 0, 0, 1)",
+                    "textStyle": "plain",
+                    "font-weight": "normal",
+                    "font-style": "normal",
+                    "fontSize": 15
+                },
+                "number": 4,
+                "custom-properties": {},
+                "stepping": false,
+                "width": "fill",
+                "top": 9,
+                "left": 10,
+                "pinning": ""
+            },
+            "subparts": [],
+            "ownerId": "4ebe8f44bb8447078995f98ba8d286c3"
+        },
+        "78c591a426074ebab793ac6391d4c50f": {
+            "type": "button",
+            "id": "78c591a426074ebab793ac6391d4c50f",
+            "properties": {
+                "id": "78c591a426074ebab793ac6391d4c50f",
+                "name": "Add Field",
+                "script": "on click\n\tadd field to current card\nend click",
+                "cssStyle": {
+                    "backgroundColor": "rgba(255, 234, 149, 1)",
+                    "opacity": 1,
+                    "border-top-style": "solid",
+                    "border-bottom-style": "solid",
+                    "border-left-style": "solid",
+                    "border-right-style": "solid",
+                    "border-top-width": "1px",
+                    "border-bottom-width": "1px",
+                    "border-left-width": "1px",
+                    "border-right-width": "1px",
+                    "border-top-color": "rgba(0, 0, 0, 1)",
+                    "border-bottom-color": "rgba(0, 0, 0, 1)",
+                    "border-left-color": "rgba(0, 0, 0, 1)",
+                    "border-right-color": "rgba(0, 0, 0, 1)",
+                    "border-left-transparency": 1,
+                    "box-shadow": "1px 1px 1px 0px rgba(238, 238, 238, 1)",
+                    "border-top-left-radius": "3px",
+                    "border-top-right-radius": "3px",
+                    "border-bottom-left-radius": "3px",
+                    "border-bottom-right-radius": "3px",
+                    "display": null,
+                    "top": "10px",
+                    "left": "12px",
+                    "horizontal-resizing": "rigid",
+                    "vertical-resizing": "rigid",
+                    "width": "100%"
+                },
+                "cssTextStyle": {
+                    "textAlign": "left",
+                    "fontFamily": "default",
+                    "color": "rgba(0, 0, 0, 1)",
+                    "textStyle": "plain",
+                    "font-weight": "normal",
+                    "font-style": "normal",
+                    "fontSize": 15
+                },
+                "number": 5,
+                "custom-properties": {},
+                "stepping": false,
+                "width": "fill",
+                "top": 10,
+                "left": 12,
+                "pinning": ""
+            },
+            "subparts": [],
+            "ownerId": "4ebe8f44bb8447078995f98ba8d286c3"
+        },
+        "1f2263f6302640fb942f7afff1b55b88": {
+            "type": "button",
+            "id": "1f2263f6302640fb942f7afff1b55b88",
+            "properties": {
+                "id": "1f2263f6302640fb942f7afff1b55b88",
+                "name": "Add Card",
+                "script": "on click\n\tadd card\nend click",
+                "cssStyle": {
+                    "backgroundColor": "rgba(255, 234, 149, 1)",
+                    "opacity": 1,
+                    "border-top-style": "solid",
+                    "border-bottom-style": "solid",
+                    "border-left-style": "solid",
+                    "border-right-style": "solid",
+                    "border-top-width": "1px",
+                    "border-bottom-width": "1px",
+                    "border-left-width": "1px",
+                    "border-right-width": "1px",
+                    "border-top-color": "rgba(0, 0, 0, 1)",
+                    "border-bottom-color": "rgba(0, 0, 0, 1)",
+                    "border-left-color": "rgba(0, 0, 0, 1)",
+                    "border-right-color": "rgba(0, 0, 0, 1)",
+                    "border-left-transparency": 1,
+                    "box-shadow": "1px 1px 1px 0px rgba(238, 238, 238, 1)",
+                    "border-top-left-radius": "3px",
+                    "border-top-right-radius": "3px",
+                    "border-bottom-left-radius": "3px",
+                    "border-bottom-right-radius": "3px",
+                    "display": null,
+                    "top": "9px",
+                    "left": "10px",
+                    "horizontal-resizing": "rigid",
+                    "vertical-resizing": "rigid",
+                    "width": "100%"
+                },
+                "cssTextStyle": {
+                    "textAlign": "left",
+                    "fontFamily": "default",
+                    "color": "rgba(0, 0, 0, 1)",
+                    "textStyle": "plain",
+                    "font-weight": "normal",
+                    "font-style": "normal",
+                    "fontSize": 15
+                },
+                "number": 6,
+                "custom-properties": {},
+                "stepping": false,
+                "width": "fill",
+                "top": 9,
+                "left": 10,
+                "pinning": ""
+            },
+            "subparts": [],
+            "ownerId": "4ebe8f44bb8447078995f98ba8d286c3"
+        },
+        "2a66916da9134014947fc368aff50fd4": {
+            "type": "button",
+            "id": "2a66916da9134014947fc368aff50fd4",
+            "properties": {
+                "id": "2a66916da9134014947fc368aff50fd4",
+                "name": "Add Toolbox Button",
+                "script": "on click\n\tadd button\n\ttell last button to set \"width\" to \"fill\"\nend click",
+                "cssStyle": {
+                    "backgroundColor": "rgba(255, 234, 149, 1)",
+                    "opacity": 1,
+                    "border-top-style": "solid",
+                    "border-bottom-style": "solid",
+                    "border-left-style": "solid",
+                    "border-right-style": "solid",
+                    "border-top-width": "1px",
+                    "border-bottom-width": "1px",
+                    "border-left-width": "1px",
+                    "border-right-width": "1px",
+                    "border-top-color": "rgba(0, 0, 0, 1)",
+                    "border-bottom-color": "rgba(0, 0, 0, 1)",
+                    "border-left-color": "rgba(0, 0, 0, 1)",
+                    "border-right-color": "rgba(0, 0, 0, 1)",
+                    "border-left-transparency": 1,
+                    "box-shadow": "1px 1px 1px 0px rgba(238, 238, 238, 1)",
+                    "border-top-left-radius": "3px",
+                    "border-top-right-radius": "3px",
+                    "border-bottom-left-radius": "3px",
+                    "border-bottom-right-radius": "3px",
+                    "display": null,
+                    "top": "0px",
+                    "left": "1px",
+                    "horizontal-resizing": "rigid",
+                    "vertical-resizing": "rigid",
+                    "width": "100%"
+                },
+                "cssTextStyle": {
+                    "textAlign": "left",
+                    "fontFamily": "default",
+                    "color": "rgba(0, 0, 0, 1)",
+                    "textStyle": "plain",
+                    "font-weight": "normal",
+                    "font-style": "normal",
+                    "fontSize": 15
+                },
+                "number": 7,
+                "custom-properties": {},
+                "stepping": false,
+                "width": "fill",
+                "left": 1,
+                "pinning": ""
+            },
+            "subparts": [],
+            "ownerId": "4ebe8f44bb8447078995f98ba8d286c3"
+        },
+        "de1fad20401a47deb7e0b73022c50b46": {
+            "type": "button",
+            "id": "de1fad20401a47deb7e0b73022c50b46",
+            "properties": {
+                "id": "de1fad20401a47deb7e0b73022c50b46",
+                "name": "Import World",
+                "script": "on click\n\timportWorld\nend click",
+                "cssStyle": {
+                    "backgroundColor": "rgba(255, 234, 149, 1)",
+                    "opacity": 1,
+                    "border-top-style": "solid",
+                    "border-bottom-style": "solid",
+                    "border-left-style": "solid",
+                    "border-right-style": "solid",
+                    "border-top-width": "1px",
+                    "border-bottom-width": "1px",
+                    "border-left-width": "1px",
+                    "border-right-width": "1px",
+                    "border-top-color": "rgba(0, 0, 0, 1)",
+                    "border-bottom-color": "rgba(0, 0, 0, 1)",
+                    "border-left-color": "rgba(0, 0, 0, 1)",
+                    "border-right-color": "rgba(0, 0, 0, 1)",
+                    "border-left-transparency": 1,
+                    "box-shadow": "1px 1px 1px 0px rgba(238, 238, 238, 1)",
+                    "border-top-left-radius": "3px",
+                    "border-top-right-radius": "3px",
+                    "border-bottom-left-radius": "3px",
+                    "border-bottom-right-radius": "3px",
+                    "display": null,
+                    "top": "-1px",
+                    "left": "1px",
+                    "horizontal-resizing": "rigid",
+                    "vertical-resizing": "rigid",
+                    "width": "100%"
+                },
+                "cssTextStyle": {
+                    "textAlign": "left",
+                    "fontFamily": "default",
+                    "color": "rgba(0, 0, 0, 1)",
+                    "textStyle": "plain",
+                    "font-weight": "normal",
+                    "font-style": "normal",
+                    "fontSize": 15
+                },
+                "number": 8,
+                "custom-properties": {},
+                "stepping": false,
+                "width": "fill",
+                "top": -1,
+                "left": 1,
+                "pinning": ""
+            },
+            "subparts": [],
+            "ownerId": "4ebe8f44bb8447078995f98ba8d286c3"
+        },
+        "1c3c23e0bd1f4e2c88bbc7ca9a5a2a39": {
+            "type": "button",
+            "id": "1c3c23e0bd1f4e2c88bbc7ca9a5a2a39",
+            "properties": {
+                "id": "1c3c23e0bd1f4e2c88bbc7ca9a5a2a39",
+                "name": "Import Local World",
+                "script": "on click \n\timportLocalWorld\nend click ",
+                "cssStyle": {
+                    "backgroundColor": "rgba(255, 234, 149, 1)",
+                    "opacity": 1,
+                    "border-top-style": "solid",
+                    "border-bottom-style": "solid",
+                    "border-left-style": "solid",
+                    "border-right-style": "solid",
+                    "border-top-width": "1px",
+                    "border-bottom-width": "1px",
+                    "border-left-width": "1px",
+                    "border-right-width": "1px",
+                    "border-top-color": "rgba(0, 0, 0, 1)",
+                    "border-bottom-color": "rgba(0, 0, 0, 1)",
+                    "border-left-color": "rgba(0, 0, 0, 1)",
+                    "border-right-color": "rgba(0, 0, 0, 1)",
+                    "border-left-transparency": 1,
+                    "box-shadow": "1px 1px 1px 0px rgba(238, 238, 238, 1)",
+                    "border-top-left-radius": "3px",
+                    "border-top-right-radius": "3px",
+                    "border-bottom-left-radius": "3px",
+                    "border-bottom-right-radius": "3px",
+                    "display": null,
+                    "top": "10px",
+                    "left": "10px",
+                    "horizontal-resizing": "rigid",
+                    "vertical-resizing": "rigid",
+                    "width": "100%"
+                },
+                "cssTextStyle": {
+                    "textAlign": "left",
+                    "fontFamily": "default",
+                    "color": "rgba(0, 0, 0, 1)",
+                    "textStyle": "plain",
+                    "font-weight": "normal",
+                    "font-style": "normal",
+                    "fontSize": 15
+                },
+                "number": 9,
+                "custom-properties": {},
+                "stepping": false,
+                "width": "fill",
+                "top": 10,
+                "left": 10,
+                "pinning": ""
+            },
+            "subparts": [],
+            "ownerId": "4ebe8f44bb8447078995f98ba8d286c3"
+        },
+        "3234c470c25e4fb28edb83453b89dcd1": {
+            "type": "button",
+            "id": "3234c470c25e4fb28edb83453b89dcd1",
+            "properties": {
+                "id": "3234c470c25e4fb28edb83453b89dcd1",
+                "name": "Save",
+                "script": "on click\n\tif the \"name\" of this world == \"\"\n\tthen\n\t\task \"Please name me first\"\n\t\tput it into name\n\t\ttell this world to set \"name\" to name\n\t\tsaveHTML name\n\telse\n\t\tsaveHTML\n\tend if\n\nend click\n",
+                "cssStyle": {
+                    "backgroundColor": "rgba(255, 234, 149, 1)",
+                    "opacity": 1,
+                    "border-top-style": "solid",
+                    "border-bottom-style": "solid",
+                    "border-left-style": "solid",
+                    "border-right-style": "solid",
+                    "border-top-width": "1px",
+                    "border-bottom-width": "1px",
+                    "border-left-width": "1px",
+                    "border-right-width": "1px",
+                    "border-top-color": "rgba(0, 0, 0, 1)",
+                    "border-bottom-color": "rgba(0, 0, 0, 1)",
+                    "border-left-color": "rgba(0, 0, 0, 1)",
+                    "border-right-color": "rgba(0, 0, 0, 1)",
+                    "border-left-transparency": 1,
+                    "box-shadow": "1px 1px 1px 0px rgba(238, 238, 238, 1)",
+                    "border-top-left-radius": "3px",
+                    "border-top-right-radius": "3px",
+                    "border-bottom-left-radius": "3px",
+                    "border-bottom-right-radius": "3px",
+                    "display": null,
+                    "top": "0px",
+                    "left": "1px",
+                    "horizontal-resizing": "rigid",
+                    "vertical-resizing": "rigid",
+                    "width": "100%"
+                },
+                "cssTextStyle": {
+                    "textAlign": "left",
+                    "fontFamily": "default",
+                    "color": "rgba(0, 0, 0, 1)",
+                    "textStyle": "plain",
+                    "font-weight": "normal",
+                    "font-style": "normal",
+                    "fontSize": 15
+                },
+                "number": 10,
+                "custom-properties": {},
+                "stepping": false,
+                "width": "fill",
+                "left": 1,
+                "pinning": ""
+            },
+            "subparts": [],
+            "ownerId": "4ebe8f44bb8447078995f98ba8d286c3"
+        },
+        "1bb121a01abc476fa9b5bb7adc559c8e": {
+            "type": "button",
+            "id": "1bb121a01abc476fa9b5bb7adc559c8e",
+            "properties": {
+                "id": "1bb121a01abc476fa9b5bb7adc559c8e",
+                "name": "Save As",
+                "script": "on click \n\task \"What is my Name\"\n\tsaveHTML it\nend click ",
+                "cssStyle": {
+                    "backgroundColor": "rgba(255, 234, 149, 1)",
+                    "opacity": 1,
+                    "border-top-style": "solid",
+                    "border-bottom-style": "solid",
+                    "border-left-style": "solid",
+                    "border-right-style": "solid",
+                    "border-top-width": "1px",
+                    "border-bottom-width": "1px",
+                    "border-left-width": "1px",
+                    "border-right-width": "1px",
+                    "border-top-color": "rgba(0, 0, 0, 1)",
+                    "border-bottom-color": "rgba(0, 0, 0, 1)",
+                    "border-left-color": "rgba(0, 0, 0, 1)",
+                    "border-right-color": "rgba(0, 0, 0, 1)",
+                    "border-left-transparency": 1,
+                    "box-shadow": "1px 1px 1px 0px rgba(238, 238, 238, 1)",
+                    "border-top-left-radius": "3px",
+                    "border-top-right-radius": "3px",
+                    "border-bottom-left-radius": "3px",
+                    "border-bottom-right-radius": "3px",
+                    "display": null,
+                    "top": "10px",
+                    "left": "10px",
+                    "horizontal-resizing": "rigid",
+                    "vertical-resizing": "rigid",
+                    "width": "100%"
+                },
+                "cssTextStyle": {
+                    "textAlign": "left",
+                    "fontFamily": "default",
+                    "color": "rgba(0, 0, 0, 1)",
+                    "textStyle": "plain",
+                    "font-weight": "normal",
+                    "font-style": "normal",
+                    "fontSize": 15
+                },
+                "number": 11,
+                "custom-properties": {},
+                "stepping": false,
+                "width": "fill",
+                "top": 10,
+                "left": 10,
+                "pinning": ""
+            },
+            "subparts": [],
+            "ownerId": "4ebe8f44bb8447078995f98ba8d286c3"
+        }
+    }
+}</script>
+
+
+
+
+<st-editor class=""><editor-props-list tab-name="properties"><editor-prop-item name="contents" owner-id="world"></editor-prop-item><editor-prop-item name="editor-open" owner-id="world"></editor-prop-item><editor-prop-item name="enabled" owner-id="world"></editor-prop-item><editor-prop-item name="navigator-open" owner-id="world"></editor-prop-item><editor-prop-item name="number" owner-id="world"></editor-prop-item><editor-prop-item name="rectangle" owner-id="world"></editor-prop-item><editor-prop-item name="stepping" owner-id="world"></editor-prop-item><editor-prop-item name="stepTime" owner-id="world"></editor-prop-item><editor-prop-item name="wants-move" owner-id="world"></editor-prop-item></editor-props-list><editor-messenger tab-name="messenger"></editor-messenger><editor-custom-list tab-name="custom"></editor-custom-list><editor-subparts tab-name="subparts" class="show-pane"><button slot="button" data-type="stack" title="Add a stack to this world" class="add-part-button">
+<svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-stack" width="24" height="24" viewBox="0 0 24 24" stroke-width="1.5" stroke="#2c3e50" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
+  <polyline points="12 4 4 8 12 12 20 8 12 4"></polyline>
+  <polyline points="4 12 12 16 20 12"></polyline>
+  <polyline points="4 16 12 20 20 16"></polyline>
+</svg>
+</button><button slot="button" data-type="image" title="Add a image to this world" class="add-part-button">
+<svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-photo" width="24" height="24" viewBox="0 0 24 24" stroke-width="1.5" stroke="#000000" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
+  <line x1="15" y1="8" x2="15.01" y2="8"></line>
+  <rect x="4" y="4" width="16" height="16" rx="3"></rect>
+  <path d="M4 15l4 -4a3 5 0 0 1 3 0l5 5"></path>
+  <path d="M14 14l1 -1a3 5 0 0 1 3 0l2 2"></path>
+</svg>
+</button><li class="subpart-item" ref-id="00b243c3604b43eaba55061f6f6409a9"><div class="icon-display-area">
+<svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-stack" width="24" height="24" viewBox="0 0 24 24" stroke-width="1.5" stroke="#2c3e50" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
+  <polyline points="12 4 4 8 12 12 20 8 12 4"></polyline>
+  <polyline points="4 12 12 16 20 12"></polyline>
+  <polyline points="4 16 12 20 20 16"></polyline>
+</svg>
+</div><h3>a Stack</h3><span class="id-span">(00b243c3604b43eaba55061f6f6409a9)</span></li></editor-subparts></st-editor></body></html>
