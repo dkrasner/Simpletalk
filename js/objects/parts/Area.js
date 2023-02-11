@@ -87,7 +87,7 @@ class Area extends Part {
             this.partProperties.setPropertyNamed(
                 this,
                 `border-${s}-color`,
-                "rgb(238, 238, 238)",
+                "rgb(107, 153, 87)",
                 true, // notify
                 true // set default
             );
