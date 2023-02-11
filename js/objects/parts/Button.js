@@ -40,7 +40,21 @@ class Button extends Part {
         this.partProperties.setPropertyNamed(
             this,
             'background-color',
-            "rgb(255, 234, 149)", // var(--palette-yellow)
+            "rgb(0, 151, 167)",
+            true, // notify
+            true  // set default
+        );
+        this.partProperties.setPropertyNamed(
+            this,
+            'width',
+            200,
+            true, // notify
+            true  // set default
+        );
+        this.partProperties.setPropertyNamed(
+            this,
+            'height',
+            60,
             true, // notify
             true  // set default
         );
@@ -74,34 +88,6 @@ class Button extends Part {
         );
         this.partProperties.setPropertyNamed(
             this,
-            'border-top-width',
-            1,
-            true, // notify
-            true  // set default
-        );
-        this.partProperties.setPropertyNamed(
-            this,
-            'border-bottom-width',
-            1,
-            true, // notify
-            true  // set default
-        );
-        this.partProperties.setPropertyNamed(
-            this,
-            'border-left-width',
-            1,
-            true, // notify
-            true  // set default
-        );
-        this.partProperties.setPropertyNamed(
-            this,
-            'border-right-width',
-            1,
-            true, // notify
-            true  // set default
-        );
-        this.partProperties.setPropertyNamed(
-            this,
             'shadow-left',
             1,
             true, // notify
@@ -128,7 +114,20 @@ class Button extends Part {
             true, // notify
             true  // set default
         );
-
+        this.partProperties.setPropertyNamed(
+            this,
+            'text-color',
+            "rgb(247, 241, 234)",
+            true, // notify
+            true  // set default
+        );
+        this.partProperties.setPropertyNamed(
+            this,
+            'text-size',
+            "25",
+            true, // notify
+            true  // set default
+        );
     }
 
     get type(){
