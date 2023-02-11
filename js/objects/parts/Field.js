@@ -119,7 +119,7 @@ class Field extends Part {
         this.partProperties.setPropertyNamed(
             this,
             'background-color',
-            "rgb(255, 248, 220)", // var(--palette-cornsik)
+            "rgb(247, 241, 234)",
             true, // notify
             true  // set default
         );
@@ -163,6 +163,20 @@ class Field extends Part {
             this,
             "width",
             400,
+            true, // notify
+            true  // set default
+        );
+        this.partProperties.setPropertyNamed(
+            this,
+            "text-size",
+            25,
+            true, // notify
+            true  // set default
+        );
+        this.partProperties.setPropertyNamed(
+            this,
+            "text-color",
+            "rgb(67, 67, 67)",
             true, // notify
             true  // set default
         );

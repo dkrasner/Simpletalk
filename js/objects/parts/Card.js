@@ -66,7 +66,7 @@ class Card extends Part {
         this.partProperties.setPropertyNamed(
             this,
             'background-color',
-            "rgb(0, 75, 103)", // palette-blue
+            "rgb(247, 241, 234)",
             true, // notify
             true  // set default
         );

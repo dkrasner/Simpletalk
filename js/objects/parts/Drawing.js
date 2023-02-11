@@ -48,7 +48,7 @@ class Drawing extends Part {
             this.partProperties.setPropertyNamed(
                 this,
                 `border-${s}-color`,
-                "rgb(238, 238, 238)", //grey
+                "rgb(107, 153, 87)",
                 true, // notify
                 true  // set default
             );

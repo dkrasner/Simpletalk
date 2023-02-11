@@ -1000,6 +1000,8 @@ System._commandHandlers['openScriptEditor'] = function(senders, targetId){
     scriptField.partProperties.setPropertyNamed(scriptField, "text", targetScript);
     scriptField.partProperties.setPropertyNamed(scriptField, "height", "fill");
     scriptField.partProperties.setPropertyNamed(scriptField, "width", "fill");
+    scriptField.partProperties.setPropertyNamed(scriptField, "background-color", "rgb(21, 50, 8)");
+    scriptField.partProperties.setPropertyNamed(scriptField, "text-color", "rgb(253, 234, 214)");
 
     // Setup syntax highlight
     scriptField.sendMessage({
@@ -1012,6 +1014,8 @@ System._commandHandlers['openScriptEditor'] = function(senders, targetId){
     // setup up the save button properties
     saveButton.partProperties.setPropertyNamed(saveButton, "name", "Save Script");
     saveButton.partProperties.setPropertyNamed(saveButton, "width", "fill");
+    saveButton.partProperties.setPropertyNamed(saveButton, "shadow-blur", "0");
+    saveButton.partProperties.setPropertyNamed(saveButton, "text-size", 20);
     saveButton.partProperties.setPropertyNamed(saveButton, "text-size", 20);
     saveButton.partProperties.setPropertyNamed(saveButton, "target", `part id ${target.id}`);
 

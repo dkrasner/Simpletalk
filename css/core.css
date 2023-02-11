@@ -118,8 +118,6 @@ st-button {
     padding-top: 5px;
     padding-bottom: 5px;
     user-select: none;
-    margin-left: -1px;
-    margin-right: -1px;
 }
 
 st-button:not(.editing):hover {
