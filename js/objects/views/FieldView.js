@@ -562,11 +562,9 @@ class FieldView extends PartView {
         text = text.replace(/[\t\n ]+$/, "");
         this.closeContextMenu();
         // cache the current script to re-set after the doIt command is run
-        const currentScript = this.model.partProperties.getPropertyNamed(this.mode, "script");
+        const currentScript = this.model.partProperties.getPropertyNamed(this.model, "script");
         // send message to compile the prepped script
         let script = `on doIt\n   ${text}\nend doIt`;
-        // append the doIt command to the current script
-        script = `${currentScript}\n${script}`;
         // send these messages from the model (not the view)
         // since if there is an error the original sender will
         // have an id
@@ -588,7 +586,6 @@ class FieldView extends PartView {
             this.model
         );
         //reset the currentScript
-
         this.model.sendMessage(
             {
                 type: "compile",
