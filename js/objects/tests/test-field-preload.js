@@ -202,6 +202,8 @@ describe('doIt commands tests', () => {
         };
         expect(setScript).to.not.throw();
         assert.exists(doItField._commandHandlers["myScript"]);
+        const text = doItField.partProperties.getPropertyNamed(doItField, "innerHTML");
+        assert.equal("", text);
     });
     it('Can run the script and it works', () => {
         let sendMsg = function () {
@@ -233,6 +235,7 @@ describe('doIt commands tests', () => {
         assert.exists(doItField._commandHandlers["myScript"]);
     });
 });
+
 class MockRange {
     constructor(){
         this.node = null;
