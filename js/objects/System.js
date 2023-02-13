@@ -250,40 +250,43 @@ const System = {
         if(!targetObject || targetObject == undefined){
             throw new Error(`System could not compile target object ${aMessage.targetId}`);
         }
-
-
-        // Attempt to parse the incoming SimpleTalk script string.
-        // If there are grammatical errors, report them and bail.
-        // Otherwise, create a new semantics on the targetPart, add
-        // the required semantic operations, and interpret the top
-        // level of the script, which will create the JS handler functions
-        let parsedScript = languageGrammar.match(aMessage.codeString);
-        if(parsedScript.failed()){
-            // consider using the parse data from trace
-            // example: let tracedScript = languageGrammar.trace(aMessage.codeString);
-            // let tree = tracedScript.toString();
-            let msg = {
-                type: "error",
-                name: "GrammarMatchError",
-                parsedScript: parsedScript,
-                partId: aMessage.targetId
-            };
-            targetObject.sendMessage(msg, targetObject);
-        } else {
-            // First, clear out any currently compiled handlers
-            // since the incoming script might get rid of them
+        if(!aMessage.codeString){
+            // the assumption here was that the script was set to empty, ie erased
             targetObject._commandHandlers = {};
-
-            // Create a semantics object whose partContext
-            // attribute is set to be the target object.
-            targetObject._semantics = languageGrammar.createSemantics();
-            targetObject._semantics.addOperation(
-                'interpret',
-                interpreterSemantics(targetObject, this)
-            );
-            targetObject._semantics(parsedScript).interpret();
         }
+        else {
+            // Attempt to parse the incoming SimpleTalk script string.
+            // If there are grammatical errors, report them and bail.
+            // Otherwise, create a new semantics on the targetPart, add
+            // the required semantic operations, and interpret the top
+            // level of the script, which will create the JS handler functions
+            let parsedScript = languageGrammar.match(aMessage.codeString);
+            if(parsedScript.failed()){
+                // consider using the parse data from trace
+                // example: let tracedScript = languageGrammar.trace(aMessage.codeString);
+                // let tree = tracedScript.toString();
+                let msg = {
+                    type: "error",
+                    name: "GrammarMatchError",
+                    parsedScript: parsedScript,
+                    partId: aMessage.targetId
+                };
+                targetObject.sendMessage(msg, targetObject);
+            } else {
+                // First, clear out any currently compiled handlers
+                // since the incoming script might get rid of them
+                targetObject._commandHandlers = {};
 
+                // Create a semantics object whose partContext
+                // attribute is set to be the target object.
+                targetObject._semantics = languageGrammar.createSemantics();
+                targetObject._semantics.addOperation(
+                    'interpret',
+                    interpreterSemantics(targetObject, this)
+                );
+                targetObject._semantics(parsedScript).interpret();
+            }
+        }
 
         // Be sure to then update the
         // serialization for the target

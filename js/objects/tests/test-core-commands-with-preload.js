@@ -23,6 +23,57 @@ describe('Core command tests', () => {
     let semantics;
     let currentCard;
     let button;
+    describe('Can handle empty scripts', () => {
+        before('', () => {
+            currentCard = System.getCurrentCardModel();
+            let initSemantics = function(){
+                semantics = getSemanticsFor(currentCard);
+            };
+            expect(initSemantics).to.not.throw();
+        });
+        it('Can compile empty script', () => {
+            let script = "";
+            let sendMsg = function(){
+                currentCard.sendMessage(
+                    {
+                        type: "compile",
+                        codeString: script,
+                        targetId: currentCard.id
+                    },
+                    currentCard
+                );
+            };
+            expect(sendMsg).to.not.throw();
+        });
+        it('Can erase a script', () => {
+            let script = `on myScript\n answer "yes"\n end myScript`;
+            let sendMsg = function () {
+                currentCard.sendMessage(
+                    {
+                        type: "compile",
+                        codeString: script,
+                        targetId: currentCard.id
+                    },
+                    currentCard
+                );
+            };
+            expect(sendMsg).to.not.throw();
+            assert.exists(currentCard._commandHandlers["myScript"])
+            script = "";
+             sendMsg = function () {
+                currentCard.sendMessage(
+                    {
+                        type: "compile",
+                        codeString: script,
+                        targetId: currentCard.id
+                    },
+                    currentCard
+                );
+            };
+            expect(sendMsg).to.not.throw();
+            assert.isUndefined(currentCard._commandHandlers["myScript"])
+        });
+    });
     describe('Ask - answer model tests', () => {
         before('', () => {
             currentCard = System.getCurrentCardModel();

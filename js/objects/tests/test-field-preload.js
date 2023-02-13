@@ -9,12 +9,26 @@
  */
 import chai from 'chai';
 const assert = chai.assert;
+const expect = chai.expect;
 
 import Field from '../parts/Field.js';
-//import FieldView from '../views/FieldView.js';
-const FieldView = System.availableViews['field'];
+
+import ohm from 'ohm-js';
+import interpreterSemantics from '../../ohm/interpreter-semantics.js';
+let testLanguageGrammar = ohm.grammar(window.grammar);
+
+function getSemanticsFor(aPart) {
+    let semantics = testLanguageGrammar.createSemantics();
+    semantics.addOperation(
+        'interpret',
+        interpreterSemantics(aPart, window.System)
+    );
+    return semantics;
+}
 
 //window.customElements.define('st-field', FieldView);
+
+const FieldView = System.availableViews['field'];
 
 let fieldModel;
 describe('Field Part/Model Tests', () =>{
@@ -139,6 +153,86 @@ describe('FieldView basic tests', () => {
             'text'
         );
         assert.equal(newTextContent, foundTextContent);
+    });
+});
+
+
+describe('doIt commands tests', () => {
+    let currentCard;
+    let semantics;
+    let doItField;
+    let cardView;
+    let doItFieldView;
+    before('Adding current card with a field', () => {
+        currentCard = System.getCurrentCardModel();
+        let initSemantics = function () {
+            semantics = getSemanticsFor(currentCard);
+        };
+        expect(initSemantics).to.not.throw();
+        let script = `add field "My Field" to current card`;
+        let match = testLanguageGrammar.match(script, 'Command');
+        assert.isTrue(match.succeeded());
+        let msg = semantics(match).interpret();
+        assert.exists(msg);
+        currentCard.sendMessage(msg, currentCard);
+        assert.equal(currentCard.subparts.length, 1);
+        doItField = currentCard.subparts[0];
+        cardView = document.querySelector('st-world st-stack.current-stack > st-card.current-card');
+        assert.exists(cardView);
+        doItFieldView = cardView.querySelector('st-field');
+        assert.exists(doItFieldView);
+        assert.exists(doItFieldView.model.id = doItField.id);
+        // mock the document getSelection()
+        document.getSelection = () => {
+            return new class Selection {
+
+                toString() {
+                    return "myScript"
+                }
+
+                removeAllRanges() {
+                }
+            }
+        }
+    });
+    it('Can add a script to field', () => {
+        const script = `on myScript\nset "text" to "I ran"\nend myScript`
+        let setScript = function () {
+            doItField.partProperties.setPropertyNamed(doItField, "script", script)
+        };
+        expect(setScript).to.not.throw();
+        assert.exists(doItField._commandHandlers["myScript"]);
+        const text = doItField.partProperties.getPropertyNamed(doItField, "innerHTML");
+        assert.equal("", text);
+    });
+    it('Can run the script and it works', () => {
+        let sendMsg = function () {
+            doItField.sendMessage(
+                {
+                    type: "command",
+                    commandName: "myScript",
+                    args: [],
+                },
+                doItField
+            );
+        };
+        expect(sendMsg).to.not.throw();
+        let text = doItField.partProperties.getPropertyNamed(doItField, "innerHTML");
+        assert.equal("I ran", text);
+        doItField.partProperties.setPropertyNamed(doItField, "innerHTML", "");
+        text = doItField.partProperties.getPropertyNamed(doItField, "innerHTML");
+        assert.equal("", text);
+    });
+    it('Can run do it', () => {
+        const event = {};
+        event.stopPropagation = () => {};
+        let doIt = function () {
+            doItFieldView.doIt(event);
+        };
+        expect(doIt).to.not.throw();
+    });
+    it('Do it did not change the original script', () => {
+        assert.exists(doItField._commandHandlers["myScript"]);
     });
 });
 
