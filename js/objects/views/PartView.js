@@ -317,7 +317,7 @@ class PartView extends HTMLElement {
     }
 
     sendMessage(aMessage, target){
-        if(!this.isLensed){
+        if (!(this.isLensed || this.getAttribute("role") == "lens")){
             // Lensed views should not send messages
             window.System.sendMessage(aMessage, this, target);
         }
