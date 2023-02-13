@@ -145,5 +145,29 @@ describe("Basic Literal Conditional Tests", () => {
                 semanticMatchTest(str, "Conditional");
             });
         })
+        describe("Starts with", () => {
+            it("Basic Strings", () => {
+                let str = `"i am a cat" starts with "i am"`;
+                semanticMatchTest(str, "StartsWithConditional");
+                semanticMatchTest(str, "Conditional");
+            });
+            it("Basic String (not)", () => {
+                let str = `"i am a cat" does not start with "not am"`;
+                semanticMatchTest(str, "DoesNotStartWithConditional");
+                semanticMatchTest(str, "Conditional");
+            });
+        })
+        describe("Ends with", () => {
+            it("Basic Strings", () => {
+                let str = `"i am a cat" ends with "a cat"`;
+                semanticMatchTest(str, "EndsWithConditional");
+                semanticMatchTest(str, "Conditional");
+            });
+            it("Basic String (not)", () => {
+                let str = `"i am a cat" does not end with "a dog"`;
+                semanticMatchTest(str, "DoesNotEndWithConditional");
+                semanticMatchTest(str, "Conditional");
+            });
+        })
     })
 });

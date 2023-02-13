@@ -622,6 +622,34 @@ const createInterpreterSemantics = (partContext, systemContext) => {
             return !_containsConditional(expr2, comparatorLiteral, expr1);
         },
 
+        StartsWithConditional: function (expr1, comparatorLiteral, expr2) {
+            // TODO we don't account for what there expressions are
+            const first = expr1.interpret();
+            const second = expr2.interpret();
+            return first.startsWith(second);
+        },
+
+        DoesNotStartWithConditional: function (expr1, comparatorLiteral, expr2) {
+            // TODO we don't account for what there expressions are
+            const first = expr1.interpret();
+            const second = expr2.interpret();
+            return !first.startsWith(second);
+        },
+
+        EndsWithConditional: function (expr1, comparatorLiteral, expr2) {
+            // TODO we don't account for what there expressions are
+            const first = expr1.interpret();
+            const second = expr2.interpret();
+            return first.endsWith(second);
+        },
+
+        DoesNotEndWithConditional: function (expr1, comparatorLiteral, expr2) {
+            // TODO we don't account for what there expressions are
+            const first = expr1.interpret();
+            const second = expr2.interpret();
+            return !first.endsWith(second);
+        },
+
         RepeatControlForm_forNumTimes: function(repeatLit, optionalForLit, intOrVar, timesLit){
             return {
                 repeatType: 'forNumTimes',

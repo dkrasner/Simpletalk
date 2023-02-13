@@ -166,5 +166,33 @@ describe('Condtional Tests', () => {
                 assert.isTrue(semantics(match).interpret());
             });
         });
+        describe('Starts with', () => {
+            it('Basic strings', () => {
+                let script = `"there is a cat" starts with "there is"`;
+                let match = testLanguageGrammar.match(script, 'Conditional');
+                assert.isTrue(match.succeeded());
+                assert.isTrue(semantics(match).interpret());
+            });
+            it('Basic strings (not)', () => {
+                let script = `"there is a cat" does not start with "ok ok"`;
+                let match = testLanguageGrammar.match(script, 'Conditional');
+                assert.isTrue(match.succeeded());
+                assert.isTrue(semantics(match).interpret());
+            });
+        });
+        describe('Ends with', () => {
+            it('Basic strings', () => {
+                let script = `"there is a cat" ends with "a cat"`;
+                let match = testLanguageGrammar.match(script, 'Conditional');
+                assert.isTrue(match.succeeded());
+                assert.isTrue(semantics(match).interpret());
+            });
+            it('Basic strings (not)', () => {
+                let script = `"there is a cat" does not end with "a dog"`;
+                let match = testLanguageGrammar.match(script, 'Conditional');
+                assert.isTrue(match.succeeded());
+                assert.isTrue(semantics(match).interpret());
+            });
+        });
     });
 });
