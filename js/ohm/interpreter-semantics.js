@@ -1,4 +1,3 @@
-import {ActivationContext} from '../objects/ExecutionStack.js';
 
 // Helpers
 function findNearestParentOfKind(aPart, aPartType){
@@ -36,6 +35,16 @@ function _subpartCheck(aPart, aPartType){
     return aPart.acceptsSubpart(aPartType);
 }
 
+function _containsConditional(expr1, conditionalLiteral, expr2){
+    // TODO: Flesh out this function to account for
+    // various object types and their kind comparisons
+    let first = expr1.interpret();
+    let second = expr2.interpret();
+    if (first.match(second)) {
+        return true
+    }
+    return false;
+}
 class STVariableReferenceError extends Error {
     constructor(...args){
         super(...args);
@@ -592,6 +601,53 @@ const createInterpreterSemantics = (partContext, systemContext) => {
             // TODO: Flesh out this function to account for
             // various object types and their kind comparisons
             return true;
+        },
+
+        ContainsConditional: function (expr1, comparatorLiteral, expr2) {
+            return _containsConditional(expr1, comparatorLiteral, expr2);
+        },
+
+        DoesNotContainConditional: function (expr1, comparatorLiteral, expr2) {
+            return !_containsConditional(expr1, comparatorLiteral, expr2);
+
+        },
+
+        IsInConditional: function (expr1, comparatorLiteral, expr2) {
+            // IsInCondition is ContainsConditional with the args reversed
+            return _containsConditional(expr2, comparatorLiteral, expr1);
+        },
+
+        IsNotInConditional: function (expr1, comparatorLiteral, expr2) {
+            // IsInCondition is ContainsConditional with the args reversed
+            return !_containsConditional(expr2, comparatorLiteral, expr1);
+        },
+
+        StartsWithConditional: function (expr1, comparatorLiteral, expr2) {
+            // TODO we don't account for what there expressions are
+            const first = expr1.interpret();
+            const second = expr2.interpret();
+            return first.startsWith(second);
+        },
+
+        DoesNotStartWithConditional: function (expr1, comparatorLiteral, expr2) {
+            // TODO we don't account for what there expressions are
+            const first = expr1.interpret();
+            const second = expr2.interpret();
+            return !first.startsWith(second);
+        },
+
+        EndsWithConditional: function (expr1, comparatorLiteral, expr2) {
+            // TODO we don't account for what there expressions are
+            const first = expr1.interpret();
+            const second = expr2.interpret();
+            return first.endsWith(second);
+        },
+
+        DoesNotEndWithConditional: function (expr1, comparatorLiteral, expr2) {
+            // TODO we don't account for what there expressions are
+            const first = expr1.interpret();
+            const second = expr2.interpret();
+            return !first.endsWith(second);
         },
 
         RepeatControlForm_forNumTimes: function(repeatLit, optionalForLit, intOrVar, timesLit){

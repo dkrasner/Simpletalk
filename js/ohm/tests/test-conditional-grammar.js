@@ -100,4 +100,74 @@ describe("Basic Literal Conditional Tests", () => {
     describe("Kind Equality via 'is a'", () => {
         it.skip("Add Kind Equality Tests and more");
     });
+    describe("Containment (contains, is in, is not in etc)", () => {
+        describe("Contains", () => {
+            it("Basic Strings", () => {
+                let str = `"i am a cat" contains "cat"`;
+                semanticMatchTest(str, "ContainsConditional");
+                semanticMatchTest(str, "Conditional");
+            });
+            it("Basic String (not)", () => {
+                let str = `"i am a cat" does not contain "dog"`;
+                semanticMatchTest(str, "DoesNotContainConditional");
+                semanticMatchTest(str, "Conditional");
+            });
+            it("Object specifiers", () => {
+                let str = `current card contains this button`;
+                semanticMatchTest(str, "ContainsConditional");
+                semanticMatchTest(str, "Conditional");
+            });
+            it("Object specifiers (not)", () => {
+                let str = `current card does not contain this button`;
+                semanticMatchTest(str, "DoesNotContainConditional");
+                semanticMatchTest(str, "Conditional");
+            });
+        })
+        describe("Is In", () => {
+            it("Basic Strings", () => {
+                let str = `"cat" is in "i am a cat"`;
+                semanticMatchTest(str, "IsInConditional");
+                semanticMatchTest(str, "Conditional");
+            });
+            it("Basic String (not)", () => {
+                let str = `"cat" is not in "i am a cat"`;
+                semanticMatchTest(str, "IsNotInConditional");
+                semanticMatchTest(str, "Conditional");
+            });
+            it("Object specifiers", () => {
+                let str = `this button is in current card`;
+                semanticMatchTest(str, "IsInConditional");
+                semanticMatchTest(str, "Conditional");
+            });
+            it("Object specifiers (not)", () => {
+                let str = `this button is not in current card`;
+                semanticMatchTest(str, "IsNotInConditional");
+                semanticMatchTest(str, "Conditional");
+            });
+        })
+        describe("Starts with", () => {
+            it("Basic Strings", () => {
+                let str = `"i am a cat" starts with "i am"`;
+                semanticMatchTest(str, "StartsWithConditional");
+                semanticMatchTest(str, "Conditional");
+            });
+            it("Basic String (not)", () => {
+                let str = `"i am a cat" does not start with "not am"`;
+                semanticMatchTest(str, "DoesNotStartWithConditional");
+                semanticMatchTest(str, "Conditional");
+            });
+        })
+        describe("Ends with", () => {
+            it("Basic Strings", () => {
+                let str = `"i am a cat" ends with "a cat"`;
+                semanticMatchTest(str, "EndsWithConditional");
+                semanticMatchTest(str, "Conditional");
+            });
+            it("Basic String (not)", () => {
+                let str = `"i am a cat" does not end with "a dog"`;
+                semanticMatchTest(str, "DoesNotEndWithConditional");
+                semanticMatchTest(str, "Conditional");
+            });
+        })
+    })
 });

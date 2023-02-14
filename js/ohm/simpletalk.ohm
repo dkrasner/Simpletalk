@@ -104,6 +104,30 @@ SimpleTalk {
       = Expression "is not a" Expression
       | Expression "is not an" Expression
 
+    ContainsConditional
+      = Expression "contains" Expression
+
+    DoesNotContainConditional
+      = Expression "does not contain" Expression
+
+    IsInConditional
+      = Expression "is in" Expression
+    
+    IsNotInConditional
+      = Expression "is not in" Expression
+    
+    StartsWithConditional
+      = Expression "starts with" Expression
+    
+    DoesNotStartWithConditional
+      = Expression "does not start with" Expression
+    
+    EndsWithConditional
+      = Expression "ends with" Expression
+    
+    DoesNotEndWithConditional
+      = Expression "does not end with" Expression
+    
     ThereIsAnObjectConditional
       = "there" "is" ("an" | "a") ObjectSpecifier
 
@@ -120,6 +144,14 @@ SimpleTalk {
 
     Conditional
       = booleanLiteral --booleanLiteral
+      | IsInConditional
+      | IsNotInConditional
+      | ContainsConditional
+      | DoesNotContainConditional
+      | StartsWithConditional
+      | DoesNotStartWithConditional
+      | EndsWithConditional
+      | DoesNotEndWithConditional
       | ThereIsAnObjectConditional
       | ThereIsNotAnObjectConditional
       | ThereIsAPropertyConditional
