@@ -594,6 +594,7 @@ const System = {
             newLensView.removeAttribute('part-id');
             newLensView.setAttribute('lens-part-id', modelId);
             newLensView.setAttribute('role', 'lens');
+            newLensView.isLensed = true;
             lensView.appendChild(newLensView);
         });
 
