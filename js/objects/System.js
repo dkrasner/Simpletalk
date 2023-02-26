@@ -13,6 +13,7 @@ import WorldStack from './parts/WorldStack.js';
 import Window from './parts/Window.js';
 import Drawing from './parts/Drawing.js';
 import Audio from './parts/Audio.js';
+import Video from './parts/Video.js';
 import Browser from './parts/Browser.js';
 import Resource from './parts/Resource.js';
 import Image from './parts/Image.js';
@@ -29,6 +30,7 @@ import DrawingView from './views/drawing/DrawingView.js';
 import ImageView from './views/ImageView.js';
 import AreaView from './views/AreaView.js';
 import AudioView from './views/AudioView.js';
+import VideoView from './views/VideoView.js';
 import BrowserView from './views/BrowserView.js';
 import ResourceView from './views/ResourceView.js';
 
@@ -1255,6 +1257,7 @@ System.registerPart('drawing', Drawing);
 System.registerPart('image', Image);
 System.registerPart('area', Area);
 System.registerPart('audio', Audio);
+System.registerPart('video', Video);
 System.registerPart('browser', Browser);
 System.registerPart('resource', Resource);
 
@@ -1269,6 +1272,7 @@ System.registerView('drawing', DrawingView);
 System.registerView('image', ImageView);
 System.registerView('area', AreaView);
 System.registerView('audio', AudioView);
+System.registerView('video', VideoView);
 System.registerView('browser', BrowserView);
 System.registerView('resource', ResourceView);
 

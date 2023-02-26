@@ -16,7 +16,7 @@ class Stack extends Part {
         super(owner);
         this.acceptedSubpartTypes = [
             "card", "window", "button", "area", "field",
-            "drawing", "image", "audio", "browser"
+            "drawing", "image", "audio", "video", "browser"
         ];
 
         // Set up Stack specific

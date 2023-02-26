@@ -279,7 +279,7 @@ SimpleTalk {
     worldObject = ("w" | "W") "orld"
     
     basicObject (system object such as card, stack etc excluding world)
-      = ("a" | "A") "rea" | ("b"| "B") "ackground" | ("b" | "B") "utton" | ("c" | "C") "ard" | ("f" | "F") "ield" | ("s" | "S") "tack" | ("w" | "W") "indow" | ("d" | "D") "rawing" | ("i" | "I") "mage" | ("a" | "A") "udio" | ("r" | "R") "esource" | ("b" | "B") "rowser"
+      = ("a" | "A") "rea" | ("b"| "B") "ackground" | ("b" | "B") "utton" | ("c" | "C") "ard" | ("f" | "F") "ield" | ("s" | "S") "tack" | ("w" | "W") "indow" | ("d" | "D") "rawing" | ("i" | "I") "mage" | ("a" | "A") "udio" | ("v" | "V") "ideo" | ("r" | "R") "esource" | ("b" | "B") "rowser"
 
     systemObject = worldObject | basicObject
 

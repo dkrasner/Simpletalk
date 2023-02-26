@@ -25,7 +25,7 @@ class Card extends Part {
         this.acceptedSubpartTypes = [
             "window", "button",
             "field", "area", "drawing",
-            "image", "audio", "browser", "resource"
+            "image", "audio", "video", "browser", "resource"
         ];
         this.isCard = true;
 

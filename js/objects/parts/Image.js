@@ -67,7 +67,7 @@ class Image extends Part {
         );
     }
 
-    loadImageFromFile(){
+    loadImageFromFile(senders){
         let filePicker = document.createElement('input');
         filePicker.type = 'file';
         filePicker.setAttribute('accept', 'image/*');
