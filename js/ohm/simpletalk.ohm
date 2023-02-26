@@ -95,6 +95,7 @@ SimpleTalk {
 
     NonEqualityConditional
       = Expression "!=" Expression
+      | Expression "is not" Expression
 
     KindConditional
       = Expression "is an" Expression
