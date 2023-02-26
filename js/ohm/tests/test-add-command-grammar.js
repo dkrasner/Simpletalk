@@ -1,10 +1,10 @@
 /**
  * Tests for the add and add/to command(s)
  */
-ohm = require('ohm-js');
+const ohm = require('ohm-js');
 // Instantiate the grammar.
 var fs = require('fs');
-var g = ohm.grammar(fs.readFileSync('./js/ohm/simpletalk.ohm'));
+var g = ohm.grammar(fs.readFileSync('./js/ohm/simpletalk.ohm').toString());
 
 var chai = require('chai');
 var assert = chai.assert;
@@ -29,7 +29,7 @@ const objects = [
 ];
 
 describe("Add Model", () => {
-    it ("Basic Add (no id)", () => {
+    it("Basic Add (no id)", () => {
         objects.forEach((d) => {
             const s = `add ${d} to current card`;
             semanticMatchTest(s, "Command");
@@ -37,7 +37,7 @@ describe("Add Model", () => {
             semanticMatchTest(s, "Statement");
         });
     });
-    it ("Basic Add (wth id)", () => {
+    it("Basic Add (wth id)", () => {
         objects.forEach((d) => {
             const s = `add ${d} to card 20`;
             semanticMatchTest(s, "Command");
@@ -45,7 +45,7 @@ describe("Add Model", () => {
             semanticMatchTest(s, "Statement");
         });
     });
-    it ("Add to 'this'", () => {
+    it("Add to 'this'", () => {
         objects.forEach((d) => {
             const s = `add ${d} to this stack`;
             semanticMatchTest(s, "Command");
@@ -53,7 +53,7 @@ describe("Add Model", () => {
             semanticMatchTest(s, "Statement");
         });
     });
-    it ("Add to 'current'", () => {
+    it("Add to 'current'", () => {
         objects.forEach((d) => {
             const s = `add ${d} to current stack`;
             semanticMatchTest(s, "Command");
@@ -61,7 +61,7 @@ describe("Add Model", () => {
             semanticMatchTest(s, "Statement");
         });
     });
-    it ("Basic Add (with name, no id)", () => {
+    it("Basic Add (with name, no id)", () => {
         objects.forEach((d) => {
             const s = `add ${d} "newPart 123" to current card`;
             semanticMatchTest(s, "Command");
@@ -69,7 +69,7 @@ describe("Add Model", () => {
             semanticMatchTest(s, "Statement");
         });
     });
-    it ("Basic Add (with name, wth id)", () => {
+    it("Basic Add (with name, wth id)", () => {
         objects.forEach((d) => {
             const s = `add ${d} "newPart 123" to card 20`;
             semanticMatchTest(s, "Command");
@@ -77,7 +77,7 @@ describe("Add Model", () => {
             semanticMatchTest(s, "Statement");
         });
     });
-    it ("Add named to 'this'", () => {
+    it("Add named to 'this'", () => {
         objects.forEach((d) => {
             const s = `add ${d} "newPart 123" to this stack`;
             semanticMatchTest(s, "Command");
@@ -85,7 +85,7 @@ describe("Add Model", () => {
             semanticMatchTest(s, "Statement");
         });
     });
-    it ("Add named to 'current'", () => {
+    it("Add named to 'current'", () => {
         objects.forEach((d) => {
             const s = `add ${d} "newPart123" to current stack`;
             semanticMatchTest(s, "Command");
@@ -110,13 +110,13 @@ describe("Add Model", () => {
             semanticMatchTest(s, "Statement");
         });
     });
-    it ("Bad add (world)", () => {
+    it("Bad add (world)", () => {
         const s = "add world to card";
         semanticMatchFailTest(s, "Command_addModel");
         semanticMatchFailTest(s, "Command_addModelTo");
         semanticMatchFailTest(s, "Command");
     });
-    it ("Bad add (invalid context)", () => {
+    it("Bad add (invalid context)", () => {
         const s = "add button to new stack";
         semanticMatchFailTest(s, "Command_addModel");
         semanticMatchFailTest(s, "Command_addModelTo");

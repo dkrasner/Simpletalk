@@ -39,6 +39,7 @@
     "webpack-cli": "^3.3.12"
   },
   "devDependencies": {
+    "@types/mocha": "^10.0.1",
     "chai": "^4.2.0",
     "esm": "^3.2.25",
     "mocha": "^8.0.1"
