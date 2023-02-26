@@ -83,17 +83,17 @@ describe("Basic Literal Conditional Tests", () => {
         // so it fits the 'Expression "is" Expression' rule
         it("Can deal with Integer literals", () => {
             let str = `2 is not 3`;
-            semanticMatchTest(str, "EqualityConditional");
+            semanticMatchTest(str, "NonEqualityConditional");
             semanticMatchTest(str, "Conditional");
         });
         it("Can deal with Float literals", () => {
             let str = `0.1 is not -223.5`;
-            semanticMatchTest(str, "EqualityConditional");
+            semanticMatchTest(str, "NonEqualityConditional");
             semanticMatchTest(str, "Conditional");
         });
         it("Can deal with String literals", () => {
             let str = `"this is first" is not "this is second"`;
-            semanticMatchTest(str, "EqualityConditional");
+            semanticMatchTest(str, "NonEqualityConditional");
             semanticMatchTest(str, "Conditional");
         });
     });
