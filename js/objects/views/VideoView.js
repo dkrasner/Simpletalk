@@ -96,6 +96,7 @@ class VideoView extends PartView {
         // Bind component methods
         this.onClick = this.onClick.bind(this);
         this.initCustomHaloButtons = this.initCustomHaloButtons.bind(this);
+        this.loadSrc = this.loadSrc.bind(this);
         this.updateVideoLink = this.updateVideoLink.bind(this);
         this.play = this.play.bind(this);
         this.pause = this.pause.bind(this);
@@ -157,7 +158,13 @@ class VideoView extends PartView {
         const video = this._shadowRoot.querySelector("video");
         const src = this.model.partProperties.getPropertyNamed(this.model, "src");
         if(src){
-            video.src = src;
+            this.loadSrc(src);
+            // if the play prop is set to true set to false since the data has not
+            // loaded yet. TODO: this should really be handled with async/await
+            const play = this.model.partProperties.getPropertyNamed(this.model, "play");
+            if(play){
+                this.model.partProperties.setPropertyNamed(this.model, "play", false);
+            }
         }
         const autoplay = this.model.partProperties.getPropertyNamed(this.model, "autoplay");
         if (autoplay) {
@@ -234,28 +241,31 @@ class VideoView extends PartView {
                 }
             }
         });
-        this.onPropChange("src", (url) => {
-            const iconEl = this._shadowRoot.getElementById('wrapped-icon');
-            const videoEl = this._shadowRoot.getElementById('wrapped-video');
-            try{
-                // resource load is auto-loaded by the <video> element
-                video.src = url;
-                iconEl.classList.add("hidden");
-                videoEl.classList.remove("hidden");
-            } catch(error){
-                videoEl.classList.add("hidden");
-                iconEl.classList.remove("hidden");
-                let errorMsg = {
-                    type: "error",
-                    name: "ResourceNotFound",
-                    resourceType: "video",
-                    partId: this.model.id,
-                    details: {source: url, type: "url"}
+        this.onPropChange("src", (src) => {this.loadSrc(src)});
+    }
 
-                };
-                this.model.sendMessage({errorMsg}, this.model);
-            }
-        });
+    loadSrc(src) {
+        const video = this._shadowRoot.querySelector("video");
+        const iconEl = this._shadowRoot.getElementById('wrapped-icon');
+        const videoEl = this._shadowRoot.getElementById('wrapped-video');
+        try {
+            // resource load is auto-loaded by the <video> element
+            video.src = src;
+            iconEl.classList.add("hidden");
+            videoEl.classList.remove("hidden");
+        } catch (error) {
+            videoEl.classList.add("hidden");
+            iconEl.classList.remove("hidden");
+            let errorMsg = {
+                type: "error",
+                name: "ResourceNotFound",
+                resourceType: "video",
+                partId: this.model.id,
+                details: { source: src }
+
+            };
+            this.model.sendMessage({ errorMsg }, this.model);
+        }
     }
 
     play(){
@@ -329,7 +339,7 @@ class VideoView extends PartView {
         fileButton.style.marginTop = "6px";
         fileButton.setAttribute('slot', 'right-column');
         fileButton.setAttribute('title', 'Load video file');
-        fileButton.addEventListener('click', this.model.loadVideoFromFile);
+        fileButton.addEventListener('click', this.model.loadFromFile);
         this.customHaloButtons.push(linkButton);
         this.customHaloButtons.push(fileButton);
     }
@@ -346,7 +356,7 @@ class VideoView extends PartView {
             this.sendMessage(
                 {
                     type: 'command',
-                    commandName: 'loadVideoFromSource',
+                    commandName: 'loadFromSource',
                     args: [ result ]
                 },
                 this.model
