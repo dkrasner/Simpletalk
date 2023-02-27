@@ -51,12 +51,17 @@ video {
     height: 100%;
 }
 
+.name {
+    font-size: 24px;
+    font-weight: bold;
+}
+
 }
 </style>
 <div class="wrapper">
     <div id="wrapped-icon" class="currently-wrapped">
-        <span class="name"></span>
-        <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-video" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+        <div class="name"></div>
+        <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-video" width="100" height="100" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
         <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
         <path d="M15 10l4.553 -2.276a1 1 0 0 1 1.447 .894v6.764a1 1 0 0 1 -1.447 .894l-4.553 -2.276v-4z"></path>
         <path d="M3 6m0 2a2 2 0 0 1 2 -2h8a2 2 0 0 1 2 2v8a2 2 0 0 1 -2 2h-8a2 2 0 0 1 -2 -2z"></path>
@@ -98,12 +103,37 @@ class VideoView extends PartView {
 
     afterConnected(){
         let video = this._shadowRoot.querySelector("video");
+        // make sure that lensed (nav) elements are not playing with sound!
+        if(this.isLensed){
+            video.muted = true;
+        }
         video.addEventListener('loadeddata', () => {
             let stateCode = video.readyState;
             this.model.partProperties.setPropertyNamed(
                 this.model,
                 "readyState",
                 mediaStates[stateCode]
+            );
+        });
+
+        video.addEventListener('play', () => {
+            this.model.partProperties.setPropertyNamed(
+                this.model,
+                "play",
+                true,
+            );
+            this.model.partProperties.setPropertyNamed(
+                this.model,
+                "stop",
+                false,
+            );
+        });
+
+        video.addEventListener('pause', () => {
+            this.model.partProperties.setPropertyNamed(
+                this.model,
+                "play",
+                false,
             );
         });
 
@@ -116,25 +146,34 @@ class VideoView extends PartView {
     }
 
     afterModelSet(){
-        let nameSpan = this._shadowRoot.querySelector(".name");
-        nameSpan.innerText = this.model.partProperties.getPropertyNamed(this.model, "name");
+        // setup initial prop values
+        const nameDiv = this._shadowRoot.querySelector(".name");
+        nameDiv.innerText = this.model.partProperties.getPropertyNamed(this.model, "name");
         this.model.partProperties.setPropertyNamed(
             this.model,
             "readyState",
            "HAVE_NOTHING"
         );
-        let video = this._shadowRoot.querySelector("video");
-        let src = this.model.partProperties.getPropertyNamed(this.model, "src");
+        const video = this._shadowRoot.querySelector("video");
+        const src = this.model.partProperties.getPropertyNamed(this.model, "src");
         if(src){
             video.src = src;
         }
-        let autoplay = this.model.partProperties.getPropertyNamed(this.model, "autoplay");
+        const autoplay = this.model.partProperties.getPropertyNamed(this.model, "autoplay");
         if (autoplay) {
             video.setAttribute("autoplay", "")
         }
-        let controls = this.model.partProperties.getPropertyNamed(this.model, "controls");
+        const controls = this.model.partProperties.getPropertyNamed(this.model, "controls");
         if (controls) {
             video.setAttribute("controls", "")
+        }
+        const loop = this.model.partProperties.getPropertyNamed(this.model, "loop");
+        if (loop) {
+            video.setAttribute("loop", "")
+        }
+        const muted = this.model.partProperties.getPropertyNamed(this.model, "muted");
+        if (muted) {
+            video.muted = true;
         }
         // prop changes
         this.onPropChange("name", (value) => {
@@ -151,7 +190,10 @@ class VideoView extends PartView {
         });
         this.onPropChange("play", (value) => {
             if(value === true){
-                this.play();
+                // only play if paused, to avoid double-play
+                if(video.paused){
+                    this.play();
+                }
             } else if (value === false){
                 this.pause();
             }
@@ -173,6 +215,23 @@ class VideoView extends PartView {
                 video.setAttribute("controls", "")
             } else if (value === false) {
                 video.removeAttribute("controls")
+            }
+        });
+        this.onPropChange("loop", (value) => {
+            if (value === true) {
+                video.setAttribute("loop", "")
+            } else if (value === false) {
+                video.removeAttribute("loop")
+            }
+        });
+        this.onPropChange("muted", (value) => {
+            // lensed (nav) elements should never unmute
+            if (!this.isLensed){
+                if (value === true) {
+                    video.muted = true;
+                } else if (value === false) {
+                    video.muted = false;
+                }
             }
         });
         this.onPropChange("src", (url) => {

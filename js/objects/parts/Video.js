@@ -42,12 +42,24 @@ class Video extends Part {
             true
         );
 
+        this.partProperties.newBasicProp(
+            "loop",
+            false
+        );
+
+        this.partProperties.newBasicProp(
+            "muted",
+            false
+        );
+
         // Private command handlers
         this.setPrivateCommandHandler("loadVideoFromSource", this.loadVideoFromSource);
         this.setPrivateCommandHandler("loadVideoFromFile", this.loadVideoFromFile);
         this.setPrivateCommandHandler("play", () => {this.play(true);});
         this.setPrivateCommandHandler("pause", () => {this.play(false);});
         this.setPrivateCommandHandler("stop", this.stop);
+        this.setPrivateCommandHandler("mute", () => {this.mute(true)});
+        this.setPrivateCommandHandler("unmute", () => {this.mute(false)});
 
         // Bind component methods
         this.loadVideoFromSource = this.loadVideoFromSource.bind(this);
@@ -114,6 +126,10 @@ class Video extends Part {
     stop(){
         this.partProperties.setPropertyNamed(this, "play", false);
         this.partProperties.setPropertyNamed(this, "stop", true);
+    }
+
+    mute(value) {
+        this.partProperties.setPropertyNamed(this, "muted", value);
     }
 };
 
