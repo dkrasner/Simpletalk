@@ -53,8 +53,8 @@ class Video extends Part {
         );
 
         // Private command handlers
-        this.setPrivateCommandHandler("loadVideoFromSource", this.loadVideoFromSource);
-        this.setPrivateCommandHandler("loadVideoFromFile", this.loadVideoFromFile);
+        this.setPrivateCommandHandler("loadFromSource", this.loadFromSource);
+        this.setPrivateCommandHandler("loadFromFile", this.loadFromFile);
         this.setPrivateCommandHandler("play", () => {this.play(true);});
         this.setPrivateCommandHandler("pause", () => {this.play(false);});
         this.setPrivateCommandHandler("stop", this.stop);
@@ -62,8 +62,8 @@ class Video extends Part {
         this.setPrivateCommandHandler("unmute", () => {this.mute(false)});
 
         // Bind component methods
-        this.loadVideoFromSource = this.loadVideoFromSource.bind(this);
-        this.loadVideoFromFile = this.loadVideoFromFile.bind(this);
+        this.loadFromSource = this.loadFromSource.bind(this);
+        this.loadFromFile = this.loadFromFile.bind(this);
         this.play = this.play.bind(this);
         this.stop = this.stop.bind(this);
 
@@ -99,11 +99,11 @@ class Video extends Part {
         return 'video';
     }
 
-    loadVideoFromSource(senders, sourceUrl){
+    loadFromSource(senders, sourceUrl){
         this.partProperties.setPropertyNamed(this, "src", sourceUrl);
     }
 
-    loadVideoFromFile(senders){
+    loadFromFile(senders){
         let filePicker = document.createElement('input');
         filePicker.type = 'file';
         filePicker.setAttribute('accept', 'video/*');

@@ -83,7 +83,10 @@ describe('Test #onPropChange command delegation', () => {
     var ownerPropertyName;
     var ownerPropertyValue;
     before('Can create View/Model pair', () => {
-        let stackEl = document.querySelector('.current-stack');
+        let stackEl;
+        document.querySelectorAll('.current-stack').forEach((el) => {
+            if (!el.isLensed) {stackEl = el};
+        });
         let cardEl = stackEl.querySelector('st-card');
         let msg = {
             type: "command",

@@ -37,18 +37,24 @@ describe('Audio Part & View Tests', () => {
             assert.exists(audio.model);
         });
         it('Can tell audio to loadFromSource (via message)', () => {
-            let audio = document.querySelector('st-card.current-card > st-audio');
-            let url = "https://ia801506.us.archive.org/31/items/lp_harlem-new-world-acoming-the-golden-broo_duke-ellington-cincinnati-symphony-orchest/disc1/01.01.%20New%20World%20A%27Coming.mp3";
+            let audio;
+            document.querySelectorAll('st-card.current-card > st-audio').forEach((el) => {
+                if (!el.isLensed) {audio = el;}
+            });
+            const url = "https://ia801506.us.archive.org/31/items/lp_harlem-new-world-acoming-the-golden-broo_duke-ellington-cincinnati-symphony-orchest/disc1/01.01.%20New%20World%20A%27Coming.mp3";
             let msg = {
                 type: "command",
-                commandName: "loadAudioFromSource",
+                commandName: "loadFromSource",
                 args: [url]
             };
             audio.sendMessage(msg, audio.model);
             assert.equal(audio.model.partProperties.getPropertyNamed(audio.model, "src"), url);
         });
         it('Can tell audio to play (via message)', () => {
-            let audio = document.querySelector('st-card.current-card > st-audio');
+            let audio;
+            document.querySelectorAll('st-card.current-card > st-audio').forEach((el) => {
+                if (!el.isLensed) { audio = el; }
+            });
             let msg = {
                 type: "command",
                 commandName: "play",
@@ -59,7 +65,10 @@ describe('Audio Part & View Tests', () => {
             assert.isFalse(audio.model.partProperties.getPropertyNamed(audio.model, "stop"));
         });
         it('Can tell audio to pause (via message)', () => {
-            let audio = document.querySelector('st-card.current-card > st-audio');
+            let audio;
+            document.querySelectorAll('st-card.current-card > st-audio').forEach((el) => {
+                if (!el.isLensed) { audio = el; }
+            });
             let msg = {
                 type: "command",
                 commandName: "pause",
@@ -69,7 +78,10 @@ describe('Audio Part & View Tests', () => {
             assert.isFalse(audio.model.partProperties.getPropertyNamed(audio.model, "play"));
         });
         it('Can tell audio to stop i.e. load (via message)', () => {
-            let audio = document.querySelector('st-card.current-card > st-audio');
+            let audio;
+            document.querySelectorAll('st-card.current-card > st-audio').forEach((el) => {
+                if (!el.isLensed) { audio = el; }
+            });
             // first start playing
             let msg = {
                 type: "command",
