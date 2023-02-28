@@ -7,7 +7,9 @@
     "test": "./node_modules/mocha/bin/mocha --require esm ./js/ohm/tests/ && ./js-tests.sh",
     "test-grammar": "./node_modules/mocha/bin/mocha --require esm ./js/ohm/tests/",
     "build-dev": "webpack --config ./webpack.config.js",
-    "eslint:check": "eslint --ext .js js"
+    "eslint:check": "eslint --ext .js js",
+    "eslint:fix": "eslint --fix --ext .js js"
+
   },
   "repository": {
     "type": "git",
