@@ -30,6 +30,7 @@ class Window extends Part {
             "field",
             "image",
             "audio",
+            "video",
             "resource",
             "drawing",
         ];

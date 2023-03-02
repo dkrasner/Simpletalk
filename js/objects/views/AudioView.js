@@ -222,7 +222,7 @@ class AudioView extends PartView {
             this.sendMessage(
                 {
                     type: 'command',
-                    commandName: 'loadAudioFromSource',
+                    commandName: 'loadFromSource',
                     args: [ result ]
                 },
                 this.model

@@ -5,7 +5,7 @@ import {
     addTextStyleProps
 } from '../utils/styleProperties.js';
 
-class Audio extends Part {
+class Video extends Part {
     constructor(owner, src) {
         super(owner);
 
@@ -32,14 +32,38 @@ class Audio extends Part {
             null
         );
 
+        this.partProperties.newBasicProp(
+            "autoplay",
+            false
+        );
+
+        this.partProperties.newBasicProp(
+            "controls",
+            true
+        );
+
+        this.partProperties.newBasicProp(
+            "loop",
+            false
+        );
+
+        this.partProperties.newBasicProp(
+            "muted",
+            false
+        );
+
         // Private command handlers
         this.setPrivateCommandHandler("loadFromSource", this.loadFromSource);
+        this.setPrivateCommandHandler("loadFromFile", this.loadFromFile);
         this.setPrivateCommandHandler("play", () => {this.play(true);});
         this.setPrivateCommandHandler("pause", () => {this.play(false);});
         this.setPrivateCommandHandler("stop", this.stop);
+        this.setPrivateCommandHandler("mute", () => {this.mute(true)});
+        this.setPrivateCommandHandler("unmute", () => {this.mute(false)});
 
         // Bind component methods
         this.loadFromSource = this.loadFromSource.bind(this);
+        this.loadFromFile = this.loadFromFile.bind(this);
         this.play = this.play.bind(this);
         this.stop = this.stop.bind(this);
 
@@ -72,11 +96,26 @@ class Audio extends Part {
     }
 
     get type(){
-        return 'audio';
+        return 'video';
     }
 
     loadFromSource(senders, sourceUrl){
         this.partProperties.setPropertyNamed(this, "src", sourceUrl);
+    }
+
+    loadFromFile(senders){
+        let filePicker = document.createElement('input');
+        filePicker.type = 'file';
+        filePicker.setAttribute('accept', 'video/*');
+        filePicker.style.display = 'none';
+        filePicker.addEventListener('change', (event) => {
+            const URL = window.URL || window.webkitURL;
+            const fileUrl = URL.createObjectURL(filePicker.files[0]);
+            this.partProperties.setPropertyNamed(this, "src", fileUrl);
+            filePicker.remove();
+        });
+        document.body.append(filePicker);
+        filePicker.click();
     }
 
     play(value){
@@ -88,9 +127,13 @@ class Audio extends Part {
         this.partProperties.setPropertyNamed(this, "play", false);
         this.partProperties.setPropertyNamed(this, "stop", true);
     }
+
+    mute(value) {
+        this.partProperties.setPropertyNamed(this, "muted", value);
+    }
 };
 
 export {
-    Audio,
-    Audio as default
+    Video,
+    Video as default
 };
