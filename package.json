@@ -6,7 +6,10 @@
   "scripts": {
     "test": "./node_modules/mocha/bin/mocha --require esm ./js/ohm/tests/ && ./js-tests.sh",
     "test-grammar": "./node_modules/mocha/bin/mocha --require esm ./js/ohm/tests/",
-    "build-dev": "webpack --config ./webpack.config.js"
+    "build-dev": "webpack --config ./webpack.config.js",
+    "eslint:check": "eslint --ext .js js",
+    "eslint:fix": "eslint --fix --ext .js js"
+
   },
   "repository": {
     "type": "git",
@@ -40,6 +43,9 @@
   },
   "devDependencies": {
     "chai": "^4.2.0",
+    "eslint": "^7.32.0 || ^8.2.0",
+    "eslint-config-airbnb-base": "^15.0.0",
+    "eslint-plugin-import": "^2.25.2",
     "esm": "^3.2.25",
     "mocha": "^8.0.1"
   }
