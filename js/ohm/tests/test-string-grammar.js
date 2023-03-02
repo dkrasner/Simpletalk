@@ -2,10 +2,10 @@
  * String and stringLiteral
  * related grammatical tests
  **/
-ohm = require('ohm-js');
+const ohm = require('ohm-js');
 // Instantiate the grammar.
 var fs = require('fs');
-var g = ohm.grammar(fs.readFileSync('./js/ohm/simpletalk.ohm'));
+var g = ohm.grammar(fs.readFileSync('./js/ohm/simpletalk.ohm').toString());
 
 var chai = require('chai');
 var assert = chai.assert;
@@ -13,7 +13,7 @@ var assert = chai.assert;
 const matchTest = (str) => {
     const match = g.match(str);
     assert.isTrue(match.succeeded());
-}
+};
 const semanticMatchTest = (str, semanticType) => {
     const typeMatch = g.match(str, semanticType);
     assert.isTrue(typeMatch.succeeded());
