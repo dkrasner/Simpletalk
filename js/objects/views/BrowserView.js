@@ -9,31 +9,32 @@ const linkIcon = `
 `;
 
 const templateString = `
-<style>
-:host {
+  <style>
+  :host {
     box-sizing: border-box;
     display: block;
     position: absolute;
     padding: 1px;
     user-select: none;
     cursor: pointer;
-}
-iframe {
+  }
+  iframe {
     width: 100%;
     height: 100%;
-}
-</style>
-<iframe frameborder="0" allowfullscreen></iframe>
-`;
+  }
+  </style>
+  <iframe frameborder="0" allowfullscreen></iframe>  
+  `;
+
 
 class BrowserView extends PartView {
-    constructor(){
+    constructor() {
         super();
 
         // Setup template and shadow dom
         this.template = document.createElement('template');
         this.template.innerHTML = templateString;
-        this._shadowRoot = this.attachShadow({mode: 'open'});
+        this._shadowRoot = this.attachShadow({ mode: 'open' });
         this._shadowRoot.appendChild(this.template.content.cloneNode(true));
 
         // Bind component methods
@@ -42,50 +43,68 @@ class BrowserView extends PartView {
         this.updateBrowserLink = this.updateBrowserLink.bind(this);
     }
 
-    afterConnected(){
-        if(!this.haloButton){
+    afterConnected() {
+        if (!this.haloButton) {
             this.initCustomHaloButton();
         }
     }
 
-    afterDisconnected(){
+    afterDisconnected() {
     }
 
-    afterModelSet(){
+    afterModelSet() {
         let iframe = this._shadowRoot.querySelector("iframe");
         let src = this.model.partProperties.getPropertyNamed(this.model, "src");
-        if(src){
+        if (src && iframe) {
             iframe.src = src;
         }
         this.onPropChange("src", (url) => {
-            try{
+            try {
                 // resource load is auto-loaded by the <browser> element
-                iframe.src = url;
-            } catch(error){
+                if (iframe) {
+                    iframe.src = url;
+                }
+            } catch (error) {
                 let errorMsg = {
                     type: "error",
                     name: "ResourceNotFound",
                     resourceType: "browser",
                     partId: this.model.id,
-                    details: {source: url, type: "url"}
+                    details: { source: url, type: "url" }
 
                 };
-                this.model.sendMessage({errorMsg}, this.model);
+                this.model.sendMessage({ errorMsg }, this.model);
+            }
+        });
+
+        this.onPropChange("iframe", (html) => {
+            try {
+                if (iframe) {
+                    iframe.outerHTML = html;
+                }
+            } catch (error) {
+                let errorMsg = {
+                    type: "error",
+                    name: "ResourceNotFound",
+                    resourceType: "browser",
+                    partId: this.model.id,
+                };
+                this.model.sendMessage({ errorMsg }, this.model);
             }
         });
     }
 
-    onClick(event){
-        if(event.button == 0){
-            if(event.shiftKey){
+    onClick(event) {
+        if (event.button == 0) {
+            if (event.shiftKey) {
                 // prevent triggering the on click message
                 event.preventDefault();
-                if(this.hasOpenHalo){
+                if (this.hasOpenHalo) {
                     this.model.partProperties.setPropertyNamed(this.model, "halo-open", false);
                 } else {
                     this.model.partProperties.setPropertyNamed(this.model, "halo-open", true);
                 }
-            } else if(!this.hasOpenHalo){
+            } else if (!this.hasOpenHalo) {
                 // Send the click command message to self
                 this.model.sendMessage({
                     type: 'command',
@@ -97,18 +116,18 @@ class BrowserView extends PartView {
         }
     }
 
-    openHalo(){
+    openHalo() {
         // Override default. Here we add a custom button
         // when showing.
         let foundHalo = this.shadowRoot.querySelector('st-halo');
-        if(!foundHalo){
+        if (!foundHalo) {
             foundHalo = document.createElement('st-halo');
             this.shadowRoot.appendChild(foundHalo);
         }
         foundHalo.append(this.haloButton);
     }
 
-    initCustomHaloButton(){
+    initCustomHaloButton() {
         this.haloButton = document.createElement('div');
         this.haloButton.id = 'halo-browser-link';
         this.haloButton.classList.add('halo-button');
@@ -119,7 +138,7 @@ class BrowserView extends PartView {
         this.haloButton.addEventListener('click', this.updateBrowserLink);
     }
 
-    updateBrowserLink(event){
+    updateBrowserLink(event) {
         // Tells the model to update its
         // src link for the browser
         let currentSrc = this.model.partProperties.getPropertyNamed(
@@ -127,20 +146,18 @@ class BrowserView extends PartView {
             'src'
         );
         let result = window.prompt("Edit URL for browser:", currentSrc);
-        if(result && result !== '' && result !== currentSrc){
+        if (result && result !== '' && result !== currentSrc) {
             this.sendMessage(
                 {
                     type: 'command',
                     commandName: 'setURLTo',
-                    args: [ result ]
+                    args: [result]
                 },
                 this.model
             );
         }
     }
-
-
-};
+}
 
 export {
     BrowserView,

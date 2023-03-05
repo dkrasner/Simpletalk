@@ -1,8 +1,7 @@
-import {Part} from './Part.js';
+import { Part } from './Part.js';
 import {
     addBasicStyleProps,
     addPositioningStyleProps,
-    addTextStyleProps
 } from '../utils/styleProperties.js';
 
 class Browser extends Part {
@@ -31,8 +30,14 @@ class Browser extends Part {
             null
         );
 
+        this.partProperties.newBasicProp(
+            "iframe",
+            null
+        );
+
         // Private command handlers
         this.setPrivateCommandHandler("setURLTo", this.setURL);
+        this.setPrivateCommandHandler("setIFrameTo", this.setIFrame);
         this.setPrivateCommandHandler("forward", this.sendMessageToBrowser);
 
         // Bind component methods
@@ -41,8 +46,8 @@ class Browser extends Part {
 
 
         // load the src if provided
-        if(src){
-            this.partProperties.setPropertyNamed(this, "src", url);
+        if (src) {
+            this.partProperties.setPropertyNamed(this, "src", src);
         }
         // Style properties
         addBasicStyleProps(this);
@@ -73,22 +78,26 @@ class Browser extends Part {
         );
     }
 
-    get type(){
+    get type() {
         return 'browser';
     }
 
-    setURL(senders, sourceUrl){
+    setURL(senders, sourceUrl) {
         this.partProperties.setPropertyNamed(this, "src", sourceUrl);
     }
 
-    sendMessageToBrowser(senders, message){
+    setIFrame(senders, iframe) {
+        this.partProperties.setPropertyNamed(this, "iframe", iframe);
+    }
+
+    sendMessageToBrowser(senders, message) {
         let views = window.System.findViewsById(this.id);
         views.forEach((v) => {
             let iframe = v._shadowRoot.querySelector("iframe");
             iframe.contentWindow.postMessage(message, window.origin);
         });
     }
-};
+}
 
 export {
     Browser,
