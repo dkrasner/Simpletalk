@@ -909,7 +909,11 @@ System._commandHandlers['go to'] = function(senders, id){
 };
 
 System._commandHandlers['go to website'] = function(senders, url){
-    window.location.href = url;
+    const a = document.createElement("a");
+    a.setAttribute("href", url);
+    a.setAttribute("target", "_blank"); // new tab
+    a.click()
+    a.delete();
 };
 
 //Import a world, i.e. its stacks from another source
