@@ -17,7 +17,7 @@ import interpreterSemantics from '../../ohm/interpreter-semantics.js';
 window.customElements.define('st-context-menu', ContextMenu);
 
 class PartView extends HTMLElement {
-    constructor(){
+    constructor() {
         super();
         this.model = null;
         this.isPartView = true;
@@ -35,6 +35,8 @@ class PartView extends HTMLElement {
         this.wantsHaloEdit = true;
         this.wantsHaloDelete = true;
         this.wantsHalo = true;
+        this.hasOpenHalo = false;
+
         // Note: see getter for wantsHaloMove
 
         // Context menu settings
@@ -122,8 +124,8 @@ class PartView extends HTMLElement {
         this.afterDisconnected = this.afterDisconnected.bind(this);
     }
 
-    connectedCallback(){
-        if(this.isConnected){
+    connectedCallback() {
+        if (this.isConnected) {
             // Do some universal PartView configuration
             // when attached to a parent element, like
             // registering event listeners etc
@@ -142,19 +144,19 @@ class PartView extends HTMLElement {
         }
     }
 
-    disconnectedCallback(){
+    disconnectedCallback() {
         this.removeEventListener('auxclick', this.onAuxClick);
         this.removeEventListener('click', this.onClick);
         this.removeEventListener('contextmenu', this.onContextMenuClick);
         this.afterDisconnected();
     }
 
-    setModel(aModel){
+    setModel(aModel) {
         this.unsetModel();
         this.model = aModel;
         aModel.addPropertySubscriber(this);
         aModel.addViewSubscriber(this);
-        if(this.isLensed){
+        if (this.isLensed) {
             this.removeAttribute('part-id');
             this.setAttribute('lens-part-id', aModel.id);
         } else {
@@ -172,22 +174,22 @@ class PartView extends HTMLElement {
             this.model,
             "wants-move"
         );
-        if(wantsMove){
+        if (wantsMove) {
             this.addEventListener('mousedown', this.onMouseDown);
         }
 
         let haloOpen = this.model.partProperties.findPropertyNamed(
             "halo-open"
         );
-        if(haloOpen && haloOpen._value){
+        if (haloOpen && haloOpen._value) {
             this.openHalo();
         }
 
         this.afterModelSet();
     }
 
-    unsetModel(){
-        if(this.model){
+    unsetModel() {
+        if (this.model) {
             let removedModel = this.model;
             this.model.removePropertySubscriber(this);
             this.model = null;
@@ -196,7 +198,7 @@ class PartView extends HTMLElement {
         }
     }
 
-    setupBasePropHandlers(){
+    setupBasePropHandlers() {
         // This is where we should setup any
         // prop change handlers that are universal
         // to all PartViews. We would do this via
@@ -220,21 +222,21 @@ class PartView extends HTMLElement {
         this.onPropChange('pinning-left', this.pinningLeftChanged);
         this.onPropChange('pinning-bottom', this.pinningBottomChanged);
         this.onPropChange('wants-move', (value) => {
-            if(value){
+            if (value) {
                 this.addEventListener('mousedown', this.onMouseDown);
             } else {
                 this.removeEventListener('mousedown', this.onMouseDown);
             }
         });
         this.onPropChange('halo-open', (value) => {
-            if(value){
+            if (value) {
                 this.openHalo();
             } else {
                 this.closeHalo();
             }
         });
         this.onPropChange('editor-open', (value) => {
-            if(value){
+            if (value) {
                 this.openEditor();
             } else {
                 this.closeEditor();
@@ -242,7 +244,7 @@ class PartView extends HTMLElement {
         });
     }
 
-    setupBaseViewChangeHandlers(){
+    setupBaseViewChangeHandlers() {
         // This is where we should setup any
         // view change handlers that are universal
         // to all PartViews. We would do this via
@@ -253,13 +255,13 @@ class PartView extends HTMLElement {
         this.onViewChange('subpart-new', this.newSubpartView);
     }
 
-    initLayout(){
+    initLayout() {
         // Not all Part/PartView pairs have the layout
         // properties. Ensure they exist first
         let hasLayout = this.model.partProperties.findPropertyNamed('layout');
         let hasBoxResizing = this.model.partProperties.findPropertyNamed('vertical-resizing');
         let hasPinning = this.model.partProperties.findPropertyNamed('pinning');
-        if(hasLayout){
+        if (hasLayout) {
             let initialLayout = this.model.partProperties.getPropertyNamed(
                 this.model,
                 'layout'
@@ -279,7 +281,7 @@ class PartView extends HTMLElement {
             this.listDistributionChanged();
         }
 
-        if(hasBoxResizing){
+        if (hasBoxResizing) {
             let initialVResizing = this.model.partProperties.getPropertyNamed(
                 this.model,
                 'vertical-resizing'
@@ -292,7 +294,7 @@ class PartView extends HTMLElement {
             this.hResizingChanged(initialHResizing);
         }
 
-        if(hasPinning){
+        if (hasPinning) {
             this.pinningTopChanged();
             this.pinningBottomChanged();
             this.pinningLeftChanged();
@@ -300,7 +302,7 @@ class PartView extends HTMLElement {
         }
     }
 
-    styleCSS(){
+    styleCSS() {
         let cssStyle = this.model.partProperties.getPropertyNamed(this, "cssStyle");
         Object.keys(cssStyle).forEach((key) => {
             let value = cssStyle[key];
@@ -308,7 +310,7 @@ class PartView extends HTMLElement {
         });
     }
 
-    styleTextCSS(){
+    styleTextCSS() {
         let cssStyle = this.model.partProperties.getPropertyNamed(this, "cssTextStyle");
         Object.keys(cssStyle).forEach((key) => {
             let value = cssStyle[key];
@@ -316,32 +318,32 @@ class PartView extends HTMLElement {
         });
     }
 
-    sendMessage(aMessage, target){
-        if(!this.isLensed){
+    sendMessage(aMessage, target) {
+        if (!this.isLensed) {
             // Lensed views should not send messages
             window.System.sendMessage(aMessage, this, target);
         }
     }
 
-    receiveMessage(aMessage){
-        switch(aMessage.type){
-        case 'propertyChanged':
-            this.primHandlePropChange(
-                aMessage.propertyName,
-                aMessage.value,
-                aMessage.partId
-            );
-            break;
-        case 'viewChanged':
-            this.primHandleViewChange(
-                aMessage.changeName,
-                ...aMessage.args
-            );
-            break;
+    receiveMessage(aMessage) {
+        switch (aMessage.type) {
+            case 'propertyChanged':
+                this.primHandlePropChange(
+                    aMessage.propertyName,
+                    aMessage.value,
+                    aMessage.partId
+                );
+                break;
+            case 'viewChanged':
+                this.primHandleViewChange(
+                    aMessage.changeName,
+                    ...aMessage.args
+                );
+                break;
         }
     }
 
-    primHandlePropChange(name, value, partId){
+    primHandlePropChange(name, value, partId) {
         // We notify the model that the property change so that
         // on propertyChanged command handlers could be invoked
         // but we make sure that this stops at the said model and
@@ -350,14 +352,14 @@ class PartView extends HTMLElement {
             type: 'command',
             commandName: 'propertyChanged',
             args: [name, value],
-            shouldNotDelegate:true, // do not send this up the delegation chain
+            shouldNotDelegate: true, // do not send this up the delegation chain
             shouldIgnore: true
         };
         this.sendMessage(commandMessage, this.model);
         // Find the handler for the given named
         // property. If it does not exist, do nothing
         let handler = this.propChangeHandlers[name];
-        if(!handler){
+        if (!handler) {
             return null;
         }
         handler = handler.bind(this);
@@ -365,30 +367,30 @@ class PartView extends HTMLElement {
     }
 
 
-    onPropChange(name, func){
+    onPropChange(name, func) {
         this.propChangeHandlers[name] = func;
     }
 
-    primHandleViewChange(name, ...args){
+    primHandleViewChange(name, ...args) {
         // Find the handler for the given named
         // property. If it does not exist, do nothing
         let handler = this.viewChangeHandlers[name];
-        if(!handler){
+        if (!handler) {
             return null;
         }
         handler = handler.bind(this);
         return handler(...args);
     }
 
-    onViewChange(name, func){
+    onViewChange(name, func) {
         this.viewChangeHandlers[name] = func;
     }
 
-    scriptChanged(value, partId){
+    scriptChanged(value, partId) {
         // make sure that we are only sending the compile
         // message when dealing with a 'core' st-part views (not
         // with navigator or related views)
-        if(this.tagName.split("-")[0] != "ST" || this.slot == "wrapped-view"){
+        if (this.tagName.split("-")[0] != "ST" || this.slot == "wrapped-view") {
             return;
         }
         this.model.sendMessage({
@@ -398,19 +400,19 @@ class PartView extends HTMLElement {
         }, window.System);
     }
 
-    subpartOrderChanged(id, currentIndex, newIndex){
+    subpartOrderChanged(id, currentIndex, newIndex) {
         // there is no need to do anything for the wrapped views
         // CardRow and StackRow will handle the updates
-        if(this.name == "WrappedView"){
+        if (this.name == "WrappedView") {
             return;
         }
         let subpartNode = this.childNodes[currentIndex];
-        if(newIndex == this.childNodes.length - 1){
+        if (newIndex == this.childNodes.length - 1) {
             this.appendChild(subpartNode);
         } else {
             // we need to account for whether the index of this
             // is before or after the newIndex
-            if(currentIndex < newIndex){
+            if (currentIndex < newIndex) {
                 newIndex = newIndex + 1;
             }
             let referenceNode = this.childNodes[newIndex];
@@ -418,51 +420,51 @@ class PartView extends HTMLElement {
         }
     }
 
-    newSubpartView(newView){
+    newSubpartView(newView) {
         this.appendChild(newView);
     }
 
-    layoutChanged(value, partId){
-        if(value == 'list'){
+    layoutChanged(value, partId) {
+        if (value == 'list') {
             this.classList.add('list-layout');
         } else {
             this.classList.remove('list-layout');
         }
     }
 
-    listDirectionChanged(value, partId){
+    listDirectionChanged(value, partId) {
         // Row is the default configuration
         // for a list layout, so only one extra
         // CSS class needs to be toggled
-        if(value == 'row'){
+        if (value == 'row') {
             this.classList.remove('list-column');
-        } else if(value == 'column'){
+        } else if (value == 'column') {
             this.classList.add('list-column');
         }
     }
 
-    listWrappingChanged(value, partId){
-        if(value == true){
+    listWrappingChanged(value, partId) {
+        if (value == true) {
             this.classList.add('wrap-list');
         } else {
             this.classList.remove('wrap-list');
         }
     }
 
-    hResizingChanged(value){
-        if(value == 'space-fill'){
+    hResizingChanged(value) {
+        if (value == 'space-fill') {
             this.classList.add('h-space-fill');
             this.classList.remove(
                 'h-rigid',
                 'h-shrink-wrap'
             );
-        } else if(value == 'shrink-wrap'){
+        } else if (value == 'shrink-wrap') {
             this.classList.add('h-shrink-wrap');
             this.classList.remove(
                 'h-rigid',
                 'h-space-fill'
             );
-        } else if(value == 'rigid'){
+        } else if (value == 'rigid') {
             this.classList.add('h-rigid');
             this.classList.remove(
                 'h-space-fill',
@@ -471,20 +473,20 @@ class PartView extends HTMLElement {
         }
     }
 
-    vResizingChanged(value){
-        if(value == 'space-fill'){
+    vResizingChanged(value) {
+        if (value == 'space-fill') {
             this.classList.add('v-space-fill');
             this.classList.remove(
                 'v-rigid',
                 'v-shrink-wrap'
             );
-        } else if(value == 'shrink-wrap'){
+        } else if (value == 'shrink-wrap') {
             this.classList.add('v-shrink-wrap');
             this.classList.remove(
                 'v-rigid',
                 'v-space-fill'
             );
-        } else if(value == 'rigid'){
+        } else if (value == 'rigid') {
             this.classList.add('v-rigid');
             this.classList.remove(
                 'v-space-fill',
@@ -493,55 +495,55 @@ class PartView extends HTMLElement {
         }
     }
 
-    pinningTopChanged(){
+    pinningTopChanged() {
         let top = this.model.partProperties.getPropertyNamed(
             this.model,
             'pinning-top'
         );
-        if(top){
+        if (top) {
             this.classList.add('pin-top');
         } else {
             this.classList.remove('pin-top');
         }
     }
 
-    pinningLeftChanged(){
+    pinningLeftChanged() {
         let left = this.model.partProperties.getPropertyNamed(
             this.model,
             'pinning-left'
         );
-        if(left){
+        if (left) {
             this.classList.add('pin-left');
         } else {
             this.classList.remove('pin-left');
         }
     }
 
-    pinningRightChanged(){
+    pinningRightChanged() {
         let right = this.model.partProperties.getPropertyNamed(
             this.model,
             'pinning-right'
         );
-        if(right){
+        if (right) {
             this.classList.add('pin-right');
         } else {
             this.classList.remove('pin-right');
         }
     }
 
-    pinningBottomChanged(){
+    pinningBottomChanged() {
         let bottom = this.model.partProperties.getPropertyNamed(
             this.model,
             'pinning-bottom'
         );
-        if(bottom){
+        if (bottom) {
             this.classList.add('pin-bottom');
         } else {
             this.classList.remove('pin-bottom');
         }
     }
 
-    listAlignmentChanged(){
+    listAlignmentChanged() {
         let value = this.model.partProperties.getPropertyNamed(
             this.model,
             'list-alignment'
@@ -553,7 +555,7 @@ class PartView extends HTMLElement {
             'right',
             'center'
         ];
-        if(valid.includes(value)){
+        if (valid.includes(value)) {
             valid.forEach(side => {
                 this.classList.remove(`list-align-${side}`);
             });
@@ -561,7 +563,7 @@ class PartView extends HTMLElement {
         }
     }
 
-    listDistributionChanged(){
+    listDistributionChanged() {
         let value = this.model.partProperties.getPropertyNamed(
             this.model,
             'list-distribution'
@@ -573,7 +575,7 @@ class PartView extends HTMLElement {
             'space-around',
             'center'
         ];
-        if(valid.includes(value)){
+        if (valid.includes(value)) {
             valid.forEach(side => {
                 this.classList.remove(`list-distribution-${side}`);
             });
@@ -582,54 +584,54 @@ class PartView extends HTMLElement {
     }
 
     /* Lifecycle Method Defaults */
-    afterModelSet(){
+    afterModelSet() {
         // Does nothing.
         // Should be implemented in subclasses
     }
 
-    afterModelUnset(removedModel){
+    afterModelUnset(removedModel) {
         // Does nothing.
         // Should be implemented in subclasses
     }
 
-    afterConnected(){
+    afterConnected() {
         // Does nothing by default.
         // Should be implemented in subclass
     }
 
-    afterDisconnected(){
+    afterDisconnected() {
         // Does nothing by default.
         // Should be implemented in subclass
     }
 
     /* Halo Related Methods */
 
-    openHalo(){
+    openHalo() {
         // Check to see if there's a halo in
         // the component's shadow root already
         let foundHalo = this.shadowRoot.querySelector('st-halo');
-        if(!foundHalo){
+        if (!foundHalo) {
             let newHalo = document.createElement('st-halo');
             this.shadowRoot.appendChild(newHalo);
         }
     }
 
-    closeHalo(){
+    closeHalo() {
         let foundHalo = this.shadowRoot.querySelector('st-halo');
-        if(foundHalo){
+        if (foundHalo) {
             foundHalo.remove();
         }
     }
 
-    toggleAntsBorder(){
-        if(this.classList.contains('marching-ants')){
+    toggleAntsBorder() {
+        if (this.classList.contains('marching-ants')) {
             this.classList.remove('marching-ants');
         } else {
             this.classList.add('marching-ants');
         }
     }
 
-    onHaloDelete(){
+    onHaloDelete() {
         // What to do when the user clicks the
         // delete button on a halo for this partview.
         // The default implementation is to send a message
@@ -643,7 +645,7 @@ class PartView extends HTMLElement {
         }, this.model);
     }
 
-    onHaloOpenScriptEditor(){
+    onHaloOpenScriptEditor() {
         // Send the message to open a script editor
         // with this view's model as the target
         this.model.sendMessage({
@@ -653,11 +655,11 @@ class PartView extends HTMLElement {
         }, this.model);
     }
 
-    onHaloOpenEditor(){
+    onHaloOpenEditor() {
         this.model.partProperties.setPropertyNamed(this.model, "editor-open", true);
     }
 
-    onHaloResize(movementX, movementY){
+    onHaloResize(movementX, movementY) {
         // Default implementation on what to do during
         // halo button resize opertations. Subclasses
         // can override for custom behavior.
@@ -667,15 +669,15 @@ class PartView extends HTMLElement {
         // browser calcualtion. So the hack here is to rotate the part to 0
         // (if necessary) do the calculations and then rotate it back
         let angle = this.model.partProperties.getPropertyNamed(this.model, "rotate");
-        if(angle){
+        if (angle) {
             this.model.partProperties.setPropertyNamed(this.model, "rotate", 0);
         }
         let rect = this.getBoundingClientRect();
         let newWidth, newHeight;
-        if(this.preserveAspectOnResize){
+        if (this.preserveAspectOnResize) {
             let ratio = rect.width / rect.height;
-            let hyp = Math.sqrt((movementX**2) + (movementY**2));
-            if(movementX < 0 || movementY < 0){
+            let hyp = Math.sqrt((movementX ** 2) + (movementY ** 2));
+            if (movementX < 0 || movementY < 0) {
                 hyp = hyp * -1;
             }
             newHeight = rect.height + hyp;
@@ -687,46 +689,46 @@ class PartView extends HTMLElement {
         this.model.partProperties.setPropertyNamed(this.model, "width", newWidth);
         this.model.partProperties.setPropertyNamed(this.model, "height", newHeight);
         // reset the rotate angle to the original (if necessary)
-        if(angle){
+        if (angle) {
             this.model.partProperties.setPropertyNamed(this.model, "rotate", angle);
         }
     }
 
-    onHaloRotate(movementX, movementY){
+    onHaloRotate(movementX, movementY) {
         // Default implementation on what to do during
         // halo button rotate opertations. Subclasses
         // can override for custom behavior.
         // Default is to update the View component's
         // rotate style property directly.
-        if(movementX || movementY){
+        if (movementX || movementY) {
             let currentAngle = this.model.partProperties.getPropertyNamed(this.model, "rotate");
             let rect = this.getBoundingClientRect();
-            if(!currentAngle){
+            if (!currentAngle) {
                 currentAngle = 0;
             }
-            let theta1 = Math.atan((rect.height/2)/(rect.width/2));
-            let theta2 = Math.atan((rect.height/2 + movementY)/(rect.width/2 + movementX));
-            let changeAngle = Math.abs((theta2 - theta1)*180/Math.PI);
+            let theta1 = Math.atan((rect.height / 2) / (rect.width / 2));
+            let theta2 = Math.atan((rect.height / 2 + movementY) / (rect.width / 2 + movementX));
+            let changeAngle = Math.abs((theta2 - theta1) * 180 / Math.PI);
             let newAngle = (currentAngle + changeAngle) % 360;
-            if(newAngle < 0){
+            if (newAngle < 0) {
                 newAngle = 360 + newAngle;
             }
-            if(newAngle){
+            if (newAngle) {
                 this.model.partProperties.setPropertyNamed(this.model, "rotate", newAngle);
             }
         }
     }
 
-    onHaloCopy(){
+    onHaloCopy() {
         window.System.clipboard.copyPart(this.model);
     }
 
-    onHaloPaste(){
+    onHaloPaste() {
         window.System.clipboard.pasteContentsInto(this.model);
         this.model.partProperties.setPropertyNamed(this.model, "halo-open", false);
     }
 
-    onHaloTarget(event){
+    onHaloTarget(event) {
         // Add targeting receive listeners to all PartViews
         // on the current card.
         let currentStackView = document.querySelector(`[part-id="${window.System.world.currentStack.id}"]`);
@@ -744,22 +746,22 @@ class PartView extends HTMLElement {
         event.stopPropagation();
     }
 
-    onHaloTargetButtonMouseEnter(){
+    onHaloTargetButtonMouseEnter() {
         // light up the current target
         this.getCurrentTargetViews().forEach((view) => {
             view.highlight("rgb(54, 172, 100)"); //green
         });
     }
 
-    onHaloTargetButtonMouseLeave(){
+    onHaloTargetButtonMouseLeave() {
         // light up the current target
         this.getCurrentTargetViews().forEach((view) => {
             view.unhighlight();
         });
     }
 
-    highlight(color){
-        if(this.name != "StackView" && this.name != "WorldView"){
+    highlight(color) {
+        if (this.name != "StackView" && this.name != "WorldView") {
             this._tempBackgroundColor = this.model.partProperties.getPropertyNamed(this.model, "background-color");
             this.model.partProperties.setPropertyNamed(this.model, "background-color", color);
             this._tempBackgroundTransparency = this.model.partProperties.getPropertyNamed(this.model, "background-transparency");
@@ -768,14 +770,14 @@ class PartView extends HTMLElement {
 
     }
 
-    unhighlight(){
-        if(this.name != "StackView" && this.name != "WorldView"){
+    unhighlight() {
+        if (this.name != "StackView" && this.name != "WorldView") {
             this.model.partProperties.setPropertyNamed(this.model, "background-color", this._tempBackgroundColor);
             this.model.partProperties.setPropertyNamed(this.model, "background-transparency", this._tempBackgroundTransparency);
         }
     }
 
-    endHaloTarget(){
+    endHaloTarget() {
         // Remove all targeting related event listeners
         // that were added during the onHaloTarget
         // handler
@@ -794,31 +796,31 @@ class PartView extends HTMLElement {
         document.body.classList.remove('targeting-mode');
     }
 
-    handleTargetKey(event){
-        if(event.key == 'Escape'){
+    handleTargetKey(event) {
+        if (event.key == 'Escape') {
             this.endHaloTarget();
         }
     }
 
-    handleTargetMouseOver(event){
-        if(!event.target.classList.contains('targeting')){
+    handleTargetMouseOver(event) {
+        if (!event.target.classList.contains('targeting')) {
             event.target.classList.add('targeting');
             event.target.highlight("rgb(234, 55, 55)");
             event.target.removeEventListener('click', event.target.onClick);
         }
     }
 
-    handleTargetMouseLeave(event){
-        if(event.target.classList.contains('targeting')){
+    handleTargetMouseLeave(event) {
+        if (event.target.classList.contains('targeting')) {
             event.target.classList.remove('targeting');
             event.target.unhighlight();
             event.target.addEventListener('click', event.target.onClick);
         }
     }
 
-    handleTargetMouseClick(event){
+    handleTargetMouseClick(event) {
         event.preventDefault();
-        if(event.button == 0 && event.shiftKey){
+        if (event.button == 0 && event.shiftKey) {
             this.onHaloActivationClick(event);
             return;
         }
@@ -834,10 +836,10 @@ class PartView extends HTMLElement {
         event.target.addEventListener('click', event.target.onClick);
     }
 
-    getCurrentTargetViews(){
+    getCurrentTargetViews() {
         // clean up the current target
         let currentTarget = this.model.partProperties.getPropertyNamed(this.model, "target");
-        if(currentTarget){
+        if (currentTarget) {
             let semantics = window.System.grammar.createSemantics();
             semantics.addOperation(
                 'interpret',
@@ -850,11 +852,11 @@ class PartView extends HTMLElement {
         return [];
     }
 
-    onContextMenuClick(event){
-        if(this.wantsContextMenu){
+    onContextMenuClick(event) {
+        if (this.wantsContextMenu) {
             event.preventDefault();
             event.stopPropagation();
-            if(this.contextMenuIsOpen){
+            if (this.contextMenuIsOpen) {
                 this.closeContextMenu();
             } else {
                 this.openContextMenuAt(
@@ -867,28 +869,28 @@ class PartView extends HTMLElement {
         }
     }
 
-    onAuxClick(event){
+    onAuxClick(event) {
         // Should only open halo when middle
         // mouse button is clicked
-        if(event.button == 1){
+        if (event.button == 1) {
             event.preventDefault();
             this.onHaloActivationClick(event);
         }
     }
 
-    onClick(event){
-        if(this.contextMenuIsOpen){
+    onClick(event) {
+        if (this.contextMenuIsOpen) {
             this.closeContextMenu();
         }
-        if(event.button == 0 && event.shiftKey){
+        if (event.button == 0 && event.shiftKey) {
             event.preventDefault();
             this.onHaloActivationClick(event);
         }
     }
 
-    onHaloActivationClick(event){
-        if(this.wantsHalo){
-            if(this.hasOpenHalo){
+    onHaloActivationClick(event) {
+        if (this.wantsHalo) {
+            if (this.hasOpenHalo) {
                 this.model.partProperties.setPropertyNamed(this.model, "halo-open", false);
             } else {
                 event.stopPropagation();
@@ -897,14 +899,14 @@ class PartView extends HTMLElement {
         }
     }
 
-    onMouseDown(event){
-        if(event.button == 0 && !event.shiftKey){
+    onMouseDown(event) {
+        if (event.button == 0 && !event.shiftKey) {
             document.addEventListener('mousemove', this.onMouseMove);
             document.addEventListener('mouseup', this.onMouseUp);
         }
     }
 
-    onMouseMove(event){
+    onMouseMove(event) {
         this.sendMessage({
             type: 'command',
             commandName: 'move',
@@ -912,12 +914,12 @@ class PartView extends HTMLElement {
         }, this.model);
     }
 
-    onMouseUp(event){
+    onMouseUp(event) {
         document.removeEventListener('mousemove', this.onMouseMove);
         document.removeEventListener('mouseup', this.onMouseUp);
     }
 
-    openContextMenuAt(x, y){
+    openContextMenuAt(x, y) {
         let menuEl = document.createElement('st-context-menu');
         menuEl.render(this.model);
         menuEl.style.left = `${x}px`;
@@ -931,14 +933,14 @@ class PartView extends HTMLElement {
         menuEl.adjustToClientView();
     }
 
-    closeContextMenu(){
+    closeContextMenu() {
         let found = document.querySelector('st-context-menu');
-        if(found){
+        if (found) {
             found.remove();
         }
     }
 
-    addContextMenuItems(contextMenu){
+    addContextMenuItems(contextMenu) {
         // The default implementation is to
         // do nothins.
         // Subclasses should override and use the
@@ -947,12 +949,12 @@ class PartView extends HTMLElement {
         return;
     }
 
-    get wantsHaloMove(){
-        if(!this.parentElement || !this.isConnected){
+    get wantsHaloMove() {
+        if (!this.parentElement || !this.isConnected) {
             return false;
         }
         let parentModel = this.parentElement.model;
-        if(!parentModel){
+        if (!parentModel) {
             return true;
         }
 
@@ -961,7 +963,7 @@ class PartView extends HTMLElement {
             'layout'
         );
 
-        if(!hasLayout){
+        if (!hasLayout) {
             return true;
         }
 
@@ -969,37 +971,37 @@ class PartView extends HTMLElement {
             parentModel,
             'layout'
         );
-        if(parentLayout === 'strict' | !parentLayout || parentLayout == ""){
+        if (parentLayout === 'strict' | !parentLayout || parentLayout == "") {
             return true;
         }
 
         return false;
     }
 
-    get contextMenuIsOpen(){
+    get contextMenuIsOpen() {
         let found = document.querySelector('st-context-menu');
-        if(found){
+        if (found) {
             return true;
         }
         return false;
     }
 
     /* Editor related methods */
-    openEditor(){
+    openEditor() {
         let editor = document.querySelector('st-editor');
         editor.render(this.model);
-        if(!editor.isOpen){
+        if (!editor.isOpen) {
             editor.open();
         }
     }
 
-    closeEditor(){
+    closeEditor() {
         let editor = document.querySelector('st-editor.open');
-        if(editor){
+        if (editor) {
             editor.close();
         }
     }
-};
+}
 
 export {
     PartView,
