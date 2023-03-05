@@ -55,8 +55,13 @@ class BrowserView extends PartView {
     afterModelSet() {
         let iframe = this._shadowRoot.querySelector("iframe");
         let src = this.model.partProperties.getPropertyNamed(this.model, "src");
-        if (src && iframe) {
-            iframe.src = src;
+        const html = this.model.partProperties.getPropertyNamed(this.model, "iframe");
+        if (iframe) {
+            if (src) {
+                iframe.src = src;
+            } else if (html) {
+                iframe.outerHTML = html;
+            }
         }
         this.onPropChange("src", (url) => {
             try {
