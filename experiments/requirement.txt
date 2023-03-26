@@ -1,0 +1,13 @@
+argparse
+pylance
+pyarrow
+numpy
+pandas
+openai
+ratelimiter
+datasets
+retry
+tqdm
+lance
+flask
+flask_cors
