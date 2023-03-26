@@ -9,3 +9,4 @@ package-lock.json
 
 # Ignore Emacs stash files
 \#*
+/experiments/__pycache__/
