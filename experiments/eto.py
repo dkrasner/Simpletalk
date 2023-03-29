@@ -6,6 +6,8 @@ import pandas as pd
 import math
 import openai
 import ratelimiter
+import os
+import sys
 
 from datasets import load_dataset
 from retry import retry
@@ -36,40 +38,61 @@ def embed_func(c):
 
 
 class Eto:
-    def __init__(self, data_dir="."):
+    def __init__(self, data_dir="./data", openai_key_path=".openai_api_key",
+                 openai_org_id_path=".openai_org_id", lance_data="chatbot.lance"):
         self.data_dir = data_dir
+        self.lance_data = os.path.join(self.data_dir, lance_data)
         self.ds = None
+        # make sure there is an openAI API key file
+        if not os.path.isfile(openai_key_path):
+            print("NO openAI API key file found - exiting!")
+            sys.exit()
+        openai.api_key_path = openai_key_path
+        if os.path.isfile(openai_org_id_path):
+            org_id = open(openai_org_id_path).read().strip()
+            openai.organization = org_id
+        else:
+            print("No openAI org ID found, this might be necessary")
         self.setup()
 
     def setup(self):
-        data = load_dataset('jamescalam/youtube-transcriptions', split='train')
-        data.to_pandas().title.nunique()
+        if os.path.isdir(self.lance_data):
+            print("\nlance dataset found... loading...")
+            self.ds = lance.dataset(self.lance_data)
+        else:
+            print("\nbuilding lance dataset")
+            print("lading youtube transcriptions data\n")
+            data = load_dataset('jamescalam/youtube-transcriptions', split='train')
+            data.to_pandas().title.nunique()
 
-        window = 20
-        stride = 4
+            window = 20
+            stride = 4
 
-        df = self.contextualize(data.to_pandas(), window, stride)
+            print("\npreparing data")
+            df = self.contextualize(data.to_pandas(), window, stride)
 
-        # API limit at 60/min == 1/sec
-        limiter = ratelimiter.RateLimiter(max_calls=0.9, period=1.0)
+            # API limit at 60/min == 1/sec
+            limiter = ratelimiter.RateLimiter(max_calls=0.9, period=1.0)
 
-        # Get the embedding with retry
+            print("getting the embedding with retry")
 
-        rate_limited = limiter(embed_func)
-        # We request in batches rather than 1 embedding at a time
-        batch_size = 1000
-        batches = to_batches(df.text.values.tolist(), batch_size, len(df))
-        embeds = [emb for c in batches for emb in rate_limited(c)]
+            rate_limited = limiter(embed_func)
+            # We request in batches rather than 1 embedding at a time
+            batch_size = 1000
+            batches = to_batches(df.text.values.tolist(), batch_size, len(df))
+            embeds = [emb for c in batches for emb in rate_limited(c)]
 
-        table = vec_to_table(np.array(embeds))
-        combined = pa.Table.from_pandas(df).append_column(
-            "vector", table["vector"]
-        )
-        ds = lance.write_dataset(combined, "chatbot.lance")
-        self.ds = ds.create_index("vector",
-                                  index_type="IVF_PQ",
-                                  num_partitions=64,  # IVF
-                                  num_sub_vectors=96)  # PQ
+            table = vec_to_table(np.array(embeds))
+            combined = pa.Table.from_pandas(df).append_column(
+                "vector", table["vector"]
+            )
+            print("writing lance dataset to %s" % self.lance_data)
+            ds = lance.write_dataset(combined, self.lance_data)
+            self.ds = ds.create_index("vector",
+                                    index_type="IVF_PQ",
+                                    num_partitions=64,  # IVF
+                                    num_sub_vectors=96)  # PQ
+        print("setup successful\n")
         return True
 
     def answer(self, query):  # TODO answer or query?
@@ -151,6 +174,7 @@ eto = Eto()
 @app.route("/eto/search", methods=["GET"])
 def eto_search():
     query = request.args.get("q")
+    print(query)
     completion, context = eto.answer(query)
     response = {"completion": completion, "top_match": context.iloc[0]}
     return make_response(jsonify(response), 200)
