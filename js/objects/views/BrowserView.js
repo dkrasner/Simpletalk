@@ -41,15 +41,18 @@ class BrowserView extends PartView {
         this.onClick = this.onClick.bind(this);
         this.initCustomHaloButton = this.initCustomHaloButton.bind(this);
         this.updateBrowserLink = this.updateBrowserLink.bind(this);
+        this.handleShadowMessage = this.handleShadowMessage.bind(this)
     }
 
     afterConnected() {
         if (!this.haloButton) {
             this.initCustomHaloButton();
         }
+        this.addEventListener("messageHost", this.handleShadowMessage);
     }
 
     afterDisconnected() {
+        this.removeEventListener("messageHost");
     }
 
     afterModelSet() {
@@ -64,6 +67,7 @@ class BrowserView extends PartView {
             }
         }
         this.onPropChange("src", (url) => {
+            // TODO What if there is no more iframe!!!
             try {
                 // resource load is auto-loaded by the <browser> element
                 if (iframe) {
@@ -97,6 +101,11 @@ class BrowserView extends PartView {
                 this.model.sendMessage({ errorMsg }, this.model);
             }
         });
+    }
+
+    handleShadowMessage(event) {
+        const msg = event.detail.message;
+        this.model.sendMessage(msg, this.model);
     }
 
     onClick(event) {
