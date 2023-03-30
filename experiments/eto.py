@@ -105,7 +105,7 @@ class Eto:
                 "nprobes": 20,
                 "refine_factor": 100
             }).to_pandas()
-        prompt = self.create_prompt(question, context)
+        prompt = self.create_prompt(query, context)
         return self.complete(prompt), context.reset_index()
 
     def contextualize(self, raw_df, window, stride):
@@ -174,9 +174,8 @@ eto = Eto()
 @app.route("/eto/search", methods=["GET"])
 def eto_search():
     query = request.args.get("q")
-    print(query)
     completion, context = eto.answer(query)
-    response = {"completion": completion, "top_match": context.iloc[0]}
+    response = {"completion": completion, "top_match": context.iloc[0].to_json()}
     return make_response(jsonify(response), 200)
 
 
