@@ -13,6 +13,10 @@ class Browser extends Part {
             "src",
             null
         );
+        this.partProperties.newBasicProp(
+            "srcdoc",
+            null
+        );
 
         this.src = null;
         this.partProperties.newBasicProp(
@@ -30,14 +34,10 @@ class Browser extends Part {
             null
         );
 
-        this.partProperties.newBasicProp(
-            "content",
-            null
-        );
 
         // Private command handlers
         this.setPrivateCommandHandler("setURLTo", this.setURL);
-        this.setPrivateCommandHandler("setContentTo", this.setContent);
+        this.setPrivateCommandHandler("setHTMLTo", this.setHTML);
         this.setPrivateCommandHandler("forward", this.forwardMessageFromBrowser);
 
         // Bind component methods
@@ -93,25 +93,26 @@ class Browser extends Part {
         this.partProperties.setPropertyNamed(this, "src", sourceUrl);
     }
 
-    setContent(senders, content) {
-        this.partProperties.setPropertyNamed(this, "content", content);
+    setHTML(senders, HTML) {
+        this.partProperties.setPropertyNamed(this, "srcdoc", html);
     }
 
     forwardMessageFromBrowser(senders, message) {
         let views = window.System.findViewsById(this.id);
         views.forEach((v) => {
-            const content = v.querySelector("[slot='content']");
+            const iframe = v._shadowRoot.querySelector("iframe")
+            const body = iframe.contentDocument.querySelector("body");
             const event = new CustomEvent("browserMessage", {
                 bubbles: false,
                 composed: false, // DOES not go across shadow DOM boundary
                 detail: { "message": message }
             });
-            content.dispatchEvent(event);
+            body.dispatchEvent(event);
         });
     }
 }
 
-export {
+export { 
     Browser,
     Browser as default
 };
