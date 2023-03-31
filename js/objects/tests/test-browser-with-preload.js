@@ -41,29 +41,46 @@ describe('Browser Part & View Tests', () => {
             let msg = {
                 type: "command",
                 commandName: "setProperty",
-                args: ["iframe", html]
+                args: ["content", html]
             };
             browser.model.sendMessage(msg, browser.model);
-            assert.equal(browser.model.partProperties.getPropertyNamed(browser.model, "iframe"), html);
+            assert.equal(browser.model.partProperties.getPropertyNamed(browser.model, "content"), html);
         });
-        it('Can dispatch "messageHost" event from browser iframe', () => {
+        it('Can dispatch "messageBrowser" event from browser shadow DOM', () => {
             let browser;
             document.querySelectorAll('st-card.current-card > st-browser').forEach((el) => {
                 if (!el.isLensed) { browser = el; }
             });
-            const html = browser._shadowRoot.querySelector("div");
+            const html = browser.querySelector("[slot='content']");
             let msg = {
                 type: "command",
                 commandName: "setProperty",
                 args: ["top", 25]
             };
-            const event = new CustomEvent("messageHost", {
+            const event = new CustomEvent("messageBrowser", {
                 bubbles: true,
                 composed: true,
                 detail: {"message": msg}
             });
             html.dispatchEvent(event);
             assert.equal(browser.model.partProperties.getPropertyNamed(browser.model, "top"), 25);
+        });
+        it('Can handle "forward" command and dispatch event from browser', () => {
+            let browser;
+            document.querySelectorAll('st-card.current-card > st-browser').forEach((el) => {
+                if (!el.isLensed) { browser = el; }
+            });
+            const html = browser.querySelector("[slot='content']");
+            const message = "i am a message"
+            let msg = {
+                type: "command",
+                commandName: "forward",
+                args: [message]
+            };
+            let messageReceived;
+            html.addEventListener("browserMessage", (event) => {messageReceived = event.detail.message});
+            browser.model.sendMessage(msg, browser.model);
+            assert.equal(messageReceived, message);
         });
     });
 });

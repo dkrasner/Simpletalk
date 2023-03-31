@@ -31,18 +31,18 @@ class Browser extends Part {
         );
 
         this.partProperties.newBasicProp(
-            "iframe",
+            "content",
             null
         );
 
         // Private command handlers
         this.setPrivateCommandHandler("setURLTo", this.setURL);
-        this.setPrivateCommandHandler("setIFrameTo", this.setIFrame);
-        this.setPrivateCommandHandler("forward", this.sendMessageToBrowser);
+        this.setPrivateCommandHandler("setContentTo", this.setContent);
+        this.setPrivateCommandHandler("forward", this.forwardMessageFromBrowser);
 
         // Bind component methods
         this.setURL = this.setURL.bind(this);
-        this.sendMessageToBrowser = this.sendMessageToBrowser.bind(this);
+        this.forwardMessageFromBrowser = this.forwardMessageFromBrowser.bind(this);
 
 
         // load the src if provided
@@ -76,6 +76,13 @@ class Browser extends Part {
             true, // notify
             true // set default
         );
+        this.partProperties.setPropertyNamed(
+            this,
+            "height",
+            225,
+            true, // notify
+            true // set default
+        );
     }
 
     get type() {
@@ -86,15 +93,20 @@ class Browser extends Part {
         this.partProperties.setPropertyNamed(this, "src", sourceUrl);
     }
 
-    setIFrame(senders, iframe) {
-        this.partProperties.setPropertyNamed(this, "iframe", iframe);
+    setContent(senders, content) {
+        this.partProperties.setPropertyNamed(this, "content", content);
     }
 
-    sendMessageToBrowser(senders, message) {
+    forwardMessageFromBrowser(senders, message) {
         let views = window.System.findViewsById(this.id);
         views.forEach((v) => {
-            let iframe = v._shadowRoot.querySelector("iframe");
-            iframe.contentWindow.postMessage(message, window.origin);
+            const content = v.querySelector("[slot='content']");
+            const event = new CustomEvent("browserMessage", {
+                bubbles: false,
+                composed: false, // DOES not go across shadow DOM boundary
+                detail: { "message": message }
+            });
+            content.dispatchEvent(event);
         });
     }
 }
