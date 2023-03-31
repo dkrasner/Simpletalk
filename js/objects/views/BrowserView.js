@@ -18,16 +18,12 @@ const templateString = `
     user-select: none;
     cursor: pointer;
   }
-  slot {
-    width: 100%;
-    height: 100%;
-  }
-  ::slotted(*) {
+  iframe {
     width: 100%;
     height: 100%;
   }
   </style>
-  <slot name="content"></slot>
+  <iframe frameborder="0" allowfullscreen></iframe>  
   `;
 
 
@@ -43,8 +39,6 @@ class BrowserView extends PartView {
 
         // Bind component methods
         this.onClick = this.onClick.bind(this);
-        this.setSRC = this.setSRC.bind(this);
-        this.setHTML = this.setHTML.bind(this);
         this.initCustomHaloButton = this.initCustomHaloButton.bind(this);
         this.updateBrowserLink = this.updateBrowserLink.bind(this);
         this.handleShadowMessage = this.handleShadowMessage.bind(this)
@@ -58,84 +52,55 @@ class BrowserView extends PartView {
     }
 
     afterDisconnected() {
-        this.removeEventListener("messageBrowser", this.handleShadowMessage);
+        this.removeEventListener("messageBrowser");
     }
 
     afterModelSet() {
-        const src = this.model.partProperties.getPropertyNamed(this.model, "src");
-        const html = this.model.partProperties.getPropertyNamed(this.model, "content");
-        if (src) {
-            this.setSRC(src);
-        } else if (html) {
-            this.setHTML(html);
+        let iframe = this._shadowRoot.querySelector("iframe");
+        let src = this.model.partProperties.getPropertyNamed(this.model, "src");
+        const srcdoc = this.model.partProperties.getPropertyNamed(this.model, "srcdoc");
+        if (iframe) {
+            if (src) {
+                iframe.src = src;
+            } else if (srcdoc) {
+                iframe.srcdoc = srcdoc;
+            }
         }
         this.onPropChange("src", (url) => {
-            if (url) {
-                try {
-                    // resource load is auto-loaded by the <browser> element
-                    this.setSRC(url);
-                    // if successful set the content property to null
-                    this.model.partProperties.setPropertyNamed(
-                        this.model,
-                        "content",
-                        null,
-                        false // do not notify, to avoid an infinite loop
-                    );
-                } catch (error) {
-                    let errorMsg = {
-                        type: "error",
-                        name: "ResourceNotFound",
-                        resourceType: "browser",
-                        partId: this.model.id,
-                        details: { source: url, type: "url" }
-
-                    };
-                    this.model.sendMessage({ errorMsg }, this.model);
-                }
-            }
-        });
-
-        this.onPropChange("content", (html) => {
+            // TODO What if there is no more iframe!!!
             try {
-                this.setHTML(html);
-                // if successful set the src property to nul
-                this.model.partProperties.setPropertyNamed(
-                    this.model,
-                    "src",
-                    null,
-                    false // do not notify, to avoid an infinite loop
-                );
+                // resource load is auto-loaded by the <browser> element
+                if (iframe) {
+                    iframe.src = url;
+                }
             } catch (error) {
                 let errorMsg = {
                     type: "error",
-                    name: "ResourceNotValid",
+                    name: "ResourceNotFound",
+                    resourceType: "browser",
+                    partId: this.model.id,
+                    details: { source: url, type: "url" }
+
+                };
+                this.model.sendMessage({ errorMsg }, this.model);
+            }
+        });
+
+        this.onPropChange("srcdoc", (srcdoc) => {
+            try {
+                if (iframe) {
+                    iframe.srcdoc = srcdoc;
+                }
+            } catch (error) {
+                let errorMsg = {
+                    type: "error",
+                    name: "ResourceNotFound",
                     resourceType: "browser",
                     partId: this.model.id,
                 };
                 this.model.sendMessage({ errorMsg }, this.model);
             }
         });
-    }
-
-    setSRC(src) {
-        const iframe = document.createElement("iframe");
-        iframe.setAttribute("frameborder", "0");
-        iframe.setAttribute("allowFullScreen", true);
-        iframe.setAttribute("slot", "content");
-        iframe.src = src;
-        // if there is something slotted remove it first
-        this.querySelectorAll("[slot='content']").forEach((node) => node.remove());
-        this.append(iframe);
-    }
-
-    setHTML(html){
-        let content = document.createElement("div");
-        content.innerHTML = html;
-        content = content.firstChild;
-        content.setAttribute("slot", "content");
-        // if there is something slotted remove it first
-        this.querySelectorAll("[slot='content']").forEach((node) => node.remove());
-        this.append(content);
     }
 
     handleShadowMessage(event) {
