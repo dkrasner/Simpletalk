@@ -1360,6 +1360,19 @@ window.addEventListener("message", (event) => {
     if (event.origin !== window.origin)
         return;
     console.log(`Message to browser`);
+    if (event.data.message) {
+        // send the message from the browser to itself
+        const msg = event.data.message;
+        const browser = System.partsById[msg.id];
+        if (browser) {
+            System.sendMessage(msg, browser, browser);
+        } else {
+            // TODO handle this better
+            console.log(`browser id ${id} not found`);
+        }
+    }
+    // TODO do we want to handle ST scripts from within browsers?
+    /**
     // TODO: maybe we need to deal with quote escapes directly
     // in the grammar
     let script = event.data.replaceAll("'", '"');
@@ -1378,6 +1391,7 @@ window.addEventListener("message", (event) => {
         let msg = semantics(parsedScript).interpret();
         System.sendMessage(msg, world, System);
     }
+    **/
 });
 
 // global interrupt

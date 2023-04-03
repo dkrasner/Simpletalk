@@ -39,24 +39,28 @@ class BrowserView extends PartView {
 
         // Bind component methods
         this.onClick = this.onClick.bind(this);
+        this.onSRCDocLoaded = this.onSRCDocLoaded.bind(this);
         this.initCustomHaloButton = this.initCustomHaloButton.bind(this);
         this.updateBrowserLink = this.updateBrowserLink.bind(this);
-        this.handleShadowMessage = this.handleShadowMessage.bind(this)
     }
 
     afterConnected() {
         if (!this.haloButton) {
             this.initCustomHaloButton();
         }
-        this.addEventListener("messageBrowser", this.handleShadowMessage);
+        const iframe = this._shadowRoot.querySelector("iframe");
+        // handle any after load iframed content
+        iframe.addEventListener("load", this.onSRCDocLoaded);
     }
 
     afterDisconnected() {
-        this.removeEventListener("messageBrowser");
+        const iframe = this._shadowRoot.querySelector("iframe");
+        iframe.removeEventListener("load", this.onSRCDocLoaded);
     }
 
     afterModelSet() {
         let iframe = this._shadowRoot.querySelector("iframe");
+        // handle any after load iframed content
         let src = this.model.partProperties.getPropertyNamed(this.model, "src");
         const srcdoc = this.model.partProperties.getPropertyNamed(this.model, "srcdoc");
         if (iframe) {
@@ -103,9 +107,10 @@ class BrowserView extends PartView {
         });
     }
 
-    handleShadowMessage(event) {
-        const msg = event.detail.message;
-        this.model.sendMessage(msg, this.model);
+    onSRCDocLoaded(event) {
+        // set an attribute identifying which browser 'contains' the content document
+        // this can be used by scripts running in the content doc to interop with the env
+        event.target.contentDocument.firstElementChild.setAttribute("browser-id", this.model.id);
     }
 
     onClick(event) {

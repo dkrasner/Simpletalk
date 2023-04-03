@@ -727,7 +727,7 @@ class Part {
             if(name == "editor-open"){
                 return;
             }
-            let value = prop.getValue(this);
+            let value = prop.getValue(this, true); // get the serialzed value
             result.properties[name] = value;
         });
         return result;
