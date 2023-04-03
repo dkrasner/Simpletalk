@@ -13,8 +13,40 @@ class Browser extends Part {
             "src",
             null
         );
-        this.partProperties.newBasicProp(
+        this.partProperties.newDynamicProp(
             "srcdoc",
+            (owner, prop, value, notify) => {
+                // The DOM Parser is greedy with the <script> and will
+                // terminate close at the first </script> instance found,
+                // even if this instance is within a string. This causes
+                // incomplete parsing and de-serialization fails. To avoid this
+                // we replace the <script> tag with a placeholder
+                let propVal = value;
+                if (propVal) {
+                    propVal = propVal.replace(/(&lt;|<)script(&gt;|>)/, "[SCRIPT_TAG_START]");
+                    propVal = propVal.replace(/(&lt;|<)\/script(&gt;|>)/, "[SCRIPT_TAG_END]");
+                }
+                prop._value = propVal;
+                // null the srcdoc prop since we can't have both
+                owner.partProperties.setPropertyNamed(
+                    owner,
+                    'src',
+                    null,
+                    false // do not notify to avoid inf loop
+                )
+            },
+            (owner, prop, serialized) => {
+                if (!serialized) {
+                    if (prop._value) {
+                        // as above we replace the <script> tag placeholders with the original
+                        let value = prop._value.replace("[SCRIPT_TAG_START]", "<script>");
+                        value = value.replace("[SCRIPT_TAG_END]", "</script>");
+                        return value;
+                    }
+                }
+                return prop._value;
+            },
+            false, // not readonly
             null
         );
 
@@ -101,13 +133,7 @@ class Browser extends Part {
         let views = window.System.findViewsById(this.id);
         views.forEach((v) => {
             const iframe = v._shadowRoot.querySelector("iframe")
-            const body = iframe.contentDocument.querySelector("body");
-            const event = new CustomEvent("browserMessage", {
-                bubbles: false,
-                composed: false, // DOES not go across shadow DOM boundary
-                detail: { "message": message }
-            });
-            body.dispatchEvent(event);
+            iframe.contentWindow.postMessage(message, "*");
         });
     }
 }

@@ -132,8 +132,10 @@ class DynamicProperty extends BasicProperty {
     // In this override, we use the getter
     // if available, to dynamically get the
     // incoming value.
-    getValue(owner){
-        return this.valueGetter(owner, this);
+    // the serliazed arg allows the getter to
+    // provide a different value that the 'general' getter
+    getValue(owner, serialized=false){
+        return this.valueGetter(owner, this, serialized);
     }
 
     // In this override, we use the setter
