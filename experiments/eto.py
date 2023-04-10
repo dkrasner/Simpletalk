@@ -175,7 +175,11 @@ eto = Eto()
 def eto_search():
     query = request.args.get("q")
     completion, context = eto.answer(query)
-    response = {"completion": completion, "top_match": context.iloc[0].to_json()}
+    context = context.iloc[0]
+    top_match = {"video_id": context["video_id"],
+                 "start": round(context["start"]),  # NOTE: we round the time
+                 "end": round(context["end"])}
+    response = {"completion": completion, "top_match": top_match}
     return make_response(jsonify(response), 200)
 
 
