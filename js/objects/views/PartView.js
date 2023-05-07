@@ -34,6 +34,7 @@ class PartView extends HTMLElement {
         this.wantsHaloScriptEdit = true;
         this.wantsHaloEdit = true;
         this.wantsHaloDelete = true;
+        this.wantsHaloSizeDisplay = true;
         this.wantsHalo = true;
         this.hasOpenHalo = false;
 
