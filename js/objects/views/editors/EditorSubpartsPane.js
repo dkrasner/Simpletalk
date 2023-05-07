@@ -267,6 +267,10 @@ class EditorSubpartsPane extends HTMLElement {
     }
 
     onSubpartItemClick(event){
+        // make sure that we remove all highliting on views
+        this.getLocationViews(event).forEach((view) => {
+            view.unhighlight();
+        });
         let id = event.currentTarget.getAttribute('ref-id');
         let targetPart = window.System.partsById[id];
         if(targetPart){
