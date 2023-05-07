@@ -137,6 +137,14 @@ const templateString = `
      top: var(--halo-button-height-padded);
  }
 
+ #halo-size-info {
+     font-size: 13px;
+     color: rgba(107, 153, 87, 0.8);
+     position: absolute;
+     right: 5px;
+     bottom: 5px;
+ }
+
  .halo-button,
  ::slotted(*) {
      display: block;
@@ -166,6 +174,9 @@ const templateString = `
 <div id="halo-top-row" class="halo-row">
     <div id="halo-delete" class="halo-button" title="Delete this part">
         ${deleteIcon}
+    </div>
+    <div id="halo-size-info">
+        200,300
     </div>
     <slot name="top-row"></slot>
 </div>
@@ -217,6 +228,8 @@ class Halo extends HTMLElement {
             this.template.content.cloneNode(true)
         );
 
+        this.resizeObserver;
+
         // Bind component methods
 
 
@@ -230,6 +243,8 @@ class Halo extends HTMLElement {
         this.onRotateMouseDown = this.onRotateMouseDown.bind(this);
         this.onRotateMouseUp = this.onRotateMouseUp.bind(this);
         this.onRotateMouseMove = this.onRotateMouseMove.bind(this);
+        this.onTargetResize = this.onTargetResize.bind(this);
+        this.getTargetSize = this.getTargetSize.bind(this);
     }
 
     connectedCallback(){
@@ -237,6 +252,22 @@ class Halo extends HTMLElement {
             this.targetElement = this.getRootNode().host;
             this.targetElement.classList.add('editing');
             this.targetElement.hasOpenHalo = true;
+
+            // Add a resize obbserver which will display the element's
+            // height and width properties
+            this.sizeInfo = this.shadowRoot.getElementById('halo-size-info');
+            if (this.targetElement.wantsHaloSizeDisplay) {
+                this.resizeObserver = new ResizeObserver(() => {
+                    this.onTargetResize();
+                })
+                this.resizeObserver.observe(this.targetElement);
+                // display the current size
+                const size = this.getTargetSize();
+                this.sizeInfo.innerText = size.join(", ");
+
+            } else {
+                this.sizeInfo.style.visibility = 'hidden';
+            }
 
             // Add event listeners
             this.addEventListener('mousedown', this.onMouseDown);
@@ -299,10 +330,18 @@ class Halo extends HTMLElement {
         // Remove event listeners
         this.removeEventListener('mousedown', this.onMouseDown);
         this.resizer.removeEventListener('mousedown', this.onResizeMouseDown);
+        if (this.resizeObserver){
+            this.resizeObserver.unobserve(this.targetElement);
+        }
     }
 
 
     /* Event Handling */
+    onTargetResize() {
+        const size = this.getTargetSize();
+        this.sizeInfo.innerText = size.join(", ");
+    }
+
     onMouseDown(event){
         if(event.button == 0 && this.targetElement.wantsHaloMove){
             document.addEventListener('mousemove', this.onMouseMove);
@@ -360,6 +399,14 @@ class Halo extends HTMLElement {
             event.movementX,
             event.movementY
         );
+    }
+
+    // utils
+    getTargetSize() {
+        const model = this.targetElement.model;
+        const height = model.partProperties.getPropertyNamed(model, "height");
+        const width = model.partProperties.getPropertyNamed(model, "width");
+        return [width, height];
     }
 };
 
