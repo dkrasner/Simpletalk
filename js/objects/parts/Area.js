@@ -46,14 +46,14 @@ class Area extends Part {
         this.partProperties.setPropertyNamed(
             this,
             'width',
-            50,
+            400,
             true, // notify
             true // set default
         );
         this.partProperties.setPropertyNamed(
             this,
             'height',
-            50,
+            200,
             true, // notify
             true // set default
         );
