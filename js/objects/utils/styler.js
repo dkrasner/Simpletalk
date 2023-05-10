@@ -297,7 +297,6 @@ const _colorTransparencyToRGBA = (cssColor, tValue) => {
     } else {
         [r, g, b] = cssColor.match(/\d+/g);
     }
-    
     return `rgba(${r}, ${g}, ${b}, ${tValue})`;
 }
 

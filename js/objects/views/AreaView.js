@@ -8,30 +8,40 @@
  */
 import PartView from './PartView.js';
 
-const templateString = `
-                <style>
-                #area-wrapper {
-                    display: inherit;
-                    flex-direction: inherit;
-                    flex-wrap: inherit;
-                    align-items: inherit;
-                    align-content: inherit;
-                    justify-content: inherit;
-                    position: relative; 
-                    width: 100%;
-                    height: 100%;
-                    border-radius: inherit;
-                }
-                .clip {
-                    overflow: hidden;  
-                }
-                .allow-scroll {
-                    overflow: auto;
-                }
-                </style>
-                <div id="area-wrapper">
-                <slot></slot>
-                </div>
+const templateString = /* html */`
+<style>
+    :host(.grid-layout) > #area-wrapper {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        grid-template-rows: repeat(3, 1fr);
+    }
+
+    :host(.grid-layout) > #area-wrapper > * {
+        place-self: center;
+    }
+
+    #area-wrapper {
+        display: inherit;
+        flex-direction: inherit;
+        flex-wrap: inherit;
+        align-items: inherit;
+        align-content: inherit;
+        justify-content: inherit;
+        position: relative; 
+        width: 100%;
+        height: 100%;
+        border-radius: inherit;
+    }
+    .clip {
+        overflow: hidden;  
+    }
+    .allow-scroll {
+        overflow: auto;
+    }
+</style>
+<div id="area-wrapper">
+<slot></slot>
+</div>
 `;
 
 class AreaView extends PartView {
@@ -100,28 +110,28 @@ class AreaView extends PartView {
             this.model,
             'list-direction'
         );
-        if(layout != 'list'){
-            contextMenu.addListItem(
-                "Set Layout to List",
+        // Now we construct the submenu for toggling layouts
+        let submenu = document.createElement('st-context-menu');
+        submenu.hideHeader();
+        ['strict', 'list', 'grid'].forEach((option) => {
+            submenu.addListItem(
+                `Set Layout to ${option[0].toUpperCase() + option.slice(1)}`,
                 (event) => {
                     this.model.partProperties.setPropertyNamed(
                         this.model,
                         'layout',
-                        'list'
+                        option
                     );
                 }
             );
-        } else {
-            contextMenu.addListItem(
-                "Set Layout to Strict",
-                (event) => {
-                    this.model.partProperties.setPropertyNamed(
-                        this.model,
-                        'layout',
-                        'strict'
-                    );
-                }
-            );
+        })
+        contextMenu.addListItem(
+            'Select a layout',
+            null,
+            submenu
+        );
+
+        if(layout == 'list'){
             if(direction == 'row'){
                 contextMenu.addListItem(
                     "Set List Direction to Column",

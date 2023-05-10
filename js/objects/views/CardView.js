@@ -7,9 +7,9 @@
 import PartView from './PartView.js';
 
 const templateString = `
-                <style>
-                </style>
-                <slot></slot>
+<style>
+</style>
+<slot></slot>
 `;
 
 class CardView extends PartView {
@@ -68,6 +68,60 @@ class CardView extends PartView {
                     "Hide Toolbox",
                     (event) => {
                         toolbox.partProperties.setPropertyNamed(toolbox, "hide", true);
+                    }
+                );
+            }
+        }
+        let layout = this.model.partProperties.getPropertyNamed(
+            this.model,
+            'layout'
+        );
+        let direction = this.model.partProperties.getPropertyNamed(
+            this.model,
+            'list-direction'
+        );
+        // Now we construct the submenu for toggling layouts
+        let submenu = document.createElement('st-context-menu');
+        submenu.hideHeader();
+        ['strict', 'list', 'grid'].forEach((option) => {
+            submenu.addListItem(
+                `Set Layout to ${option[0].toUpperCase() + option.slice(1)}`,
+                (event) => {
+                    this.model.partProperties.setPropertyNamed(
+                        this.model,
+                        'layout',
+                        option
+                    );
+                }
+            );
+        })
+        contextMenu.addListItem(
+            'Select a layout',
+            null,
+            submenu
+        );
+
+        if(layout == 'list'){
+            if(direction == 'row'){
+                contextMenu.addListItem(
+                    "Set List Direction to Column",
+                    (event) => {
+                        this.model.partProperties.setPropertyNamed(
+                            this.model,
+                            'list-direction',
+                            'column'
+                        );
+                    }
+                );
+            } else {
+                contextMenu.addListItem(
+                    "Set List Direction to Row",
+                    (event) => {
+                        this.model.partProperties.setPropertyNamed(
+                            this.model,
+                            'list-direction',
+                            'row'
+                        );
                     }
                 );
             }

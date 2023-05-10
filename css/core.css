@@ -199,6 +199,26 @@ st-field {
 
 /* =Layout Class Styles
  * --------------------------------------------------------*/
+
+/* areas have an internal wrapper where subparts DOM elements
+   actually reside; see the template definition and style
+   AreaView.js*/
+:not(st-area).grid-layout {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    grid-template-rows: repeat(3, 1fr);
+}
+
+.grid-layout > *:not(st-window):not(st-editor) {
+    position: relative !important;
+    top: auto !important;
+    left: auto !important;
+}
+
+.grid-layout > * {
+    place-self: center;
+}
+
 .list-layout {
     display: flex;
     flex-direction: row;
