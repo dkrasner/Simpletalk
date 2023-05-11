@@ -192,6 +192,12 @@ const cssStyler = (styleObj, propertyName, propertyValue) => {
         _setOrNot(styleObj, "transform",  _intToRotateDeg(propertyValue));
         break;
 
+    case "grid-size":
+        const [columnTemplate, rowTemplate] = _tupleToGrid(propertyValue);
+        _setOrNot(styleObj, "grid-template-columns", columnTemplate);
+        _setOrNot(styleObj, "grid-template-rows", rowTemplate);
+        break;
+
     case "transparency":
         _setOrNot(styleObj, "opacity",  propertyValue);
         break;
@@ -236,6 +242,16 @@ const _intToRotateDeg = (n) => {
     }
 };
 
+const _tupleToGrid = (t) => {
+    if (t !== null && t !== undefined) {
+        t = t.split(",");
+        return [
+            `repeat(${t[0].trim()}, 1fr)`,
+            `repeat(${t[1].trim()}, 1fr)`
+        ]
+    }
+    return [null, null];
+};
 
 const _intToPx = (n) => {
     if(n !== null && n !== undefined){

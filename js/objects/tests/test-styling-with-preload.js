@@ -284,6 +284,19 @@ describe('Styling Properties', () => {
             buttonModel = buttonView.model;
             assert.exists(buttonModel);
         });
+        it('By default parts have no grid layout defined', () => {
+            assert.isFalse(currentCardView.classList.contains("grid-layout"));
+        });
+        it('Setting layout to grid adds corresponding class', () => {
+            currentCardModel.partProperties.setPropertyNamed(currentCardModel, "layout", "grid");
+            assert.isTrue(currentCardView.classList.contains("grid-layout"));
+        });
+        it('Setting grid size', () => {
+            currentCardModel.partProperties.setPropertyNamed(currentCardModel, "grid-size", "3,4");
+            let styleProp = currentCardModel.partProperties.getPropertyNamed(currentCardModel, "cssStyle");
+            assert.equal(styleProp['grid-template-columns'], "repeat(3, 1fr)");
+            assert.equal(styleProp['grid-template-rows'], "repeat(4, 1fr)");
+        });
         it('By default parts have no grid position defined', () => {
             let styleProp = buttonModel.partProperties.getPropertyNamed(buttonModel, "cssStyle");
             assert.notExists(styleProp['grid-column']);

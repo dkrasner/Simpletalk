@@ -361,6 +361,14 @@ const addLayoutStyleProps = (target) => {
         'strict'
     );
 
+    // grid size determines the number of
+    // columns and rows for the grid.
+    // Example: N,M for N columns and M rows 
+    target.partProperties.newStyleProp(
+        'grid-size',
+        null
+    );
+
     // list-direction specifies row or column
     // and will only have an effect whent the
     // layout property is set to 'list'
