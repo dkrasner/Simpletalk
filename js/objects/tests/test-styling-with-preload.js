@@ -272,4 +272,39 @@ describe('Styling Properties', () => {
             assert.equal(buttonView.style['textAlign'], 'center');
         });
     });
+    describe('grid', () => {
+        let currentCardView;
+        let buttonView;
+        let buttonModel;
+        before(() => {
+            currentCardView = document.querySelector('.current-stack > .current-card');
+            buttonView = currentCardView.querySelector('st-button');
+            assert.exists(buttonView);
+            currentCardModel = currentCardView.model;
+            buttonModel = buttonView.model;
+            assert.exists(buttonModel);
+        });
+        it('By default parts have no grid position defined', () => {
+            let styleProp = buttonModel.partProperties.getPropertyNamed(buttonModel, "cssStyle");
+            assert.notExists(styleProp['grid-column']);
+            assert.notExists(styleProp['grid-row']);
+        });
+        it('Setting the grid column', () => {
+            buttonModel.partProperties.setPropertyNamed(buttonModel, "grid-column", 3);
+            let styleProp = buttonModel.partProperties.getPropertyNamed(buttonModel, "cssStyle");
+            assert.equal(styleProp['grid-column'], "3");
+        });
+        it('Setting the grid row', () => {
+            buttonModel.partProperties.setPropertyNamed(buttonModel, "grid-row", 3);
+            let styleProp = buttonModel.partProperties.getPropertyNamed(buttonModel, "cssStyle");
+            assert.equal(styleProp['grid-row'], "3");
+        });
+        it('Can set any column / row value', () => {
+            buttonModel.partProperties.setPropertyNamed(buttonModel, "grid-row", "1 / 3");
+            buttonModel.partProperties.setPropertyNamed(buttonModel, "grid-column", "span 2");
+            let styleProp = buttonModel.partProperties.getPropertyNamed(buttonModel, "cssStyle");
+            assert.equal(styleProp['grid-row'], "1 / 3");
+            assert.equal(styleProp['grid-column'], "span 2");
+        });
+    });
 });
