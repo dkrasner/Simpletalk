@@ -12,8 +12,8 @@ const templateString = /* html */`
 <style>
     :host(.grid-layout) > #area-wrapper {
         display: grid;
-        grid-template-columns: repeat(3, 1fr);
-        grid-template-rows: repeat(3, 1fr);
+        grid-template-columns: inherit;
+        grid-template-rows: inherit;
     }
 
     :host(.grid-layout) > #area-wrapper > * {

@@ -205,8 +205,6 @@ st-field {
    AreaView.js*/
 :not(st-area).grid-layout {
     display: grid;
-    grid-template-columns: repeat(3, 1fr);
-    grid-template-rows: repeat(3, 1fr);
 }
 
 .grid-layout > *:not(st-window):not(st-editor) {

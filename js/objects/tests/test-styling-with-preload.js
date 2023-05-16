@@ -292,9 +292,11 @@ describe('Styling Properties', () => {
             assert.isTrue(currentCardView.classList.contains("grid-layout"));
         });
         it('Setting grid size', () => {
-            currentCardModel.partProperties.setPropertyNamed(currentCardModel, "grid-size", "3,4");
+            currentCardModel.partProperties.setPropertyNamed(currentCardModel, "grid-size-columns", 3);
             let styleProp = currentCardModel.partProperties.getPropertyNamed(currentCardModel, "cssStyle");
             assert.equal(styleProp['grid-template-columns'], "repeat(3, 1fr)");
+            currentCardModel.partProperties.setPropertyNamed(currentCardModel, "grid-size-rows", 4);
+            styleProp = currentCardModel.partProperties.getPropertyNamed(currentCardModel, "cssStyle");
             assert.equal(styleProp['grid-template-rows'], "repeat(4, 1fr)");
         });
         it('By default parts have no grid position defined', () => {
