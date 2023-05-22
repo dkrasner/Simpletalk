@@ -192,6 +192,12 @@ const cssStyler = (styleObj, propertyName, propertyValue) => {
         _setOrNot(styleObj, "transform",  _intToRotateDeg(propertyValue));
         break;
 
+    case "grid-size-columns":
+    case "grid-size-rows":
+        const colsOrRows = propertyName.split("-")[2];
+        _setOrNot(styleObj, `grid-template-${colsOrRows}`, `repeat(${propertyValue}, 1fr)`);
+        break;
+
     case "transparency":
         _setOrNot(styleObj, "opacity",  propertyValue);
         break;
@@ -235,7 +241,6 @@ const _intToRotateDeg = (n) => {
         return `rotate(${n}deg)`;
     }
 };
-
 
 const _intToPx = (n) => {
     if(n !== null && n !== undefined){
@@ -297,7 +302,6 @@ const _colorTransparencyToRGBA = (cssColor, tValue) => {
     } else {
         [r, g, b] = cssColor.match(/\d+/g);
     }
-    
     return `rgba(${r}, ${g}, ${b}, ${tValue})`;
 }
 

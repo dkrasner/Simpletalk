@@ -426,10 +426,12 @@ class PartView extends HTMLElement {
     }
 
     layoutChanged(value, partId) {
+        // clear out all layout classes first
+        this.classList.remove('list-layout', 'grid-layout');
         if (value == 'list') {
             this.classList.add('list-layout');
-        } else {
-            this.classList.remove('list-layout');
+        } else if (value == 'grid') {
+            this.classList.add('grid-layout');
         }
     }
 

@@ -123,6 +123,17 @@ const addPositioningStyleProps = (target) => {
         'rotate',
         null,
     );
+    // column and row represent the part's
+    // coordinate within a grid (applicable only
+    // if the parent part layout is 'grid')
+    target.partProperties.newStyleProp(
+        'grid-column',
+        null,
+    );
+    target.partProperties.newStyleProp(
+        'grid-row',
+        null,
+    );
 
     // horizontal-resizing specifies a strategy
     // for how this Part should adjust its
@@ -348,6 +359,19 @@ const addLayoutStyleProps = (target) => {
     target.partProperties.newBasicProp(
         'layout',
         'strict'
+    );
+
+
+    // grid num of columns or rows, for layout grid
+    target.partProperties.newStyleProp(
+        'grid-size-columns',
+        5
+    );
+
+    // grid num of columns or rows, for layout grid
+    target.partProperties.newStyleProp(
+        'grid-size-rows',
+        3
     );
 
     // list-direction specifies row or column
