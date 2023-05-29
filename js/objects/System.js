@@ -132,7 +132,10 @@ const System = {
     updateTitle: function() {
         const world = this.partsById['world'];
         const name = world.partProperties.getPropertyNamed(world, "name");
-        document.querySelector("title").textContent = name;
+        const titleEl = document.querySelector("title");
+        if (titleEl) {
+            titleEl.textContent = name;
+        }
     },
 
     loadResources: function() {

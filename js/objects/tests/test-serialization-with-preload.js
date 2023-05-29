@@ -19,7 +19,8 @@ describe("Serialization / Deserialization Tests", () => {
     describe("JSON Serialization Tests", () => {
         // We will create a new button to
         // test serialization
-        let foundButton;
+        let initialButton;
+        let currentCard;
 
         it("Can match itself on multiple serializations", () => {
             window.System.serialize();
@@ -31,19 +32,19 @@ describe("Serialization / Deserialization Tests", () => {
             assert.equal(first, second);
         });
         it('Adding a button to current card will be serialized', () => {
-            let currentCard = System.getCurrentCardModel();
+            currentCard = System.getCurrentCardModel();
             System.newModel('button', currentCard.id, "My New Button");
-            foundButton = currentCard.subparts.find(subpart => {
+            initialButton = currentCard.subparts.find(subpart => {
                 let name = subpart.partProperties.getPropertyNamed(
                     subpart,
                     'name'
                 );
                 return name == "My New Button";
             });
-            assert.exists(foundButton);
+            assert.exists(initialButton);
             let serialization = getSerializationString();
             let json = JSON.parse(serialization);
-            assert.include(Object.keys(json.parts), foundButton.id.toString());
+            assert.include(Object.keys(json.parts), initialButton.id.toString());
         });
         it("Loading from new serialization, we get the correct button", () => {
             // Clear models and views
@@ -51,16 +52,41 @@ describe("Serialization / Deserialization Tests", () => {
             document.querySelector('st-world').remove();
             System.deserialize().then(() => {
                 let currentCard = System.getCurrentCardModel();
-                foundButton = currentCard.subparts.find(subpart => {
+                initialButton = currentCard.subparts.find(subpart => {
                     let name = subpart.partProperties.getPropertyNamed(
                         subpart,
                         'name'
                     );
                     return name == "My New Button";
                 });
-                assert.exists(foundButton);
+                assert.exists(initialButton);
             });
         });
+        describe("Serializing/Deserializing specific parts", () => {
+            let initialButton;
+            let initialArea;
+            it("Can add a button and area to the initial card", () => {
+                currentCard = window.System.getCurrentCardModel();
+                assert.exists(currentCard);
+                initialButton = window.System.newModel('button', currentCard.id, "Initial Button");
+                assert.exists(initialButton);
+                initialArea = window.System.newModel('area', currentCard.id, "Initial Area");
+                assert.exists(initialArea);
+                System.serialize();
+            });
+            it("current card toJSONString() matches serialization", () => {
+                const json = currentCard.toJSONString();
+                assert.isTrue(serializationMatch(json));
+            })
+            it("button toJSONString() matches serialization", () => {
+                const json = initialButton.toJSONString();
+                assert.isTrue(serializationMatch(json));
+            })
+            it("area toJSONString() matches serialization", () => {
+                const json = initialArea.toJSONString();
+                assert.isTrue(serializationMatch(json));
+            })
+        })
     });
 
     describe("HTML saving tests", () => {
@@ -73,3 +99,18 @@ describe("Serialization / Deserialization Tests", () => {
         });
     });
 });
+
+const serializationMatch = function(json) {
+    json = JSON.parse(json);
+    const serialization = document.getElementById("serialization");
+    const serializationJSON = JSON.parse(serialization.textContent);
+    const partJSON = json.parts[json.id];
+    const jsonMatch = (
+        JSON.stringify(partJSON) == JSON.stringify(serializationJSON.parts[json.id])
+    );
+    const allPartIDs = Object.keys(serializationJSON.parts);
+    const subPartMatch = partJSON.subparts.every((id) => {
+        return allPartIDs.indexOf(id) > -1;
+    });
+    return jsonMatch && subPartMatch;
+}

@@ -15,6 +15,7 @@ import {
     DynamicProperty
 } from '../properties/PartProperties.js';
 
+import { STDeserializer, STSerializer } from '../utils/serialization.js';
 import {ActivationContext} from '../ExecutionStack.js';
 
 
@@ -63,7 +64,7 @@ class Part {
         this.addViewSubscriber = this.addViewSubscriber.bind(this);
         this.removeViewSubscriber = this.removeViewSubscriber.bind(this);
         this.serialize = this.serialize.bind(this);
-        this.toJSON = this.toJSON.bind(this);
+        this.toJSONString = this.toJSONString.bind(this);
         this.setPropsFromDeserializer = this.setPropsFromDeserializer.bind(this);
         this.findAncestorOfType = this.findAncestorOfType.bind(this);
         this.openEditorCmdHandler = this.openEditorCmdHandler.bind(this);
@@ -769,8 +770,12 @@ class Part {
         });
     }
 
-    toJSON(){
-        return this.serialize();
+    /**
+      * I return my full JSON serialization (string) object
+      */
+    toJSONString(){
+        const serializer = new STSerializer(window.System);
+        return serializer.serialize(this, false);
     }
 
     findAncestorOfType(aPartType){
