@@ -109,7 +109,10 @@ const System = {
                     System.navigator.setModel(
                         System.partsById['world']
                     );
+                    this.isLoaded = true;
 
+                    //update the tab title
+                    this.updateTitle();
                     // By default, we render the World in the
                     // Comprehensive Editor
                     //this.editor.render(this.world);
@@ -124,10 +127,12 @@ const System = {
 
         // Attach a new clipboard instance
         this.clipboard = new STClipboard(this);
+    },
 
-        // By this point we should have a WorldView with
-        // a model attached.
-        this.isLoaded = true;
+    updateTitle: function() {
+        const world = this.partsById['world'];
+        const name = world.partProperties.getPropertyNamed(world, "name");
+        document.querySelector("title").textContent = name;
     },
 
     loadResources: function() {
@@ -169,6 +174,9 @@ const System = {
         System.navigator.setModel(
             System.partsById['world']
         );
+        this.isLoaded = true;
+        //update the tab title
+        this.updateTitle();
     },
 
     sendInitialOpenMessages: function(){
