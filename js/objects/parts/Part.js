@@ -65,6 +65,7 @@ class Part {
         this.removeViewSubscriber = this.removeViewSubscriber.bind(this);
         this.serialize = this.serialize.bind(this);
         this.toJSONString = this.toJSONString.bind(this);
+        this.importFromJSONString = this.importFromJSONString.bind(this);
         this.setPropsFromDeserializer = this.setPropsFromDeserializer.bind(this);
         this.findAncestorOfType = this.findAncestorOfType.bind(this);
         this.openEditorCmdHandler = this.openEditorCmdHandler.bind(this);
@@ -773,9 +774,17 @@ class Part {
     /**
       * I return my full JSON serialization (string) object
       */
-    toJSONString(){
+    toJSONString() {
         const serializer = new STSerializer(window.System);
         return serializer.serialize(this, false);
+    }
+
+    importFromJSONString(aJSONString) {
+        let deserializer = new STDeserializer(window.system);
+        deserializer.targetId = this.id;
+        // NOTE: the deserializer requires a filter func as 2nd arg
+        // here we don't want to filter out any subparts
+        deserializer.importFromSerialization(aJSONString, (item) => item);
     }
 
     findAncestorOfType(aPartType){
