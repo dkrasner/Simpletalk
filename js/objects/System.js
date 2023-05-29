@@ -724,18 +724,22 @@ const System = {
         const reader = new FileReader();
         reader.readAsText(fileOrBlob);
         reader.onload = () => {
-            const parsedDocument = DOMparser.parseFromString(reader.result, "text/html");
-            // there is no .getElementById() for a node HTML parsed document!
-            const serializationEl = parsedDocument.querySelector('#serialization');
-            if(!serializationEl){
-                console.log(`No serialization found for ${sourceUrl}`);
-                alert(`World "${sourceUrl}" not found`);
-                return;
+            let serialization = reader.result;
+            if (fileOrBlob.type == "text/html") {
+                const parsedDocument = DOMparser.parseFromString(serialization, "text/html");
+                // there is no .getElementById() for a node HTML parsed document!
+                const serializationEl = parsedDocument.querySelector('#serialization');
+                if (!serializationEl) {
+                    console.log(`No serialization found for ${sourceUrl}`);
+                    alert(`World "${sourceUrl}" not found`);
+                    return;
+                }
+                serialization = serializationEl.textContent;
             }
             this._deserializer = new STDeserializer(this);
             this._deserializer.targetId = 'world'; // We will insert the stacks into the world
             return this._deserializer.importFromSerialization(
-                serializationEl.textContent,
+                serialization,
                 (part) => {
                     // Return only Stacks that are direct subparts
                     // of the world.
@@ -933,7 +937,10 @@ System._commandHandlers['importWorld'] = async function(sender, sourceUrl){
     }
 
     const contentType = response.headers.get('content-type');
-    if(!contentType.startsWith('text/html')){
+    const okContentType = (
+        contentType.startsWith('text/html') || contentType.startsWith("application/json")
+    );
+    if(!okContentType){
         throw new Error(`Invalid content type: ${contentType}`);
     }
     const blob = await response.blob();
@@ -943,7 +950,7 @@ System._commandHandlers['importWorld'] = async function(sender, sourceUrl){
 System._commandHandlers['importLocalWorld'] = function(sender){
     const input = document.createElement("input");
     input.setAttribute("type", "file");
-    input.setAttribute("accept", ".html");
+    input.setAttribute("accept", ".html,.json");
     input.addEventListener("change", (event) => {
         const file = event.target.files[0]; // only the first one!
         this.readAndDeserialize(file);
@@ -1189,6 +1196,31 @@ System._commandHandlers['openGrammar'] = function(senders, partId, ruleName){
         'height',
         "fill"
     );
+};
+
+System._commandHandlers['save'] = function(senders, fileName){
+    if(!fileName){
+        // use the world name
+        const world = this.partsById['world'];
+        fileName = world.partProperties.getPropertyNamed(world, "name");
+    }
+    this.serialize();
+
+    const serializationEl = document.querySelector('#serialization');
+
+    const json = serializationEl.textContent;
+
+    const typeInfo = "data:text/plain;charset=utf-8";
+    const url = `${typeInfo},${encodeURIComponent(json)}`;
+
+    const anchor = document.createElement('a');
+    anchor.style.display = "none";
+    document.body.append(anchor);
+    anchor.href = url;
+    anchor.download = `${fileName}.json`;
+    anchor.click();
+    window.URL.revokeObjectURL(url);
+    anchor.parentElement.removeChild(anchor);
 };
 
 System._commandHandlers['saveHTML'] = function(senders, fileName){
