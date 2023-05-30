@@ -22,7 +22,7 @@ class WorldStack extends Part {
     constructor(){
         super(null);
 
-        this.acceptedSubpartTypes = ["stack", "image"];
+        this.acceptedSubpartTypes = ["stack"];
 
         this.isWorld = true;
 
