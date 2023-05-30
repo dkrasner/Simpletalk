@@ -729,43 +729,6 @@ const System = {
         return clonedDocument.documentElement.outerHTML;
     },
 
-    // Use an instance of FileReader to read incoming
-    // file or response data as text, then deserialize
-    readAndDeserialize(fileOrBlob){
-        const reader = new FileReader();
-        reader.readAsText(fileOrBlob);
-        reader.onload = () => {
-            let serialization = reader.result;
-            if (fileOrBlob.type == "text/html") {
-                const parsedDocument = DOMparser.parseFromString(serialization, "text/html");
-                // there is no .getElementById() for a node HTML parsed document!
-                const serializationEl = parsedDocument.querySelector('#serialization');
-                if (!serializationEl) {
-                    console.log(`No serialization found for ${sourceUrl}`);
-                    alert(`World "${sourceUrl}" not found`);
-                    return;
-                }
-                serialization = serializationEl.textContent;
-            }
-            this._deserializer = new STDeserializer(this);
-            this._deserializer.targetId = 'world'; // We will insert the stacks into the world
-            return this._deserializer.importFromSerialization(
-                serialization,
-                (part) => {
-                    // Return only Stacks that are direct subparts
-                    // of the world.
-                    const isStack = part.type == 'stack';
-                    const isWorldSubpart = part._owner && part._owner.type == 'world';
-                    return isStack && isWorldSubpart;
-                }
-            );
-        };
-        reader.onerror = () => {
-            alert("Could not load world");
-            console.error(err);
-        }
-    },
-
     saveJSON(json, fileName) {
         const typeInfo = "data:text/plain;charset=utf-8";
         const url = `${typeInfo},${encodeURIComponent(json)}`;
@@ -991,18 +954,26 @@ System._commandHandlers['importWorld'] = async function(sender, sourceUrl){
         throw new Error(`Invalid content type: ${contentType}`);
     }
     const blob = await response.blob();
-    this.readAndDeserialize(blob)
-};
-
-System._commandHandlers['importLocalWorld'] = function(sender){
-    const input = document.createElement("input");
-    input.setAttribute("type", "file");
-    input.setAttribute("accept", ".html,.json");
-    input.addEventListener("change", (event) => {
-        const file = event.target.files[0]; // only the first one!
-        this.readAndDeserialize(file);
-    });
-    input.click();
+    const reader = new FileReader();
+    reader.readAsText(blob);
+    reader.onload = () => {
+        let serialization = reader.result;
+        const parsedDocument = DOMparser.parseFromString(serialization, "text/html");
+        // there is no .getElementById() for a node HTML parsed document!
+        const serializationEl = parsedDocument.querySelector('#serialization');
+        if (!serializationEl) {
+            console.log(`No serialization found for ${sourceUrl}`);
+            alert(`World "${sourceUrl}" not found`);
+            return;
+        }
+        serialization = serializationEl.textContent;
+        const world = System.partsById["world"];
+        world.importFromJSONString(serialization);
+    };
+    reader.onerror = (err) => {
+        alert("Could not load world");
+        console.error(err);
+    }
 };
 
 System._commandHandlers['openScriptEditor'] = function(senders, targetId){
@@ -1243,31 +1214,6 @@ System._commandHandlers['openGrammar'] = function(senders, partId, ruleName){
         'height',
         "fill"
     );
-};
-
-System._commandHandlers['save'] = function(senders, fileName){
-    if(!fileName){
-        // use the world name
-        const world = this.partsById['world'];
-        fileName = world.partProperties.getPropertyNamed(world, "name");
-    }
-    this.serialize();
-
-    const serializationEl = document.querySelector('#serialization');
-
-    const json = serializationEl.textContent;
-
-    const typeInfo = "data:text/plain;charset=utf-8";
-    const url = `${typeInfo},${encodeURIComponent(json)}`;
-
-    const anchor = document.createElement('a');
-    anchor.style.display = "none";
-    document.body.append(anchor);
-    anchor.href = url;
-    anchor.download = `${fileName}.json`;
-    anchor.click();
-    window.URL.revokeObjectURL(url);
-    anchor.parentElement.removeChild(anchor);
 };
 
 System._commandHandlers['saveHTML'] = function(senders, fileName){
