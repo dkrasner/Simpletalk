@@ -245,6 +245,24 @@ class STDeserializer {
                     targetView.appendChild(view);
                     this.dispatchViewAdded(view);
                 });
+                return rootParts;
+            })
+            .then((rootParts) => {
+                rootParts.forEach(rootPart => {
+                    // Add any lensed views that might be needed
+                    let rootLensViews = this.system.findLensViewsById(rootPart._owner.id);
+                    rootLensViews.forEach(lensView => {
+                        let newLensView = document.createElement(
+                            this.system.tagNameForViewNamed(rootPart.type)
+                        );
+                        newLensView.setModel(rootPart);
+                        newLensView.removeAttribute('part-id');
+                        newLensView.setAttribute('lens-part-id', rootPart.id);
+                        newLensView.setAttribute('role', 'lens');
+                        lensView.appendChild(newLensView);
+                        this._createLensedChildren(newLensView, rootPart.subparts);
+                    });
+                });
             });
     }
 
