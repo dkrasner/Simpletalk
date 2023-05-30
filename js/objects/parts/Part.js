@@ -83,7 +83,8 @@ class Part {
         this.moveSubpartDown = this.moveSubpartDown.bind(this);
         this.moveSubpartToFirst = this.moveSubpartToFirst.bind(this);
         this.moveSubpartToLast = this.moveSubpartToLast.bind(this);
-
+        this.save = this.save.bind(this);
+        this.import = this.import.bind(this);
 
 
         // Finally, we finish initialization
@@ -102,6 +103,8 @@ class Part {
         this.setPrivateCommandHandler("moveDown", () => {this._owner.moveSubpartDown(this);});
         this.setPrivateCommandHandler("moveToFirst", () => {this._owner.moveSubpartToFirst(this);});
         this.setPrivateCommandHandler("moveToLast", () => {this._owner.moveSubpartToLast(this);});
+        this.setPrivateCommandHandler("save", this.save);
+        this.setPrivateCommandHandler("import", this.import);
     }
 
     // Convenience getter to get the id
@@ -606,6 +609,23 @@ class Part {
     moveSubpartToLast(part){
         let currentIndex = this.subparts.indexOf(part);
         this.subpartOrderChanged(part.id, currentIndex, this.subparts.length - 1);
+    }
+
+    /*
+     * I handle the 'save [fileName]' command which writes
+     * my json serialization to file. If not file name is provided
+     * i will use [this.type]_[name].json
+     */
+    save(senders, fileName) {
+        if (!fileName) {
+            fileName = `${this.type}_${this.partProperties.getPropertyNamed(this, "name")}`;
+        }
+        const jsonString = this.toJSONString();
+        window.System.saveJSON(jsonString, fileName);
+    }
+
+    import(senders) {
+        window.System.importFromJSONFile(this); 
     }
 
     /** Property Subscribers

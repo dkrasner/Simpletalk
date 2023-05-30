@@ -766,6 +766,42 @@ const System = {
         }
     },
 
+    saveJSON(json, fileName) {
+        const typeInfo = "data:text/plain;charset=utf-8";
+        const url = `${typeInfo},${encodeURIComponent(json)}`;
+
+        const anchor = document.createElement('a');
+        anchor.style.display = "none";
+        document.body.append(anchor);
+        anchor.href = url;
+        anchor.download = `${fileName}.json`;
+        anchor.click();
+        window.URL.revokeObjectURL(url);
+        anchor.parentElement.removeChild(anchor);
+    },
+
+    importFromJSONFile(targetPart) {
+        const input = document.createElement("input");
+        input.setAttribute("type", "file");
+        input.setAttribute("accept", ".html,.json");
+        input.addEventListener("change", (event) => {
+            const file = event.target.files[0]; // only the first one!
+            const reader = new FileReader();
+            reader.readAsText(file);
+            reader.onload = () => {
+                let serialization = reader.result;
+                targetPart.importFromJSONString(serialization);
+            }
+            reader.onerror = (err) => {
+                window.alert(`${targetPart.type} can't import the ${file.name} contents`);
+                console.error(err);
+            }
+        });
+        input.click();
+    },
+
+
+
     /** Navigation of Current World **/
     goToNextStack: function(){
         let world = this.partsById['world'];

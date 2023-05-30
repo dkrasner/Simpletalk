@@ -15,6 +15,7 @@ import Part from './Part.js';
 import {
     BasicProperty,
 } from '../properties/PartProperties.js';
+import { STDeserializer } from '../utils/serialization.js';
 
 
 class WorldStack extends Part {
@@ -259,6 +260,24 @@ class WorldStack extends Part {
         return result;
     }
 
+    /**
+      * Override the normal import since worlds cannot import
+      * other worlds but import thier stacks.
+      */
+    importFromJSONString(aJSONString) {
+        let deserializer = new STDeserializer(window.System);
+        deserializer.targetId = 'world';
+        deserializer.importFromSerialization(
+            aJSONString,
+            (part) => {
+                // Return only Stacks that are direct subparts
+                // of the world.
+                const isStack = part.type == 'stack';
+                const isWorldSubpart = part._owner && part._owner.type == 'world';
+                return isStack && isWorldSubpart;
+            }
+        );
+    }
     // Override for delegation.
     // We send any messages that should be delegated
     // to the global System object, which has any

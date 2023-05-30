@@ -121,6 +121,11 @@ describe("Serialization / Deserialization Tests", () => {
                     initialButton.partProperties.getPropertyNamed(initialButton, "name"),
                 )
             })
+            it("Importing into a button will throw error", async () => {
+                const areaJSONString = initialArea.toJSONString();
+                await initialButton.importFromJSONString(areaJSONString);
+                expect(initialButton.subparts).to.be.empty;
+            })
         })
     });
 
