@@ -779,8 +779,11 @@ class Part {
         return serializer.serialize(this, false);
     }
 
+    /**
+      * I add a serialized part (JSON string) to myself.
+      */
     importFromJSONString(aJSONString) {
-        let deserializer = new STDeserializer(window.system);
+        let deserializer = new STDeserializer(window.System);
         deserializer.targetId = this.id;
         // NOTE: the deserializer requires a filter func as 2nd arg
         // here we don't want to filter out any subparts

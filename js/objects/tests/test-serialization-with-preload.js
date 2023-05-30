@@ -86,6 +86,41 @@ describe("Serialization / Deserialization Tests", () => {
                 const json = initialArea.toJSONString();
                 assert.isTrue(serializationMatch(json));
             })
+            it("Can import button serialisation into area", () => {
+                const buttonJSONString = initialButton.toJSONString();
+                expect(() => {
+                    initialArea.importFromJSONString(buttonJSONString);
+                }).to.not.throw();
+            })
+            it("area now has button as subpart", () => {
+                const newButton = initialArea.subparts[0];
+                assert.exists(newButton);
+                assert.equal(
+                    newButton.partProperties.getPropertyNamed(newButton, "name"),
+                    initialButton.partProperties.getPropertyNamed(initialButton, "name"),
+                )
+            })
+            it("Can import area serialisation into area", () => {
+                const areaJSONString = initialArea.toJSONString();
+                expect(() => {
+                    initialArea.importFromJSONString(areaJSONString);
+                }).to.not.throw();
+            })
+            it("area now has area as subpart", () => {
+                const newArea = initialArea.subparts[1];
+                assert.exists(newArea);
+                assert.equal(
+                    newArea.partProperties.getPropertyNamed(newArea, "name"),
+                    initialArea.partProperties.getPropertyNamed(initialArea, "name"),
+                )
+                // check the button came along
+                const newButton = newArea.subparts[0];
+                assert.exists(newButton);
+                assert.equal(
+                    newButton.partProperties.getPropertyNamed(newButton, "name"),
+                    initialButton.partProperties.getPropertyNamed(initialButton, "name"),
+                )
+            })
         })
     });
 
