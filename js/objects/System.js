@@ -109,7 +109,10 @@ const System = {
                     System.navigator.setModel(
                         System.partsById['world']
                     );
+                    this.isLoaded = true;
 
+                    //update the tab title
+                    this.updateTitle();
                     // By default, we render the World in the
                     // Comprehensive Editor
                     //this.editor.render(this.world);
@@ -124,10 +127,15 @@ const System = {
 
         // Attach a new clipboard instance
         this.clipboard = new STClipboard(this);
+    },
 
-        // By this point we should have a WorldView with
-        // a model attached.
-        this.isLoaded = true;
+    updateTitle: function() {
+        const world = this.partsById['world'];
+        const name = world.partProperties.getPropertyNamed(world, "name");
+        const titleEl = document.querySelector("title");
+        if (titleEl) {
+            titleEl.textContent = name;
+        }
     },
 
     loadResources: function() {
@@ -169,6 +177,9 @@ const System = {
         System.navigator.setModel(
             System.partsById['world']
         );
+        this.isLoaded = true;
+        //update the tab title
+        this.updateTitle();
     },
 
     sendInitialOpenMessages: function(){
@@ -718,38 +729,41 @@ const System = {
         return clonedDocument.documentElement.outerHTML;
     },
 
-    // Use an instance of FileReader to read incoming
-    // file or response data as text, then deserialize
-    readAndDeserialize(fileOrBlob){
-        const reader = new FileReader();
-        reader.readAsText(fileOrBlob);
-        reader.onload = () => {
-            const parsedDocument = DOMparser.parseFromString(reader.result, "text/html");
-            // there is no .getElementById() for a node HTML parsed document!
-            const serializationEl = parsedDocument.querySelector('#serialization');
-            if(!serializationEl){
-                console.log(`No serialization found for ${sourceUrl}`);
-                alert(`World "${sourceUrl}" not found`);
-                return;
-            }
-            this._deserializer = new STDeserializer(this);
-            this._deserializer.targetId = 'world'; // We will insert the stacks into the world
-            return this._deserializer.importFromSerialization(
-                serializationEl.textContent,
-                (part) => {
-                    // Return only Stacks that are direct subparts
-                    // of the world.
-                    const isStack = part.type == 'stack';
-                    const isWorldSubpart = part._owner && part._owner.type == 'world';
-                    return isStack && isWorldSubpart;
-                }
-            );
-        };
-        reader.onerror = () => {
-            alert("Could not load world");
-            console.error(err);
-        }
+    saveJSON(json, fileName) {
+        const typeInfo = "data:text/plain;charset=utf-8";
+        const url = `${typeInfo},${encodeURIComponent(json)}`;
+
+        const anchor = document.createElement('a');
+        anchor.style.display = "none";
+        document.body.append(anchor);
+        anchor.href = url;
+        anchor.download = `${fileName}.json`;
+        anchor.click();
+        window.URL.revokeObjectURL(url);
+        anchor.parentElement.removeChild(anchor);
     },
+
+    importFromJSONFile(targetPart) {
+        const input = document.createElement("input");
+        input.setAttribute("type", "file");
+        input.setAttribute("accept", ".html,.json");
+        input.addEventListener("change", (event) => {
+            const file = event.target.files[0]; // only the first one!
+            const reader = new FileReader();
+            reader.readAsText(file);
+            reader.onload = () => {
+                let serialization = reader.result;
+                targetPart.importFromJSONString(serialization);
+            }
+            reader.onerror = (err) => {
+                window.alert(`${targetPart.type} can't import the ${file.name} contents`);
+                console.error(err);
+            }
+        });
+        input.click();
+    },
+
+
 
     /** Navigation of Current World **/
     goToNextStack: function(){
@@ -933,22 +947,33 @@ System._commandHandlers['importWorld'] = async function(sender, sourceUrl){
     }
 
     const contentType = response.headers.get('content-type');
-    if(!contentType.startsWith('text/html')){
+    const okContentType = (
+        contentType.startsWith('text/html') || contentType.startsWith("application/json")
+    );
+    if(!okContentType){
         throw new Error(`Invalid content type: ${contentType}`);
     }
     const blob = await response.blob();
-    this.readAndDeserialize(blob)
-};
-
-System._commandHandlers['importLocalWorld'] = function(sender){
-    const input = document.createElement("input");
-    input.setAttribute("type", "file");
-    input.setAttribute("accept", ".html");
-    input.addEventListener("change", (event) => {
-        const file = event.target.files[0]; // only the first one!
-        this.readAndDeserialize(file);
-    });
-    input.click();
+    const reader = new FileReader();
+    reader.readAsText(blob);
+    reader.onload = () => {
+        let serialization = reader.result;
+        const parsedDocument = DOMparser.parseFromString(serialization, "text/html");
+        // there is no .getElementById() for a node HTML parsed document!
+        const serializationEl = parsedDocument.querySelector('#serialization');
+        if (!serializationEl) {
+            console.log(`No serialization found for ${sourceUrl}`);
+            alert(`World "${sourceUrl}" not found`);
+            return;
+        }
+        serialization = serializationEl.textContent;
+        const world = System.partsById["world"];
+        world.importFromJSONString(serialization);
+    };
+    reader.onerror = (err) => {
+        alert("Could not load world");
+        console.error(err);
+    }
 };
 
 System._commandHandlers['openScriptEditor'] = function(senders, targetId){

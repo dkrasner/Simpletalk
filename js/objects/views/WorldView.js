@@ -50,6 +50,7 @@ class WorldView extends PartView {
     setupPropHandlers(){
         this.onPropChange('current', this.updateCurrentStack);
         this.onPropChange('navigator-open', this.toggleNavigator);
+        this.onPropChange('name', () => {window.System.updateTitle();});
     }
 
     afterConnected(){

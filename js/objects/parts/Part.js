@@ -15,6 +15,7 @@ import {
     DynamicProperty
 } from '../properties/PartProperties.js';
 
+import { STDeserializer, STSerializer } from '../utils/serialization.js';
 import {ActivationContext} from '../ExecutionStack.js';
 
 
@@ -63,7 +64,8 @@ class Part {
         this.addViewSubscriber = this.addViewSubscriber.bind(this);
         this.removeViewSubscriber = this.removeViewSubscriber.bind(this);
         this.serialize = this.serialize.bind(this);
-        this.toJSON = this.toJSON.bind(this);
+        this.toJSONString = this.toJSONString.bind(this);
+        this.importFromJSONString = this.importFromJSONString.bind(this);
         this.setPropsFromDeserializer = this.setPropsFromDeserializer.bind(this);
         this.findAncestorOfType = this.findAncestorOfType.bind(this);
         this.openEditorCmdHandler = this.openEditorCmdHandler.bind(this);
@@ -81,7 +83,8 @@ class Part {
         this.moveSubpartDown = this.moveSubpartDown.bind(this);
         this.moveSubpartToFirst = this.moveSubpartToFirst.bind(this);
         this.moveSubpartToLast = this.moveSubpartToLast.bind(this);
-
+        this.save = this.save.bind(this);
+        this.import = this.import.bind(this);
 
 
         // Finally, we finish initialization
@@ -100,6 +103,8 @@ class Part {
         this.setPrivateCommandHandler("moveDown", () => {this._owner.moveSubpartDown(this);});
         this.setPrivateCommandHandler("moveToFirst", () => {this._owner.moveSubpartToFirst(this);});
         this.setPrivateCommandHandler("moveToLast", () => {this._owner.moveSubpartToLast(this);});
+        this.setPrivateCommandHandler("save", this.save);
+        this.setPrivateCommandHandler("import", this.import);
     }
 
     // Convenience getter to get the id
@@ -606,6 +611,23 @@ class Part {
         this.subpartOrderChanged(part.id, currentIndex, this.subparts.length - 1);
     }
 
+    /*
+     * I handle the 'save [fileName]' command which writes
+     * my json serialization to file. If not file name is provided
+     * i will use [this.type]_[name].json
+     */
+    save(senders, fileName) {
+        if (!fileName) {
+            fileName = `${this.type}_${this.partProperties.getPropertyNamed(this, "name")}`;
+        }
+        const jsonString = this.toJSONString();
+        window.System.saveJSON(jsonString, fileName);
+    }
+
+    import(senders) {
+        window.System.importFromJSONFile(this); 
+    }
+
     /** Property Subscribers
         ------------------------
         Objects added as property subscribers
@@ -769,8 +791,23 @@ class Part {
         });
     }
 
-    toJSON(){
-        return this.serialize();
+    /**
+      * I return my full JSON serialization (string) object
+      */
+    toJSONString() {
+        const serializer = new STSerializer(window.System);
+        return serializer.serialize(this, false);
+    }
+
+    /**
+      * I add a serialized part (JSON string) to myself.
+      */
+    importFromJSONString(aJSONString) {
+        let deserializer = new STDeserializer(window.System);
+        deserializer.targetId = this.id;
+        // NOTE: the deserializer requires a filter func as 2nd arg
+        // here we don't want to filter out any subparts
+        deserializer.importFromSerialization(aJSONString, (item) => item);
     }
 
     findAncestorOfType(aPartType){

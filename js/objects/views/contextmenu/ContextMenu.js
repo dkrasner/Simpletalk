@@ -81,6 +81,7 @@ class ContextMenu extends HTMLElement {
         this.addMovementItems = this.addMovementItems.bind(this);
         this.addPartSubmenu = this.addPartSubmenu.bind(this);
         this.addSaveSnapshotItem = this.addSaveSnapshotItem.bind(this);
+        this.addImportPart = this.addImportPart.bind(this);
         this.addListItem = this.addListItem.bind(this);
         this.addSpacer = this.addSpacer.bind(this);
         this.hideHeader = this.hideHeader.bind(this);
@@ -104,6 +105,7 @@ class ContextMenu extends HTMLElement {
         this.addMovementItems();
         this.addNavigatorToggleItem();
         this.addSaveSnapshotItem();
+        this.addImportPart();
 
         // Add View-specific items
         let view = document.querySelector(`[part-id="${this.model.id}"]`);
@@ -129,13 +131,26 @@ class ContextMenu extends HTMLElement {
 
     addSaveSnapshotItem(){
         this.addListItem(
-            'Save Snapshot...',
+            'Save',
             (event) => {
                 window.System.world.sendMessage({
                     type: 'command',
-                    commandName: 'saveHTML',
+                    commandName: 'save',
                     args: []
-                }, window.System.world);
+                }, this.model);
+            }
+        );
+    }
+
+    addImportPart() {
+        this.addListItem(
+            'Import',
+            (event) => {
+                window.System.world.sendMessage({
+                    type: 'command',
+                    commandName: 'import',
+                    args: []
+                }, this.model);
             }
         );
     }
@@ -255,7 +270,7 @@ class ContextMenu extends HTMLElement {
                 }
             );
         }
-        
+
         let cardAncestor = this.model.findAncestorOfType('card');
         if(this.model.type != 'card' && cardAncestor){
             this.addListItem(
