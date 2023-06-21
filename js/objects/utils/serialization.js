@@ -37,6 +37,7 @@ class STDeserializer {
         this.attachSubparts = this.attachSubparts.bind(this);
         this.setProperties = this.setProperties.bind(this);
         this.createView = this.createView.bind(this);
+        this.createLensedChildren = this.createLensedChildren.bind(this);
         this.attachView = this.attachView.bind(this);
         this.setViewModel = this.setViewModel.bind(this);
         this.compilePartScript = this.compilePartScript.bind(this);
@@ -211,6 +212,20 @@ class STDeserializer {
         }
     }
 
+    createLensedChildren(aLensView, subparts) {
+        subparts.forEach(subpart => {
+            let newLensView = document.createElement(
+                this.system.tagNameForViewNamed(subpart.type)
+            );
+            newLensView.setModel(subpart);
+            newLensView.removeAttribute('part-id');
+            newLensView.setAttribute('lens-part-id', subpart.id);
+            newLensView.setAttribute('role', 'lens');
+            aLensView.appendChild(newLensView);
+            this.createLensedChildren(newLensView, subpart.subparts);
+        });
+    }
+
     importFromSerialization(aJSONString, filterFunction){
         this.data = JSON.parse(aJSONString);
         let target = this.system.partsById[this.targetId];
@@ -240,10 +255,12 @@ class STDeserializer {
             })
             .then((rootParts) => {
                 rootParts.forEach(rootPart => {
-                    let view = this._viewsCache[rootPart.id];
-                    target.addPart(rootPart);
-                    targetView.appendChild(view);
-                    this.dispatchViewAdded(view);
+                    if (!rootPart._owner || rootPart._owner.name == "WorldStack") {
+                        let view = this._viewsCache[rootPart.id];
+                        target.addPart(rootPart);
+                        targetView.appendChild(view);
+                        this.dispatchViewAdded(view);
+                    }
                 });
                 return rootParts;
             })
@@ -260,7 +277,7 @@ class STDeserializer {
                         newLensView.setAttribute('lens-part-id', rootPart.id);
                         newLensView.setAttribute('role', 'lens');
                         lensView.appendChild(newLensView);
-                        this._createLensedChildren(newLensView, rootPart.subparts);
+                        this.createLensedChildren(newLensView, rootPart.subparts);
                     });
                 });
             });
