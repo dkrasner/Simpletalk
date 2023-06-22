@@ -40,8 +40,6 @@ class PartView extends HTMLElement {
 
         // Note: see getter for wantsHaloMove
 
-        // Context menu settings
-        this.wantsContextMenu = true;
 
         // Bind component methods
         this.setModel = this.setModel.bind(this);
@@ -856,9 +854,10 @@ class PartView extends HTMLElement {
     }
 
     onContextMenuClick(event) {
-        if (this.wantsContextMenu) {
-            event.preventDefault();
-            event.stopPropagation();
+        // we always prevent default ie the browser context menu
+        event.preventDefault();
+        event.stopPropagation();
+        if (this.model.partProperties.getPropertyNamed(this.model, "wants-context-menu")) {
             if (this.contextMenuIsOpen) {
                 this.closeContextMenu();
             } else {

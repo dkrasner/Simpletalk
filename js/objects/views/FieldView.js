@@ -102,7 +102,6 @@ class FieldView extends PartView {
         this.contextMenuOpen = false;
         this.haloLockUnlockButton = null;
         this.selectionRanges = {};
-        this.wantsContextMenu = false;
 
         // Presets for syntax highlighting.
         // When highlighting is enabled, we will check

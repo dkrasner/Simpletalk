@@ -192,6 +192,10 @@ class Part {
                 false
             ),
             new BasicProperty(
+                'wants-context-menu',
+                true
+            ),
+            new BasicProperty(
                 'id',
                 idMaker.new()
             ),
