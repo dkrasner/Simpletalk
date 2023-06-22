@@ -857,7 +857,12 @@ class PartView extends HTMLElement {
         // we always prevent default ie the browser context menu
         event.preventDefault();
         event.stopPropagation();
-        if (this.model.partProperties.getPropertyNamed(this.model, "wants-context-menu")) {
+        // check to see if this is an editable world
+        const world = window.System.partsById['world'];
+        const locked = world.partProperties.getPropertyNamed('world', "lock");
+        // make sure the world is not locked and the context menu is accepted
+        const wantsCM = this.model.partProperties.getPropertyNamed(this.model, "wants-context-menu");
+        if (!locked && wantsCM) {
             if (this.contextMenuIsOpen) {
                 this.closeContextMenu();
             } else {
@@ -891,7 +896,10 @@ class PartView extends HTMLElement {
     }
 
     onHaloActivationClick(event) {
-        if (this.wantsHalo) {
+        // check to see if this is an editable world
+        const world = window.System.partsById['world'];
+        const locked = world.partProperties.getPropertyNamed('world', "lock");
+        if (!locked && this.wantsHalo) {
             if (this.hasOpenHalo) {
                 this.model.partProperties.setPropertyNamed(this.model, "halo-open", false);
             } else {

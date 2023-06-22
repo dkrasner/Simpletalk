@@ -402,6 +402,7 @@ class FieldView extends PartView {
         // clear all selections
         this.selectionRanges = {};
     }
+    
     onClick(event){
         event.preventDefault();
         event.stopPropagation();
@@ -413,13 +414,17 @@ class FieldView extends PartView {
                 let text = window.getSelection().toString();
                 // if no text is selected we do nothing
                 if(text){
+                    // check to see if this is an editable world
+                    const world = window.System.partsById['world'];
+                    const locked = world.partProperties.getPropertyNamed('world', "lock");
                     // if the altKey is pressed we open the context ("do it") menu
-                    if(event.altKey){
+                    if(event.altKey && !locked){
                         if(!this.contextMenuOpen){
                             this.openContextMenu();
                         }
                     } else {
-                        this.handleSelection(event.metaKey);
+                        // TODO this was never truly tested
+                        // this.handleSelection(event.metaKey);
                     }
                 } else {
                     // make sure no context menu is open

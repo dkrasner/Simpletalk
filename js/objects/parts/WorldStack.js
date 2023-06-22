@@ -55,10 +55,21 @@ class WorldStack extends Part {
             )
         );
 
+        // if the 'lock' prop is set to true then no editors
+        // can be opened (context-menu, side editor etc); nor can you run do it
+        // commands
+        this.partProperties.addProperty(
+            new BasicProperty(
+                "lock",
+                false
+            )
+        );
+
         // private command handlers
         this.setPrivateCommandHandler("openNavigator", () => {
             this.partProperties.setPropertyNamed(this, "navigator-open", true);
         });
+
         this.setPrivateCommandHandler("closeNavigator", () => {
             this.partProperties.setPropertyNamed(this, "navigator-open", false);
         });
