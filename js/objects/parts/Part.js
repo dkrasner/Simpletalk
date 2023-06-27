@@ -192,6 +192,10 @@ class Part {
                 false
             ),
             new BasicProperty(
+                'wants-context-menu',
+                true
+            ),
+            new BasicProperty(
                 'id',
                 idMaker.new()
             ),
@@ -238,7 +242,11 @@ class Part {
                         el.model.partProperties.setPropertyNamed(el.model, "halo-open", false);
                     });
                 }
-                propObject._value = val;
+                // check to see if this is an editable world
+                const world = window.System.partsById['world'];
+                if (!world.partProperties.getPropertyNamed('world', "lock")) {
+                    propObject._value = val;
+                }
             },
             function(propOwner, propObject){
                 return propObject._value;
@@ -262,7 +270,11 @@ class Part {
                         });
                     }
                 }
-                propObject._value = val;
+                // check to see if this is an editable world
+                const world = window.System.partsById['world'];
+                if (!world.partProperties.getPropertyNamed('world', "lock")) {
+                    propObject._value = val;
+                }
             },
             function(propOwner, propObject){
                 return propObject._value;
