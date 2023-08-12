@@ -1,11 +1,10 @@
-![](images/simpletalk-calligraphy1.svg)
+![](images/ww_logo.svg)
 # Overview
-This repository hosts a project, currently named "SimpleTalk," begun at the initiation of the UnitedLex computing lab. A general overview of our goals and approach to computing can be found in the [manifesto](ComputingManifesto.pdf). __Simpletalk__ represents a single component of this larger story.
+Behond _WYSIWYG_ the next-gen system to create and share just about anything and everything in the browser! Here you can seamlessly translate your design and functional intent into running applications. 
 
-# SimpleTalk
-A project inspired by the ideas from [HyperCard](https://en.wikipedia.org/wiki/HyperCard) and [Smalltalk](https://en.wikipedia.org/wiki/Smalltalk). The project is very early stages and represents our desire to think about 'authoring' environments. The goal is not so much to create a working system, although that is one, but to begin thinking about research in personal computing moving forward.
+Ideas behind _WYWISYG_ and v0 of the underlying language, interpreter and environment were developed as part of an R&D project. You can read more about it [here](https://github.com/dkrasner/Simpletalk).
 
-No official release at the moment but you can find an early draft of the documentation [here](https://simpletalk.systems/). The documentation lives in the environment and the environment documents itself - it's a computer after all. (**Note**: this is not a product so we didn't go down the cross-browser support rabbit hole; please use Firefox - otherwise we can't guarantee how things will work or look - and plenty of screen-space will make the experience more enjoyable.) 
+[More documentation is coming soon, but if you eager to contribute simply open an issue, PR and go from there.]
 
 ## Installation and Building
 
@@ -15,9 +14,7 @@ To build run `npm run build-dev` which will create a webpack bundle used by the 
 
 ## Running Examples
   
-Serialized collections of Simpletalk Stacks are called "snapshots" and are just plain HTML documents. There are [several examples available in this repository](https://github.com/dkrasner/Simpletalk/tree/master/js/objects/examples). The "bootstrap.html" example is what we normally use to start building new stacks.
-  
-In order to properly load them you will have to host them rather than opening a local file. Using Python 3, for example, you can run `python -m http.server` at the root of this repository and the files will be available on `localhost:8000`.
+Boot up a web server, for example python one  (`python -m http.server`) and head to `localhost:8000` for some freewheelin'.
 
 ## Tests
 
