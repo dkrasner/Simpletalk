@@ -1,0 +1,16 @@
+[Unit]
+Description=Simplestorage
+After=mariadb.service
+
+[Service]
+ExecStart=/opt/simpletalk/venv/bin/uwsgi --ini /opt/simpletalk/simplestorage.uwsgi
+User=simpletalk
+Group=simpletalk
+WorkingDirectory=/opt/simpletalk
+Restart=always
+KillSignal=SIGQUIT
+Type=notify
+NotifyAccess=all
+
+[Install]
+WantedBy=multi-user.target
