@@ -3,10 +3,10 @@
  * --------------------------------
  * Tests the grammar of looping constructs
  */
-ohm = require('ohm-js');
+const ohm = require('ohm-js');
 // Instantiate the grammar.
 var fs = require('fs');
-var g = ohm.grammar(fs.readFileSync('./js/ohm/simpletalk.ohm'));
+var g = ohm.grammar(fs.readFileSync('./js/ohm/simpletalk.ohm').toString());
 
 var chai = require('chai');
 var assert = chai.assert;
@@ -63,7 +63,7 @@ describe("RepeatControlForm tests", () => {
         });
     });
     describe("whileCondition", () => {
-       it("Can do a boolean literal", () => {
+        it("Can do a boolean literal", () => {
             let str = `repeat while true`;
             semanticMatchTest(str, "RepeatControlForm_whileCondition");
         });
@@ -78,7 +78,7 @@ describe("RepeatControlForm tests", () => {
         it("Can use a conditional that has variable name(s)", () => {
             let str = `repeat while myVariable is 5`;
             semanticMatchTest(str, "RepeatControlForm_whileCondition");
-        }); 
+        });
     });
     describe("withStartFinish", () => {
         it("Can use a basic variable name with literal integer range", () => {
@@ -170,14 +170,14 @@ describe("Repeat full script tests", () => {
 describe("Misc full script repeat tests", () => {
     it("Can parse an exit repeat in nested if block", () => {
         let script = [
-        "on click",
-        "put 0 into Counter",
-        "repeat until Counter == 5",
-        "answer Counter",
-        "put (Counter + 1) into Counter",
-        "if Counter >= 3 then exit repeat",
-        "end repeat",
-        "end click"
+            "on click",
+            "put 0 into Counter",
+            "repeat until Counter == 5",
+            "answer Counter",
+            "put (Counter + 1) into Counter",
+            "if Counter >= 3 then exit repeat",
+            "end repeat",
+            "end click"
         ].join("\n");
         semanticMatchTest(script, "Script");
         semanticMatchTest(script, "MessageHandler");

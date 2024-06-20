@@ -1,10 +1,10 @@
 /**
  * Tests for the 'there is a'command(s)
  */
-ohm = require('ohm-js');
+const ohm = require('ohm-js');
 // Instantiate the grammar.
 var fs = require('fs');
-var g = ohm.grammar(fs.readFileSync('./js/ohm/simpletalk.ohm'));
+var g = ohm.grammar(fs.readFileSync('./js/ohm/simpletalk.ohm').toString());
 
 var chai = require('chai');
 var assert = chai.assert;
@@ -28,41 +28,41 @@ const objects = [
     "drawing", "audio", "image"
 ];
 
-describe("'there is a' ObjectSpecifier" , () => {
-    it ("Basic (current card)", () => {
+describe("'there is a' ObjectSpecifier", () => {
+    it("Basic (current card)", () => {
         const s = `there is a current card`;
         semanticMatchTest(s, "Conditional");
         semanticMatchTest(s, "ThereIsAnObjectConditional");
     });
-    it ("Basic (wth id)", () => {
+    it("Basic (wth id)", () => {
         objects.forEach((d) => {
             const s = `there is a ${d} 20`;
             semanticMatchTest(s, "Conditional");
             semanticMatchTest(s, "ThereIsAnObjectConditional");
         });
     });
-    it ("By name of current stack", () => {
+    it("By name of current stack", () => {
         objects.forEach((d) => {
             const s = `there is a ${d} "New" of current stack`;
             semanticMatchTest(s, "Conditional");
             semanticMatchTest(s, "ThereIsAnObjectConditional");
         });
     });
-    it ("Basic (with name, wth id)", () => {
+    it("Basic (with name, wth id)", () => {
         objects.forEach((d) => {
             const s = `there is a ${d} "newPart 123" of card 20`;
             semanticMatchTest(s, "Conditional");
             semanticMatchTest(s, "ThereIsAnObjectConditional");
         });
     });
-    it ("'Of this'", () => {
+    it("'Of this'", () => {
         objects.forEach((d) => {
             const s = `there is a  ${d} "newPart 123" of this stack`;
             semanticMatchTest(s, "Conditional");
             semanticMatchTest(s, "ThereIsAnObjectConditional");
         });
     });
-    it ("Named of 'current'", () => {
+    it("Named of 'current'", () => {
         objects.forEach((d) => {
             const s = `there is a ${d} "newPart123" of current stack`;
             semanticMatchTest(s, "Conditional");
@@ -91,13 +91,13 @@ describe("'there is a' ObjectSpecifier" , () => {
         });
     });
 });
-describe("'there is not a' ObjectSpecifier" , () => {
-    it ("Basic (current card)", () => {
+describe("'there is not a' ObjectSpecifier", () => {
+    it("Basic (current card)", () => {
         const s = `there is not a current card`;
         semanticMatchTest(s, "Conditional");
         semanticMatchTest(s, "ThereIsNotAnObjectConditional");
     });
-    it ("Basic (wth id)", () => {
+    it("Basic (wth id)", () => {
         objects.forEach((d) => {
             const s = `there is not a ${d} 20`;
             semanticMatchTest(s, "Conditional");
@@ -127,28 +127,28 @@ describe("'there is not a' ObjectSpecifier" , () => {
     });
 });
 
-describe("there is a property" , () => {
-    it ("without specifier", () => {
+describe("there is a property", () => {
+    it("without specifier", () => {
         const s = `there is a property "super prop"`;
         semanticMatchTest(s, "Conditional");
         semanticMatchTest(s, "ThereIsAPropertyConditional");
         semanticMatchTest(s, "ThereIsAPropertyConditional_withoutSpecifier");
     });
-    it ("with specifier", () => {
+    it("with specifier", () => {
         const s = `there is a property "super prop" of first button of current card`;
         semanticMatchTest(s, "Conditional");
         semanticMatchTest(s, "ThereIsAPropertyConditional");
         semanticMatchTest(s, "ThereIsAPropertyConditional_withSpecifier");
     });
 });
-describe("there is not a property" , () => {
-    it ("without specifier", () => {
+describe("there is not a property", () => {
+    it("without specifier", () => {
         const s = `there is not a property "super prop"`;
         semanticMatchTest(s, "Conditional");
         semanticMatchTest(s, "ThereIsNotAPropertyConditional");
         semanticMatchTest(s, "ThereIsNotAPropertyConditional_withoutSpecifier");
     });
-    it ("with specifier", () => {
+    it("with specifier", () => {
         const s = `there is not a property "super prop" of first button of current card`;
         semanticMatchTest(s, "Conditional");
         semanticMatchTest(s, "ThereIsNotAPropertyConditional");

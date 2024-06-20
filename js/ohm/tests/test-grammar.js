@@ -1,7 +1,7 @@
-ohm = require('ohm-js');
+const ohm = require('ohm-js');
 // Instantiate the grammar.
 var fs = require('fs');
-var g = ohm.grammar(fs.readFileSync('./js/ohm/simpletalk.ohm'));
+var g = ohm.grammar(fs.readFileSync('./js/ohm/simpletalk.ohm').toString());
 
 var chai = require('chai');
 var assert = chai.assert;
@@ -23,7 +23,7 @@ const semanticMatchFailTest = (str, semanticType) => {
     const typeMatch = g.match(str, semanticType);
     assert.isFalse(typeMatch.succeeded());
 };
-String.prototype.unCapitalize = function() {
+String.prototype.unCapitalize = function () {
     return this.charAt(0).toLowerCase() + this.slice(1);
 };
 
@@ -48,7 +48,7 @@ describe("SimpleTalk Grammar", () => {
             const s = "-- mycomment part2";
             matchAndsemanticMatchTest(s, 'comment');
         });
-        it("positive integer", () =>{
+        it("positive integer", () => {
             const s = "24";
             semanticMatchTest(s, 'integerLiteral');
         });
@@ -107,7 +107,7 @@ describe("SimpleTalk Grammar", () => {
 
     // TODO add more tests for handlers, comments, end etc
     describe("Messages", () => {
-        it ("Message name", () => {
+        it("Message name", () => {
             const strings = [
                 "f", "F", "amessage", "aMessage", "aMessage"
             ];
@@ -115,7 +115,7 @@ describe("SimpleTalk Grammar", () => {
                 semanticMatchTest(s, 'messageName');
             });
         });
-        it ("Bad message name", () => {
+        it("Bad message name", () => {
             const strings = [
                 "1", "1m", "1M", "m1", "M1", " message", "then", "on", "end"
             ];
@@ -123,15 +123,15 @@ describe("SimpleTalk Grammar", () => {
                 semanticMatchFailTest(s, 'messageName');
             });
         });
-        it ("Can parse message names beginning with 'do'", () => {
+        it("Can parse message names beginning with 'do'", () => {
             let str = "doSomething";
             semanticMatchTest(str, 'messageName');
         });
-        it ("Message handler (no args, no statements)", () => {
+        it("Message handler (no args, no statements)", () => {
             const s = `on myMessage\nend myMessage`;
             matchAndsemanticMatchTest(s, 'MessageHandler');
         });
-        it ("Message handler (args, no statements)", () => {
+        it("Message handler (args, no statements)", () => {
             const s = `on myNewMessage arg1, arg2\nend myNewMessage`;
             matchAndsemanticMatchTest(s, 'MessageHandler');
         });
@@ -144,7 +144,7 @@ describe("SimpleTalk Grammar", () => {
             let match = g.match(invalidStr);
             assert.isFalse(match.succeeded());
         });
-        it ("Built in message syntax", () => {
+        it("Built in message syntax", () => {
             const strings = [
                 "close", "closeStack", "commandKeyDown", "quit"
             ];
@@ -182,43 +182,57 @@ describe("SimpleTalk Grammar", () => {
         });
         describe("Built in system messages", () => {
             const tests = [
-                {strings: [
-                    "closeBackground", "closeButton", "closeCard", "closeField", "closeStack"
-                ],
-                name: "Close Object"},
-                {strings: [
-                    "openBackground", "openButton", "openCard", "openField", "openStack"
-                ],
-                name: "Open Object"},
-                {strings: [
-                    "deleteBackground", "deleteButton", "deleteCard", "deleteField", "deleteStack"
-                ],
-                name: "Delete Object"},
-                {strings: [
-                    "newBackground", "newButton", "newCard", "newField", "newStack"
-                ],
-                name: "New Object"},
-                {strings: [
-                    "mouseDoubleClick", "mouseDown", "mouseDownInPicture", "mouseEnter",
-                    "mouseLeave", "mouseStillDown", "mouseUpInPicture", "mouseUp", "mouseWithin"
-                ],
-                name: "Mouse Event"},
-                {strings: [
-                    "arrowKey", "commandKeyDown", "controlKey", "enterKey",
-                    "functionKey", "keyDown", "returnKey", "tabKey"
-                ],
-                skipSpecific: true,
-                name: "Key Event"},
-                {strings: [
-                    "systemEvent", "doMenu", "enterInField" , "exitField", "help",
-                    "hide menubar", "idle", "moveWindow", "quit", "resumeStack",
-                    "resume", "returnInField", "show menubar", "sizeWindow", "startUp",
-                    "suspendStack", "suspend"
-                ],
-                skipSpecific: true,
-                name: "Other System Messages"},
+                {
+                    strings: [
+                        "closeBackground", "closeButton", "closeCard", "closeField", "closeStack"
+                    ],
+                    name: "Close Object"
+                },
+                {
+                    strings: [
+                        "openBackground", "openButton", "openCard", "openField", "openStack"
+                    ],
+                    name: "Open Object"
+                },
+                {
+                    strings: [
+                        "deleteBackground", "deleteButton", "deleteCard", "deleteField", "deleteStack"
+                    ],
+                    name: "Delete Object"
+                },
+                {
+                    strings: [
+                        "newBackground", "newButton", "newCard", "newField", "newStack"
+                    ],
+                    name: "New Object"
+                },
+                {
+                    strings: [
+                        "mouseDoubleClick", "mouseDown", "mouseDownInPicture", "mouseEnter",
+                        "mouseLeave", "mouseStillDown", "mouseUpInPicture", "mouseUp", "mouseWithin"
+                    ],
+                    name: "Mouse Event"
+                },
+                {
+                    strings: [
+                        "arrowKey", "commandKeyDown", "controlKey", "enterKey",
+                        "functionKey", "keyDown", "returnKey", "tabKey"
+                    ],
+                    skipSpecific: true,
+                    name: "Key Event"
+                },
+                {
+                    strings: [
+                        "systemEvent", "doMenu", "enterInField", "exitField", "help",
+                        "hide menubar", "idle", "moveWindow", "quit", "resumeStack",
+                        "resume", "returnInField", "show menubar", "sizeWindow", "startUp",
+                        "suspendStack", "suspend"
+                    ],
+                    skipSpecific: true,
+                    name: "Other System Messages"
+                },
             ];
-            tests.forEach( (test) => {
+            tests.forEach((test) => {
                 it(`${test.name}`, () => {
                     const cl = test.name.replace(" ", "").unCapitalize();
                     test.strings.forEach((s) => {
@@ -265,42 +279,42 @@ describe("SimpleTalk Grammar", () => {
     describe("punctuation", () => {
         it('Basic', () => {
             const strings = [":", ";", ".", ",", "?", "!", "-"];
-            strings.forEach((s) => {semanticMatchTest(s, 'punctuation')});
+            strings.forEach((s) => { semanticMatchTest(s, 'punctuation'); });
         });
         it('Does not match some examples', () => {
             const s = '"this is a\t\ntest"';
             const strings = ["a", " ", "/"];
-            strings.forEach((s) => {semanticMatchFailTest(s, 'punctuation')});
+            strings.forEach((s) => { semanticMatchFailTest(s, 'punctuation'); });
         });
     });
     describe("object Id", () => {
-        it ("Basic Id", () => {
+        it("Basic Id", () => {
             semanticMatchTest("myNewId", "objectId");
         });
-        it ("Id with constters and digits", () => {
+        it("Id with constters and digits", () => {
             semanticMatchTest("newIdl123", "objectId");
         });
-        it ("Bad objetId (with space)", () => {
+        it("Bad objetId (with space)", () => {
             semanticMatchFailTest(" badId", "objectId");
         });
-        it ("Bad objetId (with space)", () => {
+        it("Bad objetId (with space)", () => {
             semanticMatchFailTest(" badId", "objectId");
         });
     });
     describe("Parameter List", () => {
-        it ("Single param list", () => {
+        it("Single param list", () => {
             semanticMatchTest("param1", "ParameterList");
         });
-        it ("Simple param list", () => {
+        it("Simple param list", () => {
             semanticMatchTest("param1, param2", "ParameterList");
         });
-        it ("Param list with digits", () => {
+        it("Param list with digits", () => {
             semanticMatchTest("12, 22, newparam123", "ParameterList");
         });
-        it ("Bad param list (without spaces)", () => {
+        it("Bad param list (without spaces)", () => {
             semanticMatchFailTest("param1,param2", "ParameterList");
         });
-        it ("Bad param list (space)", () => {
+        it("Bad param list (space)", () => {
             semanticMatchFailTest("pa ram1, param2", "ParameterList");
         });
     });
